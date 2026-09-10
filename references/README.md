@@ -47,7 +47,8 @@ LingBot 相关工作需在下载前再次确认具体论文标题、版本和官
 优先使用本地代理 `http://127.0.0.1:7897`。每次下载后执行：
 
 ```bash
-sha256sum references/papers/*.pdf > references/checksums.sha256
+cd /home/bubble/类脑计算/VLM终局/references
+sha256sum -c checksums.sha256
 ```
 
 仓库下载默认直接使用官方 URL；如服务器需要 Git 镜像，可设置：

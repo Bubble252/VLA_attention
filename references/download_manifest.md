@@ -51,10 +51,16 @@ bash scripts/download_references.sh
 
 ```bash
 cat references/download_failures.log
-cat references/checksums.sha256
 cat references/repo_versions.md
 git status --short
 python3 scripts/verify_references.py
+```
+
+SHA256 文件中的路径相对于 `references/`，因此单独校验时执行：
+
+```bash
+cd /home/bubble/类脑计算/VLM终局/references
+sha256sum -c checksums.sha256
 ```
 
 ## 暂不下载的内容
