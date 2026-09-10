@@ -6,16 +6,16 @@
 
 | 本地文件 | 类型 | 来源 | 在项目中的角色 | 状态 |
 |---|---|---|---|---|
-| `papers/lavender_2502.06814.pdf` | 论文 | `https://arxiv.org/abs/2502.06814` | 词级扩散教师图 | 待下载 |
-| `papers/spikingbrain_2509.05276.pdf` | 论文 | `https://arxiv.org/abs/2509.05276` | 主干层级结构 | 待下载 |
-| `papers/qwen25_vl_2409.12191.pdf` | 论文 | `https://arxiv.org/abs/2409.12191` | VLM 结构参照 | 待下载 |
-| `papers/deepseek_vl2_2412.10302.pdf` | 论文 | `https://arxiv.org/abs/2412.10302` | 高分辨率/token 路由参照 | 待下载 |
-| `papers/openvla_2406.09246.pdf` | 论文 | `https://arxiv.org/abs/2406.09246` | LIBERO VLA 基线 | 待下载 |
-| `papers/pi0_2410.24164.pdf` | 论文 | `https://arxiv.org/abs/2410.24164` | 连续动作专家参照 | 待下载 |
-| `papers/libero_2306.03310.pdf` | 论文 | `https://arxiv.org/abs/2306.03310` | 仿真环境 | 待下载 |
-| `papers/diffusion_policy_2303.04137.pdf` | 论文 | `https://arxiv.org/abs/2303.04137` | 动作建模参照 | 待下载 |
-| `papers/gla_2312.06635.pdf` | 论文 | `https://arxiv.org/abs/2312.06635` | GLA 理论参照 | 待下载 |
-| `papers/attention_sinks_2309.17453.pdf` | 论文 | `https://arxiv.org/abs/2309.17453` | 注意力异常/稳定性参照 | 待下载 |
+| `papers/lavender_2502.06814.pdf` | 论文 | `https://arxiv.org/abs/2502.06814` | 词级扩散教师图 | 下载待在服务器执行 |
+| `papers/spikingbrain_2509.05276.pdf` | 论文 | `https://arxiv.org/abs/2509.05276` | 主干层级结构 | 下载待在服务器执行 |
+| `papers/qwen25_vl_2409.12191.pdf` | 论文 | `https://arxiv.org/abs/2409.12191` | VLM 结构参照 | 下载待在服务器执行 |
+| `papers/deepseek_vl2_2412.10302.pdf` | 论文 | `https://arxiv.org/abs/2412.10302` | 高分辨率/token 路由参照 | 下载待在服务器执行 |
+| `papers/openvla_2406.09246.pdf` | 论文 | `https://arxiv.org/abs/2406.09246` | LIBERO VLA 基线 | 下载待在服务器执行 |
+| `papers/pi0_2410.24164.pdf` | 论文 | `https://arxiv.org/abs/2410.24164` | 连续动作专家参照 | 下载待在服务器执行 |
+| `papers/libero_2306.03310.pdf` | 论文 | `https://arxiv.org/abs/2306.03310` | 仿真环境 | 下载待在服务器执行 |
+| `papers/diffusion_policy_2303.04137.pdf` | 论文 | `https://arxiv.org/abs/2303.04137` | 动作建模参照 | 下载待在服务器执行 |
+| `papers/gla_2312.06635.pdf` | 论文 | `https://arxiv.org/abs/2312.06635` | GLA 理论参照 | 下载待在服务器执行 |
+| `papers/attention_sinks_2309.17453.pdf` | 论文 | `https://arxiv.org/abs/2309.17453` | 注意力异常/稳定性参照 | 下载待在服务器执行 |
 
 ## 官方仓库索引
 
@@ -40,3 +40,4 @@ sha256sum references/papers/*.pdf > references/checksums.sha256
 
 并在 Git commit 中记录下载日期、源 URL 和失败重试情况。论文 PDF 只用于研究阅读，引用时以正式论文版本和官方仓库为准。
 
+本次沙盒下载已尝试代理和直连，但当前环境无法连接代理且无法解析 `arxiv.org`；自动审批也拒绝了沙盒外下载命令。因此仓库先提交可审计的来源清单，服务器联网后按上面的命令下载即可。

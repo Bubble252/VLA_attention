@@ -52,8 +52,8 @@ GPU 型号、数量和显存不作为 P0 的阻塞项；服务器由用户提供
 - [x] 明确 Lavender 词图与 SpikingBrain patch 归因之间需要桥接；
 - [x] 固定 delta EEF 7D 输出；
 - [x] 固定 LIBERO 优先、真机后置；
-- [ ] 初始化 Git；
-- [ ] 创建 `references/papers`、`references/bib`；
+- [x] 初始化 Git；
+- [x] 创建 `references/papers`、`references/bib`；
 - [ ] 下载首批核心论文并记录 SHA256；
 - [ ] 在文档中登记无法确认的模型版本。
 
@@ -289,4 +289,3 @@ git push
 - 负控与正确教师图效果没有区别。
 
 这些问题应先写入 issue 和 commit，而不是通过增加训练轮数掩盖。
-
