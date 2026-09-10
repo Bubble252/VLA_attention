@@ -1,4 +1,4 @@
-# 技术栈与实现规格：SpikingBrain-VLA Final
+# 技术栈与实现规格：语言条件空间归因对齐
 
 **版本**：Final design draft v1.0  
 **日期**：2026-09-10  
@@ -108,49 +108,90 @@ GPU 型号、数量和显存由服务器提供，本项目不把硬件写死。�
 3. 记录实际 URL、commit、文件大小和 SHA256；
 4. 不把未验证的自动下载脚本当作文献来源。
 
-## 4. 端到端数据流
+## 4. 两阶段数据流
 
 ```text
-LIBERO RGB + instruction + proprioception
+VLM image + instruction/question
             │
             ├── Lavender（训练前/离线）→ teacher map T(word)
+            └── VLM student
+                  ├── attention / hidden states / gradients
+                  └── language-conditioned spatial attribution G(word, image, target)
+                         ↓
+                  L_task + λ_align L_align
+
+LIBERO RGB + instruction + proprioception
             │
-            └── SpikingBrain-VL
-                  ├── vision window/full blocks → V_l
-                  ├── language SWA/GLA
-                  └── action query q
-                         │
-                  language-conditioned patch attribution
-                         │
-                  A_l(word, patch) → restore grid → resize
-                         │
-                  L_align with T(word)
-                         │
-                  delta EEF head → 7D action
+            ├── 同一套 teacher map T(word)
+            └── VLA student
+                  ├── SpikingBrain-VLA 或 OpenVLA/OFT
+                  ├── action query / action token / delta EEF loss
+                  └── action-conditioned spatial attribution G(word, image, action)
+                         ↓
+                  L_deltaEEF + λ_align L_align + λ_smooth L_smooth
 ```
 
-部署时移除 Lavender 和 `L_align`，只保留 SpikingBrain-VL、动作头和归一化器。
+部署时移除 Lavender 和 `L_align`。VLM 部署只保留学生模型；VLA 部署只保留学生 VLA、动作头和归一化器。
 
-## 5. 注意力桥接层的实现规格
+## 5. 教师与学生归因接口
 
-### 5.1 输入输出
+### 5.1 教师 registry
+
+首轮只启用扩散教师：
+
+```yaml
+teacher:
+  type: lavender_stable_diffusion
+  signal: word_cross_attention
+  output: T_word_image_region
+  use_in_inference: false
+```
+
+备选教师只登记，不进入首轮主实验：
+
+| 教师 | 首轮状态 | 进入条件 |
+|---|---|---|
+| Lavender / Stable Diffusion | 启用 | 默认教师，证明 VLM grounding |
+| Qwen/DeepSeek 离线归因 ensemble | 关闭 | 扩散教师定位失败或需要 sanity check |
+| LingBot-VA / π0 / video-action world model | 关闭 | VLA smoke 成立后，用于时序和动作可达性教师 |
+
+教师输出必须保存：词/短语、token span、原图尺寸、教师图尺寸、归一化方式、生成模型版本、随机种子和文件 SHA256。
+
+### 5.2 学生归因标准接口
+
+所有模型都实现同一个抽象接口：
+
+```python
+def compute_spatial_attribution(model, image, text, target, word_spans, adapter_cfg):
+    """
+    Returns:
+        maps: FloatTensor[B, W_word, H, W]
+        meta: token grid, resize rule, source layer, attribution type
+    """
+```
+
+其中 `target` 在 VLM 阶段是答案 token、类别或文本判断目标；在 VLA 阶段是 action token、动作维度或 delta EEF loss。输出图必须已经回到原图坐标或可逆 patch 网格。
+
+## 6. 空间归因桥接层的实现规格
+
+### 6.1 输入输出
 
 输入：
 
 - 视觉层输出 `V_l: [B,N,D]`；
 - 指令或动作查询 `q_w: [B,D]`；
 - patch 网格信息 `grid_thw`；
-- SpikingBrain 的 window reorder/index；
+- 可选的 window reorder/index；
 - 教师词图 `T_w: [B,H_s,W_s]`。
 
 输出：
 
 - `A_l_w: [B,H_s,W_s]`；
 - `valid_mask`，标记对象词是否在当前样本中出现；
-- `layer_type`，取 `full/window/gla/proxy`；
+- `layer_type`，取 `full/window/gla/hidden_gradient/action_gradient/proxy`；
 - `grid_transform_id`，保证离线图和训练图使用同一还原过程。
 
-### 5.2 Patch 归因方式
+### 6.2 Patch 归因方式
 
 按实现难度分三个版本：
 
@@ -163,15 +204,19 @@ A = softmax(score / temperature)
 
 优点是稳定、可微、无需改动 attention kernel；缺点是它是归因图而非原生 attention。
 
-**V1：动作 logit gradient×input**
+**V1：VLM target gradient×input**
+
+以答案 token log-prob、类别分数或文本判断 score 为目标，计算视觉 patch hidden state 的 `gradient × activation`。这是 Qwen、DeepSeek 等没有可比 cross-attention 时的首选接口。
+
+**V2：动作 logit / delta EEF gradient×input**
 
 以某一维 delta EEF 或动作总 logit 为目标，计算 patch 对动作的梯度，得到语言条件的动作归因。用于验证 V0 是否只是相似度假象。
 
-**V2：显式 cross-modal routing**
+**V3：显式 cross-modal routing**
 
 增加轻量 query-to-patch 模块，使 `q_w` 对 patch 产生显式权重。只有 V0/V1 通过诊断后才实现，避免一开始改动主干过多。
 
-### 5.3 坐标恢复
+### 6.3 坐标恢复
 
 SpikingBrain 的 token 可能经过窗口重排。必须保存：
 
@@ -192,7 +237,7 @@ grid_t, grid_h, grid_w
 
 如果恢复前后同一个合成图的峰值位置不一致，禁止进入对齐训练。
 
-## 6. 层级策略与实现分支
+## 7. 层级策略与实现分支
 
 | 分支 | 张量是否存在 | 默认用途 | 禁止事项 |
 |---|---:|---|---|
@@ -213,7 +258,19 @@ alignment:
   lambda: 0.05
 ```
 
-## 7. VLA 动作头
+VLM 普适性配置：
+
+```yaml
+alignment:
+  mode: target_gradient
+  students: [spikingbrain_vl, qwen25_vl, qwen3_vl, deepseek_vl2]
+  teacher: lavender_word_map
+  target: answer_logprob
+  distance: normalized_mse
+  lambda: 0.02
+```
+
+## 8. VLA 动作头
 
 动作定义：
 
@@ -239,32 +296,34 @@ L_total = L_action + λ_align * L_align + λ_smooth * L_smooth
 
 夹爪分量可以使用回归或二分类；首版统一回归，若 LIBERO 中开合不稳定，再单独改为 BCE 并记录接口变化。
 
-## 8. 模型适配层
+## 9. 模型适配层
 
-### 8.1 Qwen2.5-VL / Qwen3-VL
+### 9.1 Qwen2.5-VL / Qwen3-VL
 
-适配目标是抽取视觉 token 和语言条件 query，不直接修改其生成头。需要记录：
+适配目标是抽取视觉 token、语言 token 和答案目标，不直接假设其 attention 与 SpikingBrain 同构。首选学生归因是 `answer_logprob → visual_patch_hidden` 的 gradient×input。需要记录：
 
 - 视觉 token 数量和动态分辨率；
 - 视觉层索引；
 - 是否能稳定得到每层 hidden state；
-- 与 SpikingBrain 的层数、窗口机制和 full-attention 位置的差异。
+- 与 SpikingBrain 的层数、窗口机制和 full-attention 位置的差异；
+- answer token 与 instruction 中对象词的 span 对齐规则；
+- 梯度归因是否稳定，是否需要 Integrated Gradients。
 
-Qwen2.5-VL 的论文版本登记为 arXiv:2502.13923；Qwen3-VL 的技术报告登记为 arXiv:2511.21631。它们用于强 VLM 表征对照；动作实验统一接同一个 7D delta EEF head，避免把 tokenizer 差异误认为动作能力。
+Qwen2.5-VL 的论文版本登记为 arXiv:2502.13923；Qwen3-VL 的技术报告登记为 arXiv:2511.21631。它们首先用于 VLM grounding 普适性对照；动作实验只有在 VLM 阶段成立后再统一接 7D delta EEF head。
 
-### 8.2 DeepSeek-VL2
+### 9.2 DeepSeek-VL2
 
-重点比较高分辨率/多图 token 组织和专家路由。若模型接口只能提供最终 hidden state，则只做表征和动作头对照，不强行提取不可解释的 attention。
+重点比较高分辨率/多图 token 组织和专家路由。若模型接口只能提供最终 hidden state，则用最终答案 score 对视觉 hidden states 做归因，不强行提取不可解释的 attention。MoE/router 作为分析元数据，不作为 `L_align` 的主监督对象。
 
-### 8.3 OpenVLA
+### 9.3 OpenVLA
 
-作为 LIBERO VLA 基线，保留其原生动作表示做官方对照；同时增加一个统一 7D delta EEF adapter，单独报告“原生动作接口”和“统一接口”结果。
+作为 LIBERO VLA 基线，保留其原生动作表示做官方对照；同时增加一个统一 7D delta EEF adapter，单独报告“原生动作接口”和“统一接口”结果。学生归因优先来自 action token log-prob 或 delta EEF adapter loss 对视觉 hidden states 的 gradient×input。
 
-### 8.4 π0 / LingBot
+### 9.4 π0 / LingBot
 
-作为后置架构参考。π0 的连续动作专家可指导 action chunk；LingBot-VA 的因果视频-动作世界模型和 LingBot-VLA 2.0 的统一多 embodiment 动作表示可指导多帧输入和动作空间扩展，但第一阶段不把它们与 SpikingBrain 的 attention loss 混在同一训练脚本中。
+作为后置架构参考。π0 的连续动作专家可指导 action chunk；LingBot-VA 的因果视频-动作世界模型和 LingBot-VLA 2.0 的统一多 embodiment 动作表示可指导多帧输入和动作空间扩展。它们可以在后期作为 world-model teacher 候选，但第一阶段不把它们与扩散词图教师混在同一训练脚本中。
 
-## 9. LIBERO 集成
+## 10. LIBERO 集成
 
 必须实现以下接口：
 
@@ -283,9 +342,18 @@ obs, reward, done, info = env.step(action)
 - 保存成功/失败原因，而不是只保存最终 success；
 - 测试集只用于最终一次报告。
 
-## 10. 评价指标与对照组
+## 11. 评价指标与对照组
 
-主指标：
+VLM 阶段主指标：
+
+- VQA / referring expression / grounding accuracy；
+- pointing accuracy；
+- 目标区域 IoU；
+- 归因图熵；
+- 正确教师图相对错图/错词教师图的增益；
+- 不同 VLM 学生上的平均增益和方差。
+
+VLA 阶段主指标：
 
 - LIBERO success rate；
 - 按任务类型分组的 success rate；
@@ -295,17 +363,20 @@ obs, reward, done, info = env.step(action)
 
 必须有的对照：
 
-1. SpikingBrain-VLA，无对齐；
-2. 所有可用层统一对齐；
-3. full-attention `[23,31]` 对齐；
-4. 仅 `[31]`；
-5. 随机层；
-6. 教师词图打乱；
-7. 错配图片的教师图；
-8. window/SWA/GLA 伪 attention 直接 MSE；
-9. 相似度桥 V0 与 gradient×input V1。
+1. VLM 普通 SFT / LoRA；
+2. Lavender 原式 attention-to-attention 对齐；
+3. 本项目 teacher-to-attribution 对齐；
+4. SpikingBrain-VLA，无对齐；
+5. 所有可用层统一对齐；
+6. full-attention `[23,31]` 对齐；
+7. 仅 `[31]`；
+8. 随机层；
+9. 教师词图打乱；
+10. 错配图片的教师图；
+11. window/SWA/GLA 伪 attention 直接 MSE；
+12. 相似度桥 V0 与 gradient×input V1/V2。
 
-## 11. 文献与模型版本记录
+## 12. 文献与模型版本记录
 
 每个下载文件在 `references/README.md` 登记：
 

@@ -1,8 +1,10 @@
-# VLM 终局：基于层级注意力对齐的 SpikingBrain-VLA
+# VLM 终局：语言条件空间归因对齐
 
-本仓库记录最终研究方案、文献归档和后续实现入口。目标是在 LIBERO 仿真中验证：
+本仓库记录最终研究方案、文献归档和后续实现入口。核心方法不限定于某一种 VLM 的 attention 结构，而是把不同 VLM/VLA 的内部视觉证据统一成**语言条件空间归因图**：
 
-> Lavender 的词级扩散空间先验，经过语言条件 patch 归因桥接后，是否能对 SpikingBrain 的 full-attention 层进行选择性监督，并改善 7D delta EEF 的 VLA 控制。
+> Lavender / Stable Diffusion 提供 `word → image region` 教师图；SpikingBrain、Qwen、DeepSeek、OpenVLA 等模型通过各自可用的 attention、hidden-state gradient 或 action-conditioned attribution 产生学生归因图；二者统一到图像坐标后对齐。
+
+实验顺序是：先在 VLM grounding 上证明这种归因对齐优于普通 fine-tuning 或 naive attention 对齐，再在 LIBERO 中验证它是否能改善 7D delta EEF 的 VLA 控制。SpikingBrain 是主实验骨干，因为它的 full/window/GLA 结构适合做结构感知消融；OpenVLA/OFT 用于后续跨 VLA 骨干验证。
 
 先读：
 
