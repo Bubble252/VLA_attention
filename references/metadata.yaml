@@ -1,0 +1,104 @@
+schema: "research-reference-metadata/v1"
+generated: "2026-09-10"
+download_policy:
+  proxy: "http://127.0.0.1:7897"
+  fallback: "国内镜像或 ModelScope"
+  checksum_file: "checksums.sha256"
+references:
+  - id: lavender-2025
+    title: "Learning to Attend Better with Language-Conditioned Diffusion"
+    type: paper
+    arxiv: "2502.06814"
+    url: "https://arxiv.org/abs/2502.06814"
+    local_file: "papers/lavender_2502.06814.pdf"
+    role: teacher
+    status: metadata_archived_pdf_pending_server_download
+  - id: spikingbrain-2025
+    title: "SpikingBrain"
+    type: paper
+    arxiv: "2509.05276"
+    url: "https://arxiv.org/abs/2509.05276"
+    local_file: "papers/spikingbrain_2509.05276.pdf"
+    role: main_backbone
+    status: metadata_archived_pdf_pending_server_download
+  - id: qwen25-vl-2024
+    title: "Qwen2.5-VL Technical Report"
+    type: paper
+    arxiv: "2409.12191"
+    url: "https://arxiv.org/abs/2409.12191"
+    repo: "https://github.com/QwenLM/Qwen2.5-VL"
+    local_file: "papers/qwen25_vl_2409.12191.pdf"
+    role: vlm_reference
+    status: metadata_archived_pdf_pending_server_download
+  - id: qwen3-vl
+    title: "Qwen3-VL official model and code reference"
+    type: repository
+    url: "https://github.com/QwenLM/Qwen3-VL"
+    role: vlm_reference
+    status: official_repo_indexed_version_to_freeze_before_experiment
+  - id: deepseek-vl2-2024
+    title: "DeepSeek-VL2"
+    type: paper
+    arxiv: "2412.10302"
+    url: "https://arxiv.org/abs/2412.10302"
+    repo: "https://github.com/deepseek-ai/DeepSeek-VL2"
+    local_file: "papers/deepseek_vl2_2412.10302.pdf"
+    role: vlm_reference
+    status: metadata_archived_pdf_pending_server_download
+  - id: openvla-2024
+    title: "OpenVLA: An Open-Source Vision-Language-Action Model"
+    type: paper
+    arxiv: "2406.09246"
+    url: "https://arxiv.org/abs/2406.09246"
+    repo: "https://github.com/openvla/openvla"
+    local_file: "papers/openvla_2406.09246.pdf"
+    role: libero_vla_baseline
+    status: metadata_archived_pdf_pending_server_download
+  - id: pi0-2024
+    title: "A Vision-Language-Action Flow Model for General Robot Control"
+    type: paper
+    arxiv: "2410.24164"
+    url: "https://arxiv.org/abs/2410.24164"
+    repo: "https://github.com/Physical-Intelligence/openpi"
+    local_file: "papers/pi0_2410.24164.pdf"
+    role: continuous_action_reference
+    status: metadata_archived_pdf_pending_server_download
+  - id: lingbot
+    title: "LingBot family: video/world-model/VLA architecture reference"
+    type: repository_or_paper
+    role: temporal_vla_reference
+    status: title_and_version_require_final_verification
+    note: "Do not use as a first-run dependency until the exact paper, checkpoint, and official repository are frozen."
+  - id: libero-2023
+    title: "LIBERO: Benchmarking Knowledge Transfer for Lifelong Robot Learning"
+    type: paper
+    arxiv: "2306.03310"
+    url: "https://arxiv.org/abs/2306.03310"
+    repo: "https://github.com/Lifelong-Robot-Learning/LIBERO"
+    local_file: "papers/libero_2306.03310.pdf"
+    role: simulation_environment
+    status: metadata_archived_pdf_pending_server_download
+  - id: diffusion-policy-2023
+    title: "Diffusion Policy: Visuomotor Policy Learning via Action Diffusion"
+    type: paper
+    arxiv: "2303.04137"
+    url: "https://arxiv.org/abs/2303.04137"
+    local_file: "papers/diffusion_policy_2303.04137.pdf"
+    role: action_model_reference
+    status: metadata_archived_pdf_pending_server_download
+  - id: gla-2023
+    title: "GLA"
+    type: paper
+    arxiv: "2312.06635"
+    url: "https://arxiv.org/abs/2312.06635"
+    local_file: "papers/gla_2312.06635.pdf"
+    role: spikingbrain_language_reference
+    status: metadata_archived_pdf_pending_server_download
+  - id: attention-sinks-2023
+    title: "StreamingLLM: Efficient Streaming Language Models with Attention Sinks"
+    type: paper
+    arxiv: "2309.17453"
+    url: "https://arxiv.org/abs/2309.17453"
+    local_file: "papers/attention_sinks_2309.17453.pdf"
+    role: attention_stability_reference
+    status: metadata_archived_pdf_pending_server_download
