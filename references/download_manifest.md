@@ -54,6 +54,7 @@ cat references/download_failures.log
 cat references/checksums.sha256
 cat references/repo_versions.md
 git status --short
+python3 scripts/verify_references.py
 ```
 
 ## 暂不下载的内容

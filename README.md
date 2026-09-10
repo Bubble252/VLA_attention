@@ -22,3 +22,9 @@ bash scripts/download_references.sh
 ```
 
 脚本强制使用 `http://127.0.0.1:7897`，并生成下载失败日志、论文 SHA256 和仓库 commit 清单。
+
+下载后运行下面的校验命令：
+
+```bash
+python3 scripts/verify_references.py
+```
