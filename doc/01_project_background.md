@@ -15,7 +15,7 @@
 | 动作输出 | `a_t=[Δx, Δy, Δz, Δroll, Δpitch, Δyaw, gripper]`，即 7 维 delta EEF |
 | 视觉教师 | Lavender 离线 Stable Diffusion 词级空间注意力图 |
 | 核心机制 | 依据 SpikingBrain 的 full-attention、window/SWA、GLA 等层级结构进行选择性对齐 |
-| 参考模型 | Lavender、Qwen2.5-VL、Qwen3-VL、DeepSeek-VL2、OpenVLA、π0、LingBot 系列 |
+| 参考模型 | Lavender、Qwen2.5-VL、Qwen3-VL、Qwen-RobotManip、DeepSeek-VL2、OpenVLA、π0、LingBot 系列 |
 | GPU | 由服务器环境管理；文档不绑定型号、数量或显存 |
 | 代码仓库 | `/home/bubble/类脑计算/VLM终局` |
 | 文献归档 | `/home/bubble/类脑计算/VLM终局/references` |
@@ -147,6 +147,7 @@
 | Qwen2.5-VL | 动态分辨率视觉编码、多尺度视觉 token、强多模态语言模型 | 都需要处理视觉 token 与语言条件 | 无原生 delta EEF 头，视觉注意力接口与 SpikingBrain 不同 | VLM 表征和层选择参照 |
 | Qwen3-VL | Interleaved-MRoPE、DeepStack、多层视觉特征注入和长视频理解 | 都强调跨层视觉-语言融合 | 没有原生 delta EEF 头，视觉层级不是 SpikingBrain 的窗口/full/GLA | 高质量 VLM 对照，不作为首个动作基线 |
 | DeepSeek-VL2 | 高分辨率/多图输入和混合专家式语言建模路线 | 都强调视觉 token 到语言决策的高效路由 | 专家路由、token 组织和 SpikingBrain 的窗口/GLA 不同 | 比较 token 路由和多尺度输入 |
+| Qwen-RobotManip | 基于 Qwen-VL 的机器人操作 VLA，统一表示、运动和行为对齐 | 与本项目同样关注视觉语言表征到机器人操作的对齐 | 采用大规模机器人数据和专用动作建模，不等同于 SpikingBrain 的层级教师图 | 最接近的 Qwen 操作模型参照 |
 | OpenVLA | VLM 主干接动作 token，直接面向机器人任务 | 都是视觉、语言到动作 | 常见动作表示是离散 token，不是本项目的 delta EEF 回归 | LIBERO VLA 基线 |
 | π0 | 预训练视觉语言模型 + 连续动作/flow action expert | 都把高层语义接到连续机器人动作 | 动作专家和训练目标不同，工程复杂度更高 | 连续动作建模参照，后置 |
 | LingBot-VA | 因果视频-动作世界模型，视频动态和动作在交错序列中联合建模 | 与最终 VLA 目标一致，都需要时序动作决策 | 双流 MoT/视频生成路线与 SpikingBrain 的 patch 归因不同 | 时序世界模型参照 |
@@ -213,19 +214,20 @@
 1. Lavender: *Learning to Attend Better with Language-Conditioned Diffusion*，`https://arxiv.org/abs/2502.06814`
 2. SpikingBrain: *SpikingBrain: ...*，`https://arxiv.org/abs/2509.05276`
 3. Qwen2-VL，`https://arxiv.org/abs/2409.12191`（区分于 Qwen2.5-VL）
-4. Qwen2.5-VL 官方仓库与技术报告入口，`https://github.com/QwenLM-corp/Qwen2.5-VL`、`https://arxiv.org/abs/2502.13923`
+4. Qwen2.5-VL 官方仓库与技术报告入口，`https://github.com/QwenLM/Qwen2.5-VL`、`https://arxiv.org/abs/2502.13923`
 5. Qwen3-VL 技术报告，`https://arxiv.org/abs/2511.21631`；官方仓库，`https://github.com/QwenLM/Qwen3-VL`
-6. DeepSeek-VL2，`https://arxiv.org/abs/2412.10302`
-7. DeepSeek-VL2 官方仓库，`https://github.com/deepseek-ai/DeepSeek-VL2`
-8. OpenVLA，`https://arxiv.org/abs/2406.09246`
-9. π0，`https://arxiv.org/abs/2410.24164`
-10. LingBot-VA，`https://arxiv.org/abs/2601.21998`；LingBot-VLA，`https://arxiv.org/abs/2601.18692`
-11. LingBot-VLA 2.0，`https://arxiv.org/abs/2607.06403`
-12. Diffusion Policy，`https://arxiv.org/abs/2303.04137`
-13. LIBERO，`https://arxiv.org/abs/2306.03310`
-14. GLA，`https://arxiv.org/abs/2312.06635`
-15. Attention Sinks，`https://arxiv.org/abs/2309.17453`
-16. LoRA，`https://arxiv.org/abs/2106.09685`
+6. Qwen-RobotManip，`https://arxiv.org/abs/2606.17846`；官方仓库，`https://github.com/QwenLM/Qwen-RobotManip`
+7. DeepSeek-VL2，`https://arxiv.org/abs/2412.10302`
+8. DeepSeek-VL2 官方仓库，`https://github.com/deepseek-ai/DeepSeek-VL2`
+9. OpenVLA，`https://arxiv.org/abs/2406.09246`
+10. π0，`https://arxiv.org/abs/2410.24164`
+11. LingBot-VA，`https://arxiv.org/abs/2601.21998`；LingBot-VLA，`https://arxiv.org/abs/2601.18692`
+12. LingBot-VLA 2.0，`https://arxiv.org/abs/2607.06403`
+13. Diffusion Policy，`https://arxiv.org/abs/2303.04137`
+14. LIBERO，`https://arxiv.org/abs/2306.03310`
+15. GLA，`https://arxiv.org/abs/2312.06635`
+16. Attention Sinks，`https://arxiv.org/abs/2309.17453`
+17. LoRA，`https://arxiv.org/abs/2106.09685`
 
 ## 11. 仍需在 P0 对齐的事项
 

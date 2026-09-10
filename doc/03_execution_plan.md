@@ -204,6 +204,7 @@ git push
 
 - [ ] Qwen2.5-VL：抽取视觉/语言表征，接统一动作头；
 - [ ] Qwen3-VL：按官方 checkpoint 能力做表征对照；
+- [ ] Qwen-RobotManip：优先做论文/接口对照，确认其表示、运动和行为对齐设计；
 - [ ] DeepSeek-VL2：记录高分辨率 token/专家路由差异；
 - [ ] OpenVLA：跑官方 LIBERO 设置或可比设置；
 - [ ] π0、LingBot：完成结构级比较，只有依赖和数据条件满足时才运行；
