@@ -62,7 +62,7 @@
 
 ## 4. 教师选择原则
 
-教师的首选是 Lavender / Stable Diffusion 词级 cross-attention，而不是 world model。原因是第一阶段要先证明 VLM 的词-区域 grounding 改善，扩散模型天然提供 `word → image region` 的空间教师信号，且不依赖机器人动作数据。教师图只在训练或诊断时使用，推理时必须移除。
+教师不做单一来源押注，而是按“语义空间—时序动力学—动作可达性”分层。首轮必须先启用 Lavender / Stable Diffusion 词级 cross-attention，因为第一阶段要证明 VLM 的词-区域 grounding 改善，扩散模型天然提供 `word → image region` 的空间教师信号，且不依赖机器人动作数据。World model 或 video-action model 不替代扩散教师，而是在 VLA 阶段补上扩散教师缺少的时序和物理可达性信息。
 
 教师分三档管理：
 
@@ -70,9 +70,25 @@
 |---|---:|---|---|
 | Stable Diffusion / Lavender 词级 cross-attention | 是 | VLM grounding 和 VLA 训练期空间教师 | 只表达静态词-区域关系，不懂动作动力学 |
 | VLM 自监督归因教师，例如强 Qwen/DeepSeek 的离线归因 | 否，作为备选 | 若扩散图对真实图像物体定位不稳定，可做 ensemble 或 sanity check | 容易把学生模型偏差当教师 |
-| World model / video-action model，例如 LingBot-VA 或 π0 类动作模型 | 否，后置 | VLA 阶段可提供时序、可达性、动作前后状态教师 | 需要动作数据和 rollout 定义，不适合第一阶段证明 VLM 普适性 |
+| World model / video-action model，例如 LingBot-VA、LingBot-Video 或 π0 类动作模型 | 是，但只进入 VLA 扩展阶段 | 提供时序、可达性、动作前后状态教师 | 需要动作数据和 rollout 定义，不适合第一阶段证明 VLM 普适性 |
 
-首轮只使用扩散教师，避免把“空间 grounding 是否有效”和“动作动力学教师是否有效”混在一起。World model 教师只有在 VLM grounding 结果成立、LIBERO smoke 跑通后才进入扩展实验。
+首轮 VLM 只使用扩散教师，避免把“空间 grounding 是否有效”和“动作动力学教师是否有效”混在一起。VLA 阶段则预留 world/video-action teacher，形成更有研究味道的双教师问题：扩散教师回答“应该看哪里”，world/video-action 教师回答“看见这些区域后，什么动作在物理上更可能成功”。
+
+### 4.1 分层教师定义
+
+| 教师层 | 记号 | 来源 | 监督对象 | 进入阶段 |
+|---|---|---|---|---|
+| 语义空间教师 | `T_sem(w,x)` | Lavender / Stable Diffusion cross-attention | 词或短语对应的图像区域 | VLM 与 VLA 主线 |
+| 时序动力学教师 | `T_dyn(x_t,a_t,x_{t+1})` | LingBot-VA / LingBot-Video 类 video-action/world model | 动作后场景是否朝目标状态演化 | VLA 扩展 |
+| 动作可达性教师 | `T_act(a_t|x_t,w)` | π0、LingBot-VLA 或其他 action expert | 候选动作是否落在可行操作流形 | VLA 扩展 |
+
+这三个教师不应混成一个黑盒蒸馏信号。更合理的研究问题是：静态词-区域 grounding 是否足以改善动作；若不足，加入时序/动作教师能否解释剩余失败。
+
+对应损失可以写成：
+
+`L = L_task + λ_sem L_sem + λ_dyn L_dyn + λ_act L_act_teacher`
+
+首轮 VLM 只开启 `L_sem`。LIBERO 主实验先开启 `L_sem`，随后在扩展组中逐步加入 `L_dyn` 和 `L_act_teacher`。如果 `L_dyn/L_act_teacher` 带来提升，必须报告它们是否主要修复了接触、可达性、遮挡、长时序失败，而不是简单提升物体定位。
 
 ## 5. SpikingBrain 的网络结构与可对齐对象
 
@@ -304,4 +320,4 @@
 | 第一组 VLM 基线 | SpikingBrain-VL、Qwen2.5/3-VL、DeepSeek-VL2 的归因对齐对照 |
 | 第一组 VLA 基线 | 无对齐 SpikingBrain-VLA、OpenVLA/OFT 接口对照 |
 | 首轮教师 | Lavender / Stable Diffusion 词级 cross-attention |
-| World model 教师 | 后置，仅在 VLA 扩展阶段考虑 |
+| World/video-action 教师 | 纳入 VLA 扩展阶段，作为 `T_dyn`/`T_act` 分开验证 |

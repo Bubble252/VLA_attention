@@ -137,27 +137,70 @@ LIBERO RGB + instruction + proprioception
 
 ### 5.1 教师 registry
 
-首轮只启用扩散教师：
+教师 registry 按功能分层，而不是按模型名堆叠。首轮 VLM 只启用语义空间教师：
 
 ```yaml
 teacher:
-  type: lavender_stable_diffusion
-  signal: word_cross_attention
-  output: T_word_image_region
-  use_in_inference: false
+  semantic:
+    type: lavender_stable_diffusion
+    signal: word_cross_attention
+    output: T_sem_word_image_region
+    use_in_inference: false
+  dynamics:
+    enabled: false
+    candidates: [lingbot_va, lingbot_video]
+    signal: future_latent_or_success_delta
+  action:
+    enabled: false
+    candidates: [pi0, lingbot_vla, qwen_robotmanip]
+    signal: action_feasibility_or_action_distribution
 ```
 
-备选教师只登记，不进入首轮主实验：
+三类教师的定位：
 
 | 教师 | 首轮状态 | 进入条件 |
 |---|---|---|
 | Lavender / Stable Diffusion | 启用 | 默认教师，证明 VLM grounding |
 | Qwen/DeepSeek 离线归因 ensemble | 关闭 | 扩散教师定位失败或需要 sanity check |
-| LingBot-VA / π0 / video-action world model | 关闭 | VLA smoke 成立后，用于时序和动作可达性教师 |
+| LingBot-VA / LingBot-Video world model | 关闭，但纳入研究设计 | VLA smoke 成立后，用于未来状态、接触变化、目标状态接近度教师 |
+| π0 / LingBot-VLA / Qwen-RobotManip action expert | 关闭，但纳入研究设计 | 需要动作可达性、action chunk 或候选动作分布教师时启用 |
 
-教师输出必须保存：词/短语、token span、原图尺寸、教师图尺寸、归一化方式、生成模型版本、随机种子和文件 SHA256。
+教师输出必须保存：词/短语、token span、原图尺寸、教师图尺寸、归一化方式、生成模型版本、随机种子和文件 SHA256。World/action teacher 还必须保存当前观测、候选动作、预测未来状态或动作分布，避免只保存一个不可审计的标量分数。
 
-### 5.2 学生归因标准接口
+### 5.2 World / video-action teacher 的接口
+
+World teacher 不直接监督“看哪里”，而是监督“这样看和这样动是否导致正确未来”。建议只在 VLA 阶段启用，接口如下：
+
+```python
+def compute_dynamics_teacher(world_model, obs_t, instruction, candidate_action):
+    """
+    Returns:
+        future_latent: predicted next or short-horizon visual latent
+        goal_progress: scalar score measuring whether the future moves toward the language goal
+        contact_or_state_delta: optional structured change, e.g. object moved / gripper closed
+    """
+```
+
+Action teacher 不替代行为克隆标签，而是给候选 delta EEF 或 action chunk 一个可达性/流形分数：
+
+```python
+def compute_action_teacher(action_model, obs_t, instruction, candidate_action):
+    """
+    Returns:
+        action_score: feasibility or likelihood under the teacher action model
+        action_embedding: optional teacher action representation
+    """
+```
+
+这两个教师的实验目标不同：
+
+- `T_sem` 检验词-区域 grounding；
+- `T_dyn` 检验动作后果和目标状态演化；
+- `T_act` 检验动作是否落在可行操作分布。
+
+因此报告时必须分开列出 `sem only`、`sem + dyn`、`sem + act`、`sem + dyn + act`，不能只报告一个混合 teacher 的最终分数。
+
+### 5.3 学生归因标准接口
 
 所有模型都实现同一个抽象接口：
 
