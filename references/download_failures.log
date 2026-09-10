@@ -1,10 +1,29 @@
-2026-09-10T13:22:00+08:00
+PDF failed: lavender_2502.06814 https://arxiv.org/pdf/2502.06814
+PDF failed: spikingbrain_2509.05276 https://arxiv.org/pdf/2509.05276
+PDF failed: qwen25_vl_2502.13923 https://arxiv.org/pdf/2502.13923
+PDF failed: qwen2_vl_2409.12191 https://arxiv.org/pdf/2409.12191
+PDF failed: qwen3_vl_2511.21631 https://arxiv.org/pdf/2511.21631
+PDF failed: deepseek_vl2_2412.10302 https://arxiv.org/pdf/2412.10302
+PDF failed: pi0_2410.24164 https://arxiv.org/pdf/2410.24164
+PDF failed: lingbot_va_2601.21998 https://arxiv.org/pdf/2601.21998
+PDF failed: lingbot_vla_2601.18692 https://arxiv.org/pdf/2601.18692
+PDF failed: lingbot_vla_v2_2607.06403 https://arxiv.org/pdf/2607.06403
+PDF failed: libero_2306.03310 https://arxiv.org/pdf/2306.03310
+PDF failed: diffusion_policy_2303.04137 https://arxiv.org/pdf/2303.04137
+PDF failed: gla_2312.06635 https://arxiv.org/pdf/2312.06635
+PDF failed: attention_sinks_2309.17453 https://arxiv.org/pdf/2309.17453
+REPO failed: qwen2.5-vl https://github.com/QwenLM/Qwen2.5-VL.git
+REPO failed: qwen3-vl https://github.com/QwenLM/Qwen3-VL.git
+REPO failed: deepseek-vl2 https://github.com/deepseek-ai/DeepSeek-VL2.git
+REPO failed: openvla https://github.com/openvla/openvla.git
+REPO failed: qwen-robotmanip https://github.com/QwenLM/Qwen-RobotManip.git
+REPO failed: openpi https://github.com/Physical-Intelligence/openpi.git
+REPO failed: libero https://github.com/Lifelong-Robot-Learning/LIBERO.git
+REPO failed: diffusion_policy https://github.com/real-stanford/diffusion_policy.git
+REPO failed: lingbot-va https://github.com/Robbyant/lingbot-va.git
+REPO failed: lingbot-vla https://github.com/Robbyant/lingbot-vla.git
+REPO failed: lingbot-vla-v2 https://github.com/Robbyant/lingbot-vla-v2.git
+
+===== retry from current container =====
 proxy=http://127.0.0.1:7897
-result=proxy port was not listening in the current container; direct DNS for github.com and arxiv.org also failed
-attempts:
-  - git clone --depth 1 https://github.com/QwenLM/Qwen2.5-VL.git
-  - curl -L --proxy http://127.0.0.1:7897 https://arxiv.org/pdf/<id>
-  - curl -L https://arxiv.org/pdf/<id>
-server_retry:
-  command=bash scripts/download_references.sh
-  note=run on the GPU server where 127.0.0.1:7897 is available
+result=all missing PDF and repository downloads failed with "Couldn't connect to server"; existing files were preserved

@@ -9,7 +9,10 @@ PROXY_URL="${PROXY_URL:-http://127.0.0.1:7897}"
 GIT_MIRROR_PREFIX="${GIT_MIRROR_PREFIX:-}"
 
 mkdir -p "$PAPER_DIR" "$REPO_DIR"
-: > "$LOG_FILE"
+{
+  echo
+  echo "===== download run $(date --iso-8601=seconds) proxy=$PROXY_URL ====="
+} >> "$LOG_FILE"
 
 export http_proxy="$PROXY_URL"
 export https_proxy="$PROXY_URL"
