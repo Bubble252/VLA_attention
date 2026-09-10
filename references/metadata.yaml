@@ -21,18 +21,28 @@ references:
     local_file: "papers/spikingbrain_2509.05276.pdf"
     role: main_backbone
     status: metadata_archived_pdf_pending_server_download
-  - id: qwen25-vl-2024
+  - id: qwen25-vl-2025
     title: "Qwen2.5-VL Technical Report"
+    type: paper
+    arxiv: "2502.13923"
+    url: "https://arxiv.org/abs/2502.13923"
+    repo: "https://github.com/QwenLM/Qwen2.5-VL"
+    local_file: "papers/qwen25_vl_2502.13923.pdf"
+    role: vlm_reference
+    status: metadata_archived_pdf_pending_server_download
+  - id: qwen2-vl-2024
+    title: "Qwen2-VL: Enhancing Vision-Language Model's Perception of the World at Any Resolution"
     type: paper
     arxiv: "2409.12191"
     url: "https://arxiv.org/abs/2409.12191"
-    repo: "https://github.com/QwenLM/Qwen2.5-VL"
-    local_file: "papers/qwen25_vl_2409.12191.pdf"
-    role: vlm_reference
+    local_file: "papers/qwen2_vl_2409.12191.pdf"
+    role: historical_vlm_reference
     status: metadata_archived_pdf_pending_server_download
   - id: qwen3-vl
-    title: "Qwen3-VL official model and code reference"
-    type: repository
+    title: "Qwen3-VL Technical Report and official model/code"
+    type: paper_and_repository
+    arxiv: "2511.21631"
+    paper_url: "https://arxiv.org/abs/2511.21631"
     url: "https://github.com/QwenLM/Qwen3-VL"
     role: vlm_reference
     status: official_repo_indexed_version_to_freeze_before_experiment
@@ -64,11 +74,19 @@ references:
     role: continuous_action_reference
     status: metadata_archived_pdf_pending_server_download
   - id: lingbot
-    title: "LingBot family: video/world-model/VLA architecture reference"
-    type: repository_or_paper
+    title: "LingBot family: LingBot-VA and LingBot-VLA"
+    type: papers_and_repositories
+    papers:
+      - "https://arxiv.org/abs/2601.21998"
+      - "https://arxiv.org/abs/2601.18692"
+      - "https://arxiv.org/abs/2607.06403"
+    repositories:
+      - "https://github.com/Robbyant/lingbot-va"
+      - "https://github.com/Robbyant/lingbot-vla"
+      - "https://github.com/Robbyant/lingbot-vla-v2"
     role: temporal_vla_reference
-    status: title_and_version_require_final_verification
-    note: "Do not use as a first-run dependency until the exact paper, checkpoint, and official repository are frozen."
+    status: metadata_archived_version_to_freeze_before_experiment
+    note: "LingBot-VA is the causal world-model route; LingBot-VLA and 2.0 are VLA routes. Do not use as a first-run dependency until a checkpoint and benchmark protocol are frozen."
   - id: libero-2023
     title: "LIBERO: Benchmarking Knowledge Transfer for Lifelong Robot Learning"
     type: paper

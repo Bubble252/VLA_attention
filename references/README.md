@@ -8,7 +8,8 @@
 |---|---|---|---|---|
 | `papers/lavender_2502.06814.pdf` | 论文 | `https://arxiv.org/abs/2502.06814` | 词级扩散教师图 | 下载待在服务器执行 |
 | `papers/spikingbrain_2509.05276.pdf` | 论文 | `https://arxiv.org/abs/2509.05276` | 主干层级结构 | 下载待在服务器执行 |
-| `papers/qwen25_vl_2409.12191.pdf` | 论文 | `https://arxiv.org/abs/2409.12191` | VLM 结构参照 | 下载待在服务器执行 |
+| `papers/qwen25_vl_2502.13923.pdf` | 论文 | `https://arxiv.org/abs/2502.13923` | VLM 结构参照 | 下载待在服务器执行 |
+| `papers/qwen2_vl_2409.12191.pdf` | 论文 | `https://arxiv.org/abs/2409.12191` | Qwen2-VL 历史结构参照 | 下载待在服务器执行 |
 | `papers/deepseek_vl2_2412.10302.pdf` | 论文 | `https://arxiv.org/abs/2412.10302` | 高分辨率/token 路由参照 | 下载待在服务器执行 |
 | `papers/openvla_2406.09246.pdf` | 论文 | `https://arxiv.org/abs/2406.09246` | LIBERO VLA 基线 | 下载待在服务器执行 |
 | `papers/pi0_2410.24164.pdf` | 论文 | `https://arxiv.org/abs/2410.24164` | 连续动作专家参照 | 下载待在服务器执行 |
@@ -22,6 +23,9 @@
 - Qwen2.5-VL：`https://github.com/QwenLM/Qwen2.5-VL`
 - Qwen3-VL：`https://github.com/QwenLM/Qwen3-VL`
 - DeepSeek-VL2：`https://github.com/deepseek-ai/DeepSeek-VL2`
+- LingBot-VA：`https://github.com/Robbyant/lingbot-va`
+- LingBot-VLA：`https://github.com/Robbyant/lingbot-vla`
+- LingBot-VLA 2.0：`https://github.com/Robbyant/lingbot-vla-v2`
 - OpenVLA：`https://github.com/openvla/openvla`
 - π0/openpi：`https://github.com/Physical-Intelligence/openpi`
 - LIBERO：`https://github.com/Lifelong-Robot-Learning/LIBERO`

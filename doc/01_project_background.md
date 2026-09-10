@@ -145,11 +145,12 @@
 |---|---|---|---|---|
 | Lavender | Stable Diffusion 的词级 cross-attention 空间图 | 都能提供空间化语言视觉关系 | 是教师图生成器，不是 VLA 主干 | 产生 `T(w)` |
 | Qwen2.5-VL | 动态分辨率视觉编码、多尺度视觉 token、强多模态语言模型 | 都需要处理视觉 token 与语言条件 | 无原生 delta EEF 头，视觉注意力接口与 SpikingBrain 不同 | VLM 表征和层选择参照 |
-| Qwen3-VL | 新一代 Qwen 视觉语言模型，强调长上下文和复杂视觉理解 | 可作为语言条件和视觉 token 的强基线 | 具体 checkpoint 的视觉层接口需按官方实现确认 | 高质量 VLM 对照，不作为首个动作基线 |
+| Qwen3-VL | Interleaved-MRoPE、DeepStack、多层视觉特征注入和长视频理解 | 都强调跨层视觉-语言融合 | 没有原生 delta EEF 头，视觉层级不是 SpikingBrain 的窗口/full/GLA | 高质量 VLM 对照，不作为首个动作基线 |
 | DeepSeek-VL2 | 高分辨率/多图输入和混合专家式语言建模路线 | 都强调视觉 token 到语言决策的高效路由 | 专家路由、token 组织和 SpikingBrain 的窗口/GLA 不同 | 比较 token 路由和多尺度输入 |
 | OpenVLA | VLM 主干接动作 token，直接面向机器人任务 | 都是视觉、语言到动作 | 常见动作表示是离散 token，不是本项目的 delta EEF 回归 | LIBERO VLA 基线 |
 | π0 | 预训练视觉语言模型 + 连续动作/flow action expert | 都把高层语义接到连续机器人动作 | 动作专家和训练目标不同，工程复杂度更高 | 连续动作建模参照，后置 |
-| LingBot 系列 | 视频/世界模型/VLA 路线，重视时序和动作生成 | 与最终 VLA 目标一致，都需要时序动作决策 | 重点是视频预测或大规模动作先验，不等同于本项目的离线 attention 教师 | 研究定位和时序扩展参照 |
+| LingBot-VA | 因果视频-动作世界模型，视频动态和动作在交错序列中联合建模 | 与最终 VLA 目标一致，都需要时序动作决策 | 双流 MoT/视频生成路线与 SpikingBrain 的 patch 归因不同 | 时序世界模型参照 |
+| LingBot-VLA 1.0/2.0 | VLA 基础模型，2.0 支持多 embodiment 的统一动作表示并使用 Qwen3-VL 依赖 | 都把视觉语言表征接到动作 | 动作空间、MoE action expert 和数据规模不同 | 后置 VLA 架构与 action chunk 参照 |
 | SpikingBrain-VL | full-attention + window/SWA + GLA 的异构层级结构 | 本项目主干 | 缺少现成 delta EEF 头和词级空间教师桥 | 主模型 |
 
 这里不把 Qwen、DeepSeek 或 LingBot 直接拼进 SpikingBrain。第一阶段只抽取它们的结构启发和可复现实验接口；主结果必须来自同一 LIBERO 设置下的 SpikingBrain-VLA 与明确的对照组。
@@ -211,19 +212,20 @@
 
 1. Lavender: *Learning to Attend Better with Language-Conditioned Diffusion*，`https://arxiv.org/abs/2502.06814`
 2. SpikingBrain: *SpikingBrain: ...*，`https://arxiv.org/abs/2509.05276`
-3. Qwen2.5-VL Technical Report，`https://arxiv.org/abs/2409.12191`
-4. Qwen 官方仓库，`https://github.com/QwenLM/Qwen2.5-VL`
-5. Qwen3-VL 官方仓库，`https://github.com/QwenLM/Qwen3-VL`
+3. Qwen2-VL，`https://arxiv.org/abs/2409.12191`（区分于 Qwen2.5-VL）
+4. Qwen2.5-VL 官方仓库与技术报告入口，`https://github.com/QwenLM-corp/Qwen2.5-VL`、`https://arxiv.org/abs/2502.13923`
+5. Qwen3-VL 技术报告，`https://arxiv.org/abs/2511.21631`；官方仓库，`https://github.com/QwenLM/Qwen3-VL`
 6. DeepSeek-VL2，`https://arxiv.org/abs/2412.10302`
 7. DeepSeek-VL2 官方仓库，`https://github.com/deepseek-ai/DeepSeek-VL2`
 8. OpenVLA，`https://arxiv.org/abs/2406.09246`
 9. π0，`https://arxiv.org/abs/2410.24164`
-10. LingBot/VLA 相关工作，见 `references/README.md`，下载前核对论文版本和标题
-11. Diffusion Policy，`https://arxiv.org/abs/2303.04137`
-12. LIBERO，`https://arxiv.org/abs/2306.03310`
-13. GLA，`https://arxiv.org/abs/2312.06635`
-14. Attention Sinks，`https://arxiv.org/abs/2309.17453`
-15. LoRA，`https://arxiv.org/abs/2106.09685`
+10. LingBot-VA，`https://arxiv.org/abs/2601.21998`；LingBot-VLA，`https://arxiv.org/abs/2601.18692`
+11. LingBot-VLA 2.0，`https://arxiv.org/abs/2607.06403`
+12. Diffusion Policy，`https://arxiv.org/abs/2303.04137`
+13. LIBERO，`https://arxiv.org/abs/2306.03310`
+14. GLA，`https://arxiv.org/abs/2312.06635`
+15. Attention Sinks，`https://arxiv.org/abs/2309.17453`
+16. LoRA，`https://arxiv.org/abs/2106.09685`
 
 ## 11. 仍需在 P0 对齐的事项
 
@@ -239,4 +241,3 @@
 | 视觉输入 | LIBERO RGB，先单帧或短窗口 |
 | 本体状态 | 有则拼接，无则先做视觉语言动作基线 |
 | 第一组 VLA 基线 | 无对齐 SpikingBrain-VLA、OpenVLA 接口对照 |
-

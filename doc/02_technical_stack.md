@@ -250,7 +250,7 @@ L_total = L_action + λ_align * L_align + λ_smooth * L_smooth
 - 是否能稳定得到每层 hidden state；
 - 与 SpikingBrain 的层数、窗口机制和 full-attention 位置的差异。
 
-它们用于强 VLM 表征对照；动作实验统一接同一个 7D delta EEF head，避免把 tokenizer 差异误认为动作能力。
+Qwen2.5-VL 的论文版本登记为 arXiv:2502.13923；Qwen3-VL 的技术报告登记为 arXiv:2511.21631。它们用于强 VLM 表征对照；动作实验统一接同一个 7D delta EEF head，避免把 tokenizer 差异误认为动作能力。
 
 ### 8.2 DeepSeek-VL2
 
@@ -262,7 +262,7 @@ L_total = L_action + λ_align * L_align + λ_smooth * L_smooth
 
 ### 8.4 π0 / LingBot
 
-作为后置架构参考。π0 的连续动作专家和 LingBot 的视频/时序路线可以指导后续 action chunk 和多帧输入，但第一阶段不把它们与 SpikingBrain 的 attention loss 混在同一训练脚本中。
+作为后置架构参考。π0 的连续动作专家可指导 action chunk；LingBot-VA 的因果视频-动作世界模型和 LingBot-VLA 2.0 的统一多 embodiment 动作表示可指导多帧输入和动作空间扩展，但第一阶段不把它们与 SpikingBrain 的 attention loss 混在同一训练脚本中。
 
 ## 9. LIBERO 集成
 
@@ -319,4 +319,3 @@ obs, reward, done, info = env.step(action)
 - 在本项目中用于“教师、主干、基线还是架构参考”。
 
 这样可以区分“参考模型看过”和“真正用于实验”的证据链。
-
