@@ -1,0 +1,36 @@
+# Python
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.venv/
+venv/
+
+# Model and dataset artifacts
+*.ckpt
+*.pt
+*.pth
+*.safetensors
+*.bin
+checkpoints/
+weights/
+datasets/
+data/
+
+# Experiment outputs
+logs/
+outputs/
+wandb/
+tensorboard/
+*.log
+
+# Local secrets and machine configuration
+.env
+.env.*
+*.local
+
+# Large downloaded artifacts are tracked by metadata/checksums instead
+references/papers/*.pdf
+references/papers/*.zip
+
