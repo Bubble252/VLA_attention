@@ -94,13 +94,13 @@ clone_repo "lingbot-vla" "https://github.com/Robbyant/lingbot-vla.git" || true
 clone_repo "lingbot-vla-v2" "https://github.com/Robbyant/lingbot-vla-v2.git" || true
 
 if compgen -G "$PAPER_DIR/*.pdf" > /dev/null; then
-  (cd "$ROOT_DIR/references" && sha256sum papers/*.pdf > checksums.sha256)
+  (cd "$ROOT_DIR/references" && sha256sum papers/*.pdf | LC_ALL=C sort > checksums.sha256)
 fi
 
 {
   echo "# Repository versions"
   echo
-  for repo in "$REPO_DIR"/*; do
+  for repo in $(find "$REPO_DIR" -mindepth 1 -maxdepth 1 -type d -print | LC_ALL=C sort); do
     if [[ -d "$repo/.git" ]]; then
       name="$(basename "$repo")"
       url="$(git -C "$repo" remote get-url origin 2>/dev/null || true)"
