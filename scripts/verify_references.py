@@ -48,6 +48,12 @@ REQUIRED_REPOS = [
     "lingbot-vla-v2",
 ]
 
+# Official local reports can be useful substitutes for an exact arXiv PDF,
+# but they do not make the exact paper download complete.
+PAPER_SUBSTITUTES = {
+    "spikingbrain_2509.05276.pdf": "SpikingBrain_Report_Eng.pdf",
+}
+
 
 def sha256(path: Path) -> str:
     digest = hashlib.sha256()
@@ -60,10 +66,13 @@ def sha256(path: Path) -> str:
 def main() -> int:
     available_papers = []
     missing_papers = []
+    substituted_papers = []
     for name in REQUIRED_PAPERS:
         path = PAPERS / name
         if path.is_file() and path.stat().st_size > 100_000:
             available_papers.append(name)
+        elif (PAPERS / PAPER_SUBSTITUTES.get(name, "")).is_file():
+            substituted_papers.append((name, PAPER_SUBSTITUTES[name]))
         else:
             missing_papers.append(name)
 
@@ -88,12 +97,17 @@ def main() -> int:
                 checksum_failures.append(relative)
 
     print(f"papers: {len(available_papers)}/{len(REQUIRED_PAPERS)} available")
+    print(f"paper substitutes: {len(substituted_papers)}")
     print(f"repos:  {len(available_repos)}/{len(REQUIRED_REPOS)} available")
     print(f"checksum failures: {len(checksum_failures)}")
     if missing_papers:
         print("missing papers:")
         for name in missing_papers:
             print(f"  - {name}")
+    if substituted_papers:
+        print("paper substitutes (exact PDF still missing):")
+        for requested, substitute in substituted_papers:
+            print(f"  - {requested} <- {substitute}")
     if missing_repos:
         print("missing repos:")
         for name in missing_repos:
