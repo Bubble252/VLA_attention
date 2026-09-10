@@ -25,6 +25,7 @@ wandb/
 tensorboard/
 *.log
 !references/download_failures.log
+references/.download_failures.current
 
 # Local secrets and machine configuration
 .env

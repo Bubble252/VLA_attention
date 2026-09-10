@@ -1,86 +1,57 @@
 # 参考文献与模型归档
 
-本目录用于保存最终方案所依据的论文、官方仓库版本和校验信息。机器可读元数据见 `metadata.yaml`。PDF 默认被 `.gitignore` 排除，仓库只提交本索引、BibTeX、元数据和 SHA256；如果某个 PDF 必须随仓库分发，需要单独说明许可证和文件大小。
+本目录保存最终 VLA 方案的论文、官方代码快照、版本记录和校验信息。PDF 与代码目录因体积较大被 `.gitignore` 排除；Git 跟踪它们的 SHA256、来源、提交哈希和下载历史。
 
-## 文件登记表
+## 当前归档结果
 
-| 本地文件 | 类型 | 来源 | 在项目中的角色 | 状态 |
-|---|---|---|---|---|
-| `papers/lavender_2502.06814.pdf` | 论文 | `https://arxiv.org/abs/2502.06814` | 词级扩散教师图 | 下载待在服务器执行 |
-| `papers/spikingbrain_2509.05276.pdf` | 论文 | `https://arxiv.org/abs/2509.05276` | 主干层级结构 | 下载待在服务器执行 |
-| `papers/SpikingBrain_Report_Eng.pdf` | 官方技术报告 | 本地 `SpikingBrain-7B` 仓库 | 主干层级结构 | 已归档 |
-| `papers/SpikingBrain_Report_Chi.pdf` | 官方技术报告 | 本地 `SpikingBrain-7B` 仓库 | 主干层级结构 | 已归档 |
-| `papers/qwen25_vl_2502.13923.pdf` | 论文 | `https://arxiv.org/abs/2502.13923` | VLM 结构参照 | 下载待在服务器执行 |
-| `papers/qwen2_vl_2409.12191.pdf` | 论文 | `https://arxiv.org/abs/2409.12191` | Qwen2-VL 历史结构参照 | 下载待在服务器执行 |
-| `papers/deepseek_vl2_2412.10302.pdf` | 论文 | `https://arxiv.org/abs/2412.10302` | 高分辨率/token 路由参照 | 下载待在服务器执行 |
-| `papers/openvla_2406.09246.pdf` | 论文 | `https://arxiv.org/abs/2406.09246` | LIBERO VLA 基线 | 下载待在服务器执行 |
-| `papers/pi0_2410.24164.pdf` | 论文 | `https://arxiv.org/abs/2410.24164` | 连续动作专家参照 | 下载待在服务器执行 |
-| `papers/libero_2306.03310.pdf` | 论文 | `https://arxiv.org/abs/2306.03310` | 仿真环境 | 下载待在服务器执行 |
-| `papers/diffusion_policy_2303.04137.pdf` | 论文 | `https://arxiv.org/abs/2303.04137` | 动作建模参照 | 下载待在服务器执行 |
-| `papers/gla_2312.06635.pdf` | 论文 | `https://arxiv.org/abs/2312.06635` | GLA 理论参照 | 下载待在服务器执行 |
-| `papers/attention_sinks_2309.17453.pdf` | 论文 | `https://arxiv.org/abs/2309.17453` | 注意力异常/稳定性参照 | 下载待在服务器执行 |
-| `papers/qwen_robotmanip_2606.17846.pdf` | 论文 | `https://arxiv.org/abs/2606.17846` | Qwen-VL 机器人操作 VLA | 已从本机资料归档 |
-| `papers/openvla_2406.09246.pdf` | 论文 | `https://arxiv.org/abs/2406.09246` | OpenVLA | 已从本机资料归档 |
-| `papers/lingbot_video_2607.07675.pdf` | 论文 | `https://arxiv.org/abs/2607.07675` | LingBot-Video 世界模型 | 已从本机资料归档 |
-| `papers/lingbot_va2_2607.08639.pdf` | 论文 | `https://arxiv.org/abs/2607.08639` | LingBot-VA 2.0 视频-动作模型 | 已从本机资料归档 |
-| `papers/lingbot_vla2_2607.06403.pdf` | 论文 | `https://arxiv.org/abs/2607.06403` | LingBot-VLA 2.0 | 已从本机资料归档 |
+- 必需论文：`16/16` 可用；另外归档了 4 份 SpikingBrain/LingBot 补充资料。
+- 官方代码仓库：`14/14` 可用，固定提交见 `repo_versions.md` 与 `repositories.yaml`。
+- PDF 完整性：`checksums.sha256` 已通过校验。
+- 范围：只归档阅读和实现所需的论文/代码；未下载模型权重、LIBERO 数据集和训练数据。
 
-## 官方仓库索引
+## 论文登记
 
-- Qwen2.5-VL：`https://github.com/QwenLM/Qwen2.5-VL`
-- Qwen3-VL：`https://github.com/QwenLM/Qwen3-VL`
-- DeepSeek-VL2：`https://github.com/deepseek-ai/DeepSeek-VL2`
-- LingBot-VA：`https://github.com/Robbyant/lingbot-va`
-- LingBot-VLA：`https://github.com/Robbyant/lingbot-vla`
-- LingBot-VLA 2.0：`https://github.com/Robbyant/lingbot-vla-v2`
-- Qwen-RobotManip：`https://github.com/QwenLM/Qwen-RobotManip`
-- OpenVLA：`https://github.com/openvla/openvla`
-- π0/openpi：`https://github.com/Physical-Intelligence/openpi`
-- LIBERO：`https://github.com/Lifelong-Robot-Learning/LIBERO`
-- Lavender 本地代码：`/home/bubble/类脑计算/参考/vlm`，commit `58fc71b`
-- SpikingBrain 本地代码：`/home/bubble/类脑计算/参考/spikingbrain仓库/SpikingBrain-7B`，commit `ef99987`
+| 本地文件 | 角色 | 状态 |
+|---|---|---|
+| `papers/lavender_2502.06814.pdf` | 语言条件注意力教师 | 已归档 |
+| `papers/spikingbrain_2509.05276.pdf` | SpikingBrain 主干 | 已归档 |
+| `papers/qwen25_vl_2502.13923.pdf`、`qwen2_vl_2409.12191.pdf`、`qwen3_vl_2511.21631.pdf` | Qwen-VL 结构参照 | 已归档 |
+| `papers/deepseek_vl2_2412.10302.pdf` | 高分辨率/token 路由参照 | 已归档 |
+| `papers/openvla_2406.09246.pdf`、`pi0_2410.24164.pdf` | VLA 基线与连续动作参照 | 已归档 |
+| `papers/libero_2306.03310.pdf`、`diffusion_policy_2303.04137.pdf` | LIBERO 与动作建模 | 已归档 |
+| `papers/gla_2312.06635.pdf`、`attention_sinks_2309.17453.pdf` | 长上下文与注意力稳定性 | 已归档 |
+| `papers/qwen_robotmanip_2606.17846.pdf` | 机器人操作 VLA | 已归档 |
+| `papers/lingbot_*.pdf` | 视频/世界模型/VLA 路线参照 | 已归档 |
+| `papers/SpikingBrain_Report_Eng.pdf`、`SpikingBrain_Report_Chi.pdf` | 官方技术报告 | 已归档 |
 
-LingBot 相关工作需在下载前再次确认具体论文标题、版本和官方代码仓库；当前只将其作为视频/世界模型/VLA 的架构参照，不把未经核对的条目当作主实验依赖。
+论文的 arXiv 编号、来源 URL 和项目角色在 `metadata.yaml` 中维护。
 
-## 下载与校验约定
+## 官方代码快照
 
-优先使用本地代理 `http://127.0.0.1:7897`。每次下载后执行：
+`references/repos/` 当前包含以下 14 个仓库：
+
+- `lavender`、`spikingbrain-7b`、`openvla-oft`
+- `qwen2.5-vl`、`qwen3-vl`、`deepseek-vl2`
+- `openvla`、`qwen-robotmanip`、`openpi`
+- `libero`、`diffusion_policy`
+- `lingbot-va`、`lingbot-vla`、`lingbot-vla-v2`
+
+远端 URL、当前提交哈希和用途见 `repositories.yaml`；可复现实验时应从这里固定一个 commit，而不是依赖远端默认分支。
+
+## 校验与补档
+
+在项目根目录执行：
 
 ```bash
-cd /home/bubble/类脑计算/VLM终局/references
-sha256sum -c checksums.sha256
+python3 scripts/verify_references.py
+cd references && sha256sum -c checksums.sha256
 ```
 
-仓库下载默认直接使用官方 URL；如服务器需要 Git 镜像，可设置：
-
-```bash
-GIT_MIRROR_PREFIX=https://<your-git-mirror> bash scripts/download_references.sh
-```
-
-并在 Git commit 中记录下载日期、源 URL 和失败重试情况。论文 PDF 只用于研究阅读，引用时以正式论文版本和官方仓库为准。
-
-本次沙盒下载已尝试代理和直连，但当前环境无法连接代理且无法解析 `arxiv.org`；自动审批也拒绝了沙盒外下载命令。因此仓库先提交可审计的来源清单，服务器联网后按上面的命令下载即可。
-
-## 当前本地归档状态
-
-已实际放入本目录：
-
-- `papers/SpikingBrain_Report_Eng.pdf`
-- `papers/SpikingBrain_Report_Chi.pdf`
-- `checksums.sha256`
-- `repos/lavender/`
-- `repos/spikingbrain-7b/`
-- `repos/openvla-oft/`
-- `repo_versions.md`
-- `papers/qwen_robotmanip_2606.17846.pdf`
-- `papers/openvla_2406.09246.pdf`
-- `papers/lingbot_video_2607.07675.pdf`
-- `papers/lingbot_va2_2607.08639.pdf`
-- `papers/lingbot_vla2_2607.06403.pdf`
-
-当前环境中 `127.0.0.1:7897` 未监听，GitHub 和 arXiv 直连也无法解析，因此 Qwen、DeepSeek、OpenVLA 官方仓库、π0、LingBot、LIBERO 以及其余 arXiv PDF 需要在服务器网络可用后执行：
+需要补档或刷新代码时，脚本默认使用 `127.0.0.1:7897`：
 
 ```bash
 cd /home/bubble/类脑计算/VLM终局
 bash scripts/download_references.sh
 ```
+
+`download_failures.log` 保留了历史失败和最后一次成功记录。下载脚本只根据本次运行产生的失败文件决定退出码，因此旧日志不会使后续成功运行误报失败。

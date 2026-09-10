@@ -27,3 +27,6 @@ REPO failed: lingbot-vla-v2 https://github.com/Robbyant/lingbot-vla-v2.git
 ===== retry from current container =====
 proxy=http://127.0.0.1:7897
 result=all missing PDF and repository downloads failed with "Couldn't connect to server"; existing files were preserved
+
+===== download run 2026-09-10T19:04:42+08:00 proxy=http://127.0.0.1:7897 =====
+result=all required PDFs and repositories are now locally available; verified by scripts/verify_references.py

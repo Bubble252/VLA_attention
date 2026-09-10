@@ -5,10 +5,12 @@ ROOT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 PAPER_DIR="$ROOT_DIR/references/papers"
 REPO_DIR="$ROOT_DIR/references/repos"
 LOG_FILE="$ROOT_DIR/references/download_failures.log"
+RUN_FAILURE_FILE="$ROOT_DIR/references/.download_failures.current"
 PROXY_URL="${PROXY_URL:-http://127.0.0.1:7897}"
 GIT_MIRROR_PREFIX="${GIT_MIRROR_PREFIX:-}"
 
 mkdir -p "$PAPER_DIR" "$REPO_DIR"
+: > "$RUN_FAILURE_FILE"
 {
   echo
   echo "===== download run $(date --iso-8601=seconds) proxy=$PROXY_URL ====="
@@ -32,6 +34,7 @@ download_pdf() {
   if ! curl -L --fail --retry 2 --connect-timeout 20 --proxy "$PROXY_URL" \
     "https://arxiv.org/pdf/${arxiv_id}" -o "$out"; then
     echo "PDF failed: $name https://arxiv.org/pdf/${arxiv_id}" >> "$LOG_FILE"
+    echo "PDF failed: $name https://arxiv.org/pdf/${arxiv_id}" >> "$RUN_FAILURE_FILE"
     rm -f "$out"
     return 1
   fi
@@ -54,6 +57,7 @@ clone_repo() {
   if ! git -c http.proxy="$PROXY_URL" -c https.proxy="$PROXY_URL" \
     clone --depth 1 "$clone_url" "$out"; then
     echo "REPO failed: $name $url" >> "$LOG_FILE"
+    echo "REPO failed: $name $url" >> "$RUN_FAILURE_FILE"
     rm -rf "$out"
     return 1
   fi
@@ -107,7 +111,8 @@ fi
 } > "$ROOT_DIR/references/repo_versions.md"
 
 echo "download log: $LOG_FILE"
-if [[ -s "$LOG_FILE" ]]; then
+if [[ -s "$RUN_FAILURE_FILE" ]]; then
   echo "some downloads failed; see $LOG_FILE"
   exit 1
 fi
+echo "all requested downloads completed or were already present"
