@@ -24,6 +24,7 @@
 | `lingbot-va/` | `https://github.com/Robbyant/lingbot-va.git` | LingBot-VA 世界模型路线 |
 | `lingbot-vla/` | `https://github.com/Robbyant/lingbot-vla.git` | LingBot-VLA 路线 |
 | `lingbot-vla-v2/` | `https://github.com/Robbyant/lingbot-vla-v2.git` | LingBot-VLA 2.0 路线 |
+| `qwen-robotmanip/` | `https://github.com/QwenLM/Qwen-RobotManip.git` | Qwen-VL 机器人操作 VLA |
 
 执行：
 
@@ -32,4 +33,3 @@ bash scripts/download_references.sh
 ```
 
 脚本会强制设置 `http_proxy`、`https_proxy`、Git HTTP proxy 为 `http://127.0.0.1:7897`。
-

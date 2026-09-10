@@ -41,6 +41,11 @@ repositories:
     local_path: "references/repos/openvla"
     current_status: pending_proxy_clone
     role: "vla_baseline"
+  - id: qwen-robotmanip
+    url: "https://github.com/QwenLM/Qwen-RobotManip.git"
+    local_path: "references/repos/qwen-robotmanip"
+    current_status: pending_proxy_clone
+    role: "robot_manipulation_vla_reference"
   - id: openpi
     url: "https://github.com/Physical-Intelligence/openpi.git"
     local_path: "references/repos/openpi"

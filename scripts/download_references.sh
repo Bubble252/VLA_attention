@@ -67,11 +67,13 @@ download_pdf "libero_2306.03310" "2306.03310" || true
 download_pdf "diffusion_policy_2303.04137" "2303.04137" || true
 download_pdf "gla_2312.06635" "2312.06635" || true
 download_pdf "attention_sinks_2309.17453" "2309.17453" || true
+download_pdf "qwen_robotmanip_2606.17846" "2606.17846" || true
 
 clone_repo "qwen2.5-vl" "https://github.com/QwenLM/Qwen2.5-VL.git" || true
 clone_repo "qwen3-vl" "https://github.com/QwenLM/Qwen3-VL.git" || true
 clone_repo "deepseek-vl2" "https://github.com/deepseek-ai/DeepSeek-VL2.git" || true
 clone_repo "openvla" "https://github.com/openvla/openvla.git" || true
+clone_repo "qwen-robotmanip" "https://github.com/QwenLM/Qwen-RobotManip.git" || true
 clone_repo "openpi" "https://github.com/Physical-Intelligence/openpi.git" || true
 clone_repo "libero" "https://github.com/Lifelong-Robot-Learning/LIBERO.git" || true
 clone_repo "diffusion_policy" "https://github.com/real-stanford/diffusion_policy.git" || true

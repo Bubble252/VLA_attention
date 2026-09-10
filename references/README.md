@@ -19,6 +19,11 @@
 | `papers/diffusion_policy_2303.04137.pdf` | 论文 | `https://arxiv.org/abs/2303.04137` | 动作建模参照 | 下载待在服务器执行 |
 | `papers/gla_2312.06635.pdf` | 论文 | `https://arxiv.org/abs/2312.06635` | GLA 理论参照 | 下载待在服务器执行 |
 | `papers/attention_sinks_2309.17453.pdf` | 论文 | `https://arxiv.org/abs/2309.17453` | 注意力异常/稳定性参照 | 下载待在服务器执行 |
+| `papers/qwen_robotmanip_2606.17846.pdf` | 论文 | `https://arxiv.org/abs/2606.17846` | Qwen-VL 机器人操作 VLA | 已从本机资料归档 |
+| `papers/openvla_2406.09246.pdf` | 论文 | `https://arxiv.org/abs/2406.09246` | OpenVLA | 已从本机资料归档 |
+| `papers/lingbot_video_2607.07675.pdf` | 论文 | `https://arxiv.org/abs/2607.07675` | LingBot-Video 世界模型 | 已从本机资料归档 |
+| `papers/lingbot_va2_2607.08639.pdf` | 论文 | `https://arxiv.org/abs/2607.08639` | LingBot-VA 2.0 视频-动作模型 | 已从本机资料归档 |
+| `papers/lingbot_vla2_2607.06403.pdf` | 论文 | `https://arxiv.org/abs/2607.06403` | LingBot-VLA 2.0 | 已从本机资料归档 |
 
 ## 官方仓库索引
 
@@ -28,6 +33,7 @@
 - LingBot-VA：`https://github.com/Robbyant/lingbot-va`
 - LingBot-VLA：`https://github.com/Robbyant/lingbot-vla`
 - LingBot-VLA 2.0：`https://github.com/Robbyant/lingbot-vla-v2`
+- Qwen-RobotManip：`https://github.com/QwenLM/Qwen-RobotManip`
 - OpenVLA：`https://github.com/openvla/openvla`
 - π0/openpi：`https://github.com/Physical-Intelligence/openpi`
 - LIBERO：`https://github.com/Lifelong-Robot-Learning/LIBERO`
@@ -59,6 +65,11 @@ sha256sum references/papers/*.pdf > references/checksums.sha256
 - `repos/spikingbrain-7b/`
 - `repos/openvla-oft/`
 - `repo_versions.md`
+- `papers/qwen_robotmanip_2606.17846.pdf`
+- `papers/openvla_2406.09246.pdf`
+- `papers/lingbot_video_2607.07675.pdf`
+- `papers/lingbot_va2_2607.08639.pdf`
+- `papers/lingbot_vla2_2607.06403.pdf`
 
 当前环境中 `127.0.0.1:7897` 未监听，GitHub 和 arXiv 直连也无法解析，因此 Qwen、DeepSeek、OpenVLA 官方仓库、π0、LingBot、LIBERO 以及其余 arXiv PDF 需要在服务器网络可用后执行：
 

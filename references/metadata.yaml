@@ -63,7 +63,7 @@ references:
     repo: "https://github.com/openvla/openvla"
     local_file: "papers/openvla_2406.09246.pdf"
     role: libero_vla_baseline
-    status: pdf_pending_server_download
+    status: local_pdf_available_repo_pending
   - id: pi0-2024
     title: "A Vision-Language-Action Flow Model for General Robot Control"
     type: paper
@@ -87,6 +87,39 @@ references:
     role: temporal_vla_reference
     status: metadata_archived_version_to_freeze_before_experiment
     note: "LingBot-VA is the causal world-model route; LingBot-VLA and 2.0 are VLA routes. Do not use as a first-run dependency until a checkpoint and benchmark protocol are frozen."
+  - id: qwen-robotmanip-2026
+    title: "Qwen-RobotManip Technical Report: Alignment Unlocks Scale for Robotic Manipulation Foundation Models"
+    type: paper
+    arxiv: "2606.17846"
+    url: "https://arxiv.org/abs/2606.17846"
+    repo: "https://github.com/QwenLM/Qwen-RobotManip"
+    local_file: "papers/qwen_robotmanip_2606.17846.pdf"
+    role: "robot_manipulation_vla_reference"
+    status: local_pdf_available_repo_pending
+  - id: lingbot-video-2026
+    title: "Scaling Mixture-of-Experts Video Pretraining for Embodied Intelligence"
+    type: paper
+    arxiv: "2607.07675"
+    url: "https://arxiv.org/abs/2607.07675"
+    local_file: "papers/lingbot_video_2607.07675.pdf"
+    role: "world_model_reference"
+    status: local_pdf_available
+  - id: lingbot-va2-2026
+    title: "Native Video-Action Pretraining for Generalizable Robot Control"
+    type: paper
+    arxiv: "2607.08639"
+    url: "https://arxiv.org/abs/2607.08639"
+    local_file: "papers/lingbot_va2_2607.08639.pdf"
+    role: "video_action_reference"
+    status: local_pdf_available
+  - id: lingbot-vla2-2026
+    title: "From Foundation to Application: Improving VLA Models in Practice"
+    type: paper
+    arxiv: "2607.06403"
+    url: "https://arxiv.org/abs/2607.06403"
+    local_file: "papers/lingbot_vla2_2607.06403.pdf"
+    role: "vla_reference"
+    status: local_pdf_available
   - id: libero-2023
     title: "LIBERO: Benchmarking Knowledge Transfer for Lifelong Robot Learning"
     type: paper
