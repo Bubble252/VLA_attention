@@ -45,6 +45,8 @@ cd /home/bubble/类脑计算/VLM终局
 bash scripts/download_references.sh
 ```
 
+脚本默认只通过 `127.0.0.1:7897` 访问外网；如果 GitHub 在服务器仍不可达，可以额外设置 `GIT_MIRROR_PREFIX`，但论文下载仍使用同一 7897 代理。
+
 执行后检查：
 
 ```bash

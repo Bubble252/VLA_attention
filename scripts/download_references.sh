@@ -6,6 +6,7 @@ PAPER_DIR="$ROOT_DIR/references/papers"
 REPO_DIR="$ROOT_DIR/references/repos"
 LOG_FILE="$ROOT_DIR/references/download_failures.log"
 PROXY_URL="${PROXY_URL:-http://127.0.0.1:7897}"
+GIT_MIRROR_PREFIX="${GIT_MIRROR_PREFIX:-}"
 
 mkdir -p "$PAPER_DIR" "$REPO_DIR"
 : > "$LOG_FILE"
@@ -42,9 +43,13 @@ clone_repo() {
     git -C "$out" rev-parse HEAD || true
     return 0
   fi
-  echo "clone repo: $name $url"
+  clone_url="$url"
+  if [[ -n "$GIT_MIRROR_PREFIX" ]]; then
+    clone_url="${GIT_MIRROR_PREFIX%/}/${url#https://}"
+  fi
+  echo "clone repo: $name $clone_url"
   if ! git -c http.proxy="$PROXY_URL" -c https.proxy="$PROXY_URL" \
-    clone --depth 1 "$url" "$out"; then
+    clone --depth 1 "$clone_url" "$out"; then
     echo "REPO failed: $name $url" >> "$LOG_FILE"
     rm -rf "$out"
     return 1
@@ -82,7 +87,7 @@ clone_repo "lingbot-vla" "https://github.com/Robbyant/lingbot-vla.git" || true
 clone_repo "lingbot-vla-v2" "https://github.com/Robbyant/lingbot-vla-v2.git" || true
 
 if compgen -G "$PAPER_DIR/*.pdf" > /dev/null; then
-  sha256sum "$PAPER_DIR"/*.pdf > "$ROOT_DIR/references/checksums.sha256"
+  (cd "$ROOT_DIR/references" && sha256sum papers/*.pdf > checksums.sha256)
 fi
 
 {

@@ -50,6 +50,12 @@ LingBot 相关工作需在下载前再次确认具体论文标题、版本和官
 sha256sum references/papers/*.pdf > references/checksums.sha256
 ```
 
+仓库下载默认直接使用官方 URL；如服务器需要 Git 镜像，可设置：
+
+```bash
+GIT_MIRROR_PREFIX=https://<your-git-mirror> bash scripts/download_references.sh
+```
+
 并在 Git commit 中记录下载日期、源 URL 和失败重试情况。论文 PDF 只用于研究阅读，引用时以正式论文版本和官方仓库为准。
 
 本次沙盒下载已尝试代理和直连，但当前环境无法连接代理且无法解析 `arxiv.org`；自动审批也拒绝了沙盒外下载命令。因此仓库先提交可审计的来源清单，服务器联网后按上面的命令下载即可。
