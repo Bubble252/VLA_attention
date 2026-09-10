@@ -12,7 +12,7 @@ references:
     url: "https://arxiv.org/abs/2502.06814"
     local_file: "papers/lavender_2502.06814.pdf"
     role: teacher
-    status: metadata_archived_pdf_pending_server_download
+    status: pdf_pending_server_download
   - id: spikingbrain-2025
     title: "SpikingBrain"
     type: paper
@@ -20,7 +20,7 @@ references:
     url: "https://arxiv.org/abs/2509.05276"
     local_file: "papers/spikingbrain_2509.05276.pdf"
     role: main_backbone
-    status: metadata_archived_pdf_pending_server_download
+    status: local_pdf_available_as_official_report_arxiv_pdf_pending
   - id: qwen25-vl-2025
     title: "Qwen2.5-VL Technical Report"
     type: paper
@@ -29,7 +29,7 @@ references:
     repo: "https://github.com/QwenLM/Qwen2.5-VL"
     local_file: "papers/qwen25_vl_2502.13923.pdf"
     role: vlm_reference
-    status: metadata_archived_pdf_pending_server_download
+    status: pdf_pending_server_download
   - id: qwen2-vl-2024
     title: "Qwen2-VL: Enhancing Vision-Language Model's Perception of the World at Any Resolution"
     type: paper
@@ -37,7 +37,7 @@ references:
     url: "https://arxiv.org/abs/2409.12191"
     local_file: "papers/qwen2_vl_2409.12191.pdf"
     role: historical_vlm_reference
-    status: metadata_archived_pdf_pending_server_download
+    status: pdf_pending_server_download
   - id: qwen3-vl
     title: "Qwen3-VL Technical Report and official model/code"
     type: paper_and_repository
@@ -54,7 +54,7 @@ references:
     repo: "https://github.com/deepseek-ai/DeepSeek-VL2"
     local_file: "papers/deepseek_vl2_2412.10302.pdf"
     role: vlm_reference
-    status: metadata_archived_pdf_pending_server_download
+    status: pdf_pending_server_download
   - id: openvla-2024
     title: "OpenVLA: An Open-Source Vision-Language-Action Model"
     type: paper
@@ -63,7 +63,7 @@ references:
     repo: "https://github.com/openvla/openvla"
     local_file: "papers/openvla_2406.09246.pdf"
     role: libero_vla_baseline
-    status: metadata_archived_pdf_pending_server_download
+    status: pdf_pending_server_download
   - id: pi0-2024
     title: "A Vision-Language-Action Flow Model for General Robot Control"
     type: paper
@@ -72,7 +72,7 @@ references:
     repo: "https://github.com/Physical-Intelligence/openpi"
     local_file: "papers/pi0_2410.24164.pdf"
     role: continuous_action_reference
-    status: metadata_archived_pdf_pending_server_download
+    status: pdf_pending_server_download
   - id: lingbot
     title: "LingBot family: LingBot-VA and LingBot-VLA"
     type: papers_and_repositories
@@ -95,7 +95,7 @@ references:
     repo: "https://github.com/Lifelong-Robot-Learning/LIBERO"
     local_file: "papers/libero_2306.03310.pdf"
     role: simulation_environment
-    status: metadata_archived_pdf_pending_server_download
+    status: pdf_pending_server_download
   - id: diffusion-policy-2023
     title: "Diffusion Policy: Visuomotor Policy Learning via Action Diffusion"
     type: paper
@@ -103,7 +103,7 @@ references:
     url: "https://arxiv.org/abs/2303.04137"
     local_file: "papers/diffusion_policy_2303.04137.pdf"
     role: action_model_reference
-    status: metadata_archived_pdf_pending_server_download
+    status: pdf_pending_server_download
   - id: gla-2023
     title: "GLA"
     type: paper
@@ -111,7 +111,7 @@ references:
     url: "https://arxiv.org/abs/2312.06635"
     local_file: "papers/gla_2312.06635.pdf"
     role: spikingbrain_language_reference
-    status: metadata_archived_pdf_pending_server_download
+    status: pdf_pending_server_download
   - id: attention-sinks-2023
     title: "StreamingLLM: Efficient Streaming Language Models with Attention Sinks"
     type: paper
@@ -119,4 +119,4 @@ references:
     url: "https://arxiv.org/abs/2309.17453"
     local_file: "papers/attention_sinks_2309.17453.pdf"
     role: attention_stability_reference
-    status: metadata_archived_pdf_pending_server_download
+    status: pdf_pending_server_download

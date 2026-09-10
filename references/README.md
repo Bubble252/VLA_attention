@@ -8,6 +8,8 @@
 |---|---|---|---|---|
 | `papers/lavender_2502.06814.pdf` | 论文 | `https://arxiv.org/abs/2502.06814` | 词级扩散教师图 | 下载待在服务器执行 |
 | `papers/spikingbrain_2509.05276.pdf` | 论文 | `https://arxiv.org/abs/2509.05276` | 主干层级结构 | 下载待在服务器执行 |
+| `papers/SpikingBrain_Report_Eng.pdf` | 官方技术报告 | 本地 `SpikingBrain-7B` 仓库 | 主干层级结构 | 已归档 |
+| `papers/SpikingBrain_Report_Chi.pdf` | 官方技术报告 | 本地 `SpikingBrain-7B` 仓库 | 主干层级结构 | 已归档 |
 | `papers/qwen25_vl_2502.13923.pdf` | 论文 | `https://arxiv.org/abs/2502.13923` | VLM 结构参照 | 下载待在服务器执行 |
 | `papers/qwen2_vl_2409.12191.pdf` | 论文 | `https://arxiv.org/abs/2409.12191` | Qwen2-VL 历史结构参照 | 下载待在服务器执行 |
 | `papers/deepseek_vl2_2412.10302.pdf` | 论文 | `https://arxiv.org/abs/2412.10302` | 高分辨率/token 路由参照 | 下载待在服务器执行 |
@@ -45,3 +47,22 @@ sha256sum references/papers/*.pdf > references/checksums.sha256
 并在 Git commit 中记录下载日期、源 URL 和失败重试情况。论文 PDF 只用于研究阅读，引用时以正式论文版本和官方仓库为准。
 
 本次沙盒下载已尝试代理和直连，但当前环境无法连接代理且无法解析 `arxiv.org`；自动审批也拒绝了沙盒外下载命令。因此仓库先提交可审计的来源清单，服务器联网后按上面的命令下载即可。
+
+## 当前本地归档状态
+
+已实际放入本目录：
+
+- `papers/SpikingBrain_Report_Eng.pdf`
+- `papers/SpikingBrain_Report_Chi.pdf`
+- `checksums.sha256`
+- `repos/lavender/`
+- `repos/spikingbrain-7b/`
+- `repos/openvla-oft/`
+- `repo_versions.md`
+
+当前环境中 `127.0.0.1:7897` 未监听，GitHub 和 arXiv 直连也无法解析，因此 Qwen、DeepSeek、OpenVLA 官方仓库、π0、LingBot、LIBERO 以及其余 arXiv PDF 需要在服务器网络可用后执行：
+
+```bash
+cd /home/bubble/类脑计算/VLM终局
+bash scripts/download_references.sh
+```

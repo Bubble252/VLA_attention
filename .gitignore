@@ -24,6 +24,7 @@ outputs/
 wandb/
 tensorboard/
 *.log
+!references/download_failures.log
 
 # Local secrets and machine configuration
 .env
@@ -33,4 +34,5 @@ tensorboard/
 # Large downloaded artifacts are tracked by metadata/checksums instead
 references/papers/*.pdf
 references/papers/*.zip
-
+references/repos/*
+!references/repos/README.md

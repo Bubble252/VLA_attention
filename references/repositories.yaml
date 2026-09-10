@@ -1,0 +1,73 @@
+schema: "research-repository-archive/v1"
+generated: "2026-09-10"
+proxy: "http://127.0.0.1:7897"
+local_archive_root: "references/repos"
+repositories:
+  - id: lavender
+    url: "https://github.com/AstraZeneca/vlm.git"
+    local_path: "references/repos/lavender"
+    current_status: archived_from_local_copy
+    commit: "58fc71b7b225326fd6f49014b14323bfa4e22590"
+    role: "teacher_attention_maps"
+  - id: spikingbrain-7b
+    url: "https://github.com/BICLab/SpikingBrain-7B.git"
+    local_path: "references/repos/spikingbrain-7b"
+    current_status: archived_from_local_copy
+    commit: "ef99987167cf7386ab3348312c8c7aa00a6696ee"
+    role: "main_backbone"
+  - id: openvla-oft
+    url: "https://github.com/moojink/openvla-oft.git"
+    local_path: "references/repos/openvla-oft"
+    current_status: archived_from_local_copy
+    commit: "e4287e94541f459edc4feabc4e181f537cd569a8"
+    role: "libero_vla_reference"
+  - id: qwen2.5-vl
+    url: "https://github.com/QwenLM/Qwen2.5-VL.git"
+    local_path: "references/repos/qwen2.5-vl"
+    current_status: pending_proxy_clone
+    role: "vlm_reference"
+  - id: qwen3-vl
+    url: "https://github.com/QwenLM/Qwen3-VL.git"
+    local_path: "references/repos/qwen3-vl"
+    current_status: pending_proxy_clone
+    role: "vlm_reference"
+  - id: deepseek-vl2
+    url: "https://github.com/deepseek-ai/DeepSeek-VL2.git"
+    local_path: "references/repos/deepseek-vl2"
+    current_status: pending_proxy_clone
+    role: "vlm_reference"
+  - id: openvla
+    url: "https://github.com/openvla/openvla.git"
+    local_path: "references/repos/openvla"
+    current_status: pending_proxy_clone
+    role: "vla_baseline"
+  - id: openpi
+    url: "https://github.com/Physical-Intelligence/openpi.git"
+    local_path: "references/repos/openpi"
+    current_status: pending_proxy_clone
+    role: "continuous_action_reference"
+  - id: libero
+    url: "https://github.com/Lifelong-Robot-Learning/LIBERO.git"
+    local_path: "references/repos/libero"
+    current_status: pending_proxy_clone
+    role: "simulation_environment"
+  - id: diffusion-policy
+    url: "https://github.com/real-stanford/diffusion_policy.git"
+    local_path: "references/repos/diffusion_policy"
+    current_status: pending_proxy_clone
+    role: "action_model_reference"
+  - id: lingbot-va
+    url: "https://github.com/Robbyant/lingbot-va.git"
+    local_path: "references/repos/lingbot-va"
+    current_status: pending_proxy_clone
+    role: "temporal_world_model_reference"
+  - id: lingbot-vla
+    url: "https://github.com/Robbyant/lingbot-vla.git"
+    local_path: "references/repos/lingbot-vla"
+    current_status: pending_proxy_clone
+    role: "vla_reference"
+  - id: lingbot-vla-v2
+    url: "https://github.com/Robbyant/lingbot-vla-v2.git"
+    local_path: "references/repos/lingbot-vla-v2"
+    current_status: pending_proxy_clone
+    role: "vla_reference"
