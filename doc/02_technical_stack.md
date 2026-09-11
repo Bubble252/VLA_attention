@@ -163,7 +163,7 @@ teacher:
 | 教师 | 首轮状态 | 进入条件 |
 |---|---|---|
 | Lavender / Stable Diffusion | 启用 | 默认教师，证明 VLM grounding |
-| Qwen/DeepSeek 离线归因 ensemble | 关闭 | 扩散教师定位失败或需要 sanity check |
+| Qwen/LLaVA/DeepSeek 离线归因 ensemble | 关闭 | 扩散教师定位失败或需要 sanity check |
 | LIBERO demonstration 派生规则 | 关闭，但优先纳入 VLA 扩展 | 从专家轨迹构造阶段标签、接触点、目标进展和区域 relevance mask |
 | LingBot-VA / LingBot-Video world model | 关闭，但纳入研究设计 | VLA smoke 成立后，用于未来状态、接触变化、目标状态接近度，细化 `T_sem` |
 | π0 / LingBot-VLA / Qwen-RobotManip action expert | 关闭，但纳入研究设计 | 只评估候选动作或区域 relevance，不直接蒸馏其策略动作 |
@@ -235,7 +235,7 @@ VLA 阶段的优先路线不是先构造外部动作区域，而是读取模型�
 
 `A_act` 的默认优先级：
 
-1. **delta EEF loss / action output gradient×activation**：默认实现，最普适。连续动作 VLA、action token VLA、Qwen/DeepSeek 的 VLM 归因都能复用“目标标量对视觉 token 求梯度”的接口。
+1. **delta EEF loss / action output gradient×activation**：默认实现，最普适。连续动作 VLA、action token VLA、Qwen/LLaVA/DeepSeek 的 VLM 归因都能复用“目标标量对视觉 token 求梯度”的接口。
 2. **action token log-prob gradient**：适用于 OpenVLA 这类离散 action token 模型。
 3. **action query attention**：如果模型天然有 action query，则作为更可解释的结构内生版本；但它不是默认假设，因为很多模型没有显式 action query。
 
@@ -344,7 +344,7 @@ A = softmax(score / temperature)
 
 **V1：VLM target gradient×input**
 
-以答案 token log-prob、类别分数或文本判断 score 为目标，计算视觉 patch hidden state 的 `gradient × activation`。这是 Qwen、DeepSeek 等没有可比 cross-attention 时的首选接口。
+以答案 token log-prob、类别分数或文本判断 score 为目标，计算视觉 patch hidden state 的 `gradient × activation`。这是 Qwen、LLaVA、DeepSeek 等没有可比 cross-attention 或 attention 语义不稳定时的首选接口。
 
 **V2：动作 logit / delta EEF gradient×input**
 
@@ -401,7 +401,8 @@ VLM 普适性配置：
 ```yaml
 alignment:
   mode: target_gradient
-  students: [spikingbrain_vl, qwen25_vl, qwen3_vl, deepseek_vl2]
+  students: [spikingbrain_vl, qwen25_vl, qwen3_vl, llava16, llava_onevision]
+  deferred_students: [deepseek_vl2]
   teacher: lavender_word_map
   target: answer_logprob
   distance: normalized_mse
@@ -449,15 +450,27 @@ L_total = L_action + λ_align * L_align + λ_smooth * L_smooth
 
 Qwen2.5-VL 的论文版本登记为 arXiv:2502.13923；Qwen3-VL 的技术报告登记为 arXiv:2511.21631。它们首先用于 VLM grounding 普适性对照；动作实验只有在 VLM 阶段成立后再统一接 7D delta EEF head。
 
-### 9.2 DeepSeek-VL2
+### 9.2 LLaVA-1.6 / LLaVA-OneVision
+
+适配目标是把 LLaVA 系列作为非 Qwen 系 VLM 骨干，验证方法是否依赖某一个 tokenizer、动态分辨率策略或视觉编码器设计。首选学生归因仍是 `answer_logprob → visual_patch_hidden` 的 gradient×input；若任务形式是 phrase grounding，则可把候选区域判断分数或 yes/no answer score 作为目标标量。需要记录：
+
+- 视觉编码器类型、patch/grid 尺寸和 projector 输出 token 顺序；
+- LLaVA-1.6 与 OneVision 的图像、多图或视频 token 组织差异；
+- 是否能稳定取到 projector 后视觉 hidden states；
+- 答案 token、对象短语和视觉 token 的坐标映射；
+- 与 Qwen 系相比，归因图是否更依赖最后答案 token，还是更依赖中间 multimodal projector。
+
+LLaVA-1.6/OneVision 只进入 VLM grounding 普适性验证，不在首轮承担 VLA 闭环任务。若它与 Qwen 系都能在同一 `T_sem` 下得到正确教师优于错图/随机教师的结果，才能较强地说明本方法不是针对 Qwen 或 SpikingBrain 特化。
+
+### 9.3 DeepSeek-VL2
 
 重点比较高分辨率/多图 token 组织和专家路由。若模型接口只能提供最终 hidden state，则用最终答案 score 对视觉 hidden states 做归因，不强行提取不可解释的 attention。MoE/router 作为分析元数据，不作为 `L_align` 的主监督对象。
 
-### 9.3 OpenVLA
+### 9.4 OpenVLA
 
 作为 LIBERO VLA 基线，保留其原生动作表示做官方对照；同时增加一个统一 7D delta EEF adapter，单独报告“原生动作接口”和“统一接口”结果。学生归因优先来自 action token log-prob 或 delta EEF adapter loss 对视觉 hidden states 的 gradient×input。
 
-### 9.4 π0 / LingBot
+### 9.5 π0 / LingBot
 
 作为后置架构参考。π0 的连续动作专家可指导 action chunk；LingBot-VA 的因果视频-动作世界模型和 LingBot-VLA 2.0 的统一多 embodiment 动作表示可指导多帧输入和动作空间扩展。它们可以在后期作为 world-model teacher 候选，但第一阶段不把它们与扩散词图教师混在同一训练脚本中。
 

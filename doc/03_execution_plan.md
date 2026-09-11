@@ -36,10 +36,10 @@ git push -u origin main
 | P1 | 本地代码和模型接口审计 | 入口表、张量规格、版本记录 | [ ] |
 | P2 | 教师图和坐标桥诊断 | 可视化、恢复单元测试 | [ ] |
 | P3 | 学生归因接口诊断 | attention/gradient/action attribution 报告 | [ ] |
-| P4 | VLM grounding 证明 | SpikingBrain + 一个 Qwen 系模型上的归因对齐结果 | [ ] |
+| P4 | VLM grounding 证明 | SpikingBrain + Qwen + LLaVA 上的归因对齐结果 | [ ] |
 | P5 | VLA delta EEF smoke | LIBERO 单任务闭环 | [ ] |
 | P6 | VLA 主方法训练 | D：Structure-Native Action Attribution Consistency | [ ] |
-| P7 | 跨模型、跨 VLA 骨干和动作相关性细化 | Qwen/OpenVLA 优先，DeepSeek/π0/LingBot 后置 | [ ] |
+| P7 | 跨模型、跨 VLA 骨干和动作相关性细化 | Qwen/LLaVA/OpenVLA 优先，DeepSeek/π0/LingBot 后置 | [ ] |
 | P8 | 消融和反证 | 随机、错图、错词、错层、无对齐结果 | [ ] |
 | P9 | 最终报告 | VLM + LIBERO 指标表、曲线、结论、真机计划 | [ ] |
 
@@ -131,7 +131,8 @@ git push
 - [ ] 标记 GLA 层并记录无显式 attention 的事实；
 - [ ] 为 SpikingBrain 实现 V0 相似度归因和 V1 gradient×input；
 - [ ] 为一个 Qwen 系模型实现 answer score 到视觉 hidden states 的 gradient×input；
-- [ ] DeepSeek-VL2 后置，只在 Qwen 接口跑通后再接入；
+- [ ] 为 LLaVA-1.6/OneVision 实现同样的 answer score 或 grounding score 到视觉 hidden states 的 gradient×input；
+- [ ] DeepSeek-VL2 后置，只在 Qwen 与 LLaVA 至少一个接口跑通后再接入；
 - [ ] 为 OpenVLA/OFT 记录 action token 或 delta EEF adapter 的动作条件归因入口；
 - [ ] 比较早层、中层、后层的空间峰值和熵；
 - [ ] 评估随机层和错配词图作为负控。
@@ -139,7 +140,7 @@ git push
 ### 验收
 
 - 有一份按模型、按层、按归因类型的可视化；
-- 能解释为何 SpikingBrain 主实验选择 `[23,31]`，以及 Qwen/OpenVLA 为什么默认使用 gradient×activation；
+- 能解释为何 SpikingBrain 主实验选择 `[23,31]`，以及 Qwen/LLaVA/OpenVLA 为什么默认使用 gradient×activation；
 - 如果 full-attention 层无法稳定导出，必须在报告中转为 V1 gradient×input，而不是偷偷使用伪权重。
 
 ### Git
@@ -158,15 +159,16 @@ git push
 - [ ] 对每个样本生成 Lavender / Stable Diffusion 词级教师图；
 - [ ] 在 SpikingBrain-VL 上比较无对齐、Lavender 原式 attention 对齐、teacher-to-attribution 对齐；
 - [ ] 在一个 Qwen 系模型上使用 gradient×input 归因接口做同一教师对齐；
+- [ ] 在 LLaVA-1.6/OneVision 上使用同一 teacher-to-attribution 接口做 VLM 普适性对照；
 - [ ] 记录正确教师图、错词教师图、错图教师图、随机教师图；
 - [ ] 报告 pointing accuracy、目标区域 IoU、VQA/grounding accuracy、归因图熵。
 
 ### 验收
 
-- 至少 SpikingBrain-VL 与一个 Qwen 系模型上，正确教师图优于错图/随机教师图；
+- 至少 SpikingBrain-VL、一个 Qwen 系模型和 LLaVA-1.6/OneVision 中的两个结构不同模型上，正确教师图优于错图/随机教师图；
 - teacher-to-attribution 对齐不劣于 Lavender 原式 attention 对齐；
 - SpikingBrain 的结构感知层选择能解释性能差异；
-- 若只有 SpikingBrain 有收益，必须给出 Qwen 接口失败原因，不能声称普适。
+- 若只有 SpikingBrain 有收益，必须给出 Qwen/LLaVA 接口失败原因，不能声称普适。
 
 ### Git
 
@@ -241,7 +243,8 @@ git push
 ### 任务
 
 - [ ] 一个 Qwen 系模型：完成 VLM grounding 和归因接口对照；
-- [ ] 另一个 Qwen 或 DeepSeek-VL2：作为后置扩展，不阻塞首轮；
+- [ ] LLaVA-1.6/OneVision：完成 VLM grounding 和归因接口对照，作为非 Qwen 系普适性证据；
+- [ ] DeepSeek-VL2：作为后置扩展，不阻塞首轮；
 - [ ] Qwen-RobotManip：优先做论文/接口对照，确认其表示、运动和行为对齐设计；
 - [ ] OpenVLA/OFT：作为第二个 VLA 骨干做普适性验证，跑官方 LIBERO 设置或可比设置，并实现 attribution adapter；
 - [ ] B 路线：评估 LingBot-VA / LingBot-Video 是否能从未来 latent、目标状态进展或接触变化中生成 `R_act`；
@@ -305,7 +308,7 @@ git push
 - [ ] 训练损失曲线；
 - [ ] 层选择和负控结果；
 - [ ] 失败案例可视化；
-- [ ] 对 Qwen/OpenVLA 的归因接口和可比性说明；DeepSeek-VL2 作为后置扩展说明；
+- [ ] 对 Qwen/LLaVA/OpenVLA 的归因接口和可比性说明；DeepSeek-VL2 作为后置扩展说明；
 - [ ] 教师选择说明：为什么首轮使用扩散语义教师，VLA 阶段如何纳入 Action-Relevance Refiner；
 - [ ] 细化器分析：`R_act` 是否把物体级语义图改造成阶段条件动作相关图；
 - [ ] 真机阶段新增风险与所需接口。
@@ -336,7 +339,7 @@ git push
 - 坐标桥无法通过合成图测试；
 - action shape、旋转定义或夹爪符号不一致；
 - full-attention 层输出无法复现；
-- Qwen/OpenVLA 的视觉 hidden state 无法稳定映射回空间；
+- Qwen/LLaVA/OpenVLA 的视觉 hidden state 无法稳定映射回空间；
 - VLM grounding 阶段正确教师图不优于错图/错词教师；
 - 对齐损失下降但动作成功率持续下降；
 - 负控与正确教师图效果没有区别。

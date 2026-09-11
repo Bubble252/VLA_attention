@@ -15,7 +15,7 @@
 | 动作输出 | `a_t=[Δx, Δy, Δz, Δroll, Δpitch, Δyaw, gripper]`，即 7 维 delta EEF |
 | 视觉教师 | 首选 Lavender 离线 Stable Diffusion 词级空间注意力图 |
 | 核心机制 | 将不同 VLM/VLA 的 attention、hidden-state gradient 或动作条件归因统一成空间图，再与教师词图对齐 |
-| 参考模型 | Lavender、Qwen2.5-VL、Qwen3-VL、Qwen-RobotManip、DeepSeek-VL2、OpenVLA、π0、LingBot 系列 |
+| 参考模型 | Lavender、Qwen2.5-VL、Qwen3-VL、LLaVA-1.6 / LLaVA-OneVision、Qwen-RobotManip、DeepSeek-VL2、OpenVLA、π0、LingBot 系列 |
 | GPU | 由服务器环境管理；文档不绑定型号、数量或显存 |
 | 代码仓库 | `/home/bubble/类脑计算/VLM终局` |
 | 文献归档 | `/home/bubble/类脑计算/VLM终局/references` |
@@ -38,7 +38,7 @@
 3. 避免把所有层压成同一种注意力分布；
 4. 将有效的视觉-语言表征继续接到动作输出，形成 VLA。
 
-本项目保留这条主线，但补上一个原方案中必须明确的接口问题：Lavender 产生的是 `word → image region` 教师图，而不同 VLM/VLA 的内部证据并不共享同一种 attention 形式。SpikingBrain 有 full/window/GLA 的混合层级，Qwen 和 DeepSeek 更适合从 hidden states 做梯度归因，OpenVLA 则可以围绕 action token 或 delta EEF adapter 做动作条件归因。因此最终方法增加一个**语言条件空间归因桥接层**，把不同模型的内部证据统一投影到图像坐标，再与教师图比较。
+本项目保留这条主线，但补上一个原方案中必须明确的接口问题：Lavender 产生的是 `word → image region` 教师图，而不同 VLM/VLA 的内部证据并不共享同一种 attention 形式。SpikingBrain 有 full/window/GLA 的混合层级，Qwen、LLaVA 和 DeepSeek 更适合从 hidden states 做梯度归因，OpenVLA 则可以围绕 action token 或 delta EEF adapter 做动作条件归因。因此最终方法增加一个**语言条件空间归因桥接层**，把不同模型的内部证据统一投影到图像坐标，再与教师图比较。
 
 ## 3. Lavender 机制的准确解释
 
@@ -69,7 +69,7 @@
 | 教师类型 | 是否进入首轮 | 用途 | 风险 |
 |---|---:|---|---|
 | Stable Diffusion / Lavender 词级 cross-attention | 是 | VLM grounding 和 VLA 训练期空间教师 | 只表达静态词-区域关系，不懂动作动力学 |
-| VLM 自监督归因教师，例如强 Qwen/DeepSeek 的离线归因 | 否，作为备选 | 若扩散图对真实图像物体定位不稳定，可做 ensemble 或 sanity check | 容易把学生模型偏差当教师 |
+| VLM 自监督归因教师，例如强 Qwen/LLaVA/DeepSeek 的离线归因 | 否，作为备选 | 若扩散图对真实图像物体定位不稳定，可做 ensemble 或 sanity check | 容易把学生模型偏差当教师 |
 | Action-Relevance Refiner，例如 LIBERO 轨迹规则、LingBot-VA、π0、Qwen-RobotManip | 是，但只进入 VLA 扩展阶段 | 细化 `T_sem`，判断当前阶段哪些语义区域与动作成败有关 | 若直接蒸馏动作，会变成别人的 VLA 策略蒸馏 |
 
 首轮 VLM 只使用扩散教师，避免把“空间 grounding 是否有效”和“动作相关性细化是否有效”混在一起。VLA 阶段同时保留 B/C/D 三条路线，但优先级不同：D 是主方法，B 是扩展，C 是诊断。这样最终都服务于同一点：让 VLA 内部的动作证据从语言相关进一步变成动作相关。
@@ -123,7 +123,7 @@ D 路线的核心链路是：
 
 这一路线不需要外部抓取区域真值，也不直接蒸馏其他 VLA 的动作。B/C 只用来检查 `A_act` 是否落在合理阶段区域，或在 D 效果不足时作为扩展 refiner。
 
-`A_act` 的默认实现采用 **action loss gradient×activation**，因为它最普适：连续 delta EEF、action token VLA、Qwen/DeepSeek 这类无显式 cross-attention 的模型都能用同一个“目标标量对视觉 token 求梯度”的接口。若模型天然提供 action query attention，则作为更可解释的结构内生版本；若模型是 OpenVLA 类 action token 输出，则用 action token log-prob gradient。
+`A_act` 的默认实现采用 **action loss gradient×activation**，因为它最普适：连续 delta EEF、action token VLA、Qwen/LLaVA/DeepSeek 这类无显式 cross-attention 或 attention 不可比的模型都能用同一个“目标标量对视觉 token 求梯度”的接口。若模型天然提供 action query attention，则作为更可解释的结构内生版本；若模型是 OpenVLA 类 action token 输出，则用 action token log-prob gradient。
 
 ## 5. SpikingBrain 的网络结构与可对齐对象
 
@@ -177,6 +177,7 @@ D 路线的核心链路是：
 |---|---|---|
 | SpikingBrain-VL | full-attention 层 `[7,15,23,31]` 的语言/动作 query 到视觉 patch；同时实现 gradient×input 对照 | 主模型，做结构感知消融 |
 | Qwen2.5-VL / Qwen3-VL | answer log-prob 或目标 token score 对视觉 patch hidden states 的 gradient×input | VLM 普适性验证 |
+| LLaVA-1.6 / LLaVA-OneVision | answer log-prob、目标 token score 或判别式 grounding score 对视觉 patch hidden states 的 gradient×input；OneVision 可额外记录多图/视频 token 组织 | VLM 普适性验证，检验非 Qwen 系结构 |
 | DeepSeek-VL2 | 最终答案 score 对视觉 token hidden states 的 gradient×input；MoE/router 只做记录 | VLM 普适性验证 |
 | OpenVLA / OpenVLA-OFT | action token log-prob 或 delta EEF adapter loss 对视觉 hidden states 的动作条件归因 | VLA 普适性验证 |
 | Qwen-RobotManip | 若 checkpoint 和接口可用，按动作/行为 score 做归因；否则只做接口和论文对照 | 后置机器人 VLA 参照 |
@@ -237,6 +238,7 @@ D 路线的核心链路是：
 | SpikingBrain-VL | full-attention + window/SWA + GLA 的异构层级结构 | full-attention map + gradient×input | 主模型，验证结构感知选择 |
 | Qwen2.5-VL | 动态分辨率视觉编码、多尺度视觉 token、强多模态语言模型 | answer score 对视觉 hidden states 的 gradient×input | VLM 普适性对照 |
 | Qwen3-VL | Interleaved-MRoPE、DeepStack、多层视觉特征注入和长视频理解 | answer score 对视觉 hidden states 的 gradient×input | VLM 普适性对照 |
+| LLaVA-1.6 / LLaVA-OneVision | CLIP/SigLIP 视觉编码器经 projector 接入 LLM；OneVision 统一图像、多图和视频输入 | answer score 或 grounding 判别 score 对视觉 hidden states 的 gradient×input | VLM 普适性对照，避免结论只覆盖 Qwen 系 |
 | DeepSeek-VL2 | 高分辨率/多图输入和混合专家式语言建模路线 | answer score 对视觉 hidden states 的 gradient×input | VLM 普适性对照 |
 | Qwen-RobotManip | 基于 Qwen-VL 的机器人操作 VLA，统一表示、运动和行为对齐 | 动作/行为 score 归因，接口待审计 | 机器人操作 VLA 参照 |
 | OpenVLA | VLM 主干接动作 token，直接面向机器人任务 | action token 或 delta EEF adapter 的动作条件归因 | VLA 普适性关键对照 |
@@ -244,7 +246,7 @@ D 路线的核心链路是：
 | LingBot-VA | 因果视频-动作世界模型，视频动态和动作在交错序列中联合建模 | 未来状态/阶段相关 `R_act`，后置 | Action-Relevance Refiner 候选 |
 | LingBot-VLA 1.0/2.0 | VLA 基础模型，2.0 支持多 embodiment 的统一动作表示并使用 Qwen3-VL 依赖 | action expert 归因，后置 | 多 embodiment/action chunk 参照 |
 
-这里不把 Qwen、DeepSeek 或 LingBot 直接拼进 SpikingBrain。第一阶段先在 VLM 任务上验证同一教师、不同学生归因接口都能受益；VLA 阶段再使用 SpikingBrain-VLA 和 OpenVLA/OFT 做动作闭环验证。
+这里不把 Qwen、LLaVA、DeepSeek 或 LingBot 直接拼进 SpikingBrain。第一阶段先在 VLM 任务上验证同一教师、不同学生归因接口都能受益；VLA 阶段再使用 SpikingBrain-VLA 和 OpenVLA/OFT 做动作闭环验证。
 
 ## 8. VLM 优先验证
 
@@ -312,7 +314,7 @@ D 路线的核心链路是：
 - VLM 阶段成立但 LIBERO 成功率没有提升或显著下降；
 - 只要增加参数/训练步数就能得到同样增益；
 - 随机或错配教师图与正确教师图效果相同；
-- 在多个 VLM 上只有 SpikingBrain 有效，Qwen 系模型完全无效且无接口原因解释；
+- 在多个 VLM 上只有 SpikingBrain 有效，Qwen/LLaVA 均无效且无接口原因解释；
 - window/SWA/GLA 直接伪 attention 比结构化 full-attention 或梯度归因更好。
 
 ## 12. 相关文献与归档索引
@@ -324,18 +326,19 @@ D 路线的核心链路是：
 3. Qwen2-VL，`https://arxiv.org/abs/2409.12191`（区分于 Qwen2.5-VL）
 4. Qwen2.5-VL 官方仓库与技术报告入口，`https://github.com/QwenLM/Qwen2.5-VL`、`https://arxiv.org/abs/2502.13923`
 5. Qwen3-VL 技术报告，`https://arxiv.org/abs/2511.21631`；官方仓库，`https://github.com/QwenLM/Qwen3-VL`
-6. Qwen-RobotManip，`https://arxiv.org/abs/2606.17846`；官方仓库，`https://github.com/QwenLM/Qwen-RobotManip`
-7. DeepSeek-VL2，`https://arxiv.org/abs/2412.10302`
-8. DeepSeek-VL2 官方仓库，`https://github.com/deepseek-ai/DeepSeek-VL2`
-9. OpenVLA，`https://arxiv.org/abs/2406.09246`
-10. π0，`https://arxiv.org/abs/2410.24164`
-11. LingBot-VA，`https://arxiv.org/abs/2601.21998`；LingBot-VLA，`https://arxiv.org/abs/2601.18692`
-12. LingBot-VLA 2.0，`https://arxiv.org/abs/2607.06403`
-13. Diffusion Policy，`https://arxiv.org/abs/2303.04137`
-14. LIBERO，`https://arxiv.org/abs/2306.03310`
-15. GLA，`https://arxiv.org/abs/2312.06635`
-16. Attention Sinks，`https://arxiv.org/abs/2309.17453`
-17. LoRA，`https://arxiv.org/abs/2106.09685`
+6. LLaVA-1.6 / LLaVA-NeXT 官方仓库，`https://github.com/LLaVA-VL/LLaVA-NeXT`；LLaVA-OneVision，`https://arxiv.org/abs/2408.03326`，官方入口同 LLaVA-NeXT
+7. Qwen-RobotManip，`https://arxiv.org/abs/2606.17846`；官方仓库，`https://github.com/QwenLM/Qwen-RobotManip`
+8. DeepSeek-VL2，`https://arxiv.org/abs/2412.10302`
+9. DeepSeek-VL2 官方仓库，`https://github.com/deepseek-ai/DeepSeek-VL2`
+10. OpenVLA，`https://arxiv.org/abs/2406.09246`
+11. π0，`https://arxiv.org/abs/2410.24164`
+12. LingBot-VA，`https://arxiv.org/abs/2601.21998`；LingBot-VLA，`https://arxiv.org/abs/2601.18692`
+13. LingBot-VLA 2.0，`https://arxiv.org/abs/2607.06403`
+14. Diffusion Policy，`https://arxiv.org/abs/2303.04137`
+15. LIBERO，`https://arxiv.org/abs/2306.03310`
+16. GLA，`https://arxiv.org/abs/2312.06635`
+17. Attention Sinks，`https://arxiv.org/abs/2309.17453`
+18. LoRA，`https://arxiv.org/abs/2106.09685`
 
 ## 13. 仍需在 P0 对齐的事项
 
@@ -350,7 +353,7 @@ D 路线的核心链路是：
 | 主要距离 | 归一化 MSE，KL/cosine 仅诊断 |
 | 视觉输入 | LIBERO RGB，先单帧或短窗口 |
 | 本体状态 | 有则拼接，无则先做视觉语言动作基线 |
-| 第一组 VLM 基线 | SpikingBrain-VL + 一个 Qwen 系模型；DeepSeek-VL2 后置 |
+| 第一组 VLM 基线 | SpikingBrain-VL + 一个 Qwen 系模型 + LLaVA-1.6/OneVision；DeepSeek-VL2 后置 |
 | 第一组 VLA 基线 | 无对齐 SpikingBrain-VLA + OpenVLA/OFT attribution adapter，用于普适性验证 |
 | 首轮教师 | Lavender / Stable Diffusion 词级 cross-attention |
 | Action-Relevance Refiner | 纳入 VLA 扩展阶段，生成 `R_act` 并构造 `T_AR` |

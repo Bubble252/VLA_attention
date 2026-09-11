@@ -33,6 +33,12 @@ repositories:
     current_status: archived
     commit: "96588727e44c78b25ba03ea03b8e12f7e64fd0da"
     role: "vlm_reference"
+  - id: llava-next
+    url: "https://github.com/LLaVA-VL/LLaVA-NeXT.git"
+    local_path: "references/repos/llava-next"
+    current_status: to_archive
+    commit: null
+    role: "vlm_reference"
   - id: deepseek-vl2
     url: "https://github.com/deepseek-ai/DeepSeek-VL2.git"
     local_path: "references/repos/deepseek-vl2"

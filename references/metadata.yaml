@@ -47,6 +47,16 @@ references:
     local_file: "papers/qwen3_vl_2511.21631.pdf"
     role: vlm_reference
     status: local_pdf_and_repository_available
+  - id: llava-next-onevision
+    title: "LLaVA-1.6 / LLaVA-NeXT and LLaVA-OneVision"
+    type: paper_and_repository
+    url: "https://github.com/LLaVA-VL/LLaVA-NeXT"
+    paper_url: "https://arxiv.org/abs/2408.03326"
+    local_file: "papers/llava_onevision_2408.03326.pdf"
+    repo: "https://github.com/LLaVA-VL/LLaVA-NeXT"
+    role: vlm_reference
+    status: to_archive
+    note: "Added as non-Qwen VLM grounding baseline; archive in the next reference-download pass. LLaVA-1.6 is tracked through the official LLaVA-NeXT repository; OneVision paper/release is tracked through the same official project entry."
   - id: deepseek-vl2-2024
     title: "DeepSeek-VL2"
     type: paper

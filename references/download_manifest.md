@@ -9,6 +9,7 @@
 | A | Lavender、SpikingBrain-7B、OpenVLA-OFT | `repos/lavender`、`repos/spikingbrain-7b`、`repos/openvla-oft` | 已归档并固定 commit |
 | A | OpenVLA、LIBERO、Qwen-RobotManip | `papers/` 与对应 `repos/` | 论文和代码均已归档 |
 | B | Qwen2-VL、Qwen2.5-VL、Qwen3-VL、DeepSeek-VL2 | `papers/` 与对应 `repos/` | 已归档；Qwen2-VL 仅作历史结构参照 |
+| B | LLaVA-1.6 / LLaVA-NeXT、LLaVA-OneVision | 待归档到 `papers/` 与 `repos/llava-next` | 新增 VLM 普适性基线；下一次下载 goal 执行 |
 | C | π0/openpi、Diffusion Policy、GLA、Attention Sinks | `papers/` 与对应 `repos/` | 已归档 |
 | C | LingBot-VA、LingBot-VLA、LingBot-VLA 2.0、LingBot-Video | `papers/lingbot_*.pdf` 与 `repos/lingbot-*` | 已归档；用于视频/世界模型/VLA 架构参照 |
 
