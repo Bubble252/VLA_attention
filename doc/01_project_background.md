@@ -116,12 +116,29 @@ D 路线的核心链路是：
 
 `L_contain = Σ_i A_act(i) · (1 - A_lang_union(i))`
 
-`A_lang_union` 是 source object、target object 等语言相关区域的并集。`L_contain` 的含义是：动作决策使用的视觉证据不应大量跑到语言无关区域。若能从 demonstration 推断阶段，再加入轻量阶段约束：
+`A_lang_union` 是 source object、target object 等语言相关区域的并集。`L_contain` 的含义是：动作决策使用的视觉证据不应大量跑到语言无关区域。这是 **D0：静态 containment**，也是首版 VLA 主方法。
 
-- grasp 阶段：`A_act` 应主要落在 source object 的 `A_lang` 内；
-- place/release 阶段：`A_act` 应逐步迁移到 target object 的 `A_lang` 内。
+后期再做 **D1：阶段条件动态迁移**。D1 不让 `A_act` 直接对齐单一静态 Lavender 图，而是让动作归因在语言相关区域之间随任务阶段迁移：
 
-这一路线不需要外部抓取区域真值，也不直接蒸馏其他 VLA 的动作。B/C 只用来检查 `A_act` 是否落在合理阶段区域，或在 D 效果不足时作为扩展 refiner。
+`source → source + target → target`
+
+对 pick-place 任务，D1 的软目标写成：
+
+`A_phase(t) = α_t · A_lang(source) + (1 - α_t) · A_lang(target)`
+
+`L_phase = D(A_act(t), A_phase(t))`
+
+其中 `α_t` 来自成功 demonstration 的事件边界，而不是首轮依赖 world model。推荐先检测 `grasp`、`lift/move`、`near_target`、`release` 等事件，再映射成软权重：source 阶段 `α≈0.9`，mixed 阶段 `α≈0.5`，target 阶段 `α≈0.1`。如果五阶段检测不稳定，就退化成三阶段：before grasp、after grasp before near target、after near target。
+
+D1 有三种实现层级：
+
+| 版本 | phase 来源 | 定位 |
+|---|---|---|
+| D1a | LIBERO 状态规则，例如 EEF/object 距离、夹爪开合、物体高度 | 快速诊断 |
+| D1b | 成功 demonstration 的事件边界自动切分 | 后期主扩展，推荐优先实现 |
+| D1c | 模型内部 `mass_source=sum(A_act·A_lang(source))` 与 `mass_target=sum(A_act·A_lang(target))` 发现 phase | 更普适的研究扩展 |
+
+这一路线不需要外部抓取区域真值，也不直接蒸馏其他 VLA 的动作。B/C 只用来检查 `A_act` 是否落在合理阶段区域，或在 D 效果不足时作为扩展 refiner。World model / VAM 只属于 B 路线的后期 `R_act` 细化器，不是 D0/D1 的默认依赖。
 
 `A_act` 的默认实现采用 **action loss gradient×activation**，因为它最普适：连续 delta EEF、action token VLA、Qwen/LLaVA/DeepSeek 这类无显式 cross-attention 或 attention 不可比的模型都能用同一个“目标标量对视觉 token 求梯度”的接口。若模型天然提供 action query attention，则作为更可解释的结构内生版本；若模型是 OpenVLA 类 action token 输出，则用 action token log-prob gradient。
 

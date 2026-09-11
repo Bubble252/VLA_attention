@@ -247,14 +247,58 @@ VLA 阶段的优先路线不是先构造外部动作区域，而是读取模型�
 3. 约束 A_act 不跑出 A_lang_union：L_contain = Σ_i A_act(i) · (1 - A_lang_union(i))
 ```
 
-若 demonstration 能稳定推断阶段，再加入：
+D 路线按两个版本推进：
+
+**D0：静态 containment，首版必做。**
 
 ```text
-grasp:  A_act ⊂ A_lang(source)
-place:  A_act ⊂ A_lang(target)
+VLM:    T_sem → A_lang
+VLA-D0: A_act(t) ⊂ A_lang(source) ∪ A_lang(target)
 ```
 
-这个版本的创新点是结构内生一致性：扩散教师只锚定语言证据，动作证据通过模型自己的 action query/action head 与语言证据保持一致。
+D0 只要求动作归因主要落在语言相关区域并集内，不强行规定每个时间步必须看 source 还是 target。
+
+**D1：phase-conditioned transition，后期扩展。**
+
+```text
+VLA-D1: A_act(t) follows source → source+target → target
+```
+
+D1 使用软阶段目标：
+
+```text
+A_phase(t) = α_t · A_lang(source) + (1 - α_t) · A_lang(target)
+L_phase = D(A_act(t), A_phase(t))
+```
+
+`α_t` 不用硬 one-hot。推荐初值是 source phase `0.9`、mixed phase `0.5`、target phase `0.1`。距离函数 `D` 与 `L_sem` 保持一致，首选 normalized MSE，同时记录 KL/cosine。
+
+phase 来源按优先级分三档：
+
+| 版本 | 来源 | 规则 | 用途 |
+|---|---|---|---|
+| D1a | LIBERO 状态规则 | EEF-source 距离、EEF-target 距离、夹爪开合、source 高度、object-target 距离 | 快速 sanity check |
+| D1b | 成功 demonstration 事件边界 | 自动检测 `t_grasp`、`t_lift`、`t_near_target`、`t_release`，再映射到 source/mixed/target | 推荐后期主扩展 |
+| D1c | 模型内生 phase | 用 `mass_source=sum(A_act·A_lang(source))` 与 `mass_target=sum(A_act·A_lang(target))` 推断迁移状态 | 更普适，放在后期研究 |
+
+D1b 的事件检测伪代码：
+
+```python
+t_grasp = first_t(gripper_closing and dist(eef[t], source[t]) < eps_src)
+t_lift = first_t(source_z[t] - source_z[0] > eps_lift)
+t_near_target = first_t(dist(source[t], target) < eps_tgt)
+t_release = first_t(gripper_opening and dist(source[t], target) < eps_tgt)
+
+phase[t < t_grasp] = "source"
+phase[t_grasp <= t < t_near_target] = "mixed"
+phase[t >= t_near_target] = "target"
+```
+
+如果事件缺失，退化成三阶段：before grasp、after grasp before near target、after near target。不要用固定轨迹百分比作为主实现，只能作为负控。
+
+`L_phase` 必须配负控：反向 phase、随机 phase、固定百分比分 phase、正确 phase 但错 source/target 词图、只加 `L_phase` 不加 `L_contain`。
+
+这个版本的创新点是结构内生一致性：扩散教师只锚定语言证据，动作证据通过模型自己的 action query/action head 与语言证据保持一致。World model / VAM 不属于 D 的默认依赖，只能在 B 路线中作为 `R_act` refiner。
 
 `A_lang` 和 `A_act` 必须先映射到同一个图像网格再比较。模型内部处理的不是原始像素，而是视觉 tokens；不同层或不同分支可能有不同 token 顺序、分辨率和窗口重排。例如 `A_lang` 可能来自 SpikingBrain 第 23 层 full-attention，还原后是 `16×16` patch 图；`A_act` 可能来自 action head 的最终视觉 token，可能是另一个顺序或分辨率。坐标桥的工作就是把它们都还原成同一张输入图像上的 `H×W` 空间图，否则 `L_contain` 会比较错位置。
 

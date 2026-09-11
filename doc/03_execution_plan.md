@@ -214,8 +214,10 @@ git push
 - [ ] 加入 VLM 阶段验证过的 gradient×input 归因对照；
 - [ ] 实现 D 路线：`A_lang` 由 Lavender 锚定，`A_act` 默认由 action loss 或 action output 对 visual tokens 的 gradient×activation 得到；
 - [ ] 若模型天然提供 action query attention，则作为可解释分支记录，不作为默认前提；
-- [ ] 实现 `L_contain = Σ_i A_act(i) · (1 - A_lang_union(i))`；
-- [ ] 若阶段推断稳定，实现 grasp/source 与 place/target 的轻量 `L_phase`；
+- [ ] 实现 D0：`L_contain = Σ_i A_act(i) · (1 - A_lang_union(i))`；
+- [ ] 暂不把 `L_phase` 作为首版依赖；只记录 source/target attribution mass，检查是否自然出现 source→mixed→target 迁移；
+- [ ] 后期实现 D1a/D1b：用 LIBERO 状态规则或成功 demonstration 事件边界构造 soft phase target `A_phase(t)`；
+- [ ] D1 默认使用三阶段 `source / mixed / target`，五阶段 `approach_source / grasp / move / approach_target / release` 只在事件检测稳定后启用；
 - [ ] 使用归一化 MSE，初始 `lambda_align=0.05`；
 - [ ] 保存 `L_action`、`L_align`、成功率和归因 IoU；
 - [ ] 首版采用 `H=1`，不同时引入 action chunk；
@@ -228,6 +230,7 @@ git push
 - 至少完成一个任务组的 baseline 与主方法配对实验；
 - VLM 阶段有效的语言教师图在 VLA 中仍能约束 `A_lang`；
 - `L_contain` 能减少 `A_act` 落到语言无关区域的比例；
+- D0 报告 `mass_source(t)`、`mass_target(t)` 随时间的变化曲线，作为 D1 是否值得启用的依据；
 - 训练时使用教师图，推理时不依赖 Lavender。
 
 ### Git
@@ -279,6 +282,7 @@ git push
 - [ ] 错词教师图；
 - [ ] 错配图片教师图；
 - [ ] `L_sem only`、`L_sem + L_contain`、`L_sem + L_contain + L_phase`；
+- [ ] `L_phase` 负控：反向 phase、随机 phase、固定百分比分 phase、正确 phase 但错 source/target 词图、只加 `L_phase` 不加 `L_contain`；
 - [ ] `T_sem only`、`T_sem + random R_act`、`T_sem + wrong-stage R_act`、`T_AR correct`；
 - [ ] `D only`、`D + C diagnostic`、`D + B refiner`、`B/C without D`；
 - [ ] 直接蒸馏 action expert 的策略动作作为负面对照，证明本方法不是策略蒸馏；
