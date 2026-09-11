@@ -146,6 +146,10 @@ This is more general than simulator state rules, but should not be the first imp
 - Core idea: recursively decompose long-horizon videos into subtask-local reasoning windows; evaluated on progress estimation, frame-level reasoning, and video QA.
 - Relevance: useful if we later want video-only phase/progress reasoning. It belongs to future comparison, not D0.
 
+## 3.1 LIBERO dataset availability for phase labels
+
+LIBERO does not appear to provide explicit phase labels by default. It provides demonstrations as HDF5 trajectories with actions, MuJoCo states, metadata, language instruction, and optionally generated RGB/depth/low-dimensional observations. Therefore LIBERO is suitable for deriving weak D1a/D1b phase labels, but not for directly reading ground-truth `approach/grasp/place/release` labels. See `libero_phase_availability.md` in this folder.
+
 ## 4. Recommendation for our docs and experiments
 
 Use this hierarchy:
