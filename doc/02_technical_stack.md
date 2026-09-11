@@ -223,7 +223,44 @@ def compute_action_relevance_from_action_expert(action_model, obs_t, instruction
 
 因此报告时必须分开列出 `T_sem only`、`T_sem + random R_act`、`T_sem + wrong-stage R_act`、`T_AR correct`，不能只报告一个混合 teacher 的最终分数。
 
-### 5.3 学生归因标准接口
+### 5.3 动作相关区域的文献依据与首轮构造
+
+相关工作里，“动作相关区域”通常不是凭 RGB 直觉画二维热力图，而是由几何、深度、像素动作值或接触状态构造：
+
+| 路线 | 代表工作 | 区域/动作表示 | 对本项目的启示 |
+|---|---|---|---|
+| 像素级动作值 | FC-GQ-CNN / Dex-Net、Transporter Networks、CLIPort | 在图像或正交高度图上输出 grasp/place/pick 的像素位置或 Q map | `R_act` 可以是 action-value map，不必是语义 attention |
+| 语言条件 pick-place | CLIPort、PerAct、RVT 等 | 语言条件下在 heightmap/voxel/view 上选择 pick/place/action token | 动作相关区域应随阶段从 source object 切到 target receptacle |
+| 可供性 affordance | Where2Act、ActAIM 等 | 预测对象部件或关节处的可操作区域和动作方向 | 对 drawer/door 等任务，`R_act` 应偏向 handle、joint、contactable part |
+| 接触/状态变化 | Contact-GraspNet、接触丰富操作和视觉触觉工作 | 预测接触点、抓取点或物体状态变化 | grasp/lift 阶段应用 EEF/接触附近区域，而不是整物体 mask |
+| 动作流形/动作专家 | π0、Diffusion Policy、OpenVLA 类方法 | 输出连续动作、action chunk 或动作 token | 后续只用于候选动作 relevance，不作为策略蒸馏主教师 |
+
+因此首轮 `R_act` 应声明为 **image-plane proxy**：由仿真 3D 状态、相机投影、对象 mask/depth/heightmap 生成的二维弱动作相关区域，不是精确 3D affordance。它只用于细化 `T_sem`。
+
+推荐三档实现：
+
+| 版本 | 构造方式 | 用途 |
+|---|---|---|
+| V0 bbox proxy | 对象 bbox + EEF 投影高斯 | 最快 smoke，噪声最大 |
+| V1 mask proxy | 仿真 segmentation 或 SAM mask + EEF/target 投影高斯 | 首轮推荐 |
+| V2 geometry/heightmap proxy | object pose + camera pose + depth/heightmap + gripper geometry | 更接近 Dex-Net/Transporter/CLIPort 传统，工程更重 |
+
+grasp 阶段的 V1 mask proxy 可以写成：
+
+`R_act(u,v)=Mask_source(u,v) · exp(-||[u,v]-Π(p_eef)||² / 2σ²)`
+
+其中 `Π(p_eef)` 是 EEF 3D 位置投影到 RGB 图像平面的点。place 阶段则把高斯中心换成 target receptacle 的 opening/center/top region。这样二维高亮的依据是 3D 状态投影和对象 mask，而不是模型凭空猜接触点。
+
+必须加入负控：
+
+- `T_sem + random EEF point`；
+- `T_sem + wrong-stage R_act`；
+- `T_sem + wrong-object mask`；
+- `T_AR correct`。
+
+只有 `T_AR correct` 明显优于这些负控时，才能声称动作相关细化有效。
+
+### 5.4 学生归因标准接口
 
 所有模型都实现同一个抽象接口：
 
