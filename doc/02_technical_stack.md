@@ -298,6 +298,8 @@ phase[t >= t_near_target] = "target"
 
 `L_phase` 必须配负控：反向 phase、随机 phase、固定百分比分 phase、正确 phase 但错 source/target 词图、只加 `L_phase` 不加 `L_contain`。
 
+相关 phase / skill segmentation 方法已整理到 `references/phase_segmentation/phase_segmentation_methods.md`，包括 TACO、BUDS、CHAMP、RoboSegNet、Robo2VLM、ProcVLM 和 ROVER。D1 实现时优先参考 D1b demonstration event boundaries，不把 VAM/world model 作为默认 phase 来源。
+
 这个版本的创新点是结构内生一致性：扩散教师只锚定语言证据，动作证据通过模型自己的 action query/action head 与语言证据保持一致。World model / VAM 不属于 D 的默认依赖，只能在 B 路线中作为 `R_act` refiner。
 
 `A_lang` 和 `A_act` 必须先映射到同一个图像网格再比较。模型内部处理的不是原始像素，而是视觉 tokens；不同层或不同分支可能有不同 token 顺序、分辨率和窗口重排。例如 `A_lang` 可能来自 SpikingBrain 第 23 层 full-attention，还原后是 `16×16` patch 图；`A_act` 可能来自 action head 的最终视觉 token，可能是另一个顺序或分辨率。坐标桥的工作就是把它们都还原成同一张输入图像上的 `H×W` 空间图，否则 `L_contain` 会比较错位置。

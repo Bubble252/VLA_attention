@@ -12,6 +12,7 @@
 | B | LLaVA-1.6 / LLaVA-NeXT、LLaVA-OneVision | 待归档到 `papers/` 与 `repos/llava-next` | 新增 VLM 普适性基线；下一次下载 goal 执行 |
 | C | π0/openpi、Diffusion Policy、GLA、Attention Sinks | `papers/` 与对应 `repos/` | 已归档 |
 | C | LingBot-VA、LingBot-VLA、LingBot-VLA 2.0、LingBot-Video | `papers/lingbot_*.pdf` 与 `repos/lingbot-*` | 已归档；用于视频/世界模型/VLA 架构参照 |
+| C | Phase segmentation / progress methods | `references/phase_segmentation/` | 已建立方法索引；PDF 待 7897 代理可用后归档 |
 
 完整的版本与文件名分别见 `repo_versions.md`、`repositories.yaml` 和 `metadata.yaml`。
 
