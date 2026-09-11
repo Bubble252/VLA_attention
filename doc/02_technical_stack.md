@@ -233,6 +233,12 @@ VLA 阶段的优先路线不是先构造外部动作区域，而是读取模型�
 | 动作归因 | `A_act(a)` | action query attention、action token log-prob gradient、delta EEF loss gradient×activation | 表示动作决策依赖哪些视觉 token |
 | 层级角色 | `layer_type` | SpikingBrain full/window/GLA，或其他 VLM 的视觉层/融合层 | 决定哪些层参与主监督 |
 
+`A_act` 的默认优先级：
+
+1. **delta EEF loss / action output gradient×activation**：默认实现，最普适。连续动作 VLA、action token VLA、Qwen/DeepSeek 的 VLM 归因都能复用“目标标量对视觉 token 求梯度”的接口。
+2. **action token log-prob gradient**：适用于 OpenVLA 这类离散 action token 模型。
+3. **action query attention**：如果模型天然有 action query，则作为更可解释的结构内生版本；但它不是默认假设，因为很多模型没有显式 action query。
+
 首版最小实现：
 
 ```text
@@ -249,6 +255,8 @@ place:  A_act ⊂ A_lang(target)
 ```
 
 这个版本的创新点是结构内生一致性：扩散教师只锚定语言证据，动作证据通过模型自己的 action query/action head 与语言证据保持一致。
+
+`A_lang` 和 `A_act` 必须先映射到同一个图像网格再比较。模型内部处理的不是原始像素，而是视觉 tokens；不同层或不同分支可能有不同 token 顺序、分辨率和窗口重排。例如 `A_lang` 可能来自 SpikingBrain 第 23 层 full-attention，还原后是 `16×16` patch 图；`A_act` 可能来自 action head 的最终视觉 token，可能是另一个顺序或分辨率。坐标桥的工作就是把它们都还原成同一张输入图像上的 `H×W` 空间图，否则 `L_contain` 会比较错位置。
 
 ### 5.4 B/C 扩展：动作相关区域的文献依据与首轮构造
 

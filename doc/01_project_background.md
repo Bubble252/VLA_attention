@@ -123,6 +123,8 @@ D 路线的核心链路是：
 
 这一路线不需要外部抓取区域真值，也不直接蒸馏其他 VLA 的动作。B/C 只用来检查 `A_act` 是否落在合理阶段区域，或在 D 效果不足时作为扩展 refiner。
 
+`A_act` 的默认实现采用 **action loss gradient×activation**，因为它最普适：连续 delta EEF、action token VLA、Qwen/DeepSeek 这类无显式 cross-attention 的模型都能用同一个“目标标量对视觉 token 求梯度”的接口。若模型天然提供 action query attention，则作为更可解释的结构内生版本；若模型是 OpenVLA 类 action token 输出，则用 action token log-prob gradient。
+
 ## 5. SpikingBrain 的网络结构与可对齐对象
 
 本地实现位于：
@@ -248,10 +250,9 @@ D 路线的核心链路是：
 
 先在 VLM 上证明方法优越性，避免机器人控制噪声掩盖机制判断。首轮任务应选择能提供物体或区域证据的数据：
 
-- referring expression / phrase grounding；
-- VQA 中带明确对象词的问题；
-- caption 或 instruction-following 中的目标词定位；
-- 可人工或自动得到目标区域的子集。
+- **首选 Flickr30k / Flickr30k Entities**：Lavender 使用 Flickr30k 作为核心训练/验证数据，并已公开 Flickr1k Stable Diffusion attention map；若使用 Entities 标注，可做 phrase-level pointing/IoU；
+- **备选 RLAIF-V-83K 的 1k attention 子集**：与 Lavender 公开数据一致，但更偏 VQA/偏好数据，区域标注不如 Entities 直接；
+- RefCOCO/RefCOCOg 可作为后续更标准的 referring expression 扩展，不作为首轮阻塞项。
 
 核心比较：
 
@@ -290,10 +291,9 @@ D 路线的核心链路是：
 
 先覆盖能暴露物体定位和空间关系的任务：
 
-- 物体抓取与放置；
-- 抽屉/柜门开合；
-- 物体移动到指定容器；
-- 多物体、颜色/位置组合指令。
+- 首轮只做一个 pick-place / put-object-into-container 任务；
+- 通过后再加入颜色/位置组合指令；
+- drawer/handle 任务后置，因为它更依赖部件级可供性和接触几何。
 
 第一阶段不承诺真机泛化。真机阶段需要新增相机外参、动作频率、限位、延迟和安全策略，不能从 LIBERO 成功率直接推导。
 
@@ -312,7 +312,7 @@ D 路线的核心链路是：
 - VLM 阶段成立但 LIBERO 成功率没有提升或显著下降；
 - 只要增加参数/训练步数就能得到同样增益；
 - 随机或错配教师图与正确教师图效果相同；
-- 在多个 VLM 上只有 SpikingBrain 有效，Qwen/DeepSeek 完全无效且无接口原因解释；
+- 在多个 VLM 上只有 SpikingBrain 有效，Qwen 系模型完全无效且无接口原因解释；
 - window/SWA/GLA 直接伪 attention 比结构化 full-attention 或梯度归因更好。
 
 ## 12. 相关文献与归档索引
@@ -350,7 +350,10 @@ D 路线的核心链路是：
 | 主要距离 | 归一化 MSE，KL/cosine 仅诊断 |
 | 视觉输入 | LIBERO RGB，先单帧或短窗口 |
 | 本体状态 | 有则拼接，无则先做视觉语言动作基线 |
-| 第一组 VLM 基线 | SpikingBrain-VL、Qwen2.5/3-VL、DeepSeek-VL2 的归因对齐对照 |
-| 第一组 VLA 基线 | 无对齐 SpikingBrain-VLA、OpenVLA/OFT 接口对照 |
+| 第一组 VLM 基线 | SpikingBrain-VL + 一个 Qwen 系模型；DeepSeek-VL2 后置 |
+| 第一组 VLA 基线 | 无对齐 SpikingBrain-VLA + OpenVLA/OFT attribution adapter，用于普适性验证 |
 | 首轮教师 | Lavender / Stable Diffusion 词级 cross-attention |
 | Action-Relevance Refiner | 纳入 VLA 扩展阶段，生成 `R_act` 并构造 `T_AR` |
+| 首轮 VLM 数据 | Flickr30k/Flickr30k Entities；优先复用 Lavender Flickr1k attention maps |
+| 首轮 LIBERO 任务 | pick-place / put-object-into-container |
+| `A_act` 默认接口 | action loss 或 action output 对 visual tokens 的 gradient×activation |
