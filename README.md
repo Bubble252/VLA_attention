@@ -6,6 +6,8 @@
 
 实验顺序是：先在 VLM grounding 上证明这种归因对齐优于普通 fine-tuning 或 naive attention 对齐，再在 LIBERO 中验证它是否能改善 7D delta EEF 的 VLA 控制。SpikingBrain 是主实验骨干，因为它的 full/window/GLA 结构适合做结构感知消融；OpenVLA/OFT 用于后续跨 VLA 骨干验证。
 
+VLA 扩展阶段不把 π0、LingBot 或 Qwen-RobotManip 当作直接输出动作的 policy teacher；它们只作为 **Action-Relevance Refiner** 候选，用于把 Lavender 的静态语义教师图细化为动作阶段相关的 `T_AR`。
+
 先读：
 
 1. [`doc/01_project_background.md`](doc/01_project_background.md)

@@ -39,7 +39,7 @@ git push -u origin main
 | P4 | VLM grounding 证明 | SpikingBrain/Qwen/DeepSeek 上的归因对齐结果 | [ ] |
 | P5 | VLA delta EEF smoke | LIBERO 单任务闭环 | [ ] |
 | P6 | VLA 主方法训练 | SpikingBrain-VLA + selective attribution alignment | [ ] |
-| P7 | 跨模型、跨 VLA 骨干和多教师比较 | Qwen/DeepSeek/OpenVLA/π0/LingBot 对照表 | [ ] |
+| P7 | 跨模型、跨 VLA 骨干和动作相关性细化 | Qwen/DeepSeek/OpenVLA/π0/LingBot 对照表 | [ ] |
 | P8 | 消融和反证 | 随机、错图、错词、错层、无对齐结果 | [ ] |
 | P9 | 最终报告 | VLM + LIBERO 指标表、曲线、结论、真机计划 | [ ] |
 
@@ -57,7 +57,7 @@ GPU 型号、数量和显存不作为 P0 的阻塞项；服务器由用户提供
 - [x] 创建 `references/papers`、`references/bib`；
 - [x] 下载首批核心论文并记录 SHA256；
 - [x] 登记官方仓库 commit 和模型/论文版本；
-- [x] 记录教师选择原则：首轮使用扩散语义教师，VLA 阶段纳入 world/video-action 教师扩展。
+- [x] 记录教师选择原则：首轮使用扩散语义教师，VLA 阶段纳入 Action-Relevance Refiner，而不是直接蒸馏动作 teacher。
 
 ### 验收
 
@@ -231,7 +231,7 @@ git commit -m "feat: train spikingbrain vla with spatial attribution alignment"
 git push
 ```
 
-## 10. P7：参考模型、VLA 骨干和多教师比较
+## 10. P7：参考模型、VLA 骨干和动作相关性细化
 
 ### 任务
 
@@ -240,14 +240,15 @@ git push
 - [ ] Qwen-RobotManip：优先做论文/接口对照，确认其表示、运动和行为对齐设计；
 - [ ] DeepSeek-VL2：完成 VLM grounding 和高分辨率 token/专家路由差异分析；
 - [ ] OpenVLA/OFT：跑官方 LIBERO 设置或可比设置，并尝试动作条件归因对齐；
-- [ ] LingBot-VA / LingBot-Video：评估是否能作为 `T_dyn`，输出未来 latent、目标状态进展或接触变化分数；
-- [ ] π0、LingBot-VLA、Qwen-RobotManip：评估是否能作为 `T_act`，输出动作可达性、action chunk 分布或候选动作分数；
-- [ ] 完成 `sem only`、`sem + dyn`、`sem + act`、`sem + dyn + act` 四组教师组合设计；
+- [ ] 先用 LIBERO demonstration 派生 weak Action-Relevance Refiner：阶段标签、接触点、目标进展、source/target 区域切换；
+- [ ] LingBot-VA / LingBot-Video：评估是否能从未来 latent、目标状态进展或接触变化中生成 `R_act`；
+- [ ] π0、LingBot-VLA、Qwen-RobotManip：评估是否能从候选动作分数或动作归因中生成 `R_act`；
+- [ ] 完成 `T_sem only`、`T_sem + random R_act`、`T_sem + wrong-stage R_act`、`T_AR correct` 四组教师图设计；
 - [ ] 统一记录输入图像、指令、动作接口、训练数据和参数量。
 
 ### 约束
 
-参考模型的动作接口若不同，必须分开报告原生结果和统一 7D delta EEF adapter 结果，不能混成一张不具可比性的表。VLM 阶段的普适性用 grounding 指标证明，VLA 阶段的普适性至少需要 SpikingBrain-VLA 与 OpenVLA/OFT 两类骨干。多教师实验必须回答清楚：`T_sem` 解决定位，`T_dyn` 解决时序后果，`T_act` 解决动作可达性，不能把三者混成一个不可解释的蒸馏项。
+参考模型的动作接口若不同，必须分开报告原生结果和统一 7D delta EEF adapter 结果，不能混成一张不具可比性的表。VLM 阶段的普适性用 grounding 指标证明，VLA 阶段的普适性至少需要 SpikingBrain-VLA 与 OpenVLA/OFT 两类骨干。Action-Relevance Refiner 必须回答清楚：它是否把静态 `T_sem` 从 object-level saliency 细化成 phase-conditioned actionable saliency，而不是把另一个 VLA 的策略动作蒸馏过来。
 
 ### Git
 
@@ -270,8 +271,9 @@ git push
 - [ ] 打乱词图；
 - [ ] 错词教师图；
 - [ ] 错配图片教师图；
-- [ ] `sem only`、`dyn only`、`act only`、`sem + dyn`、`sem + act`、`sem + dyn + act`；
-- [ ] world/video-action 教师候选与扩散教师分开比较，不能混入首轮 VLM 主结论；
+- [ ] `T_sem only`、`T_sem + random R_act`、`T_sem + wrong-stage R_act`、`T_AR correct`；
+- [ ] 直接蒸馏 action expert 的策略动作作为负面对照，证明本方法不是策略蒸馏；
+- [ ] world/video-action refiner 与扩散教师分开比较，不能混入首轮 VLM 主结论；
 - [ ] window/SWA/GLA 伪 attention 直接 MSE；
 - [ ] V0 similarity 与 V1 gradient×input。
 
@@ -298,8 +300,8 @@ git push
 - [ ] 层选择和负控结果；
 - [ ] 失败案例可视化；
 - [ ] 对 Qwen/DeepSeek/OpenVLA 等参考模型的归因接口和可比性说明；
-- [ ] 教师选择说明：为什么首轮使用扩散语义教师，VLA 阶段如何纳入 world/video-action teacher；
-- [ ] 多教师分析：`T_sem`、`T_dyn`、`T_act` 分别改善了哪类失败；
+- [ ] 教师选择说明：为什么首轮使用扩散语义教师，VLA 阶段如何纳入 Action-Relevance Refiner；
+- [ ] 细化器分析：`R_act` 是否把物体级语义图改造成阶段条件动作相关图；
 - [ ] 真机阶段新增风险与所需接口。
 
 ### 最终判定

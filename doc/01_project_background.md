@@ -62,7 +62,7 @@
 
 ## 4. 教师选择原则
 
-教师不做单一来源押注，而是按“语义空间—时序动力学—动作可达性”分层。首轮必须先启用 Lavender / Stable Diffusion 词级 cross-attention，因为第一阶段要证明 VLM 的词-区域 grounding 改善，扩散模型天然提供 `word → image region` 的空间教师信号，且不依赖机器人动作数据。World model 或 video-action model 不替代扩散教师，而是在 VLA 阶段补上扩散教师缺少的时序和物理可达性信息。
+教师不做单一来源押注，但也不做粗糙的多教师蒸馏。核心教师始终是 Lavender / Stable Diffusion 词级 cross-attention，因为第一阶段要证明 VLM 的词-区域 grounding 改善，扩散模型天然提供 `word → image region` 的空间教师信号，且不依赖机器人动作数据。World model 或 video-action model 不作为 policy teacher，不直接教动作；它们只作为 **Action-Relevance Refiner**，把扩散语义图从“语言相关区域”细化成“当前动作阶段真正相关的区域”。
 
 教师分三档管理：
 
@@ -70,25 +70,29 @@
 |---|---:|---|---|
 | Stable Diffusion / Lavender 词级 cross-attention | 是 | VLM grounding 和 VLA 训练期空间教师 | 只表达静态词-区域关系，不懂动作动力学 |
 | VLM 自监督归因教师，例如强 Qwen/DeepSeek 的离线归因 | 否，作为备选 | 若扩散图对真实图像物体定位不稳定，可做 ensemble 或 sanity check | 容易把学生模型偏差当教师 |
-| World model / video-action model，例如 LingBot-VA、LingBot-Video 或 π0 类动作模型 | 是，但只进入 VLA 扩展阶段 | 提供时序、可达性、动作前后状态教师 | 需要动作数据和 rollout 定义，不适合第一阶段证明 VLM 普适性 |
+| Action-Relevance Refiner，例如 LIBERO 轨迹规则、LingBot-VA、π0、Qwen-RobotManip | 是，但只进入 VLA 扩展阶段 | 细化 `T_sem`，判断当前阶段哪些语义区域与动作成败有关 | 若直接蒸馏动作，会变成别人的 VLA 策略蒸馏 |
 
-首轮 VLM 只使用扩散教师，避免把“空间 grounding 是否有效”和“动作动力学教师是否有效”混在一起。VLA 阶段则预留 world/video-action teacher，形成更有研究味道的双教师问题：扩散教师回答“应该看哪里”，world/video-action 教师回答“看见这些区域后，什么动作在物理上更可能成功”。
+首轮 VLM 只使用扩散教师，避免把“空间 grounding 是否有效”和“动作相关性细化是否有效”混在一起。VLA 阶段预留 Action-Relevance Refiner，形成更细的研究问题：扩散教师回答“语义上应该看哪里”，refiner 回答“当前动作阶段应该在这些语义区域里重点看哪里”。
 
-### 4.1 分层教师定义
+### 4.1 语义教师到动作相关教师图
 
-| 教师层 | 记号 | 来源 | 监督对象 | 进入阶段 |
+| 组件 | 记号 | 来源 | 监督对象 | 进入阶段 |
 |---|---|---|---|---|
 | 语义空间教师 | `T_sem(w,x)` | Lavender / Stable Diffusion cross-attention | 词或短语对应的图像区域 | VLM 与 VLA 主线 |
-| 时序动力学教师 | `T_dyn(x_t,a_t,x_{t+1})` | LingBot-VA / LingBot-Video 类 video-action/world model | 动作后场景是否朝目标状态演化 | VLA 扩展 |
-| 动作可达性教师 | `T_act(a_t|x_t,w)` | π0、LingBot-VLA 或其他 action expert | 候选动作是否落在可行操作流形 | VLA 扩展 |
+| 动作相关性细化器 | `R_act(w,x,a,s)` | LIBERO demonstration 规则、LingBot-VA、π0、Qwen-RobotManip | 当前阶段 `s` 和候选动作 `a` 下，哪些语义区域真正影响成功 | VLA 扩展 |
+| 动作相关教师图 | `T_AR(w,x,a,s)` | `T_sem` 与 `R_act` 的组合 | 语言条件且动作相关的空间区域 | VLA 扩展 |
 
-这三个教师不应混成一个黑盒蒸馏信号。更合理的研究问题是：静态词-区域 grounding 是否足以改善动作；若不足，加入时序/动作教师能否解释剩余失败。
+最终不是把多个教师 loss 简单相加，而是将语义教师图细化：
 
-对应损失可以写成：
+`T_AR(w,x,a,s) = Normalize(T_sem(w,x) ⊙ R_act(w,x,a,s))`
 
-`L = L_task + λ_sem L_sem + λ_dyn L_dyn + λ_act L_act_teacher`
+其中 `s` 表示动作阶段，例如 approach、grasp、lift、place、release。这样 world/action 模型不直接输出训练动作，只对“语义相关区域中哪些部分与当前动作阶段相关”给出弱监督或诊断。
 
-首轮 VLM 只开启 `L_sem`。LIBERO 主实验先开启 `L_sem`，随后在扩展组中逐步加入 `L_dyn` 和 `L_act_teacher`。如果 `L_dyn/L_act_teacher` 带来提升，必须报告它们是否主要修复了接触、可达性、遮挡、长时序失败，而不是简单提升物体定位。
+对应损失写成：
+
+`L = L_task + λ_sem L_sem + λ_ar L_action_relevance`
+
+首轮 VLM 只开启 `L_sem`。LIBERO 主实验先开启 `L_sem`，随后在扩展组中使用 `T_AR` 替代或补充 `T_sem`。如果 `L_action_relevance` 带来提升，必须报告它主要修复的是接触、可达性、遮挡、阶段切换还是长时序失败，而不是简单提升物体定位。
 
 ## 5. SpikingBrain 的网络结构与可对齐对象
 
@@ -145,7 +149,7 @@
 | DeepSeek-VL2 | 最终答案 score 对视觉 token hidden states 的 gradient×input；MoE/router 只做记录 | VLM 普适性验证 |
 | OpenVLA / OpenVLA-OFT | action token log-prob 或 delta EEF adapter loss 对视觉 hidden states 的动作条件归因 | VLA 普适性验证 |
 | Qwen-RobotManip | 若 checkpoint 和接口可用，按动作/行为 score 做归因；否则只做接口和论文对照 | 后置机器人 VLA 参照 |
-| LingBot / π0 | 不进入首轮 VLM 实验；后续用于时序动作和 world-model 教师候选 | 后置扩展 |
+| LingBot / π0 | 不进入首轮 VLM 实验；后续作为 Action-Relevance Refiner 候选 | 后置扩展 |
 
 所有 `G_m` 都必须映射回原图坐标，重采样到同一尺寸，并按有效区域归一化。这样比较对象不是某一种 attention kernel，而是统一坐标系下的语言条件空间证据。
 
@@ -206,7 +210,7 @@
 | Qwen-RobotManip | 基于 Qwen-VL 的机器人操作 VLA，统一表示、运动和行为对齐 | 动作/行为 score 归因，接口待审计 | 机器人操作 VLA 参照 |
 | OpenVLA | VLM 主干接动作 token，直接面向机器人任务 | action token 或 delta EEF adapter 的动作条件归因 | VLA 普适性关键对照 |
 | π0 | 预训练视觉语言模型 + 连续动作/flow action expert | flow/action expert 归因，后置 | 连续动作建模参照 |
-| LingBot-VA | 因果视频-动作世界模型，视频动态和动作在交错序列中联合建模 | video-action/world-model 归因，后置 | world-model 教师候选 |
+| LingBot-VA | 因果视频-动作世界模型，视频动态和动作在交错序列中联合建模 | 未来状态/阶段相关 `R_act`，后置 | Action-Relevance Refiner 候选 |
 | LingBot-VLA 1.0/2.0 | VLA 基础模型，2.0 支持多 embodiment 的统一动作表示并使用 Qwen3-VL 依赖 | action expert 归因，后置 | 多 embodiment/action chunk 参照 |
 
 这里不把 Qwen、DeepSeek 或 LingBot 直接拼进 SpikingBrain。第一阶段先在 VLM 任务上验证同一教师、不同学生归因接口都能受益；VLA 阶段再使用 SpikingBrain-VLA 和 OpenVLA/OFT 做动作闭环验证。
@@ -320,4 +324,4 @@
 | 第一组 VLM 基线 | SpikingBrain-VL、Qwen2.5/3-VL、DeepSeek-VL2 的归因对齐对照 |
 | 第一组 VLA 基线 | 无对齐 SpikingBrain-VLA、OpenVLA/OFT 接口对照 |
 | 首轮教师 | Lavender / Stable Diffusion 词级 cross-attention |
-| World/video-action 教师 | 纳入 VLA 扩展阶段，作为 `T_dyn`/`T_act` 分开验证 |
+| Action-Relevance Refiner | 纳入 VLA 扩展阶段，生成 `R_act` 并构造 `T_AR` |

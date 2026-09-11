@@ -137,7 +137,7 @@ LIBERO RGB + instruction + proprioception
 
 ### 5.1 教师 registry
 
-教师 registry 按功能分层，而不是按模型名堆叠。首轮 VLM 只启用语义空间教师：
+教师 registry 按“语义教师 + 动作相关性细化器”组织，而不是把多个大模型 loss 直接堆叠。首轮 VLM 只启用语义空间教师：
 
 ```yaml
 teacher:
@@ -148,12 +148,14 @@ teacher:
     use_in_inference: false
   dynamics:
     enabled: false
-    candidates: [lingbot_va, lingbot_video]
-    signal: future_latent_or_success_delta
-  action:
+    role: action_relevance_refiner
+    candidates: [libero_demo_rules, lingbot_va, lingbot_video]
+    signal: phase_or_future_progress_mask
+  action_relevance:
     enabled: false
-    candidates: [pi0, lingbot_vla, qwen_robotmanip]
-    signal: action_feasibility_or_action_distribution
+    role: action_relevance_refiner
+    candidates: [libero_demo_rules, pi0, lingbot_vla, qwen_robotmanip]
+    signal: region_relevance_mask_or_candidate_action_score
 ```
 
 三类教师的定位：
@@ -162,43 +164,64 @@ teacher:
 |---|---|---|
 | Lavender / Stable Diffusion | 启用 | 默认教师，证明 VLM grounding |
 | Qwen/DeepSeek 离线归因 ensemble | 关闭 | 扩散教师定位失败或需要 sanity check |
-| LingBot-VA / LingBot-Video world model | 关闭，但纳入研究设计 | VLA smoke 成立后，用于未来状态、接触变化、目标状态接近度教师 |
-| π0 / LingBot-VLA / Qwen-RobotManip action expert | 关闭，但纳入研究设计 | 需要动作可达性、action chunk 或候选动作分布教师时启用 |
+| LIBERO demonstration 派生规则 | 关闭，但优先纳入 VLA 扩展 | 从专家轨迹构造阶段标签、接触点、目标进展和区域 relevance mask |
+| LingBot-VA / LingBot-Video world model | 关闭，但纳入研究设计 | VLA smoke 成立后，用于未来状态、接触变化、目标状态接近度，细化 `T_sem` |
+| π0 / LingBot-VLA / Qwen-RobotManip action expert | 关闭，但纳入研究设计 | 只评估候选动作或区域 relevance，不直接蒸馏其策略动作 |
 
-教师输出必须保存：词/短语、token span、原图尺寸、教师图尺寸、归一化方式、生成模型版本、随机种子和文件 SHA256。World/action teacher 还必须保存当前观测、候选动作、预测未来状态或动作分布，避免只保存一个不可审计的标量分数。
+教师输出必须保存：词/短语、token span、原图尺寸、教师图尺寸、归一化方式、生成模型版本、随机种子和文件 SHA256。Action-Relevance Refiner 还必须保存当前观测、候选动作、阶段标签、relevance mask、预测未来状态或候选动作分数，避免只保存一个不可审计的标量分数。
 
-### 5.2 World / video-action teacher 的接口
+### 5.2 Action-Relevance Refiner 的接口
 
-World teacher 不直接监督“看哪里”，而是监督“这样看和这样动是否导致正确未来”。建议只在 VLA 阶段启用，接口如下：
+Action-Relevance Refiner 不直接监督最终动作，不替代行为克隆标签，也不把 π0、LingBot 或 Qwen-RobotManip 当作 policy teacher。它只生成一个 refinement mask：
+
+`R_act(w,x,a,s) ∈ R^(H×W)`
+
+用于把 `T_sem(w,x)` 从 object-level semantic map 细化为 phase-conditioned actionable map：
+
+`T_AR(w,x,a,s) = Normalize(T_sem(w,x) ⊙ R_act(w,x,a,s))`
+
+首选实现来自 LIBERO demonstration 的弱规则，而不是直接依赖大模型 teacher：
+
+| 阶段 `s` | 规则信号 | 推荐 relevance 区域 |
+|---|---|---|
+| approach | EEF 靠近 source object | source object 整体位置 |
+| grasp | gripper closing 且接近物体 | 可抓取区域、夹爪-物体接触区域 |
+| lift | 物体随 EEF 上升 | 物体与夹爪接触区域 |
+| place | 物体靠近 target receptacle | target opening、目标放置区域 |
+| release | gripper opening 且物体在目标附近 | 物体与 receptacle 的相对位置 |
+
+World/video-action 模型只作为第二实现，用于从未来状态预测中估计目标进展：
 
 ```python
-def compute_dynamics_teacher(world_model, obs_t, instruction, candidate_action):
+def compute_action_relevance_from_world(world_model, obs_t, instruction, candidate_action, phase):
     """
     Returns:
-        future_latent: predicted next or short-horizon visual latent
-        goal_progress: scalar score measuring whether the future moves toward the language goal
-        contact_or_state_delta: optional structured change, e.g. object moved / gripper closed
+        relevance_mask: FloatTensor[H, W]
+        future_latent: optional predicted next or short-horizon visual latent
+        goal_progress: optional scalar score measuring movement toward the language goal
+        evidence: metadata for audit, e.g. predicted object/contact/state change
     """
 ```
 
-Action teacher 不替代行为克隆标签，而是给候选 delta EEF 或 action chunk 一个可达性/流形分数：
+Action expert 也只作为 refiner，用于评估候选动作或区域是否在可行操作流形上：
 
 ```python
-def compute_action_teacher(action_model, obs_t, instruction, candidate_action):
+def compute_action_relevance_from_action_expert(action_model, obs_t, instruction, candidate_action, phase):
     """
     Returns:
-        action_score: feasibility or likelihood under the teacher action model
-        action_embedding: optional teacher action representation
+        relevance_mask: optional FloatTensor[H, W]
+        candidate_score: feasibility or likelihood under the teacher action model
+        evidence: action embedding or attribution metadata
     """
 ```
 
-这两个教师的实验目标不同：
+三个信号的实验目标不同：
 
 - `T_sem` 检验词-区域 grounding；
-- `T_dyn` 检验动作后果和目标状态演化；
-- `T_act` 检验动作是否落在可行操作分布。
+- `R_act` 检验当前动作阶段下哪些语义区域真的与成功有关；
+- `T_AR` 检验 action-relevant semantic map 是否优于静态 semantic map。
 
-因此报告时必须分开列出 `sem only`、`sem + dyn`、`sem + act`、`sem + dyn + act`，不能只报告一个混合 teacher 的最终分数。
+因此报告时必须分开列出 `T_sem only`、`T_sem + random R_act`、`T_sem + wrong-stage R_act`、`T_AR correct`，不能只报告一个混合 teacher 的最终分数。
 
 ### 5.3 学生归因标准接口
 
