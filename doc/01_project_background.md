@@ -72,9 +72,19 @@
 | VLM 自监督归因教师，例如强 Qwen/DeepSeek 的离线归因 | 否，作为备选 | 若扩散图对真实图像物体定位不稳定，可做 ensemble 或 sanity check | 容易把学生模型偏差当教师 |
 | Action-Relevance Refiner，例如 LIBERO 轨迹规则、LingBot-VA、π0、Qwen-RobotManip | 是，但只进入 VLA 扩展阶段 | 细化 `T_sem`，判断当前阶段哪些语义区域与动作成败有关 | 若直接蒸馏动作，会变成别人的 VLA 策略蒸馏 |
 
-首轮 VLM 只使用扩散教师，避免把“空间 grounding 是否有效”和“动作相关性细化是否有效”混在一起。VLA 阶段预留 Action-Relevance Refiner，形成更细的研究问题：扩散教师回答“语义上应该看哪里”，refiner 回答“当前动作阶段应该在这些语义区域里重点看哪里”。
+首轮 VLM 只使用扩散教师，避免把“空间 grounding 是否有效”和“动作相关性细化是否有效”混在一起。VLA 阶段同时保留 B/C/D 三条路线，但优先级不同：D 是主方法，B 是扩展，C 是诊断。这样最终都服务于同一点：让 VLA 内部的动作证据从语言相关进一步变成动作相关。
 
-### 4.1 语义教师到动作相关教师图
+### 4.1 VLA 动作相关性的三条路线
+
+| 路线 | 名称 | 核心机制 | 定位 |
+|---|---|---|---|
+| B | Action-Relevance Refiner | 用 world/action 模型或规则生成 `R_act`，将 `T_sem` 细化成 `T_AR` | 可选扩展 |
+| C | LIBERO 状态投影弱 refiner | 用仿真 3D 状态、EEF/target 投影、mask/depth/heightmap 构造弱动作相关区域 | 诊断和 sanity check |
+| D | Structure-Native Action Attribution Consistency | 利用模型内部 language attribution、action query/action head attribution 和层级结构做一致性监督 | 主方法 |
+
+我们更倾向 D。B/C 不删除，因为它们能提供工程可行的对照和解释工具，但不能抢占主创新。主创新不是外部预测 grasp/affordance map，而是约束 VLA 自身结构中“语言证据 → 动作证据”的空间一致性。
+
+### 4.2 语义教师到动作相关教师图
 
 | 组件 | 记号 | 来源 | 监督对象 | 进入阶段 |
 |---|---|---|---|---|
@@ -93,6 +103,25 @@
 `L = L_task + λ_sem L_sem + λ_ar L_action_relevance`
 
 首轮 VLM 只开启 `L_sem`。LIBERO 主实验先开启 `L_sem`，随后在扩展组中使用 `T_AR` 替代或补充 `T_sem`。如果 `L_action_relevance` 带来提升，必须报告它主要修复的是接触、可达性、遮挡、阶段切换还是长时序失败，而不是简单提升物体定位。
+
+### 4.3 主方法：结构内生动作归因一致性
+
+D 路线的核心链路是：
+
+`T_sem → A_lang → A_act`
+
+其中 `A_lang` 是模型内部语言词或短语对视觉 token 的归因图，`A_act` 是动作 query、动作 token 或 action head 对视觉 token 的归因图。Lavender 只锚定 `A_lang`，动作监督主要来自模型内部结构一致性：
+
+`L_sem = D(A_lang, T_sem)`
+
+`L_contain = Σ_i A_act(i) · (1 - A_lang_union(i))`
+
+`A_lang_union` 是 source object、target object 等语言相关区域的并集。`L_contain` 的含义是：动作决策使用的视觉证据不应大量跑到语言无关区域。若能从 demonstration 推断阶段，再加入轻量阶段约束：
+
+- grasp 阶段：`A_act` 应主要落在 source object 的 `A_lang` 内；
+- place/release 阶段：`A_act` 应逐步迁移到 target object 的 `A_lang` 内。
+
+这一路线不需要外部抓取区域真值，也不直接蒸馏其他 VLA 的动作。B/C 只用来检查 `A_act` 是否落在合理阶段区域，或在 D 效果不足时作为扩展 refiner。
 
 ## 5. SpikingBrain 的网络结构与可对齐对象
 

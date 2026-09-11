@@ -38,7 +38,7 @@ git push -u origin main
 | P3 | 学生归因接口诊断 | attention/gradient/action attribution 报告 | [ ] |
 | P4 | VLM grounding 证明 | SpikingBrain/Qwen/DeepSeek 上的归因对齐结果 | [ ] |
 | P5 | VLA delta EEF smoke | LIBERO 单任务闭环 | [ ] |
-| P6 | VLA 主方法训练 | SpikingBrain-VLA + selective attribution alignment | [ ] |
+| P6 | VLA 主方法训练 | D：Structure-Native Action Attribution Consistency | [ ] |
 | P7 | 跨模型、跨 VLA 骨干和动作相关性细化 | Qwen/DeepSeek/OpenVLA/π0/LingBot 对照表 | [ ] |
 | P8 | 消融和反证 | 随机、错图、错词、错层、无对齐结果 | [ ] |
 | P9 | 最终报告 | VLM + LIBERO 指标表、曲线、结论、真机计划 | [ ] |
@@ -210,6 +210,9 @@ git push
 - [ ] 训练无对齐 SpikingBrain-VLA baseline；
 - [ ] 加入 `[23,31]` 的 V0 similarity bridge；
 - [ ] 加入 VLM 阶段验证过的 gradient×input 归因对照；
+- [ ] 实现 D 路线：`A_lang` 由 Lavender 锚定，`A_act` 由 action query/action head 或 action loss gradient 得到；
+- [ ] 实现 `L_contain = Σ_i A_act(i) · (1 - A_lang_union(i))`；
+- [ ] 若阶段推断稳定，实现 grasp/source 与 place/target 的轻量 `L_phase`；
 - [ ] 使用归一化 MSE，初始 `lambda_align=0.05`；
 - [ ] 保存 `L_action`、`L_align`、成功率和归因 IoU；
 - [ ] 首版采用 `H=1`，不同时引入 action chunk；
@@ -220,7 +223,8 @@ git push
 - 对齐损失可下降且没有 NaN；
 - 动作损失没有因对齐项而发散；
 - 至少完成一个任务组的 baseline 与主方法配对实验；
-- VLM 阶段有效的教师图在 VLA 中仍优于错图/错词教师图；
+- VLM 阶段有效的语言教师图在 VLA 中仍能约束 `A_lang`；
+- `L_contain` 能减少 `A_act` 落到语言无关区域的比例；
 - 训练时使用教师图，推理时不依赖 Lavender。
 
 ### Git
@@ -240,15 +244,15 @@ git push
 - [ ] Qwen-RobotManip：优先做论文/接口对照，确认其表示、运动和行为对齐设计；
 - [ ] DeepSeek-VL2：完成 VLM grounding 和高分辨率 token/专家路由差异分析；
 - [ ] OpenVLA/OFT：跑官方 LIBERO 设置或可比设置，并尝试动作条件归因对齐；
-- [ ] 先用 LIBERO demonstration 派生 weak Action-Relevance Refiner：阶段标签、接触点、目标进展、source/target 区域切换；
-- [ ] LingBot-VA / LingBot-Video：评估是否能从未来 latent、目标状态进展或接触变化中生成 `R_act`；
-- [ ] π0、LingBot-VLA、Qwen-RobotManip：评估是否能从候选动作分数或动作归因中生成 `R_act`；
-- [ ] 完成 `T_sem only`、`T_sem + random R_act`、`T_sem + wrong-stage R_act`、`T_AR correct` 四组教师图设计；
+- [ ] B 路线：评估 LingBot-VA / LingBot-Video 是否能从未来 latent、目标状态进展或接触变化中生成 `R_act`；
+- [ ] B 路线：评估 π0、LingBot-VLA、Qwen-RobotManip 是否能从候选动作分数或动作归因中生成 `R_act`；
+- [ ] C 路线：用 LIBERO demonstration 派生 weak Action-Relevance Refiner：阶段标签、接触点、目标进展、source/target 区域切换；
+- [ ] 完成 `D only`、`D + C diagnostic`、`D + B refiner`、`B/C without D` 对照；
 - [ ] 统一记录输入图像、指令、动作接口、训练数据和参数量。
 
 ### 约束
 
-参考模型的动作接口若不同，必须分开报告原生结果和统一 7D delta EEF adapter 结果，不能混成一张不具可比性的表。VLM 阶段的普适性用 grounding 指标证明，VLA 阶段的普适性至少需要 SpikingBrain-VLA 与 OpenVLA/OFT 两类骨干。Action-Relevance Refiner 必须回答清楚：它是否把静态 `T_sem` 从 object-level saliency 细化成 phase-conditioned actionable saliency，而不是把另一个 VLA 的策略动作蒸馏过来。
+参考模型的动作接口若不同，必须分开报告原生结果和统一 7D delta EEF adapter 结果，不能混成一张不具可比性的表。VLM 阶段的普适性用 grounding 指标证明，VLA 阶段的普适性至少需要 SpikingBrain-VLA 与 OpenVLA/OFT 两类骨干。B/C 路线必须作为 D 的扩展或诊断出现，不能反过来变成主结论。
 
 ### Git
 
@@ -271,7 +275,9 @@ git push
 - [ ] 打乱词图；
 - [ ] 错词教师图；
 - [ ] 错配图片教师图；
+- [ ] `L_sem only`、`L_sem + L_contain`、`L_sem + L_contain + L_phase`；
 - [ ] `T_sem only`、`T_sem + random R_act`、`T_sem + wrong-stage R_act`、`T_AR correct`；
+- [ ] `D only`、`D + C diagnostic`、`D + B refiner`、`B/C without D`；
 - [ ] 直接蒸馏 action expert 的策略动作作为负面对照，证明本方法不是策略蒸馏；
 - [ ] world/video-action refiner 与扩散教师分开比较，不能混入首轮 VLM 主结论；
 - [ ] window/SWA/GLA 伪 attention 直接 MSE；

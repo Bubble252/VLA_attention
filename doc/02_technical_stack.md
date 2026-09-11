@@ -223,7 +223,34 @@ def compute_action_relevance_from_action_expert(action_model, obs_t, instruction
 
 因此报告时必须分开列出 `T_sem only`、`T_sem + random R_act`、`T_sem + wrong-stage R_act`、`T_AR correct`，不能只报告一个混合 teacher 的最终分数。
 
-### 5.3 动作相关区域的文献依据与首轮构造
+### 5.3 主方法 D：Structure-Native Action Attribution
+
+VLA 阶段的优先路线不是先构造外部动作区域，而是读取模型内部结构：
+
+| 内部信号 | 记号 | 推荐提取方式 | 用途 |
+|---|---|---|---|
+| 语言归因 | `A_lang(w)` | word/span hidden state 到 visual tokens 的 similarity、attention 或 gradient×input | 被 Lavender `T_sem` 锚定 |
+| 动作归因 | `A_act(a)` | action query attention、action token log-prob gradient、delta EEF loss gradient×activation | 表示动作决策依赖哪些视觉 token |
+| 层级角色 | `layer_type` | SpikingBrain full/window/GLA，或其他 VLM 的视觉层/融合层 | 决定哪些层参与主监督 |
+
+首版最小实现：
+
+```text
+1. 用 Lavender 监督 A_lang：L_sem = D(A_lang, T_sem)
+2. 用 action loss 对 visual tokens 求 A_act
+3. 约束 A_act 不跑出 A_lang_union：L_contain = Σ_i A_act(i) · (1 - A_lang_union(i))
+```
+
+若 demonstration 能稳定推断阶段，再加入：
+
+```text
+grasp:  A_act ⊂ A_lang(source)
+place:  A_act ⊂ A_lang(target)
+```
+
+这个版本的创新点是结构内生一致性：扩散教师只锚定语言证据，动作证据通过模型自己的 action query/action head 与语言证据保持一致。
+
+### 5.4 B/C 扩展：动作相关区域的文献依据与首轮构造
 
 相关工作里，“动作相关区域”通常不是凭 RGB 直觉画二维热力图，而是由几何、深度、像素动作值或接触状态构造：
 
@@ -235,7 +262,7 @@ def compute_action_relevance_from_action_expert(action_model, obs_t, instruction
 | 接触/状态变化 | Contact-GraspNet、接触丰富操作和视觉触觉工作 | 预测接触点、抓取点或物体状态变化 | grasp/lift 阶段应用 EEF/接触附近区域，而不是整物体 mask |
 | 动作流形/动作专家 | π0、Diffusion Policy、OpenVLA 类方法 | 输出连续动作、action chunk 或动作 token | 后续只用于候选动作 relevance，不作为策略蒸馏主教师 |
 
-因此首轮 `R_act` 应声明为 **image-plane proxy**：由仿真 3D 状态、相机投影、对象 mask/depth/heightmap 生成的二维弱动作相关区域，不是精确 3D affordance。它只用于细化 `T_sem`。
+因此 B/C 路线中的 `R_act` 应声明为 **image-plane proxy**：由仿真 3D 状态、相机投影、对象 mask/depth/heightmap 生成的二维弱动作相关区域，不是精确 3D affordance。它只用于细化 `T_sem` 或诊断 `A_act`，不是主方法的必要条件。
 
 推荐三档实现：
 
@@ -260,7 +287,7 @@ grasp 阶段的 V1 mask proxy 可以写成：
 
 只有 `T_AR correct` 明显优于这些负控时，才能声称动作相关细化有效。
 
-### 5.4 学生归因标准接口
+### 5.5 学生归因标准接口
 
 所有模型都实现同一个抽象接口：
 

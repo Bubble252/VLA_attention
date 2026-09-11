@@ -8,6 +8,8 @@
 
 VLA 扩展阶段不把 π0、LingBot 或 Qwen-RobotManip 当作直接输出动作的 policy teacher；它们只作为 **Action-Relevance Refiner** 候选，用于把 Lavender 的静态语义教师图细化为动作阶段相关的 `T_AR`。
 
+当前更倾向的 VLA 主方法是 **Structure-Native Action Attribution Consistency**：先用扩散图锚定模型内部语言归因 `A_lang`，再约束动作 query/action head 的归因 `A_act` 不偏离语言相关区域。Action-Relevance Refiner 和 LIBERO 状态投影保留为扩展与诊断，不作为主创新。
+
 先读：
 
 1. [`doc/01_project_background.md`](doc/01_project_background.md)
