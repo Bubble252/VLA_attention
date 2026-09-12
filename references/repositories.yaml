@@ -63,6 +63,13 @@ repositories:
     current_status: archived
     commit: "215abfb217dbac7d5f1273282331b9b1866c0479"
     role: "continuous_action_reference"
+  - id: next-forcing1
+    url: "https://github.com/gangweix/next-forcing1.git"
+    related_project_url: "https://github.com/gangweix/next-forcing"
+    local_path: "references/repos/next-forcing1"
+    current_status: pending_download
+    commit: null
+    role: "world_model_reference"
   - id: libero
     url: "https://github.com/Lifelong-Robot-Learning/LIBERO.git"
     local_path: "references/repos/libero"

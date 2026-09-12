@@ -13,6 +13,7 @@
 | C | π0/openpi、Diffusion Policy、GLA、Attention Sinks | `papers/` 与对应 `repos/` | 已归档 |
 | C | LingBot-VA、LingBot-VLA、LingBot-VLA 2.0、LingBot-Video | `papers/lingbot_*.pdf` 与 `repos/lingbot-*` | 已归档；用于视频/世界模型/VLA 架构参照 |
 | C | Phase segmentation / progress methods | `references/phase_segmentation/` | 已建立方法索引；PDF 待 7897 代理可用后归档 |
+| C | Next Forcing | `papers/next_forcing1_2606.11187.pdf`、`repos/next-forcing1` | 已建立 provenance 和分析；PDF/完整代码待 7897 代理可用后归档 |
 
 完整的版本与文件名分别见 `repo_versions.md`、`repositories.yaml` 和 `metadata.yaml`。
 

@@ -265,6 +265,19 @@ D1 有三种实现层级：
 
 这里不把 Qwen、LLaVA、DeepSeek 或 LingBot 直接拼进 SpikingBrain。第一阶段先在 VLM 任务上验证同一教师、不同学生归因接口都能受益；VLA 阶段再使用 SpikingBrain-VLA 和 OpenVLA/OFT 做动作闭环验证。
 
+## 8. Next Forcing 对本项目的启发与边界
+
+Next Forcing 是一个因果 world model 训练框架，通过链式 Multi-Chunk Prediction 同时预测多个未来视频 chunk，主要解决自回归视频模型的 myopic supervision。它不是 phase-label 数据集，也不是语言条件空间归因方法。
+
+对本项目的正确吸收方式是升级 B 路线，而不是替换 D：
+
+- D0 仍然负责当前时刻的 `A_act` containment；
+- D1 仍然负责 `source → mixed → target` 的阶段迁移；
+- Next Forcing / VAM 后期产生多时间尺度未来预测归因 `R_future^short/mid/long`；
+- 未来归因只用于检查或细化 `T_sem`，构造 `T_AR = Normalize(T_sem ⊙ R_future)`。
+
+因此项目后期可以增加一个 **Future-Consistent Language-Action Attribution Refinement** 实验，但不能把它写成首轮主创新。否则研究问题会从“语言条件空间归因对齐”变成“world model 预测训练”，同时引入视频动作数据和额外 backbone 混淆。完整分析见 `references/next_forcing/next_forcing_analysis.md`。
+
 ## 8. VLM 优先验证
 
 先在 VLM 上证明方法优越性，避免机器人控制噪声掩盖机制判断。首轮任务应选择能提供物体或区域证据的数据：

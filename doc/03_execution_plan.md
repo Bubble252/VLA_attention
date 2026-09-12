@@ -251,6 +251,8 @@ git push
 - [ ] Qwen-RobotManip：优先做论文/接口对照，确认其表示、运动和行为对齐设计；
 - [ ] OpenVLA/OFT：作为第二个 VLA 骨干做普适性验证，跑官方 LIBERO 设置或可比设置，并实现 attribution adapter；
 - [ ] B 路线：评估 LingBot-VA / LingBot-Video 是否能从未来 latent、目标状态进展或接触变化中生成 `R_act`；
+- [ ] B-next 路线：评估 Next Forcing 的多 chunk future prediction 是否能产生 short/mid/long `R_future`；
+- [ ] B-next 只做离线 future-attribution 分析，不在 D0/D1 首轮训练中引入额外 world-model loss；
 - [ ] B 路线：评估 π0、LingBot-VLA、Qwen-RobotManip 是否能从候选动作分数或动作归因中生成 `R_act`；
 - [ ] C 路线：用 LIBERO demonstration 派生 weak Action-Relevance Refiner：阶段标签、接触点、目标进展、source/target 区域切换；
 - [ ] 完成 `D only`、`D + C diagnostic`、`D + B refiner`、`B/C without D` 对照；
@@ -287,6 +289,7 @@ git push
 - [ ] `D only`、`D + C diagnostic`、`D + B refiner`、`B/C without D`；
 - [ ] 直接蒸馏 action expert 的策略动作作为负面对照，证明本方法不是策略蒸馏；
 - [ ] world/video-action refiner 与扩散教师分开比较，不能混入首轮 VLM 主结论；
+- [ ] Next Forcing 的 `R_future` 与 LIBERO event phase、D0/D1 `A_act` 分开报告；
 - [ ] window/SWA/GLA 伪 attention 直接 MSE；
 - [ ] V0 similarity 与 V1 gradient×input。
 

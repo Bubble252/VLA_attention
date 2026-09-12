@@ -80,6 +80,7 @@ download_pdf "diffusion_policy_2303.04137" "2303.04137" || true
 download_pdf "gla_2312.06635" "2312.06635" || true
 download_pdf "attention_sinks_2309.17453" "2309.17453" || true
 download_pdf "qwen_robotmanip_2606.17846" "2606.17846" || true
+download_pdf "next_forcing1_2606.11187" "2606.11187" || true
 
 clone_repo "qwen2.5-vl" "https://github.com/QwenLM/Qwen2.5-VL.git" || true
 clone_repo "qwen3-vl" "https://github.com/QwenLM/Qwen3-VL.git" || true
@@ -92,6 +93,7 @@ clone_repo "diffusion_policy" "https://github.com/real-stanford/diffusion_policy
 clone_repo "lingbot-va" "https://github.com/Robbyant/lingbot-va.git" || true
 clone_repo "lingbot-vla" "https://github.com/Robbyant/lingbot-vla.git" || true
 clone_repo "lingbot-vla-v2" "https://github.com/Robbyant/lingbot-vla-v2.git" || true
+clone_repo "next-forcing1" "https://github.com/gangweix/next-forcing1.git" || true
 
 if compgen -G "$PAPER_DIR/*.pdf" > /dev/null; then
   (cd "$ROOT_DIR/references" && sha256sum papers/*.pdf | LC_ALL=C sort > checksums.sha256)

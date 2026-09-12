@@ -223,6 +223,19 @@ def compute_action_relevance_from_action_expert(action_model, obs_t, instruction
 
 因此报告时必须分开列出 `T_sem only`、`T_sem + random R_act`、`T_sem + wrong-stage R_act`、`T_AR correct`，不能只报告一个混合 teacher 的最终分数。
 
+### 5.2.1 Next Forcing / future-attribution extension
+
+Next Forcing 只进入 B 路线的后期扩展。对当前观测、语言和候选动作，world model 预测多个时间尺度的未来视频 chunk：
+
+```text
+F^k_t = predicted future video chunk at horizon k
+R_future^k(i) = attribution of F^k_t to visual patch i
+R_future(i) = Σ_k β_k R_future^k(i)
+T_AR = Normalize(T_sem ⊙ R_future)
+```
+
+首版不将 `R_future` 写入 D0/D1 的训练损失。先做离线分析：比较 `A_act(t)` 与 short/mid/long future attribution 的相关性，并使用 random-horizon、wrong-action、wrong-future 等负控。只有当未来归因和成功/失败的未来状态变化有稳定关系，才考虑把它作为 B 的 refinement mask。
+
 ### 5.3 主方法 D：Structure-Native Action Attribution
 
 VLA 阶段的优先路线不是先构造外部动作区域，而是读取模型内部结构：
