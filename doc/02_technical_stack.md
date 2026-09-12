@@ -225,6 +225,10 @@ def compute_action_relevance_from_action_expert(action_model, obs_t, instruction
 
 ### 5.2.1 Next Forcing / future-attribution extension
 
+#### WAM/VAM 与 VLA 的接口
+
+世界模型负责预测状态转移，视频生成模型负责生成未来观测，VLA 负责输出 delta EEF 动作。B 路线把前两者作为冻结的未来评估器：对 VLA 的候选动作 rollout 后提取未来视频归因 `R_future`，再与 `T_sem` 相乘得到 `T_AR`。该接口只提供 action relevance refiner，不改变 VLA 的基本动作头。
+
 Next Forcing 只进入 B 路线的后期扩展。对当前观测、语言和候选动作，world model 预测多个时间尺度的未来视频 chunk：
 
 ```text

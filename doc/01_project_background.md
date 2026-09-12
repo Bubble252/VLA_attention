@@ -267,6 +267,12 @@ D1 有三种实现层级：
 
 ## 8. Next Forcing 对本项目的启发与边界
 
+### 8.1 世界模型、视频生成模型与 VLA 的关系
+
+WAM/VAM 相关工作中的三个组件职责不同：世界模型学习动作导致的环境状态变化；视频生成模型是世界模型的常见实现，通过 autoregressive 或 diffusion latent 生成未来观测；VLA 则根据当前视觉观测和语言指令直接输出机器人动作（本项目使用 delta EEF）。因此，视频模型回答“执行后会发生什么”，VLA 回答“现在执行什么”，二者可以串联为候选动作生成与未来结果评估。
+
+在本项目中它们位于 B 方案：冻结的 WAM/VAM 根据候选动作产生未来视频或 latent，并计算未来归因 `R_future`；再与 Lavender 的语言条件图组合为 `T_AR = Normalize(T_sem ⊙ R_future)`，用于动作相关性分析或后期细化。WAM/VAM 不替代 VLA，也不进入 D0/D1 的默认损失。
+
 Next Forcing 是一个因果 world model 训练框架，通过链式 Multi-Chunk Prediction 同时预测多个未来视频 chunk，主要解决自回归视频模型的 myopic supervision。它不是 phase-label 数据集，也不是语言条件空间归因方法。
 
 对本项目的正确吸收方式是升级 B 路线，而不是替换 D：
