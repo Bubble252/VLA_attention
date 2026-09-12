@@ -380,3 +380,11 @@ git push
 - 负控与正确教师图效果没有区别。
 
 这些问题应先写入 issue 和 commit，而不是通过增加训练轮数掩盖。
+
+## 核心主线与数据集定位补充
+
+核心 idea 是用 Lavender 的语言条件空间教师约束空间归因，并让 VLA 动作归因与语言相关区域一致。P1–P4 是主线必需，负责接口、坐标桥和 VLM 证据；P5–P6/P8–P9 是主线验证，负责 LIBERO 机制验证、DROID 泛化验证和反事实排除；P7 的 B/C 与 D1 是后期扩展，不能改变 D0 核心假设。任何新增模型必须说明其对归因可信度、动作相关性或跨模型迁移的贡献。
+
+LIBERO 只承担可控的接口与机制 smoke test；DROID 是最终数据泛化验证集。DROID 阶段必须固定官方版本和 commit，选择与 pick-place 对应的子集，统一 RGB、语言、proprioception 和 7D delta EEF，按场景或任务划分数据，并重跑 occlusion、语言反事实、state 遮挡和 sink-free 对照。主结果至少包含 baseline、D0、错误教师和随机教师。
+
+当前仍需确认：DROID 首轮子集与 episode 数、视频帧率、动作是否直接采用官方末端增量表示、首轮做离线预测还是 rollout，以及 LIBERO/DROID 的机制与泛化分工。当前建议 LIBERO 做机制、DROID 做泛化，具体字段待下载完成后冻结。
