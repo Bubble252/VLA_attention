@@ -225,6 +225,12 @@ def compute_action_relevance_from_action_expert(action_model, obs_t, instruction
 
 ### 5.2.1 Next Forcing / future-attribution extension
 
+### 5.2.2 Attention Sink 处理原则
+
+Attention sink 是少数特殊 token 或固定位置长期吸收注意力/归因质量的现象。它会让二维热力图看起来有高亮，却不代表模型真正使用了目标区域。因此 P3 先做 sink-free 诊断：统计特殊 token、边缘 patch 和高频 patch 的归因质量，并比较 mask 前后的空间熵、目标 IoU 与增强一致性。
+
+主方法不把 sink removal 宣称为核心创新。只有当 sink 对结果有实质影响时，才启用明确的 mask、重归一化或 token-drop，并在 P8 报告 raw/sink-free 和多种 mask 的消融。这样可以区分“归因对齐带来的收益”和“去掉热点后指标变好”的预处理收益。
+
 #### WAM/VAM 与 VLA 的接口
 
 世界模型负责预测状态转移，视频生成模型负责生成未来观测，VLA 负责输出 delta EEF 动作。B 路线把前两者作为冻结的未来评估器：对 VLA 的候选动作 rollout 后提取未来视频归因 `R_future`，再与 `T_sem` 相乘得到 `T_AR`。该接口只提供 action relevance refiner，不改变 VLA 的基本动作头。

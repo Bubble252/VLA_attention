@@ -124,6 +124,17 @@ git push
 
 ## 6. P3：学生归因接口诊断
 
+### 6.0 Attention Sink / 归因稳定性前置诊断
+
+- [ ] 在正式热力图训练前，对每个模型计算视觉 token 的总归因质量、top-1 token mass、空间熵和跨层/跨增强一致性；
+- [ ] 检查 BOS/CLS、padding、分隔符以及固定边缘 patch 是否长期吸收高权重；
+- [ ] 对 full-attention、window/SWA、GLA 和 gradient×activation 分别做 sink mask 对照；
+- [ ] 只将 sink-free 归一化结果用于主损失，原始图和 sink-free 图都保存用于审计；
+- [ ] 若 sink mask 改变目标 IoU 超过预设阈值（建议 5 个百分点），将该模型标记为“需 sink 校正”，并把校正作为 P3 的必需接口；
+- [ ] 增加 token-drop、输入裁剪和指令改写三种稳定性测试，确认峰值来自目标区域而非固定 token；
+
+这里的目标不是提出新的 Sink-free Attention 方法，而是确认热力图具有空间语义。Sink 诊断只作为归因质量控制和负控；除非它显著影响 VLM 结果，否则不单独训练 sink-removal 模块。
+
 ### 任务
 
 - [ ] 导出 SpikingBrain `[7,15,23,31]` full-attention 层的 q/k/v 或可用权重；
@@ -162,6 +173,8 @@ git push
 - [ ] 在 LLaVA-1.6/OneVision 上使用同一 teacher-to-attribution 接口做 VLM 普适性对照；
 - [ ] 记录正确教师图、错词教师图、错图教师图、随机教师图；
 - [ ] 报告 pointing accuracy、目标区域 IoU、VQA/grounding accuracy、归因图熵。
+- [ ] 同时报告 raw attribution 与 sink-free attribution，避免仅凭未经校正的热力图宣称方法有效；
+- [ ] 增加 sink-only、边缘 patch-only 和随机空间图负控，检验指标是否会被固定热点投机获得；
 
 ### 验收
 
@@ -292,6 +305,9 @@ git push
 - [ ] Next Forcing 的 `R_future` 与 LIBERO event phase、D0/D1 `A_act` 分开报告；
 - [ ] window/SWA/GLA 伪 attention 直接 MSE；
 - [ ] V0 similarity 与 V1 gradient×input。
+- [ ] raw map vs sink-free map；
+- [ ] sink mask 类型：特殊 token、固定边缘 patch、数据驱动高频 patch；
+- [ ] sink 诊断关闭时的结果，确认收益不是由预处理本身造成。
 
 每个消融至少固定数据划分、seed、训练预算和动作头。若资源有限，VLM 阶段优先保证正确教师、错词、错图、随机教师四组；VLA 阶段优先保证 `[23,31]`、无对齐、随机层、错图四组。
 
