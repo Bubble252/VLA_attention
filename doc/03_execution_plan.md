@@ -129,11 +129,17 @@ git push
 - [ ] 在正式热力图训练前，对每个模型计算视觉 token 的总归因质量、top-1 token mass、空间熵和跨层/跨增强一致性；
 - [ ] 检查 BOS/CLS、padding、分隔符以及固定边缘 patch 是否长期吸收高权重；
 - [ ] 对 full-attention、window/SWA、GLA 和 gradient×activation 分别做 sink mask 对照；
-- [ ] 只将 sink-free 归一化结果用于主损失，原始图和 sink-free 图都保存用于审计；
+- [ ] 不默认把 sink-free 图直接用于主损失；先以 raw/sink-free 双轨结果和干预归因作决定，避免把预处理收益误当成对齐收益；
 - [ ] 若 sink mask 改变目标 IoU 超过预设阈值（建议 5 个百分点），将该模型标记为“需 sink 校正”，并把校正作为 P3 的必需接口；
 - [ ] 增加 token-drop、输入裁剪和指令改写三种稳定性测试，确认峰值来自目标区域而非固定 token；
+- [ ] 对每个候选层至少抽取若干 head，报告 head-wise 与 head-mean 结果；
+- [ ] 增加 patch occlusion/intervention 归因：遮挡单个或小块视觉 patch，测量动作变化 `Δa`，作为 attention/gradient 热力图的外部校准；
 
 这里的目标不是提出新的 Sink-free Attention 方法，而是确认热力图具有空间语义。Sink 诊断只作为归因质量控制和负控；除非它显著影响 VLM 结果，否则不单独训练 sink-removal 模块。
+
+### 6.1 归因证据等级
+
+实验报告按证据强度分层：patch occlusion/intervention 是决策相关性的校准证据；gradient×activation 是可微代理；attention 权重只是结构线索。任何“模型看到了目标”的结论至少要由干预结果或语言/状态反事实实验支持，不能只凭漂亮热力图。
 
 ### 任务
 
@@ -173,6 +179,8 @@ git push
 - [ ] 在 LLaVA-1.6/OneVision 上使用同一 teacher-to-attribution 接口做 VLM 普适性对照；
 - [ ] 记录正确教师图、错词教师图、错图教师图、随机教师图；
 - [ ] 报告 pointing accuracy、目标区域 IoU、VQA/grounding accuracy、归因图熵。
+- [ ] 对 VLA 热力图增加 patch occlusion 的 `Δa` IoU/pointing 对照，检查 attention 与真实动作敏感区域是否一致；
+- [ ] 增加语言反事实（相关/不相关指令）和 state 遮挡反事实，区分视觉 grounding、语言条件和 state shortcut；
 - [ ] 同时报告 raw attribution 与 sink-free attribution，避免仅凭未经校正的热力图宣称方法有效；
 - [ ] 增加 sink-only、边缘 patch-only 和随机空间图负控，检验指标是否会被固定热点投机获得；
 
@@ -201,6 +209,7 @@ git push
 - [ ] 接入 7D delta EEF action head；
 - [ ] 实现动作限幅、归一化和反归一化；
 - [ ] 保存完整 rollout 和失败原因；
+- [ ] 保存 patch occlusion、语言反事实和 state 遮挡的 rollout/动作差异，作为 LIBERO shortcut 诊断；
 - [ ] 先用随机或冻结主干验证环境接口。
 
 ### 验收
@@ -235,6 +244,7 @@ git push
 - [ ] 保存 `L_action`、`L_align`、成功率和归因 IoU；
 - [ ] 首版采用 `H=1`，不同时引入 action chunk；
 - [ ] 记录训练/验证/测试拆分和随机种子。
+- [ ] 记录微调前后一个轻量 VLM/VQA 保留集结果，检查 action loss 是否造成视觉语言能力退化；
 
 ### 验收
 
@@ -302,6 +312,8 @@ git push
 - [ ] `D only`、`D + C diagnostic`、`D + B refiner`、`B/C without D`；
 - [ ] 直接蒸馏 action expert 的策略动作作为负面对照，证明本方法不是策略蒸馏；
 - [ ] world/video-action refiner 与扩散教师分开比较，不能混入首轮 VLM 主结论；
+- [ ] 增加 head-wise、layer-wise 与 head-mean 对照，禁止只展示单层平均 attention；
+- [ ] 增加 LIBERO 与一个分布更真实或视觉变化更大的保留集/数据增强对照；若暂时没有 DROID 数据，至少做背景、机械臂位姿、物体颜色和相机裁剪扰动；
 - [ ] Next Forcing 的 `R_future` 与 LIBERO event phase、D0/D1 `A_act` 分开报告；
 - [ ] window/SWA/GLA 伪 attention 直接 MSE；
 - [ ] V0 similarity 与 V1 gradient×input。
