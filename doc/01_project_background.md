@@ -112,9 +112,13 @@ D 路线的核心链路是：
 
 其中 `A_lang` 是模型内部语言词或短语对视觉 token 的归因图，`A_act` 是动作 query、动作 token 或 action head 对视觉 token 的归因图。Lavender 只锚定 `A_lang`，动作监督主要来自模型内部结构一致性：
 
-`L_sem = D(A_lang, T_sem)`
+$$
+L_{\mathrm{sem}}=D\!\left(A_{\mathrm{lang}},T_{\mathrm{sem}}\right).
+$$
 
-`L_contain = Σ_i A_act(i) · (1 - A_lang_union(i))`
+$$
+L_{\mathrm{contain}}=\sum_i A_{\mathrm{act}}(i)\left(1-A_{\mathrm{lang}}^{\cup}(i)\right).
+$$
 
 `A_lang_union` 是 source object、target object 等语言相关区域的并集。`L_contain` 的含义是：动作决策使用的视觉证据不应大量跑到语言无关区域。这是 **D0：静态 containment**，也是首版 VLA 主方法。
 
@@ -124,9 +128,13 @@ D 路线的核心链路是：
 
 对 pick-place 任务，D1 的软目标写成：
 
-`A_phase(t) = α_t · A_lang(source) + (1 - α_t) · A_lang(target)`
+$$
+A_{\mathrm{phase}}(t)=\alpha_t A_{\mathrm{lang}}(\mathrm{source})+(1-\alpha_t)A_{\mathrm{lang}}(\mathrm{target}).
+$$
 
-`L_phase = D(A_act(t), A_phase(t))`
+$$
+L_{\mathrm{phase}}=D\!\left(A_{\mathrm{act}}(t),A_{\mathrm{phase}}(t)\right).
+$$
 
 其中 `α_t` 来自成功 demonstration 的事件边界，而不是首轮依赖 world model。推荐先检测 `grasp`、`lift/move`、`near_target`、`release` 等事件，再映射成软权重：source 阶段 `α≈0.9`，mixed 阶段 `α≈0.5`，target 阶段 `α≈0.1`。如果五阶段检测不稳定，就退化成三阶段：before grasp、after grasp before near target、after near target。
 
@@ -235,7 +243,9 @@ D1 有三种实现层级：
 
 对每个对象词和被选中的层：
 
-`L_align = Σ_l w_l · D(norm(A_l), norm(T))`
+$$
+L_{\mathrm{align}}=\sum_l w_l\,D\!\left(\operatorname{norm}(A_l),\operatorname{norm}(T)\right).
+$$
 
 其中 `D` 首先采用 MSE，同时记录 KL/cosine 作为诊断。VLM 阶段总损失为：
 

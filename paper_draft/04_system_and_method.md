@@ -37,9 +37,9 @@ $$
 
 归一化后得到 $A_{\mathrm{lang}}(w,x)$。训练损失为
 
-\[
-L_{sem}=\sum_{w,l}m_w\,D(\operatorname{Norm}(A_l(w,x)),\operatorname{Norm}(T_{sem}(w,x))).
-\]
+$$
+L_{\mathrm{sem}}=\sum_{w,l}m_w\,D\!\left(\operatorname{Norm}(A_l(w,x)),\operatorname{Norm}(T_{\mathrm{sem}}(w,x))\right).
+$$
 
 首选 `D=MSE`，同时记录 KL 和 cosine。
 
@@ -56,29 +56,32 @@ SpikingBrain 同时包含局部窗口、全局 attention 和 GLA。本文不把�
 
 动作归因默认使用动作损失或动作输出对视觉 token 的 gradient×activation：
 
-\[
-A_{act}(i)=\left|\frac{\partial L_{action}}{\partial h_i}\odot h_i\right|.
-\]
+$$
+A_{\mathrm{act}}(i)=\left|\frac{\partial L_{\mathrm{action}}}{\partial h_i}\odot h_i\right|.
+$$
 
 若为离散 action token，使用 token log-prob gradient；若存在 action query attention，作为结构内生对照。
 
 定义语言相关区域并集：
 
-\[
-A_{lang}^{\cup}(i)=\max_{w\in\{source,target,tool\}}A_{lang}(w,i).
-\]
+$$
+A_{\mathrm{lang}}^{\cup}(i)=\max_{w\in\{\mathrm{source},\mathrm{target},\mathrm{tool}\}}A_{\mathrm{lang}}(w,i).
+$$
 
 D0 containment：
 
-\[
-L_{contain}=\frac{1}{N}\sum_i A_{act}(i)(1-A_{lang}^{\cup}(i)).
-\]
+$$
+L_{\mathrm{contain}}=\frac{1}{N}\sum_i A_{\mathrm{act}}(i)\left(1-A_{\mathrm{lang}}^{\cup}(i)\right).
+$$
 
 总损失：
 
-\[
-L=L_{task}+\lambda_{sem}L_{sem}+\lambda_{contain}L_{contain}+\lambda_{smooth}L_{smooth}.
-\]
+$$
+\begin{aligned}
+L={}&L_{\mathrm{task}}+\lambda_{\mathrm{sem}}L_{\mathrm{sem}}\\
+&+\lambda_{\mathrm{contain}}L_{\mathrm{contain}}+\lambda_{\mathrm{smooth}}L_{\mathrm{smooth}}.
+\end{aligned}
+$$
 
 首版 `H=1`，不引入 action chunk；`λ` 由验证集选择。
 

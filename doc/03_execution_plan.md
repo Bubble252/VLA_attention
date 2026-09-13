@@ -236,7 +236,12 @@ git push
 - [ ] 加入 VLM 阶段验证过的 gradient×input 归因对照；
 - [ ] 实现 D 路线：`A_lang` 由 Lavender 锚定，`A_act` 默认由 action loss 或 action output 对 visual tokens 的 gradient×activation 得到；
 - [ ] 若模型天然提供 action query attention，则作为可解释分支记录，不作为默认前提；
-- [ ] 实现 D0：`L_contain = Σ_i A_act(i) · (1 - A_lang_union(i))`；
+- [ ] 实现 D0 containment：
+
+  $$
+  L_{\mathrm{contain}}=\sum_i A_{\mathrm{act}}(i)\left(1-A_{\mathrm{lang}}^{\cup}(i)\right).
+  $$
+
 - [ ] 暂不把 `L_phase` 作为首版依赖；只记录 source/target attribution mass，检查是否自然出现 source→mixed→target 迁移；
 - [ ] 后期实现 D1a/D1b：用 LIBERO 状态规则或成功 demonstration 事件边界构造 soft phase target `A_phase(t)`；
 - [ ] D1 默认使用三阶段 `source / mixed / target`，五阶段 `approach_source / grasp / move / approach_target / release` 只在事件检测稳定后启用；

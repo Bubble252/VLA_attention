@@ -174,11 +174,15 @@ teacher:
 
 Action-Relevance Refiner 不直接监督最终动作，不替代行为克隆标签，也不把 π0、LingBot 或 Qwen-RobotManip 当作 policy teacher。它只生成一个 refinement mask：
 
-`R_act(w,x,a,s) ∈ R^(H×W)`
+$$
+R_{\mathrm{act}}(w,x,a,s)\in\mathbb{R}^{H\times W}.
+$$
 
 用于把 `T_sem(w,x)` 从 object-level semantic map 细化为 phase-conditioned actionable map：
 
-`T_AR(w,x,a,s) = Normalize(T_sem(w,x) ⊙ R_act(w,x,a,s))`
+$$
+T_{\mathrm{AR}}(w,x,a,s)=\operatorname{Normalize}\!\left(T_{\mathrm{sem}}(w,x)\odot R_{\mathrm{act}}(w,x,a,s)\right).
+$$
 
 首选实现来自 LIBERO demonstration 的弱规则，而不是直接依赖大模型 teacher：
 
@@ -382,7 +386,9 @@ phase[t >= t_near_target] = "target"
 
 grasp 阶段的 V1 mask proxy 可以写成：
 
-`R_act(u,v)=Mask_source(u,v) · exp(-||[u,v]-Π(p_eef)||² / 2σ²)`
+$$
+R_{\mathrm{act}}(u,v)=\operatorname{Mask}_{\mathrm{source}}(u,v)\exp\!\left(-\frac{\left\|[u,v]-\Pi(p_{\mathrm{eef}})\right\|^2}{2\sigma^2}\right).
+$$
 
 其中 `Π(p_eef)` 是 EEF 3D 位置投影到 RGB 图像平面的点。place 阶段则把高斯中心换成 target receptacle 的 opening/center/top region。这样二维高亮的依据是 3D 状态投影和对象 mask，而不是模型凭空猜接触点。
 
