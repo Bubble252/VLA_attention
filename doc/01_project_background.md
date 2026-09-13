@@ -273,6 +273,17 @@ WAM/VAM 相关工作中的三个组件职责不同：世界模型学习动作导
 
 在本项目中它们位于 B 方案：冻结的 WAM/VAM 根据候选动作产生未来视频或 latent，并计算未来归因 `R_future`；再与 Lavender 的语言条件图组合为 `T_AR = Normalize(T_sem ⊙ R_future)`，用于动作相关性分析或后期细化。WAM/VAM 不替代 VLA，也不进入 D0/D1 的默认损失。
 
+### 8.2 B 路线是否升级为主线：决策门槛
+
+当前主线仍是 D：`T_sem → A_lang → A_act`。B 只有在以下证据同时成立时才考虑升级：
+
+1. WAM/VAM 的未来归因 `R_future` 在 DROID 上比静态 `T_sem` 更能预测动作成功/失败；
+2. short/mid/long horizon 的归因与真实未来状态变化具有稳定相关性，并通过 wrong-action、wrong-future 和 random-horizon 负控；
+3. 加入 `T_AR` 后，至少在跨场景或跨物体测试中提升 success rate，同时不损害 VLM grounding；
+4. 增益不能由额外视频帧、参数量或数据量单独解释。
+
+若只观察到未来视频更逼真、attention 图更漂亮或离线 action loss 下降，B 仍是辅助分析模块。只有当它把“语言相关区域”进一步变成“会导致未来任务结果的区域”，才具备升级为主线的研究价值。
+
 Next Forcing 是一个因果 world model 训练框架，通过链式 Multi-Chunk Prediction 同时预测多个未来视频 chunk，主要解决自回归视频模型的 myopic supervision。它不是 phase-label 数据集，也不是语言条件空间归因方法。
 
 对本项目的正确吸收方式是升级 B 路线，而不是替换 D：
