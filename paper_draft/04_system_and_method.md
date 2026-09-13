@@ -2,11 +2,20 @@
 
 ## 4.1 输入与符号
 
-当前观测为 `x_t`，语言指令为 `w`，视觉 token 为 `h_i`，候选动作是：
+当前观测为 $x_t$，语言指令为 $w$，第 $i$ 个视觉 token 为 $h_i$。动作输出统一为
 
-`a_t = [Δx, Δy, Δz, Δroll, Δpitch, Δyaw, gripper] ∈ R^7`。
+$$
+a_t = [\Delta x,\Delta y,\Delta z,\Delta r_x,\Delta r_y,\Delta r_z,g]
+\in \mathbb{R}^{7}.
+$$
 
-教师图 `T_sem(w,x) ∈ R^(H×W)` 来自 Lavender。所有学生图最终恢复到输入图像坐标。
+Lavender 提供语义教师图
+
+$$
+T_{\mathrm{sem}}(w,x)\in\mathbb{R}^{H\times W},
+$$
+
+所有学生归因图最终恢复到输入图像坐标。
 
 ## 4.2 Spatial Attribution Bridge
 
@@ -26,7 +35,7 @@
 - 通用接口：答案 log-prob/grounding score 对视觉 hidden state 的 gradient×activation；
 - 相似度 proxy：`|cos(q_w,h_i)|`，只作诊断。
 
-归一化后得到 `A_lang(w,x)`。训练损失：
+归一化后得到 $A_{\mathrm{lang}}(w,x)$。训练损失为
 
 \[
 L_{sem}=\sum_{w,l}m_w\,D(\operatorname{Norm}(A_l(w,x)),\operatorname{Norm}(T_{sem}(w,x))).
@@ -83,13 +92,14 @@ source-dominant → mixed → target-dominant
 
 软目标：
 
-\[
-A_{phase}(t)=\alpha_tA_{lang}(source)+(1-\alpha_t)A_{lang}(target),
-\]
+$$
+A_{\mathrm{phase}}(t)=\alpha_t A_{\mathrm{lang}}(source)
+ +(1-\alpha_t)A_{\mathrm{lang}}(target),
+$$
 
-\[
-L_{phase}=D(A_{act}(t),A_{phase}(t)).
-\]
+$$
+L_{\mathrm{phase}}=D\big(A_{\mathrm{act}}(t),A_{\mathrm{phase}}(t)\big).
+$$
 
 五阶段仅在事件检测稳定后启用。反向 phase、随机 phase、固定时间百分比和错 source/target 是必需负控。
 
@@ -97,18 +107,22 @@ L_{phase}=D(A_{act}(t),A_{phase}(t)).
 
 WAM/VAM 给定 `x_t,w,a_{t:t+H}` 预测未来视频/latent `F^k_t`。先定义未来目标标量 `S^k`（例如目标接近度或接触进展），再得到：
 
-\[
-r^k_{grad}(i)=|h_i\odot\partial S^k/\partial h_i|,
-\]
+$$
+r^k_{\mathrm{grad}}(i)=
+\left|h_i\odot\frac{\partial S^k}{\partial h_i}\right|,
+$$
 
-\[
-r^k_{occ}(i)=|S^k(x_t)-S^k(mask_i(x_t))|,
-\]
+$$
+r^k_{\mathrm{occ}}(i)=
+\left|S^k(x_t)-S^k(\operatorname{mask}_i(x_t))\right|,
+$$
 
-\[
-R_{future}=Norm(\sum_k\beta_kr^k),\qquad
-T_{AR}=Norm(T_{sem}\odot R_{future}).
-\]
+$$
+R_{\mathrm{future}}=\operatorname{Norm}\left(\sum_k\beta_k r^k\right),
+\qquad
+T_{\mathrm{AR}}=\operatorname{Norm}
+\left(T_{\mathrm{sem}}\odot R_{\mathrm{future}}\right).
+$$
 
 B 只在 D0/D1 成立后进行离线分析，加入 wrong-action、wrong-future、random-horizon 和低置信度回退。若 WAM/VAM 不接受动作条件，不称为动作后果评估器。
 
