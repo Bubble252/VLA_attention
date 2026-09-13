@@ -225,12 +225,6 @@ def compute_action_relevance_from_action_expert(action_model, obs_t, instruction
 
 ### 5.2.1 Next Forcing / future-attribution extension
 
-### 5.2.2 Attention Sink 处理原则
-
-Attention sink 是少数特殊 token 或固定位置长期吸收注意力/归因质量的现象。它会让二维热力图看起来有高亮，却不代表模型真正使用了目标区域。因此 P3 先做 sink-free 诊断：统计特殊 token、边缘 patch 和高频 patch 的归因质量，并比较 mask 前后的空间熵、目标 IoU 与增强一致性。
-
-主方法不把 sink removal 宣称为核心创新。只有当 sink 对结果有实质影响时，才启用明确的 mask、重归一化或 token-drop，并在 P8 报告 raw/sink-free 和多种 mask 的消融。这样可以区分“归因对齐带来的收益”和“去掉热点后指标变好”的预处理收益。
-
 #### WAM/VAM 与 VLA 的接口
 
 世界模型负责预测状态转移，视频生成模型负责生成未来观测，VLA 负责输出 delta EEF 动作。B 路线把前两者作为冻结的未来评估器：对 VLA 的候选动作 rollout 后提取未来视频归因 `R_future`，再与 `T_sem` 相乘得到 `T_AR`。该接口只提供 action relevance refiner，不改变 VLA 的基本动作头。
@@ -245,6 +239,43 @@ T_AR = Normalize(T_sem ⊙ R_future)
 ```
 
 首版不将 `R_future` 写入 D0/D1 的训练损失。先做离线分析：比较 `A_act(t)` 与 short/mid/long future attribution 的相关性，并使用 random-horizon、wrong-action、wrong-future 等负控。只有当未来归因和成功/失败的未来状态变化有稳定关系，才考虑把它作为 B 的 refinement mask。
+
+#### R_future：定义、计算与解释边界
+
+`R_future` 是本项目拟采用的未来结果归因图：给定当前观测、指令和候选动作序列，衡量**当前图像的哪些区域影响世界模型预测的某个未来结果**。它画在当前图像坐标上，不是未来帧中的运动区域，也不是 WAM/VAM 必然直接输出的 attention。当前处于接口设计阶段，尚未验证其效果。
+
+| 图 | 回答的问题 | 来源 |
+|---|---|---|
+| `T_sem` | 指令中的词对应哪里？ | Lavender / 扩散语义教师 |
+| `A_lang` | 语言目标分数依赖哪些当前视觉区域？ | 学生 VLM |
+| `A_act` | 动作输出或动作误差依赖哪些当前视觉区域？ | 学生 VLA；两类目标应分开报告 |
+| `R_future` | 指定的预测未来结果依赖哪些当前视觉区域？ | 冻结的 world/video-action 模型 |
+
+候选计算流程：
+
+```text
+F^k = W(x_t, instruction, a[t:t+H], noise_seed) 的第 k 个未来时段预测
+S^k = s(F^k, instruction)                       # 明确定义的标量目标
+r_grad^k(i) = Σ_c |h_ic · ∂S^k/∂h_ic|           # 当前视觉 token 的梯度归因
+r_occ^k(i) = |S^k(x_t) - S^k(mask_i(x_t))|      # 遮挡后的目标分数变化
+R_future = Normalize(Σ_k β_k r^k), β_k ≥ 0
+```
+
+必须先指定 `S^k`，例如物体接近目标容器的进展或经验证的接触/放置分数；不能直接把高维未来视频 `F^k` 当作一个未定义的求导标量。距离如何从预测中提取、评分器是否可靠，都仍需审计。若只比较整段未来视频或 latent 的差异，则得到的是**未来预测敏感性图**，背景纹理和相机运动也可能很显著，不能直接解释为任务成功相关性。
+
+遮挡对照应固定指令、候选动作、预测时域、采样器和随机噪声，用多种替换方式及重复采样检查稳定性；观察差异只能说明模型对该干预敏感，不能直接证明真实环境因果关系。若候选视频模型不接受动作条件，不能将其描述为候选动作后果评估器。
+
+例如“把碗放进盒子”：`T_sem` 可以定位碗和盒子；若以短期抓取进展为目标，`R_future` **可能**强调碗与夹爪；若以稍后放置进展为目标，则可能强调盒子入口。这个阶段变化是待验证假设，并非生成视频后自动获得的性质。
+
+B 路线拟用 `T_AR = Normalize(T_sem ⊙ R_future)` 细化教师图。两图必须先对齐到当前图像同一网格；乘积只能保留语义图已有支持，无法补回被 `T_sem` 漏掉的夹爪或障碍区域。乘积质量接近零或预测置信度不足时应跳过/回退，不能靠归一化放大噪声。
+
+验收先检查未来预测、目标评分和干预稳定性，再比较静态教师、正确未来、错误动作、错误未来及随机时域。与 `A_act` 一致只能作为辅助指标，不能以两个模型共享错误作为有效性证据。DROID 离线数据可检验记录轨迹上的预测与动作误差；闭环成功率仍需 LIBERO 或真实机器人执行，不能从 DROID 离线误差直接推导。
+
+### 5.2.2 Attention Sink 处理原则
+
+Attention sink 诊断检查特殊 token 或固定位置是否长期吸收注意力。高亮 attention 本身不证明模型使用了目标区域；梯度归因中的高值也不能直接按 attention sink 处理。P3 分开统计注意力分布和输出条件归因，比较处理前后的空间指标与干预一致性。
+
+主方法不把 sink removal 宣称为核心创新。仅在验证集证据支持时启用相应处理，保留 raw 图和处理后图，并在 P8 区分预处理收益与归因对齐收益。
 
 ### 5.3 主方法 D：Structure-Native Action Attribution
 
