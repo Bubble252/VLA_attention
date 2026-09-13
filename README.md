@@ -34,3 +34,14 @@ bash scripts/download_references.sh
 ```bash
 python3 scripts/verify_references.py
 ```
+
+## 飞书实时同步
+
+`doc/` 下的三个核心 Markdown 已同步到飞书。后续修改文件后，需保持 DocSync 实时同步进程运行：
+
+```bash
+cd /home/bubble/类脑计算/doc-sync-main
+/usr/bin/python3.10 main.py live --config sync_config.json --poll-interval 3
+```
+
+该进程会监听本地文档变化并同步到目标飞书文件夹，同时轮询云端修改。凭据保存在 `doc-sync-main/sync_config.json`，不会提交到本仓库。

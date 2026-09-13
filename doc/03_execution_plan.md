@@ -383,6 +383,19 @@ git push
 
 ## 核心主线与数据集定位补充
 
+## 文档同步规则
+
+- [x] `doc/` 下的三个 Markdown 已成功同步到飞书目标文件夹；
+- [ ] 此后任何一个文档发生保存修改，都必须实时同步到对应飞书云文档；
+- [ ] 使用 `doc-sync-main` 的文件夹实时同步模式，保持进程持续运行：
+
+```bash
+cd /home/bubble/类脑计算/doc-sync-main
+/usr/bin/python3.10 main.py live --config sync_config.json --poll-interval 3
+```
+
+该模式监听 `/home/bubble/类脑计算/VLM终局/doc` 下的 Markdown 文件，并将本地修改推送到飞书；同时会轮询云端变化并回写本地。运行前必须确认 User Access Token 有效、飞书应用权限未被撤销。若进程停止，实时同步规则暂时失效，应重新启动上述命令。
+
 核心 idea 是用 Lavender 的语言条件空间教师约束空间归因，并让 VLA 动作归因与语言相关区域一致。P1–P4 是主线必需，负责接口、坐标桥和 VLM 证据；P5–P6/P8–P9 是主线验证，负责 LIBERO 机制验证、DROID 泛化验证和反事实排除；P7 的 B/C 与 D1 是后期扩展，不能改变 D0 核心假设。任何新增模型必须说明其对归因可信度、动作相关性或跨模型迁移的贡献。
 
 LIBERO 只承担可控的接口与机制 smoke test；DROID 是最终数据泛化验证集。DROID 阶段必须固定官方版本和 commit，选择与 pick-place 对应的子集，统一 RGB、语言、proprioception 和 7D delta EEF，按场景或任务划分数据，并重跑 occlusion、语言反事实、state 遮挡和 sink-free 对照。主结果至少包含 baseline、D0、错误教师和随机教师。
