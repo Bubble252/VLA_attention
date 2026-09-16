@@ -186,8 +186,10 @@ git push
 ### 任务
 
 - [ ] 选择首轮 VLM grounding 数据：Flickr30k / Flickr30k Entities，优先复用 Lavender 公开的 Flickr1k Stable Diffusion attention maps；
-- [ ] 对每个样本生成 Lavender / Stable Diffusion 词级教师图；
-- [ ] 在 Qwen/LLaVA 上比较无对齐、Lavender 原式 attention 对齐、teacher-to-attribution 对齐；
+- [ ] 对每个样本生成 Stable Diffusion、PixArt-α、PixArt-Σ、Playground-v2.5 的可用词级教师图；无法导出语言条件二维图的候选退出 T_sem 比较；
+- [ ] 在独立校准集审计每个教师的 token span、层/步/CFG、pointing/IoU、无效词率和跨 seed 一致性；
+- [ ] 冻结 best-single 教师后再训练主实验；多教师 ensemble 仅作为校准权重冻结的消融，不能先平均后称主教师；
+- [ ] 在选定 VLM 上比较无对齐、DB-style feature alignment、各个单扩散教师的 attention/attribution 对齐、teacher-to-attribution 对齐；
 - [ ] 在一个 Qwen 系模型上使用 gradient×input 归因接口做同一教师对齐；
 - [ ] 在 LLaVA-1.6/OneVision 上使用同一 teacher-to-attribution 接口做 VLM 普适性对照；
 - [ ] 记录正确教师图、错词教师图、错图教师图、随机教师图；

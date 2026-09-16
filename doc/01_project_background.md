@@ -13,7 +13,7 @@
 | 研究对象 | 模型无关的语言条件空间归因对齐；SpikingBrain 只作后续类脑扩展 |
 | 首个验证环境 | VLM grounding；随后进入 LIBERO 仿真；不先做真机 |
 | 动作输出 | `a_t=[Δx, Δy, Δz, Δroll, Δpitch, Δyaw, gripper]`，即 7 维 delta EEF |
-| 视觉教师 | 首选 Lavender 离线 Stable Diffusion 词级空间注意力图 |
+| 视觉教师 | Stable Diffusion/Lavender、PixArt-α、PixArt-Σ、Playground-v2.5 独立校准后选 best-single 词级空间教师 |
 | 核心机制 | 将不同 VLM/VLA 的 attention、hidden-state gradient 或动作条件归因统一成空间图，再与教师词图对齐 |
 | 参考模型 | Lavender、Qwen2.5-VL、Qwen3-VL、LLaVA-1.6 / LLaVA-OneVision、Qwen-RobotManip、DeepSeek-VL2、OpenVLA、π0、LingBot 系列 |
 | GPU | 由服务器环境管理；文档不绑定型号、数量或显存 |
@@ -62,17 +62,17 @@
 
 ## 4. 教师选择原则
 
-教师不做单一来源押注，但也不做粗糙的多教师蒸馏。核心教师始终是 Lavender / Stable Diffusion 词级 cross-attention，因为第一阶段要证明 VLM 的词-区域 grounding 改善，扩散模型天然提供 `word → image region` 的空间教师信号，且不依赖机器人动作数据。World model 或 video-action model 不作为 policy teacher，不直接教动作；它们只作为 **Action-Relevance Refiner**，把扩散语义图从“语言相关区域”细化成“当前动作阶段真正相关的区域”。
+教师不做单一来源押注，也不做未经校准的多教师平均。Stable Diffusion/Lavender、PixArt-α、PixArt-Σ、Playground-v2.5 都是词级扩散教师候选：第一阶段分别生成 `word → image region` 图，在独立校准集比较定位、稳定性和无效词率后选择一个冻结的 best-single。World model 或 video-action model 不作为 policy teacher，不直接教动作；它们只作为 **Action-Relevance Refiner**，把扩散语义图从“语言相关区域”细化成“当前动作阶段真正相关的区域”。
 
 教师分三档管理：
 
 | 教师类型 | 是否进入首轮 | 用途 | 风险 |
 |---|---:|---|---|
-| Stable Diffusion / Lavender 词级 cross-attention | 是 | VLM grounding 和 VLA 训练期空间教师 | 只表达静态词-区域关系，不懂动作动力学 |
+| Stable Diffusion / Lavender、PixArt-α、PixArt-Σ、Playground-v2.5 词级扩散图 | 分别校准；best-single 进入主实验 | VLM grounding 和 VLA 训练期空间教师 | 架构、tokenizer、attention 可提取性不同；都只表达静态词-区域关系，不懂动作动力学 |
 | VLM 自监督归因教师，例如强 Qwen/LLaVA/DeepSeek 的离线归因 | 否，作为备选 | 若扩散图对真实图像物体定位不稳定，可做 ensemble 或 sanity check | 容易把学生模型偏差当教师 |
 | Action-Relevance Refiner，例如 LIBERO 轨迹规则、LingBot-VA、π0、Qwen-RobotManip | 是，但只进入 VLA 扩展阶段 | 细化 `T_sem`，判断当前阶段哪些语义区域与动作成败有关 | 若直接蒸馏动作，会变成别人的 VLA 策略蒸馏 |
 
-首轮 VLM 只使用扩散教师，避免把“空间 grounding 是否有效”和“动作相关性细化是否有效”混在一起。VLA 阶段同时保留 B/C/D 三条路线，但优先级不同：D 是主方法，B 是扩展，C 是诊断。这样最终都服务于同一点：让 VLA 内部的动作证据从语言相关进一步变成动作相关。
+首轮 VLM 只使用一个校准后冻结的扩散语义教师，避免把“空间 grounding 是否有效”和“动作相关性细化是否有效”混在一起。各扩散教师的单独结果和可选 ensemble 必须分开报告。VLA 阶段同时保留 B/C/D 三条路线，但优先级不同：D 是主方法，B 是扩展，C 是诊断。这样最终都服务于同一点：让 VLA 内部的动作证据从语言相关进一步变成动作相关。
 
 ### 4.1 VLA 动作相关性的三条路线
 

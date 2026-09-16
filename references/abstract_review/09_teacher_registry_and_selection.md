@@ -2,9 +2,9 @@
 
 模型候选扩大后，teacher 不能再用“一个大模型 teacher”统称。当前 registry 按监督对象和是否参与部署分层。
 
-## 1. T_sem：语义空间教师（VLM 首轮唯一主教师）
+## 1. T_sem：语义空间教师族（VLM 首轮重点）
 
-### T_sem-A：Lavender / Stable Diffusion 词级图（首选）
+### T_sem-A：Lavender / Stable Diffusion 词级图（已具备的可复现基线）
 
 - 输出：`word/span → image region` 的词级 spatial map；
 - 用途：VLM grounding、VLA 训练中的语言归因锚点；
@@ -12,7 +12,37 @@
 - 限制：不是动作、接触或动力学教师；扩散 attention 也不自动是真值；
 - 负控：错词、错图、随机图、同面积平滑图、教师不确定样本跳过。
 
-**当前建议**：VLM 首轮只使用 T_sem-A，先和 DB-style feature alignment 分开比较。
+它不预先被认定为唯一或最好的主教师；它是多扩散教师评估的第一个可复现基线。
+
+### T_sem-D：PixArt-α / PixArt-Σ / Playground-v2.5（候选扩散教师）
+
+这三个候选用于避免把 `T_sem` 绑定到单一 Stable Diffusion 架构、text encoder 或 cross-attention 实现。每个候选独立产生语言条件二维图 `T_sem^d(w,x)`，不在校准前直接平均。
+
+| 候选 | 必须审计 | 当前状态 |
+|---|---|---|
+| Stable Diffusion / Lavender | token span、denoising step、层、CFG conditional branch、空间 resize | 可复现基线 |
+| PixArt-α | 文本 token→图像 token attention、tokenizer、块/头/步选择 | 待代码接口审计 |
+| PixArt-Σ | 与 α 之间的 tokenizer、训练分辨率和 attention 模块差异 | 待代码接口审计 |
+| Playground-v2.5 | 权重/许可、attention hook、CFG 与文本编码器路径 | 待权重/接口审计 |
+
+若一个候选不能导出语言条件二维图，它不能叫 `T_sem`；最多做 `T_retention` feature teacher 或独立 gradient proxy。
+
+### 多扩散教师选择协议
+
+1. 固定 phrase、token span、输入图、seed、resolution、prompt template 和 CFG，分别提取 `T_sem^d`；
+2. 在独立校准集测 phrase pointing、IoU、无效词率、跨 seed/增强一致性、对象词错误率；
+3. 主实验先分别报告 `SD`、`PixArt-α`、`PixArt-Σ`、`Playground-v2.5`；
+4. 仅当两个以上教师各自可靠且错误不高度一致，才比较 confidence-weighted ensemble；
+5. ensemble 权重仅用校准集冻结，必须保留 best-single、uniform ensemble、wrong-map 负控；
+6. 教师不一致可以标为低置信样本，不得用归一化强造尖峰。
+
+候选 ensemble 仅作消融：
+
+```text
+T_sem^ens = Normalize(Σ_d c_d · Valid_d · T_sem^d)
+```
+
+`c_d` 和 `Valid_d` 在校准后冻结；token 不可映射、图面积过小或目标词无效则 `Valid_d=0`。
 
 ### T_sem-B：冻结 VLM/视觉表征 teacher（强 baseline，不是主教师）
 
@@ -87,14 +117,15 @@ Qwen2.5-VL、InternVL3.5、Ovis2.5、LLaVA-OneVision 可以提供答案/phrase s
 
 | 阶段 | 主教师 | 强 baseline | 后置扩展 |
 |---|---|---|---|
-| VLM | T_sem-A Lavender | T_retention-A/B | T_sem-C |
-| VLA-D0 | T_sem-A → `A_lang` | T_retention + PosA-inspired gating | T_phase-A |
-| VLA-D1 | T_sem-A + T_phase-B | phase-only / Anchor-Align-style direction | T_future-A |
+| VLM | 每个经校准的 T_sem-A/D 单教师 | T_retention-A/B | T_sem-C、confidence ensemble |
+| VLA-D0 | 冻结的 best-single `T_sem` → `A_lang` | T_retention + PosA-inspired gating | T_phase-A、teacher ensemble |
+| VLA-D1 | best-single `T_sem` + T_phase-B | phase-only / Anchor-Align-style direction | T_future-A |
 | B 路线 | T_future-A/B | static `T_sem`、direct future-feature alignment | Next Forcing multi-horizon |
 
 ## 7. 不允许的混用
 
 - 不把 frozen visual feature 当作词级语义真值；
+- 不把多个扩散模型未经校准的 attention 平均后称为更可靠教师；
 - 不把 EEF Gaussian 当作完整 action causal map；
 - 不把 action-direction label 当作空间归因；
 - 不把 WAM 预测质量当作成功动作证明；
@@ -107,5 +138,5 @@ Qwen2.5-VL、InternVL3.5、Ovis2.5、LLaVA-OneVision 可以提供答案/phrase s
 - [ ] VLM 首轮：Prismatic-7B、Qwen2.5-VL-7B、InternVL3.5、Ovis2.5、LLaVA-OneVision 中选两个；
 - [ ] VLA 首轮：OpenVLA/OFT、π0、π0.5、MolmoAct2 中选两个；
 - [ ] benchmark 首轮：LIBERO + SimplerEnv；RoboTwin 是第二阶段或 WAM/VLA 扩展；
-- [ ] 主教师冻结为 Lavender；DB/AA/PosA 作为 baseline，而不是混合 teacher；
+- [ ] 用校准集从 Stable Diffusion、PixArt-α、PixArt-Σ、Playground-v2.5 中选择 best-single；DB/AA/PosA 作为 baseline，而不是混合 teacher；
 - [ ] SpikingBrain 保持后置。

@@ -139,7 +139,7 @@ LIBERO RGB + instruction + proprioception
 
 ### 5.1 教师 registry
 
-教师 registry 按“语义教师 + 动作相关性细化器”组织，而不是把多个大模型 loss 直接堆叠。首轮 VLM 只启用语义空间教师：
+教师 registry 按“语义教师族 + 表征保持 baseline + 动作相关性细化器”组织，而不是把多个大模型 loss 直接堆叠。首轮先分别校准语义教师，再选择一个冻结的 best-single 教师：
 
 ```yaml
 teacher:
@@ -164,7 +164,11 @@ teacher:
 
 | 教师 | 首轮状态 | 进入条件 |
 |---|---|---|
-| Lavender / Stable Diffusion | 启用 | 默认教师，证明 VLM grounding |
+| Lavender / Stable Diffusion | 启用 | 已有可复现词图基线，参与 T_sem 校准 |
+| PixArt-α | 待接口审计 | 候选词级扩散教师，单独校准后比较 |
+| PixArt-Σ | 待接口审计 | 候选词级扩散教师，单独校准后比较 |
+| Playground-v2.5 | 待权重/许可/接口审计 | 候选词级扩散教师，单独校准后比较 |
+| Don't Blind feature teacher / Anchor-Align frozen VLM | 关闭，作为强 baseline | 检验视觉或整体 VLM 表征保持，不充当词级 T_sem |
 | Qwen/LLaVA/DeepSeek 离线归因 ensemble | 关闭 | 扩散教师定位失败或需要 sanity check |
 | LIBERO demonstration 派生规则 | 关闭，但优先纳入 VLA 扩展 | 从专家轨迹构造阶段标签、接触点、目标进展和区域 relevance mask |
 | LingBot-VA / LingBot-Video world model | 关闭，但纳入研究设计 | VLA smoke 成立后，用于未来状态、接触变化、目标状态接近度，细化 `T_sem` |

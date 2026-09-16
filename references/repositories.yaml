@@ -3,6 +3,24 @@ generated: "2026-09-10"
 proxy: "http://127.0.0.1:7897"
 local_archive_root: "references/repos"
 repositories:
+  - id: pixart-alpha
+    url: "https://github.com/PixArt-alpha/PixArt-alpha.git"
+    local_path: "references/repos/pixart-alpha"
+    current_status: to_archive
+    commit: null
+    role: "diffusion_semantic_teacher_candidate"
+  - id: pixart-sigma
+    url: "https://github.com/PixArt-alpha/PixArt-sigma.git"
+    local_path: "references/repos/pixart-sigma"
+    current_status: to_archive
+    commit: null
+    role: "diffusion_semantic_teacher_candidate"
+  - id: playground-v2-5
+    url: "https://github.com/playgroundai/playground-v2.5.git"
+    local_path: "references/repos/playground-v2-5"
+    current_status: url_to_verify
+    commit: null
+    role: "diffusion_semantic_teacher_candidate"
   - id: prismatic-vlms
     url: "https://github.com/TRI-ML/prismatic-vlms.git"
     local_path: "references/repos/prismatic-vlms"

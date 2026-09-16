@@ -34,7 +34,8 @@
 Don't Blind 现为本阶段重点参照。加入 **原始 checkpoint（仅评估） / 普通 SFT / DB-style patch feature alignment / Lavender map alignment / teacher-to-output-attribution / feature+attribution** 的候选矩阵，具体执行顺序见 [官方代码审计第 9 节](../references/abstract_review/08_blindvla_code_audit.md)。用 VL-Think 风格保留集与区域标注集分开测概念保留和空间定位；官方 attention ratio 与 raw attention 分开画、共享颜色标尺并报告扰动一致性。
 
 - no alignment；
-- Lavender 原式 attention-to-attention；
+- Stable Diffusion/Lavender、PixArt-α、PixArt-Σ、Playground-v2.5 各自的 attention-to-attention 或可用 teacher-to-attribution；
+- 校准集冻结的 best-single 与 confidence-weighted ensemble；
 - teacher-to-attribution；
 - 按所选主线结构比较早/中/晚层与同数量随机层；SpikingBrain 固定层号后置；
 - raw/sink-free；
