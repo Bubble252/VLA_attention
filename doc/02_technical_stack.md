@@ -545,7 +545,7 @@ L_total = L_action + λ_align * L_align + λ_smooth * L_smooth
 
 ## 9. 模型适配层
 
-### 9.1 Qwen2.5-VL / Qwen3-VL
+### 9.1 VLM 候选：Prismatic-7B / Qwen2.5-VL-7B / InternVL3.5 / Ovis2.5
 
 适配目标是抽取视觉 token、语言 token 和答案目标，不直接假设其 attention 与 SpikingBrain 同构。首选学生归因是 `answer_logprob → visual_patch_hidden` 的 gradient×input。需要记录：
 
@@ -556,7 +556,7 @@ L_total = L_action + λ_align * L_align + λ_smooth * L_smooth
 - answer token 与 instruction 中对象词的 span 对齐规则；
 - 梯度归因是否稳定，是否需要 Integrated Gradients。
 
-Qwen2.5-VL 的论文版本登记为 arXiv:2502.13923；Qwen3-VL 的技术报告登记为 arXiv:2511.21631。它们首先用于 VLM grounding 普适性对照；动作实验只有在 VLM 阶段成立后再统一接 7D delta EEF head。
+VLM 首轮候选按接口审计筛选：Prismatic-7B、Qwen2.5-VL-7B、InternVL3.5、Ovis2.5；Qwen3-VL/LLaVA 作为扩展。它们首先用于 grounding 普适性对照；动作实验只有在 VLM 阶段成立后再统一接 7D delta EEF head。不能把视觉 self-attention 当成语言条件 cross-attention；每个模型需登记视觉 token 组织、答案标量、梯度路径和动态分辨率。
 
 ### 9.2 LLaVA-1.6 / LLaVA-OneVision
 
@@ -578,9 +578,9 @@ LLaVA-1.6/OneVision 只进入 VLM grounding 普适性验证，不在首轮承担
 
 作为 LIBERO VLA 基线，保留其原生动作表示做官方对照；同时增加一个统一 7D delta EEF adapter，单独报告“原生动作接口”和“统一接口”结果。学生归因优先来自 action token log-prob 或 delta EEF adapter loss 对视觉 hidden states 的 gradient×input。
 
-### 9.5 π0 / LingBot
+### 9.5 π0 / π0.5 / MolmoAct2 / LingBot-VLA
 
-作为后置架构参考。π0 的连续动作专家可指导 action chunk；LingBot-VA 的因果视频-动作世界模型和 LingBot-VLA 2.0 的统一多 embodiment 动作表示可指导多帧输入和动作空间扩展。它们可以在后期作为 world-model teacher 候选，但第一阶段不把它们与扩散词图教师混在同一训练脚本中。
+作为待筛选 VLA 学生骨干。π0 与 π0.5 必须分别登记；MolmoAct2 的逐层 KV conditioning 与 π0 的 flow/action expert 形成结构对照；LingBot-VLA 属于视频/多 embodiment 扩展。只有在 VLM grounding 归因桥跑通后接入，不能把这些学生模型直接当 policy teacher。外部 WAM/VAM teacher 仍单独放在 B 路线。
 
 ## 10. LIBERO 集成
 

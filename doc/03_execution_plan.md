@@ -36,10 +36,10 @@ git push -u origin main
 | P1 | 本地代码和模型接口审计 | 入口表、张量规格、版本记录 | [ ] |
 | P2 | 教师图和坐标桥诊断 | 可视化、恢复单元测试 | [ ] |
 | P3 | 学生归因接口诊断 | attention/gradient/action attribution 报告 | [ ] |
-| P4 | VLM grounding 证明 | Qwen + LLaVA 上的归因对齐结果；SpikingBrain 后置 | [ ] |
+| P4 | VLM grounding 证明 | Prismatic/Qwen/InternVL/Ovis 候选中筛选两个；SpikingBrain 后置 | [ ] |
 | P5 | VLA delta EEF smoke | LIBERO 单任务闭环 | [ ] |
 | P6 | VLA 主方法训练 | D：Structure-Native Action Attribution Consistency | [ ] |
-| P7 | 跨模型、跨 VLA 骨干和动作相关性细化 | 按候选接口审计后确认 VLA 组合；SpikingBrain 后置 | [ ] |
+| P7 | 跨模型、跨 VLA 骨干和动作相关性细化 | π0/π0.5、MolmoAct2、OpenVLA/OFT；SpikingBrain 后置 | [ ] |
 | P8 | 消融和反证 | 随机、错图、错词、错层、无对齐结果 | [ ] |
 | P9 | 最终报告 | VLM + LIBERO 指标表、曲线、结论、真机计划 | [ ] |
 

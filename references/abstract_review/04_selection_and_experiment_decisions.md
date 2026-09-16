@@ -7,7 +7,7 @@
 | 候选组合 | 能回答的问题 | 优势 | 代价与进入条件 |
 |---|---|---|---|
 | OpenVLA/OFT 单骨干 + Qwen/LLaVA VLM | 最小可行的语义→动作归因链 | 数据/代码已部分归档，便于先做 smoke | 不足以证明跨 VLA；OpenVLA token 与 OFT 动作头要分别审计 |
-| OpenVLA/OFT + π0 或 π0.5 | 离散/回归与 flow 动作机制差异 | 连续生成动作是重要普适性测试 | 必须确认 OFT 版本与 head；噪声和 flow time 的归因需定义 |
+| OpenVLA/OFT + π0/π0.5 | action-token/adapter 与 flow/action expert 的机制差异 | 连续生成动作是重要普适性测试 | π0 与 π0.5 分开登记；噪声、flow time、chunk 和 checkpoint 必须分别审计 |
 | π0 系 + MolmoAct2 | shared-token/MoT 与逐层 KV cross-attention | 最接近 LIT 的结构覆盖方式 | 两套系统成本；需核对相同数据训练能力及 checkpoint |
 | OpenVLA/OFT + MolmoAct2 | 一个可运行底座加逐层 KV 条件结构 | MolmoAct2-DROID 清洗方法值得借鉴 | 防止预训练包含测试轨迹，不能将其数据直接随机切帧 |
 | 现有首个 VLA + LingBot-VLA | 不同 VLM 底座与多 embodiment 表示 | 后期可接视频/几何辅助任务 | 仅在 7D delta EEF 子设置可比时运行 |
@@ -15,7 +15,7 @@
 
 **推荐顺序**：先从已有本地生态挑一个可运行的 VLA；用 20–50 个固定样本做 hidden-state/动作归因、高阶梯度与噪声复现检查；再选结构差异大的第二个。这里样本数是诊断建议，不是论文统计量。π0.5 与 π0、OpenVLA 与 OFT 不能在题目中随意互换。
 
-VLM 侧建议 Qwen2.5 或 Qwen3 先二选一，再加 LLaVA-1.6/OneVision。若接口只有视觉 self-attention，不能直接命名为语言条件 attention。同一 Qwen 家族多个规模不替代跨结构证据。
+VLM 侧候选扩大为 Prismatic-7B、Qwen2.5-VL-7B、InternVL3.5、Ovis2.5、LLaVA-1.6/OneVision。建议先选一个接口最成熟的模型加一个结构差异明显的模型；Prismatic-7B 与 OpenVLA 的关系要按实际 checkpoint/代码版本核验，不能因同一生态直接当作独立结构。若接口只有视觉 self-attention，不能直接命名为语言条件 attention。
 
 ## 2. 先区分两种训练问题
 
@@ -71,6 +71,8 @@ VLM 侧建议 Qwen2.5 或 Qwen3 先二选一，再加 LLaVA-1.6/OneVision。若�
 | SIMPLER | ReVLA/Don't Blind 路线 OOD 比较 | 替代评估方向 | 与 LIBERO 同机器人或同控制器 |
 | RLBench+COLOSSEUM / GemBench | 与 BridgeVLA 的多视角/3D 路线配套 | 若转 3D 再考虑 | RGB-only 方法与点云方法资源一致 |
 | DROID | 真实数据离线预测、保留能力与域间泛化 | 用户已确定必须使用 | 离线动作误差等于真实机器人成功率 |
+| SimplerEnv | VLA 视觉语言保留、SIMPLER/OOD 与批量并行评估 | 推荐 VLM/VLA 诊断首轮加入 | 环境任务较窄，不能单独支撑真实泛化 |
+| RoboTwin | 多任务、多场景/物体与双臂仿真泛化 | WAM/VLA 扩展或第二 OOD benchmark | 动作 embodiment 与 7D delta EEF 需单独对齐 |
 | 实体机器人 | 最终闭环外部效度 | 后置 | 只有漂亮视频就已统计验证 |
 
 LIBERO-PRO 等条目依据本地 Anchor-Align 摘要定位，具体任务构造、版本和下载入口仍待复現前核查。不要求一次跑所有 benchmark。
@@ -112,9 +114,11 @@ LIBERO-PRO 等条目依据本地 Anchor-Align 摘要定位，具体任务构造�
 ## 8. 供用户确认的少量决策
 
 - [x] SpikingBrain 后置，不是主线；DROID 必须使用。
-- [ ] 第一 VLA：OpenVLA/OFT、π0 系、MolmoAct2、LingBot-VLA 中哪个接口先审计通过就优先试验，还是先指定一个？
+- [ ] 第一 VLA：OpenVLA/OFT、π0、π0.5、MolmoAct2、LingBot-VLA 中哪个接口先审计通过就优先试验，还是先指定一个？
+- [ ] 第二 VLA 是否必须选 π0.5，以覆盖 flow/action expert？
+- [ ] VLM 是否先选 Prismatic-7B + Qwen2.5-VL-7B，还是选择 InternVL3.5/Ovis2.5 形成更强结构差异？
 - [ ] 第二 VLA：优先结构差异，还是优先已有可运行工程？
-- [ ] OOD 主 benchmark：推荐 LIBERO-Plus；若重心是语言目标变化，是否补 LIBERO-PRO？
+- [ ] OOD 主 benchmark：LIBERO-Plus + SimplerEnv + DROID；RoboTwin 是否作为 WAM/VLA 扩展 benchmark？
 - [ ] 论文重心：先 D0 输出条件空间约束，还是以记忆/阶段为主？推荐先 D0，D1/B 保留选择。
 - [ ] 主线 strong baseline：Anchor-Align 与 PosA-VLA 优先，还是 LIT 通道约束优先？应结合最终主张选择。
 

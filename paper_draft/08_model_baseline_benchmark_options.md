@@ -11,6 +11,7 @@
 | OpenVLA/OFT | 开放 VLA；action token 或 action adapter | 代码、LIBERO 生态和社区对照较成熟 | 原生动作接口与 7D delta EEF 需核对 | 首选 VLA 主线 |
 | π0/π0.5 | VLM 与 flow/action expert；连续动作 | 代表连续动作生成和较强开放世界泛化 | 归因路径和权重工程较复杂 | 第二 VLA 主线 |
 | MolmoAct2 | layer-wise cross-attention action expert | 可作为显式 cross-attention 对照 | 代码/权重和数据配置需要单独核验 | 有资源时加入 |
+| π0.5 | flow/action expert 与 VLM 条件融合 | 直接对应用户希望加入的连续动作候选，可与 π0 区分 | 归因需要固定 flow time/noise 和 action chunk；π0.5 不等于 π0 | 与 OpenVLA/OFT 一起作为候选主线 |
 | LingBot-VLA | 视频/多 embodiment VLA | 能连接视频动作和多 embodiment | 训练接口重，可能引入额外变量 | 后期扩展 |
 | SpikingBrain | full/window/GLA、脉冲稀疏 | 类脑和异构结构分析 | 会重新占据论文叙事，接口审计成本高 | 有空再做 |
 
