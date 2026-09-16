@@ -11,13 +11,22 @@
 - [x] 总览、模型/基线/benchmark 选项与阅读状态表。
 - [x] 清理主线中的 SpikingBrain 必选项，恢复主模型组合待确认状态。
 
+## 当前交付状态
+
+- [x] `08_blindvla_code_audit.md` 已上传并回读验证：`VQuTdFkvYoftBRxwJxlccSAmnMc`；
+- [x] `07_three_nearest_methods_deep_read.md` 已上传并回读验证：`YF26dTe3eoqKSsxVKyrcBAuDnMd`；
+- [x] `README.md` 已上传并回读验证：`ACUYdAKe8o9kdZxVZC8c4YfOn7f`；
+- [x] `doc/03_execution_plan.md` 已上传并回读验证：`QvkMdlWOIo07hpxEFhBcFeZ6nQe`；
+- [x] `paper_draft/05_experiments_and_expected_conclusions.md` 已上传并回读验证：`CJBYdsNuWoUrJUxufI0cMUmpn7f`。
+
 ## 待完成
 
-- [ ] 六份归纳文档上传至用户指定文献文件夹 DAB9w31AUiuZJAkN5B7cukoGn2g。
+- [ ] 归纳目录其余 3 份人工归纳上传至用户指定文献文件夹 DAB9w31AUiuZJAkN5B7cukoGn2g：`01_vla_alignment_and_shortcuts.md`、`02_world_models_and_dynamic_teachers.md`、`03_vlm_teachers_and_background.md`；
+- [ ] `04_selection_and_experiment_decisions.md`、`05_inventory_and_reading_status.md` 上传至同一文件夹；
 - [ ] 修正的核心计划与论文预稿同步到其原文件夹。
 - [ ] 对每个云文档回读所有正文块并与本地转换结果核对。
 
-本轮同步命令被自动审批服务的 502 Bad Gateway 拒绝，之后无凭据的只读 HTTPS 检查也遇到相同审批服务错误。命令未实际执行，尚未取得本轮飞书 API 结果；不能判断为用户 Token 无权限或用户网络故障。
+完整批量同步在已经完成 5 个文档后遇到临时 DNS/Token 网络错误；通过代理重试时自动审批服务再次返回 502，命令被阻止。已成功的五份不受影响；不能把剩余文档判断为已上传。
 
 ## 恢复执行
 
