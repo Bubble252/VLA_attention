@@ -19,6 +19,7 @@ ROOT = Path(__file__).resolve().parents[1]
 parser = argparse.ArgumentParser()
 parser.add_argument('--nearest-only', action='store_true', help='Sync only new three-method analysis and its two updated entry documents')
 parser.add_argument('--blindvla-only', action='store_true', help='Sync BlindVLA code audit and its updated study/plan documents')
+parser.add_argument('--teachers-only', action='store_true', help='Sync the multi-diffusion teacher registry and affected plans')
 args = parser.parse_args()
 TOOL = ROOT.parent / 'doc-sync-main'
 sys.path.insert(0, str(TOOL / 'src'))
@@ -102,6 +103,14 @@ if args.blindvla_only:
         (review / '08_blindvla_code_audit.md', 'DAB9w31AUiuZJAkN5B7cukoGn2g', 'PDF摘要归纳-08_blindvla_code_audit'),
         (review / '07_three_nearest_methods_deep_read.md', 'DAB9w31AUiuZJAkN5B7cukoGn2g', 'PDF摘要归纳-07_three_nearest_methods_deep_read'),
         (review / 'README.md', 'DAB9w31AUiuZJAkN5B7cukoGn2g', 'PDF摘要归纳-README'),
+        (ROOT / 'doc/03_execution_plan.md', 'KodSw9aQXiCNygkmN9bcOWU3nrd', '03_execution_plan'),
+        (ROOT / 'paper_draft/05_experiments_and_expected_conclusions.md', 'RGgnwMcVUi4xd5klGX9cAThinBc', '05_experiments_and_expected_conclusions'),
+    ]
+if args.teachers_only:
+    targets = [
+        (review / '09_teacher_registry_and_selection.md', 'DAB9w31AUiuZJAkN5B7cukoGn2g', 'PDF摘要归纳-09_teacher_registry_and_selection'),
+        (ROOT / 'doc/01_project_background.md', 'KodSw9aQXiCNygkmN9bcOWU3nrd', '01_project_background'),
+        (ROOT / 'doc/02_technical_stack.md', 'KodSw9aQXiCNygkmN9bcOWU3nrd', '02_technical_stack'),
         (ROOT / 'doc/03_execution_plan.md', 'KodSw9aQXiCNygkmN9bcOWU3nrd', '03_execution_plan'),
         (ROOT / 'paper_draft/05_experiments_and_expected_conclusions.md', 'RGgnwMcVUi4xd5klGX9cAThinBc', '05_experiments_and_expected_conclusions'),
     ]
