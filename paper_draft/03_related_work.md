@@ -2,7 +2,7 @@
 
 ## 3.1 Diffusion-guided VLM grounding
 
-Lavender 使用 Stable Diffusion 的词级 cross-attention 作为外部空间教师，并对选定层进行监督。本文继承其 `word → region` 先验，但把学生对象从同构 cross-attention 扩展为统一的 `A_lang`：SpikingBrain 可读取 full-attention，Qwen/LLaVA 使用输出梯度归因，OpenVLA 使用 action-token 或 adapter 归因。关键区别是教师图相同，学生归因接口按模型结构实现。
+Lavender 使用 Stable Diffusion 的词级 cross-attention 作为外部空间教师，并对选定层进行监督。本文继承其 `word → region` 先验，但把学生对象扩展为统一的 `A_lang`：Qwen/LLaVA 使用输出梯度归因，OpenVLA/π0 使用 action-token、flow 或 adapter 归因，SpikingBrain 仅作为后续异构结构扩展。关键区别是教师图相同，学生归因接口按模型结构实现。
 
 ## 3.2 Attention visualization 与 Transformer attribution
 

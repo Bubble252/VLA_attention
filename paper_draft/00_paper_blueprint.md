@@ -4,7 +4,7 @@
 **论文类型**：Technique paper，带有跨模型评估设置。  
 **主验证**：VLM grounding → LIBERO 机制验证 → DROID 泛化验证。  
 **动作接口**：7D delta EEF。  
-**核心骨干**：SpikingBrain-VL/VLA；普适性骨干：Qwen 系、LLaVA-OneVision、OpenVLA/OFT。
+**主线骨干**：优先选择接口成熟的 OpenVLA/OFT 或 π0 系 VLA，并用 Qwen/LLaVA 做 VLM 归因普适性验证；SpikingBrain 只作为后续类脑扩展。
 
 ## 一句话主张
 
@@ -26,7 +26,7 @@
 | Module B | Structure-Native D0/D1：`L_sem`、`L_contain` 以及后期 phase-conditioned attribution。 |
 | Module C | Evidence Calibration：sink-free 双轨、patch occlusion、语言/state 反事实和 DROID 跨域评估。 |
 | Contribution 1 | 提出跨 VLM/VLA 的语言条件空间归因接口和结构感知监督协议（Section 3）。 |
-| Contribution 2 | 提出 SpikingBrain 上的 D0 containment 与 D1 phase transition，使语言证据约束动作证据（Section 4）。 |
+| Contribution 2 | 提出模型无关的 D0 containment 与 D1 phase transition，使语言证据约束动作证据，并在至少两个 VLA 接口上验证（Section 4）。 |
 | Contribution 3 | 建立 attention/gradient/intervention 的证据分级和 DROID 泛化评估，验证方法不是特定骨干或仿真捷径（Section 5）。 |
 
 ## 逻辑一致性检查
@@ -45,6 +45,8 @@
 ```
 
 B/WAM/VAM 只有在 `R_future` 能预测 DROID 未来成功并带来跨场景收益时，才在论文中升级为主结果；否则放在 ablation/future work。
+
+SpikingBrain 不再承担主线风险：它保留为类脑扩展、异构层级消融和效率分析。若 OpenVLA/OFT 或 π0 系主线先完成，SpikingBrain 的加入只用于检验结构迁移，不影响论文主体交付。
 
 ## 论文级停止条件
 

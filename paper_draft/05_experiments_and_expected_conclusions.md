@@ -7,15 +7,15 @@
 | 实验 | 数据/模型 | 主要问题 | 预期结论 |
 |---|---|---|---|
 | E0 接口与坐标桥 | 合成棋盘格、Flickr30k | token/grid/window 恢复是否正确 | 峰值位置恢复误差低于预设阈值，否则停止后续训练 |
-| E1 Sink 与归因诊断 | SpikingBrain、Qwen、LLaVA | 热力图是否被 sink 或固定热点污染 | raw/sink-free 差异按模型报告，不把图像美观当收益 |
-| E2 VLM grounding | Flickr30k/Entities；SpikingBrain、Qwen、LLaVA | `T_sem → A_lang` 是否改善 grounding | 正确教师优于错词/错图/随机教师；至少两个结构不同模型成立 |
+| E1 Sink 与归因诊断 | OpenVLA/Qwen/LLaVA；SpikingBrain 后置 | 热力图是否被 sink 或固定热点污染 | raw/sink-free 差异按模型报告，不把图像美观当收益 |
+| E2 VLM grounding | Flickr30k/Entities；Qwen、LLaVA，SpikingBrain 后置 | `T_sem → A_lang` 是否改善 grounding | 正确教师优于错词/错图/随机教师；至少两个结构不同模型成立 |
 | E3 VLM 证据校准 | 同 E2 | attention/gradient 与干预是否一致 | intervention agreement 高于 attention-only；若不成立，降低解释性主张 |
 | E4 LIBERO 离线 VLA | 一个 pick-place | D0 是否改善单步动作和归因 containment | action MAE 不升高，`A_act` 越界比例下降 |
 | E5 LIBERO rollout | 同 E4 | D0 是否改善闭环控制 | 成功率和接近/抓取/放置子阶段至少一项改善 |
 | E6 DROID 离线泛化 | pick-place 子集；7D delta EEF | 是否跨真实视觉分布有效 | D0 相对 baseline 的收益不只出现在 LIBERO；按 camera/object/scene/operator 划分 |
 | E7 D1 phase | LIBERO/DROID 轨迹 | `source→mixed→target` 是否存在且有益 | 正确 phase 优于反向/随机/固定百分比；否则保留 D0 |
 | E8 B WAM/VAM | DROID 离线 future attribution | 未来归因是否比静态图更接近动作成败 | 只有通过 horizon/动作负控才进入主结果 |
-| E9 跨骨干 | OpenVLA/OFT、Qwen/LLaVA | 方法是否依赖 SpikingBrain | 统一归因接口在至少两种结构上有效 |
+| E9 跨骨干 | OpenVLA/OFT、π0 系、Qwen/LLaVA；SpikingBrain 后置 | 方法是否依赖某个骨干 | 统一归因接口在至少两种结构上有效 |
 
 ## 5.2 基线与消融
 
@@ -82,8 +82,9 @@
 
 | 模型/数据 | Baseline | `L_sem` | D0 | D1 | D0 + B | 归因干预一致性 |
 |---|---:|---:|---:|---:|---:|---:|
-| SpikingBrain / LIBERO | 待测 | 待测 | 待测 | 待测 | 待测 | 待测 |
-| SpikingBrain / DROID | 待测 | 待测 | 待测 | 待测 | 待测 | 待测 |
-| OpenVLA / DROID | 待测 | 待测 | 待测 | 后置 | 后置 | 待测 |
+| OpenVLA/OFT / LIBERO | 待测 | 待测 | 待测 | 待测 | 后置 | 待测 |
+| OpenVLA/OFT / DROID | 待测 | 待测 | 后置 | 后置 | 后置 | 待测 |
+| π0 系或第二 VLA / DROID | 待测 | 待测 | 待测 | 后置 | 后置 | 待测 |
+| SpikingBrain / 后置扩展 | 待测 | 待测 | 后置 | 后置 | 后置 | 待测 |
 
 所有“预期”在实际结果前都保持为假设，不能写成已验证结论。

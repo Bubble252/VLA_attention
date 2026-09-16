@@ -12,7 +12,7 @@
 
 ## Paragraph 2：已有方法的三个限制
 
-**限制一：attention 不可比。** Lavender 的扩散词图与 SpikingBrain full-attention、Qwen/LLaVA hidden states、OpenVLA action token 不在同一表示空间。
+**限制一：attention 不可比。** Lavender 的扩散词图与 OpenVLA/π0 action expert、Qwen/LLaVA hidden states 以及后续 SpikingBrain 结构不在同一表示空间。
 
 **限制二：语言与动作脱节。** 现有 VLM grounding 通常评估词—区域，VLA 通常评估 success rate 或 action error，缺少中间的动作归因约束。
 
@@ -43,7 +43,7 @@
 ## Paragraph 6：贡献
 
 1. 提出跨 VLM/VLA 的模型无关空间归因桥与结构感知层选择（Section 3）。
-2. 提出 SpikingBrain-VLA 的语言—动作归因一致性 D0 及 phase 扩展 D1（Section 4）。
+2. 提出模型无关的语言—动作归因一致性 D0 及 phase 扩展 D1，并在两个接口不同的 VLA 上验证（Section 4）。
 3. 提出 attention/gradient/intervention 证据分级协议，在 VLM、LIBERO 和 DROID 上验证 grounding、动作误差与泛化（Section 5）。
 
 ## Introduction 写作禁区

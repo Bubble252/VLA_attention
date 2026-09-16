@@ -16,7 +16,7 @@
 - gradient×activation 依赖目标标量和梯度噪声，不等价于因果解释；
 - patch occlusion 计算昂贵且可能产生非自然图像；
 - DROID 首轮以离线 action prediction 为主，不能替代闭环真实机器人实验；
-- SpikingBrain full/window/GLA 的归因语义仍需接口审计，不能把所有状态矩阵 reshape 成注意力图；
+- 非标准主干（包括 SpikingBrain full/window/GLA）的归因语义仍需接口审计，不能把所有状态矩阵 reshape 成注意力图；
 - D1 phase 和 B future attribution 依赖弱标签/目标评分器，存在标签噪声。
 
 ## 6.3 Future work
@@ -34,10 +34,10 @@
 
 ```text
 Lavender T_sem
-→ SpikingBrain/Qwen/LLaVA A_lang
+→ OpenVLA/π0/Qwen/LLaVA A_lang
 → D0 A_act containment
 → LIBERO 机制
 → DROID 离线泛化
 ```
 
-D1、B/WAM/VAM、Next Forcing 和真机全部作为后续扩展，不让论文失去单一主线。
+D1、B/WAM/VAM、Next Forcing、SpikingBrain 类脑扩展和真机全部作为后续扩展，不让论文失去单一主线。

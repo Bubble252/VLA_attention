@@ -174,7 +174,7 @@ git push
 
 - [ ] 选择首轮 VLM grounding 数据：Flickr30k / Flickr30k Entities，优先复用 Lavender 公开的 Flickr1k Stable Diffusion attention maps；
 - [ ] 对每个样本生成 Lavender / Stable Diffusion 词级教师图；
-- [ ] 在 SpikingBrain-VL 上比较无对齐、Lavender 原式 attention 对齐、teacher-to-attribution 对齐；
+- [ ] 在 Qwen/LLaVA 上比较无对齐、Lavender 原式 attention 对齐、teacher-to-attribution 对齐；
 - [ ] 在一个 Qwen 系模型上使用 gradient×input 归因接口做同一教师对齐；
 - [ ] 在 LLaVA-1.6/OneVision 上使用同一 teacher-to-attribution 接口做 VLM 普适性对照；
 - [ ] 记录正确教师图、错词教师图、错图教师图、随机教师图；
@@ -231,7 +231,7 @@ git push
 
 ### 任务
 
-- [ ] 训练无对齐 SpikingBrain-VLA baseline；
+- [ ] 训练无对齐 OpenVLA/OFT 或 π0 系 baseline；
 - [ ] 加入 `[23,31]` 的 V0 similarity bridge；
 - [ ] 加入 VLM 阶段验证过的 gradient×input 归因对照；
 - [ ] 实现 D 路线：`A_lang` 由 Lavender 锚定，`A_act` 默认由 action loss 或 action output 对 visual tokens 的 gradient×activation 得到；
@@ -288,7 +288,7 @@ git push
 
 ### 约束
 
-参考模型的动作接口若不同，必须分开报告原生结果和统一 7D delta EEF adapter 结果，不能混成一张不具可比性的表。VLM 阶段的普适性用 grounding 指标证明，VLA 阶段的普适性至少需要 SpikingBrain-VLA 与 OpenVLA/OFT 两类骨干。B/C 路线必须作为 D 的扩展或诊断出现，不能反过来变成主结论。
+参考模型的动作接口若不同，必须分开报告原生结果和统一 7D delta EEF adapter 结果，不能混成一张不具可比性的表。VLM 阶段的普适性用 grounding 指标证明，VLA 阶段的普适性优先需要 OpenVLA/OFT 与 π0 系两类接口不同的骨干；SpikingBrain-VLA 后置。B/C 路线必须作为 D 的扩展或诊断出现，不能反过来变成主结论。
 
 ### Git
 
@@ -387,6 +387,39 @@ git push
 这些问题应先写入 issue 和 commit，而不是通过增加训练轮数掩盖。
 
 ## 核心主线与数据集定位补充
+
+## 主线模型重新冻结：SpikingBrain 后置
+
+从本版本开始，SpikingBrain 不再是主实验骨干。主线采用“模型无关归因桥 + 成熟 VLA paired baseline”的组织方式：
+
+| 优先级 | 候选 | 角色 | 进入主线条件 |
+|---|---|---|---|
+| P0 | OpenVLA/OFT | 首选开放 VLA，保留原生 action token/adapter | checkpoint、LIBERO 设置和视觉 hidden state 接口跑通 |
+| P0 | π0/π0.5 系 | 连续 flow/action expert 对照 | 能稳定抽取 action-conditioned visual attribution，许可证和权重可用 |
+| P1 | Qwen-VL、LLaVA-OneVision | VLM grounding 与归因桥普适性 | 同一 `T_sem` 下正确教师优于错图/随机图 |
+| P2 | LingBot-VLA | 多 embodiment/视频动作扩展 | 主线两个 VLA 完成后再加入 |
+| P3 | SpikingBrain | 类脑、局部—全局层级和稀疏效率扩展 | 不阻塞主线，只做结构迁移/附加分析 |
+
+模型选择遵循 *Breaking the Vision–Action Shortcut* 的结构覆盖原则：优先选接口不同的 VLA，而不是堆叠同一系列模型。每个主线骨干都必须拥有 architecture-matched paired baseline：相同数据、训练预算、动作表示、native action objective 和评估协议。
+
+### 可选择的论文主线组合
+
+| 组合 | 主模型 | 优点 | 风险 | 建议 |
+|---|---|---|---|---|
+| A | OpenVLA/OFT + π0 系 | 覆盖 action token 与连续 flow expert，最能证明归因接口跨动作头 | π0 接口和权重工程复杂 | 首选论文主线 |
+| B | OpenVLA/OFT + LingBot-VLA | 覆盖开放 VLA 与视频/多 embodiment 路线 | 数据和视频接口更重 | 资源允许时的扩展主线 |
+| C | OpenVLA/OFT 单骨干 + Qwen/LLaVA VLM | 工程最稳，适合先快速形成结果 | 跨 VLA 普适性较弱 | 首轮最小可交付 |
+| D | SpikingBrain + OpenVLA | 可讲类脑异构结构 | 会把论文叙事拉回 SpikingBrain，主线复杂度高 | 只作为后续扩展 |
+
+当前默认采用 A；若 π0 系接口在两周内无法稳定抽取动作归因，则退回 C，不等待 SpikingBrain。
+
+### 从论文借鉴的 benchmark 设计
+
+- LIBERO 负责 ID 与闭环机制；DROID 负责真实视觉分布下的离线泛化；
+- 参考 LIBERO-Plus 的 task-preserving OOD 思路，在 DROID 设计 camera、background、object、scene、operator 划分；
+- 每个主线 VLA 使用 paired baseline，不直接比较不同模型的原生绝对分数；
+- attention/gradient 图必须和 patch occlusion、语言反事实、state 遮挡一起报告；
+- 结果分为性能表、OOD 表、机制诊断表和组件消融表，不把所有指标塞进单一总表。
 
 ## 文档同步规则
 

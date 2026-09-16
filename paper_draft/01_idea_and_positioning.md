@@ -10,7 +10,7 @@
 
 ## 1.2 原始想法到最终方法
 
-原始 Lavender/SpikingBrain 想法是对 selected attention layers 施加扩散图 MSE。最终收敛为三步：
+原始 Lavender/SpikingBrain 想法是对 selected attention layers 施加扩散图 MSE。现在将其提升为模型无关主线，SpikingBrain 只保留为后续类脑扩展。最终收敛为三步：
 
 1. Lavender/Stable Diffusion 产生 `T_sem(w,x)`；
 2. 学生模型用原生 attention、gradient×activation 或 action-token attribution 产生 `A_lang`；
@@ -22,7 +22,8 @@
 
 类脑结合只在三个可检验的结构层面发生，不声称复制生物神经系统：
 
-- **稀疏/事件驱动计算**：SpikingBrain 的脉冲表征和低活动率路径提供低冗余视觉证据；实验比较脉冲骨干与 dense VLM 的归因熵、稳定性和效率。
+- **主线不预设类脑结构**：OpenVLA/OFT、π0 系或其他成熟 VLA 先承担可复现实验；模型只需提供视觉 token 和动作输出归因接口。
+- **类脑扩展**：SpikingBrain 的稀疏脉冲表征、局部—全局层级和 GLA 递归状态作为后续结构消融，检验空间归因约束能否迁移到非标准注意力架构。
 - **局部—全局层级**：window/SWA 承担局部建模，full-attention block `[7,15,23,31]` 提供跨物体整合，GLA 提供递归状态；只在可解释的 full-attention 或 gradient proxy 上施加监督。
 - **时间整合**：VLA 的动作归因随 `approach → grasp → move → place` 改变；D1 用 phase soft target 表示这种动态，而不是把所有时间点压成静态图。
 

@@ -10,7 +10,7 @@
 
 | 项目 | 最终约束 |
 |---|---|
-| 研究对象 | 语言条件空间归因对齐；SpikingBrain-VL 是主实验骨干 |
+| 研究对象 | 模型无关的语言条件空间归因对齐；SpikingBrain 只作后续类脑扩展 |
 | 首个验证环境 | VLM grounding；随后进入 LIBERO 仿真；不先做真机 |
 | 动作输出 | `a_t=[Δx, Δy, Δz, Δroll, Δpitch, Δyaw, gripper]`，即 7 维 delta EEF |
 | 视觉教师 | 首选 Lavender 离线 Stable Diffusion 词级空间注意力图 |
@@ -273,7 +273,7 @@ $$
 | LingBot-VA | 因果视频-动作世界模型，视频动态和动作在交错序列中联合建模 | 未来状态/阶段相关 `R_act`，后置 | Action-Relevance Refiner 候选 |
 | LingBot-VLA 1.0/2.0 | VLA 基础模型，2.0 支持多 embodiment 的统一动作表示并使用 Qwen3-VL 依赖 | action expert 归因，后置 | 多 embodiment/action chunk 参照 |
 
-这里不把 Qwen、LLaVA、DeepSeek 或 LingBot 直接拼进 SpikingBrain。第一阶段先在 VLM 任务上验证同一教师、不同学生归因接口都能受益；VLA 阶段再使用 SpikingBrain-VLA 和 OpenVLA/OFT 做动作闭环验证。
+这里不把多个骨干强行拼接。第一阶段先在 Qwen/LLaVA VLM 上验证同一教师、不同学生归因接口都能受益；VLA 阶段优先使用 OpenVLA/OFT 与 π0 系，SpikingBrain-VLA 延后作为类脑结构扩展。
 
 ## 8. Next Forcing 对本项目的启发与边界
 
@@ -410,8 +410,8 @@ Next Forcing 是一个因果 world model 训练框架，通过链式 Multi-Chunk
 | 主要距离 | 归一化 MSE，KL/cosine 仅诊断 |
 | 视觉输入 | LIBERO RGB，先单帧或短窗口 |
 | 本体状态 | 有则拼接，无则先做视觉语言动作基线 |
-| 第一组 VLM 基线 | SpikingBrain-VL + 一个 Qwen 系模型 + LLaVA-1.6/OneVision；DeepSeek-VL2 后置 |
-| 第一组 VLA 基线 | 无对齐 SpikingBrain-VLA + OpenVLA/OFT attribution adapter，用于普适性验证 |
+| 第一组 VLM 基线 | Qwen 系 + LLaVA-1.6/OneVision；SpikingBrain-VL 后置 |
+| 第一组 VLA 基线 | OpenVLA/OFT + π0 系（若接口稳定）；SpikingBrain-VLA 后置 |
 | 首轮教师 | Lavender / Stable Diffusion 词级 cross-attention |
 | Action-Relevance Refiner | 纳入 VLA 扩展阶段，生成 `R_act` 并构造 `T_AR` |
 | 首轮 VLM 数据 | Flickr30k/Flickr30k Entities；优先复用 Lavender Flickr1k attention maps |
