@@ -1,5 +1,13 @@
 # 5. Experiments 与预期结论
 
+## 原文精读后的基线补充（待筛选）
+
+详见 [Don't Blind / Anchor-Align / PosA-VLA 原文分析](../references/abstract_review/07_three_nearest_methods_deep_read.md)。增加三类强对照候选：中层 patch-feature alignment、全层 frozen-VLM anchoring + 同观测方向词监督、任务/EEF 双图前向 gating。它们分别排除表征保持、输出语义一致和空间门控的替代解释。
+
+首轮可先用同一学生运行 BC、DB-style feature alignment、L_sem only、D0 四组；正结果后增加完整 Anchor-Align-style 及其上叠加 D0 的实验。不同教师同时改变监督形态时需注明混杂。冻结与可训练 bridge、合法 EEF/障碍区域、动作输出梯度与动作损失梯度差异、二阶梯度成本均为训练前审计项。
+
+本文后续原有 containment 公式尚为历史候选，不以 L1 概率图直接称“允许区域 mask”；归一化与 soft support/泄漏余量的修正建议见专题第 6 节，待小样本验证后再冻结。SpikingBrain 后置，主线模型组合继续由用户筛选。
+
 ## 5.1 实验总表
 
 本实验表借鉴 *Breaking the Vision–Action Shortcut* 的四个设计原则：异构结构覆盖、architecture-matched paired baseline、ID/OOD 成对评估、反事实与组件拆分。具体借鉴分析见 `references/paper_reading/breaking_vision_action_shortcut_notes.md`。

@@ -4,6 +4,7 @@ Uses existing app credentials; never prints secrets. Does not recurse folders,
 delete unrelated cloud documents, or trust DocSync's success counters.
 """
 import collections
+import argparse
 import hashlib
 import json
 import os
@@ -15,6 +16,9 @@ import time
 import requests
 
 ROOT = Path(__file__).resolve().parents[1]
+parser = argparse.ArgumentParser()
+parser.add_argument('--nearest-only', action='store_true', help='Sync only new three-method analysis and its two updated entry documents')
+args = parser.parse_args()
 TOOL = ROOT.parent / 'doc-sync-main'
 sys.path.insert(0, str(TOOL / 'src'))
 os.chdir(TOOL)
@@ -84,6 +88,13 @@ for name in ['00_paper_blueprint.md', '04_system_and_method.md',
              '08_model_baseline_benchmark_options.md', 'README.md']:
     targets.append((ROOT / 'paper_draft' / name, 'RGgnwMcVUi4xd5klGX9cAThinBc', Path(name).stem))
 
+if args.nearest_only:
+    targets = [
+        (review / '07_three_nearest_methods_deep_read.md', 'DAB9w31AUiuZJAkN5B7cukoGn2g', 'PDF摘要归纳-07_three_nearest_methods_deep_read'),
+        (review / 'README.md', 'DAB9w31AUiuZJAkN5B7cukoGn2g', 'PDF摘要归纳-README'),
+        (ROOT / 'paper_draft/05_experiments_and_expected_conclusions.md', 'RGgnwMcVUi4xd5klGX9cAThinBc', '05_experiments_and_expected_conclusions'),
+    ]
+
 manifest_path = OUT / 'verified.json'
 manifest = json.loads(manifest_path.read_text()) if manifest_path.exists() else {}
 for local, folder, title in targets:
@@ -126,7 +137,7 @@ for local, folder, title in targets:
 # and no need to expose the machine-readable/full-source files in Feishu.
 latest = json.loads(cfg_path.read_text())
 tasks = latest.setdefault('tasks', [])
-for local, folder, title in targets[:6]:
+for local, folder, title in [t for t in targets if t[0].parent == review]:
     tasks[:] = [t for t in tasks if t.get('local') != str(local)]
     tasks.append({'note': title, 'local': str(local),
                   'cloud': manifest[str(local.relative_to(ROOT))]['document'],

@@ -2,6 +2,8 @@
 
 日期：2026-09-16。范围是 references/papers 中的全部 52 个 PDF 文件；本报告不是全文翻译，也不是所有论文均已全文精读。依用户要求重点阅读摘要，结合少量正文说明模型、baseline、benchmark 的借鉴与重合。效果数字属于作者报告，未做代码复现。
 
+新增专题：[三篇最近邻的原文方法分析](07_three_nearest_methods_deep_read.md)。Don't Blind、Anchor-Align、PosA-VLA 已进一步读方法、实施与相关消融；其中对 projector、方向词监督和 pose 双图的结论比本轮摘要索引更具体。涉及我们的公式调整仍为待验证建议。
+
 ## 阅读顺序
 
 1. **先看本页**：总体结论与筛选优先级。
