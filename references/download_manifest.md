@@ -4,6 +4,8 @@
 
 ## 已完成
 
+2026-09-16 新增 BlindVLA 官方源码：`repos/blindvla`，commit `06855fcb91d65c88ca351a2d45af0be860a91987`，通过 7897 代理 shallow clone 成功。源码约 278 MB（含 Git）；权重、warm-up checkpoint、1.4k episode 数据集和 teacher hub 权重尚未下载，未运行论文训练。代码分析见 `abstract_review/08_blindvla_code_audit.md`。
+
 | 类别 | 资料 | 本地位置 | 状态 |
 |---|---|---|---|
 | A | Lavender、SpikingBrain-7B、OpenVLA-OFT | `repos/lavender`、`repos/spikingbrain-7b`、`repos/openvla-oft` | 已归档并固定 commit |

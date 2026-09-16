@@ -64,6 +64,8 @@ VL-Think 固定 carrot 搬运，改变目标 board 的 shape、color、traffic�
 - 区分“教师更强”和“监督对象更好”：C-RADIO feature 与 Lavender map 对比同时改变教师与损失，不能独自证明归因优于 feature。需再用同源 frozen VLM 的 feature/map 做成对实验，或明确承认混杂。
 - 增加 **bridge-only trainable / backbone updates** 的检查。热力图头能对齐不代表动作头使用同一证据；报告 action branch 梯度是否收到对齐损失。
 - 原文未清楚给出 frozen MLP 的初始化/先训练再冻结流程；正文维度和 Table 9 projector dimension 也需代码核对。不能擅自假设随机固定 MLP 就等价于完整方法。
+
+代码补证（2026-09-16）：`BlindVLA@06855fcb` 的 finetune_align.py 确实新建 projector 后默认冻结，未加载已保存 projector；2048 是内部宽度。该固定可微映射仍能向学生回传梯度，不因随机初始化自动无效。另发现可训练开关不将 projector 加入 optimizer、多层仅存第一个等复现风险。完整核查见 `08_blindvla_code_audit.md`，静态代码证据不等于已复现论文。
 - 作者从可视化推断 attention sink 缓解；我们仍需数值 sink 指标和受控输入干预。漂亮 attention 不是独立因果证据。
 
 ## 3. Anchor-Align：它已经给出一个非常强的“语言和动作一致”基线

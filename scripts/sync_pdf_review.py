@@ -18,6 +18,7 @@ import requests
 ROOT = Path(__file__).resolve().parents[1]
 parser = argparse.ArgumentParser()
 parser.add_argument('--nearest-only', action='store_true', help='Sync only new three-method analysis and its two updated entry documents')
+parser.add_argument('--blindvla-only', action='store_true', help='Sync BlindVLA code audit and its updated study/plan documents')
 args = parser.parse_args()
 TOOL = ROOT.parent / 'doc-sync-main'
 sys.path.insert(0, str(TOOL / 'src'))
@@ -59,7 +60,7 @@ def paginated(path, params, key):
         params = dict(params, page_token=token)
 
 def text_blocks(blocks):
-    result = []
+    result = collections.Counter()
     for b in blocks:
         if b.get('block_type') != 1:
             for v in b.values():
@@ -68,10 +69,10 @@ def text_blocks(blocks):
                                       for e in v['elements'])
                     content = re.sub(r'\s+', '', content).replace('\u200b', '')
                     if content:
-                        result.append(content)
+                        result[content] += 1
         children = b.get('children', [])
-        result.extend(text_blocks([c for c in children if isinstance(c, dict)]))
-    return collections.Counter(result)
+        result.update(text_blocks([c for c in children if isinstance(c, dict)]))
+    return result
 
 targets = []
 review = ROOT / 'references/abstract_review'
@@ -96,6 +97,14 @@ if args.nearest_only:
     ]
 
 manifest_path = OUT / 'verified.json'
+if args.blindvla_only:
+    targets = [
+        (review / '08_blindvla_code_audit.md', 'DAB9w31AUiuZJAkN5B7cukoGn2g', 'PDF摘要归纳-08_blindvla_code_audit'),
+        (review / '07_three_nearest_methods_deep_read.md', 'DAB9w31AUiuZJAkN5B7cukoGn2g', 'PDF摘要归纳-07_three_nearest_methods_deep_read'),
+        (review / 'README.md', 'DAB9w31AUiuZJAkN5B7cukoGn2g', 'PDF摘要归纳-README'),
+        (ROOT / 'doc/03_execution_plan.md', 'KodSw9aQXiCNygkmN9bcOWU3nrd', '03_execution_plan'),
+        (ROOT / 'paper_draft/05_experiments_and_expected_conclusions.md', 'RGgnwMcVUi4xd5klGX9cAThinBc', '05_experiments_and_expected_conclusions'),
+    ]
 manifest = json.loads(manifest_path.read_text()) if manifest_path.exists() else {}
 for local, folder, title in targets:
     source = local.read_text()

@@ -170,6 +170,19 @@ git push
 
 ## 7. P4：VLM grounding 证明
 
+### 重点参考 Don't Blind（用户确认）
+
+已归档 BlindVLA 官方仓库 `references/repos/blindvla`，commit `06855fcb`。首轮必须加入原始 VLM 评估、普通 SFT、DB-style 中层 patch feature alignment、Lavender-style 图监督和我们的输出归因监督候选；不再只做后两项。DB-style 移植 Qwen/LLaVA 属于 adaptation baseline，不能冒称完整 OpenVLA 论文复现。
+
+- [ ] 建立固定视觉语言保留集：借鉴 VL-Think 的同场景目标/属性/位置变化，presence QA 同时包含 yes/no 样本；
+- [ ] 冻结 teacher 与 projector 时仍保留学生梯度路径；比较可训练 projector 前先修正参数组并验证其被更新；
+- [ ] 分开存 raw query、general、ratio、gradient 和扰动图；不得把官方 ratio 图称为原始 attention 或动作归因；
+- [ ] 按真实图像 processor/grid 恢复 patch，不用平方根猜网格截断；
+- [ ] 记录早/中/晚层与同数量随机层，teacher 类型、投影器 seed 和训练开销；
+- [ ] VLM 阶段干预测 answer/phrase score；VLA 阶段才测动作变化，两个阶段指标不混用。
+
+实施细节和上游代码问题见 `references/abstract_review/08_blindvla_code_audit.md`。SpikingBrain 保持后置，具体 Qwen/LLaVA 和 VLA 版本待筛选。
+
 ### 任务
 
 - [ ] 选择首轮 VLM grounding 数据：Flickr30k / Flickr30k Entities，优先复用 Lavender 公开的 Flickr1k Stable Diffusion attention maps；

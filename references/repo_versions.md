@@ -1,5 +1,7 @@
 # Repository versions
 
+- blindvla: 06855fcb91d65c88ca351a2d45af0be860a91987 https://github.com/CognitiveAISystems/BlindVLA.git (2026-09-16; shallow clone; weights/data not downloaded)
+
 - deepseek-vl2: ef9f91e2b6426536b83294c11742c27be66361b1 https://github.com/deepseek-ai/DeepSeek-VL2.git
 - diffusion_policy: 5ba07ac6661db573af695b419a7947ecb704690f https://github.com/real-stanford/diffusion_policy.git
 - lavender: 58fc71b7b225326fd6f49014b14323bfa4e22590 https://github.com/AstraZeneca/vlm.git

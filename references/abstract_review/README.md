@@ -4,6 +4,8 @@
 
 新增专题：[三篇最近邻的原文方法分析](07_three_nearest_methods_deep_read.md)。Don't Blind、Anchor-Align、PosA-VLA 已进一步读方法、实施与相关消融；其中对 projector、方向词监督和 pose 双图的结论比本轮摘要索引更具体。涉及我们的公式调整仍为待验证建议。
 
+新增官方源码核查：[BlindVLA 代码与 VLM 实验借鉴](08_blindvla_code_audit.md)。已下载 commit `06855fcb`。确认热力图为 query/general attention ratio；默认 projector 新建后冻结，可训练开关却没有将其加入 optimizer。VLM 阶段现在重点采用其表征保持诊断和 feature-alignment 对照。
+
 ## 阅读顺序
 
 1. **先看本页**：总体结论与筛选优先级。
