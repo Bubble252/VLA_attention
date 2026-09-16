@@ -4,7 +4,7 @@
 **论文类型**：Technique paper，带有跨模型评估设置。  
 **主验证**：VLM grounding → LIBERO 机制验证 → DROID 泛化验证。  
 **动作接口**：7D delta EEF。  
-**主线骨干**：优先选择接口成熟的 OpenVLA/OFT 或 π0 系 VLA，并用 Qwen/LLaVA 做 VLM 归因普适性验证；SpikingBrain 只作为后续类脑扩展。
+**主线骨干**：从 OpenVLA/OFT、π0、π0.5、MolmoAct2、LingBot-VLA 中筛选接口成熟且结构差异明确的 VLA；VLM 侧从 Prismatic-7B、Qwen2.5-VL-7B、InternVL3.5、Ovis2.5、LLaVA-OneVision 中筛选。SpikingBrain 只作为后续类脑扩展。
 
 ## 一句话主张
 

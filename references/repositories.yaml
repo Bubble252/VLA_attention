@@ -3,6 +3,24 @@ generated: "2026-09-10"
 proxy: "http://127.0.0.1:7897"
 local_archive_root: "references/repos"
 repositories:
+  - id: prismatic-vlms
+    url: "https://github.com/TRI-ML/prismatic-vlms.git"
+    local_path: "references/repos/prismatic-vlms"
+    current_status: to_archive
+    commit: null
+    role: "vlm_candidate_prismatic_7b"
+  - id: internvl
+    url: "https://github.com/OpenGVLab/InternVL.git"
+    local_path: "references/repos/internvl"
+    current_status: to_archive
+    commit: null
+    role: "vlm_candidate_internvl3_5"
+  - id: ovis
+    url: "https://github.com/AIDC-AI/Ovis.git"
+    local_path: "references/repos/ovis"
+    current_status: to_archive
+    commit: null
+    role: "vlm_candidate_ovis2_5"
   - id: blindvla
     url: "https://github.com/CognitiveAISystems/BlindVLA.git"
     local_path: "references/repos/blindvla"

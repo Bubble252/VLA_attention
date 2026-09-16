@@ -2,9 +2,9 @@
 
 本仓库记录最终研究方案、文献归档和后续实现入口。核心方法不限定于某一种 VLM 的 attention 结构，而是把不同 VLM/VLA 的内部视觉证据统一成**语言条件空间归因图**：
 
-> Lavender / Stable Diffusion 提供 `word → image region` 教师图；SpikingBrain、Qwen、LLaVA、DeepSeek、OpenVLA 等模型通过各自可用的 attention、hidden-state gradient 或 action-conditioned attribution 产生学生归因图；二者统一到图像坐标后对齐。
+> Lavender / Stable Diffusion 提供 `word → image region` 教师图；Prismatic-7B、Qwen2.5-VL-7B、InternVL3.5、Ovis2.5、LLaVA、OpenVLA、π0、π0.5、MolmoAct2 等候选通过各自可用的 hidden-state gradient、attention 或 action-conditioned attribution 产生学生归因图；二者统一到图像坐标后对齐。
 
-实验顺序是 VLM grounding → LIBERO 闭环及 OOD → DROID 离线泛化。主线研究语言—动作空间归因约束，VLA 候选包括 OpenVLA/OFT、π0 系、MolmoAct2 和 LingBot-VLA，具体组合待用户筛选。Qwen/LLaVA 用于 VLM 侧验证。SpikingBrain 已确定后置，有空再做，不作为主线或验收依赖。
+实验顺序是 VLM grounding → LIBERO 闭环及 OOD → DROID 离线泛化。主线研究语言—动作空间归因约束，VLA 候选包括 OpenVLA/OFT、π0、π0.5、MolmoAct2 和 LingBot-VLA，具体组合待用户筛选。VLM 候选包括 Prismatic-7B、Qwen2.5-VL-7B、InternVL3.5、Ovis2.5 和 LLaVA。SpikingBrain 已确定后置，有空再做，不作为主线或验收依赖。
 
 模型角色按实验区分：π0、LingBot 等可以作为待选学生骨干；若作为 B 路线外部教师，则只用于相关性细化。学生选择与教师选择分开。
 

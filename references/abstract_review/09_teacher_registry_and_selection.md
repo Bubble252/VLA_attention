@@ -104,8 +104,8 @@ Qwen2.5-VL、InternVL3.5、Ovis2.5、LLaVA-OneVision 可以提供答案/phrase s
 
 ## 8. 仍需用户筛选
 
-- [ ] VLM 首轮：Prismatic-7B、Qwen2.5-VL-7B、InternVL3.5、Ovis2.5 中选两个；
+- [ ] VLM 首轮：Prismatic-7B、Qwen2.5-VL-7B、InternVL3.5、Ovis2.5、LLaVA-OneVision 中选两个；
 - [ ] VLA 首轮：OpenVLA/OFT、π0、π0.5、MolmoAct2 中选两个；
-- [ ] benchmark 首轮：LIBERO + SimplerEnv；RoboTwin 是第二阶段或 WAM 扩展；
+- [ ] benchmark 首轮：LIBERO + SimplerEnv；RoboTwin 是第二阶段或 WAM/VLA 扩展；
 - [ ] 主教师冻结为 Lavender；DB/AA/PosA 作为 baseline，而不是混合 teacher；
 - [ ] SpikingBrain 保持后置。
