@@ -2,6 +2,8 @@
 
 本文件专门给研究者筛选，不把所有候选都默认塞进主实验。核心标准来自 *Breaking the Vision–Action Shortcut*：模型覆盖结构差异；baseline 必须 paired；benchmark 要同时检验 ID 能力、task-preserving OOD 和机制解释。
 
+本表所有组合为待筛选建议；具体接口审计和新增论文依据见 `../references/abstract_review/04_selection_and_experiment_decisions.md`。OpenVLA token head 与 OFT 不可默认混作同一架构。
+
 ## 8.1 主线候选
 
 | 候选 | 结构/动作接口 | 优势 | 主要风险 | 适合位置 |
@@ -82,4 +84,4 @@ DROID：pick-place 对应子集做离线 action prediction 和跨场景泛化
 - [ ] π0 系接口若在规定时间内跑不通，是否自动退回 OpenVLA/OFT 单骨干；
 - [ ] DROID 是否只做 offline action prediction；
 - [ ] LIBERO 是否固定为机制验证，DROID 固定为泛化验证；
-- [ ] SpikingBrain 是否完全移出主论文，仅保留 future work/appendix。
+- [x] SpikingBrain 已后置，不作为主线；有空再做。

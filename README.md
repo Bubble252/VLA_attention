@@ -4,9 +4,11 @@
 
 > Lavender / Stable Diffusion 提供 `word → image region` 教师图；SpikingBrain、Qwen、LLaVA、DeepSeek、OpenVLA 等模型通过各自可用的 attention、hidden-state gradient 或 action-conditioned attribution 产生学生归因图；二者统一到图像坐标后对齐。
 
-实验顺序是：先在 VLM grounding 上证明这种归因对齐优于普通 fine-tuning 或 naive attention 对齐，再在 LIBERO 中验证它是否能改善 7D delta EEF 的 VLA 控制。SpikingBrain 是主实验骨干，因为它的 full/window/GLA 结构适合做结构感知消融；Qwen 与 LLaVA-1.6/OneVision 用于 VLM 侧普适性验证；OpenVLA/OFT 用于后续跨 VLA 骨干验证。
+实验顺序是 VLM grounding → LIBERO 闭环及 OOD → DROID 离线泛化。主线研究语言—动作空间归因约束，VLA 候选包括 OpenVLA/OFT、π0 系、MolmoAct2 和 LingBot-VLA，具体组合待用户筛选。Qwen/LLaVA 用于 VLM 侧验证。SpikingBrain 已确定后置，有空再做，不作为主线或验收依赖。
 
-VLA 扩展阶段不把 π0、LingBot 或 Qwen-RobotManip 当作直接输出动作的 policy teacher；它们只作为 **Action-Relevance Refiner** 候选，用于把 Lavender 的静态语义教师图细化为动作阶段相关的 `T_AR`。
+模型角色按实验区分：π0、LingBot 等可以作为待选学生骨干；若作为 B 路线外部教师，则只用于相关性细化。学生选择与教师选择分开。
+
+52 份 PDF 的逐篇摘要、重合与筛选建议见 [文献归纳总览](references/abstract_review/README.md)。推荐不等于冻结配置，所有效果均须实验验证。
 
 当前更倾向的 VLA 主方法是 **Structure-Native Action Attribution Consistency**：先用扩散图锚定模型内部语言归因 `A_lang`，再约束动作 query/action head 的归因 `A_act` 不偏离语言相关区域。Action-Relevance Refiner 和 LIBERO 状态投影保留为扩展与诊断，不作为主创新。
 

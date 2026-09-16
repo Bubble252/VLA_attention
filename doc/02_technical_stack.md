@@ -63,7 +63,9 @@ VLM终局/
 3. 教师图按共享对象词对齐；
 4. 保存每个样本的词名、原图尺寸、教师图尺寸和归一化方式。
 
-### 2.2 SpikingBrain
+### 2.2 后置参考：SpikingBrain
+
+本节保留结构接口资料，不属于首轮代码依赖。主线学生组合由候选审计后交用户确认，见 paper_draft/08_model_baseline_benchmark_options.md。
 
 路径：
 
@@ -124,7 +126,7 @@ LIBERO RGB + instruction + proprioception
             │
             ├── 同一套 teacher map T(word)
             └── VLA student
-                  ├── SpikingBrain-VLA 或 OpenVLA/OFT
+                  ├── 待选 VLA：OpenVLA/OFT、π0 系、MolmoAct2、LingBot-VLA
                   ├── action query / action token / delta EEF loss
                   └── action-conditioned spatial attribution G(word, image, action)
                          ↓
@@ -623,9 +625,9 @@ VLA 阶段主指标：
 1. VLM 普通 SFT / LoRA；
 2. Lavender 原式 attention-to-attention 对齐；
 3. 本项目 teacher-to-attribution 对齐；
-4. SpikingBrain-VLA，无对齐；
+4. 已选主线 VLA，无对齐；
 5. 所有可用层统一对齐；
-6. full-attention `[23,31]` 对齐；
+6. 所选模型的可用层对齐；SpikingBrain 层号仅为后置扩展；
 7. 仅 `[31]`；
 8. 随机层；
 9. 教师词图打乱；

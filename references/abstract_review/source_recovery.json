@@ -1,0 +1,15 @@
+{
+  "id": "P43",
+  "original": "references/papers/openvla_2406.09246.pdf",
+  "reason": "pdftotext: missing trailer / invalid XRef / invalid pages object",
+  "recovered": "references/recovered/openvla_2406.09246v3.pdf",
+  "source": "https://arxiv.org/pdf/2406.09246",
+  "observed_version": "2406.09246v3",
+  "pages": 37,
+  "read_pages": [
+    1,
+    2
+  ],
+  "sha256": "353c37df34458f12f969b14dfd8b77175b727b9cddea7bb891759beddeefe1be",
+  "date": "2026-09-16"
+}

@@ -28,6 +28,8 @@ tensorboard/
 references/.download_failures.current
 .doc_sync_state.json
 paper_draft/.doc_sync_state.json
+**/.doc_sync_state.json
+references/recovered/*.pdf
 
 # Local secrets and machine configuration
 .env

@@ -150,7 +150,9 @@ D1 有三种实现层级：
 
 `A_act` 的默认实现采用 **action loss gradient×activation**，因为它最普适：连续 delta EEF、action token VLA、Qwen/LLaVA/DeepSeek 这类无显式 cross-attention 或 attention 不可比的模型都能用同一个“目标标量对视觉 token 求梯度”的接口。若模型天然提供 action query attention，则作为更可解释的结构内生版本；若模型是 OpenVLA 类 action token 输出，则用 action token log-prob gradient。
 
-## 5. SpikingBrain 的网络结构与可对齐对象
+## 5. 后置参考：SpikingBrain 的网络结构与可对齐对象
+
+本节及专用层号只适用于未来扩展；主线 VLA 候选组合待用户确认，SpikingBrain 不阻塞主线。
 
 本地实现位于：
 
@@ -200,7 +202,7 @@ D1 有三种实现层级：
 
 | 模型 | 学生归因图提取方式 | 首轮用途 |
 |---|---|---|
-| SpikingBrain-VL | full-attention 层 `[7,15,23,31]` 的语言/动作 query 到视觉 patch；同时实现 gradient×input 对照 | 主模型，做结构感知消融 |
+| SpikingBrain-VL | full-attention 与 gradient 接口需独立审计；视觉 self-attention 不自动带语言条件 | 后置结构扩展 |
 | Qwen2.5-VL / Qwen3-VL | answer log-prob 或目标 token score 对视觉 patch hidden states 的 gradient×input | VLM 普适性验证 |
 | LLaVA-1.6 / LLaVA-OneVision | answer log-prob、目标 token score 或判别式 grounding score 对视觉 patch hidden states 的 gradient×input；OneVision 可额外记录多图/视频 token 组织 | VLM 普适性验证，检验非 Qwen 系结构 |
 | DeepSeek-VL2 | 最终答案 score 对视觉 token hidden states 的 gradient×input；MoE/router 只做记录 | VLM 普适性验证 |
@@ -237,7 +239,7 @@ D1 有三种实现层级：
 | GLA | proxy 或 skip | 没有标准二维 attention map |
 | 语言末端层 | 只做动作条件归因诊断 | 不把语言 token 权重误当成视觉空间图 |
 
-初始主实验使用 `[23,31]`，随后比较 `[7,15,23,31]`、仅 `[31]`、所有可用层和随机层选择。
+仅在后续启用 SpikingBrain 时比较这些层号；主线按所选模型的实际层结构，在相同层数/预算下做选择与随机层对照。
 
 ### 6.5 损失函数
 
@@ -262,7 +264,7 @@ $$
 | 模型 | 结构特点 | 学生归因接口 | 本项目用途 |
 |---|---|---|---|
 | Lavender | Stable Diffusion 的词级 cross-attention 空间图 | 教师 `T(w)`，不做学生 | 首轮教师 |
-| SpikingBrain-VL | full-attention + window/SWA + GLA 的异构层级结构 | full-attention map + gradient×input | 主模型，验证结构感知选择 |
+| SpikingBrain-VL | full-attention + window/SWA + GLA 的异构层级结构 | full-attention map + gradient×input | 后置结构迁移 |
 | Qwen2.5-VL | 动态分辨率视觉编码、多尺度视觉 token、强多模态语言模型 | answer score 对视觉 hidden states 的 gradient×input | VLM 普适性对照 |
 | Qwen3-VL | Interleaved-MRoPE、DeepStack、多层视觉特征注入和长视频理解 | answer score 对视觉 hidden states 的 gradient×input | VLM 普适性对照 |
 | LLaVA-1.6 / LLaVA-OneVision | CLIP/SigLIP 视觉编码器经 projector 接入 LLM；OneVision 统一图像、多图和视频输入 | answer score 或 grounding 判别 score 对视觉 hidden states 的 gradient×input | VLM 普适性对照，避免结论只覆盖 Qwen 系 |

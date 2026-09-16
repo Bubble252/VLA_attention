@@ -1,4 +1,4 @@
-# 论文预稿总纲：Structure-Native Language-Action Attribution for Spiking VLA
+# 论文预稿总纲：Structure-Native Language-Action Attribution for VLA
 
 **状态**：论文规划稿，不代表实验结果已经完成。  
 **论文类型**：Technique paper，带有跨模型评估设置。  
@@ -8,7 +8,7 @@
 
 ## 一句话主张
 
-我们提出一种不依赖同构 cross-attention 的语言条件空间归因对齐框架：用 Lavender 的词级扩散图锚定 VLM 的语言归因，再约束 VLA 动作归因位于语言相关区域，并在脉冲模型的 full-attention / window / GLA 分层结构上进行选择性监督，从而改善 grounding、动作预测和跨场景泛化。
+我们拟研究不依赖同构 cross-attention 的语言条件空间归因对齐：用外部词级空间教师锚定语言证据，再检验动作证据一致性是否改善 grounding、动作预测和泛化。学生组合待确认；SpikingBrain 只作可选扩展。相对普通 feature anchoring、pose attention 和动态注意力的增益仍须验证。
 
 ## Thinking template
 
@@ -44,7 +44,7 @@
 扩展：D1 phase、B 路线 R_future、WAM/VAM、Next Forcing
 ```
 
-B/WAM/VAM 只有在 `R_future` 能预测 DROID 未来成功并带来跨场景收益时，才在论文中升级为主结果；否则放在 ablation/future work。
+B/WAM/VAM 先验证记录轨迹上的未来目标与干预稳定性；DROID 离线结果不能证明策略闭环成功率。是否升级须由独立对照和 LIBERO/真机控制证据决定。
 
 SpikingBrain 不再承担主线风险：它保留为类脑扩展、异构层级消融和效率分析。若 OpenVLA/OFT 或 π0 系主线先完成，SpikingBrain 的加入只用于检验结构迁移，不影响论文主体交付。
 

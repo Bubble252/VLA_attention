@@ -26,7 +26,7 @@
 - no alignment；
 - Lavender 原式 attention-to-attention；
 - teacher-to-attribution；
-- `[7,15,23,31]`、`[23,31]`、`[31]`、随机层；
+- 按所选主线结构比较早/中/晚层与同数量随机层；SpikingBrain 固定层号后置；
 - raw/sink-free；
 - 正确教师、错词、错图、随机图；
 - attention、gradient×activation、occlusion。
@@ -76,7 +76,7 @@
 7. **E6 DROID 无收益**：主结论限定为 LIBERO 机制，不声称真实泛化，并优先排查数据转换和分布差异。
 8. **E7 phase 负控无差异**：D1 退回诊断，D0 保持主线。
 9. **E8 future attribution 无额外信息**：B 放入 future work，不增加 world-model loss。
-10. **E9 只在 SpikingBrain 有效**：论文将“普适性”改为“结构感知 SpikingBrain 方法”，不夸大跨模型结论。
+10. **E9 只在一个骨干有效**：限定模型适用范围，解释失败原因；不自动改回 SpikingBrain 主线。
 
 ## 5.5 预期主表结构
 

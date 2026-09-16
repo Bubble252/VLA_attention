@@ -1,5 +1,7 @@
 # Breaking the Vision–Action Shortcut：针对实验设计的精读笔记
 
+> 2026-09-16 阅读校订：本文早期笔记中的 SpikingBrain 主线建议已撤回；用户已确定将其后置。最新模型/benchmark 筛选见 `../abstract_review/04_selection_and_experiment_decisions.md`。PDF 的实验设置/Table I 在第 5 页，Table II 在第 6 页，Table III/Fig. 5 在第 8 页；下文旧页码不作为最终引用定位。LIT 使用随机初始化 action expert，与直接微调 policy checkpoint 是不同协议。
+
 **来源**：`/home/bubble/类脑计算/参考/Breaking the Vision-Action Shortcut.pdf`  
 **论文**：*Breaking the Vision–Action Shortcut: Latent Interface Training for Generalizable Robotics Foundation Models*  
 **版本**：arXiv v1，2026-09-11，10 页  

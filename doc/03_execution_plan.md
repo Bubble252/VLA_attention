@@ -36,10 +36,10 @@ git push -u origin main
 | P1 | 本地代码和模型接口审计 | 入口表、张量规格、版本记录 | [ ] |
 | P2 | 教师图和坐标桥诊断 | 可视化、恢复单元测试 | [ ] |
 | P3 | 学生归因接口诊断 | attention/gradient/action attribution 报告 | [ ] |
-| P4 | VLM grounding 证明 | SpikingBrain + Qwen + LLaVA 上的归因对齐结果 | [ ] |
+| P4 | VLM grounding 证明 | Qwen + LLaVA 上的归因对齐结果；SpikingBrain 后置 | [ ] |
 | P5 | VLA delta EEF smoke | LIBERO 单任务闭环 | [ ] |
 | P6 | VLA 主方法训练 | D：Structure-Native Action Attribution Consistency | [ ] |
-| P7 | 跨模型、跨 VLA 骨干和动作相关性细化 | Qwen/LLaVA/OpenVLA 优先，DeepSeek/π0/LingBot 后置 | [ ] |
+| P7 | 跨模型、跨 VLA 骨干和动作相关性细化 | 按候选接口审计后确认 VLA 组合；SpikingBrain 后置 | [ ] |
 | P8 | 消融和反证 | 随机、错图、错词、错层、无对齐结果 | [ ] |
 | P9 | 最终报告 | VLM + LIBERO 指标表、曲线、结论、真机计划 | [ ] |
 
@@ -78,7 +78,7 @@ git push -u origin main  # 配置远端后执行
 ### 任务
 
 - [ ] 记录 Lavender 当前 commit `58fc71b`；
-- [ ] 记录 SpikingBrain 当前 commit `ef99987`；
+- [ ] 【后期可选】记录 SpikingBrain 当前 commit `ef99987`；
 - [ ] 导出实际 `window_size`、`fullatt_block_indexes` 和视觉层数；
 - [ ] 确认 `grid_thw`、window reorder 和 patch index 的变换；
 - [ ] 确认语言 hidden state 与动作 query 的获取位置；
@@ -143,10 +143,10 @@ git push
 
 ### 任务
 
-- [ ] 导出 SpikingBrain `[7,15,23,31]` full-attention 层的 q/k/v 或可用权重；
-- [ ] 导出 SpikingBrain window/SWA 的局部表征；
+- [ ] 【后期可选】导出 SpikingBrain `[7,15,23,31]` full-attention 层的 q/k/v 或可用权重；
+- [ ] 【后期可选】导出 SpikingBrain window/SWA 的局部表征；
 - [ ] 标记 GLA 层并记录无显式 attention 的事实；
-- [ ] 为 SpikingBrain 实现 V0 相似度归因和 V1 gradient×input；
+- [ ] 【后期可选】为 SpikingBrain 实现 V0 相似度归因和 V1 gradient×input；
 - [ ] 为一个 Qwen 系模型实现 answer score 到视觉 hidden states 的 gradient×input；
 - [ ] 为 LLaVA-1.6/OneVision 实现同样的 answer score 或 grounding score 到视觉 hidden states 的 gradient×input；
 - [ ] DeepSeek-VL2 后置，只在 Qwen 与 LLaVA 至少一个接口跑通后再接入；
@@ -157,7 +157,7 @@ git push
 ### 验收
 
 - 有一份按模型、按层、按归因类型的可视化；
-- 能解释为何 SpikingBrain 主实验选择 `[23,31]`，以及 Qwen/LLaVA/OpenVLA 为什么默认使用 gradient×activation；
+- 能解释实际主线模型的归因目标与层选择；SpikingBrain 层号仅供后置参考；
 - 如果 full-attention 层无法稳定导出，必须在报告中转为 V1 gradient×input，而不是偷偷使用伪权重。
 
 ### Git
@@ -186,10 +186,10 @@ git push
 
 ### 验收
 
-- 至少 SpikingBrain-VL、一个 Qwen 系模型和 LLaVA-1.6/OneVision 中的两个结构不同模型上，正确教师图优于错图/随机教师图；
+- 至少 Qwen 系与 LLaVA-1.6/OneVision 两个结构不同模型上，正确教师图优于错图/随机教师图；
 - teacher-to-attribution 对齐不劣于 Lavender 原式 attention 对齐；
-- SpikingBrain 的结构感知层选择能解释性能差异；
-- 若只有 SpikingBrain 有收益，必须给出 Qwen/LLaVA 接口失败原因，不能声称普适。
+- 主线模型的结构感知层选择有同层数、同预算消融支持；
+- 若仅一个主线模型有收益，应限定适用范围，不能声称普适。
 
 ### Git
 
@@ -232,7 +232,7 @@ git push
 ### 任务
 
 - [ ] 训练无对齐 OpenVLA/OFT 或 π0 系 baseline；
-- [ ] 加入 `[23,31]` 的 V0 similarity bridge；
+- [ ] 加入所选主线模型的 similarity bridge 作为对照；层号由接口审计确定；
 - [ ] 加入 VLM 阶段验证过的 gradient×input 归因对照；
 - [ ] 实现 D 路线：`A_lang` 由 Lavender 锚定，`A_act` 默认由 action loss 或 action output 对 visual tokens 的 gradient×activation 得到；
 - [ ] 若模型天然提供 action query attention，则作为可解释分支记录，不作为默认前提；
@@ -304,9 +304,9 @@ git push
 
 - [ ] 无对齐；
 - [ ] 所有层对齐；
-- [ ] `[7,15,23,31]`；
-- [ ] `[23,31]`；
-- [ ] 仅 `[31]`；
+- [ ] 【SpikingBrain 后期可选】`[7,15,23,31]`；
+- [ ] 【SpikingBrain 后期可选】`[23,31]`；
+- [ ] 【SpikingBrain 后期可选】仅 `[31]`；
 - [ ] 随机层；
 - [ ] 打乱词图；
 - [ ] 错词教师图；
@@ -326,7 +326,7 @@ git push
 - [ ] sink mask 类型：特殊 token、固定边缘 patch、数据驱动高频 patch；
 - [ ] sink 诊断关闭时的结果，确认收益不是由预处理本身造成。
 
-每个消融至少固定数据划分、seed、训练预算和动作头。若资源有限，VLM 阶段优先保证正确教师、错词、错图、随机教师四组；VLA 阶段优先保证 `[23,31]`、无对齐、随机层、错图四组。
+每个消融至少固定数据划分、seed、训练预算和动作头。若资源有限，VLM 阶段优先保证正确教师、错词、错图、随机教师四组；VLA 阶段优先保证无对齐、L_sem only、D0、错图，并与简单 feature anchoring/增强比较。
 
 ### Git
 
@@ -388,7 +388,7 @@ git push
 
 ## 核心主线与数据集定位补充
 
-## 主线模型重新冻结：SpikingBrain 后置
+## 主线模型待筛选：SpikingBrain 已确定后置
 
 从本版本开始，SpikingBrain 不再是主实验骨干。主线采用“模型无关归因桥 + 成熟 VLA paired baseline”的组织方式：
 
@@ -411,7 +411,7 @@ git push
 | C | OpenVLA/OFT 单骨干 + Qwen/LLaVA VLM | 工程最稳，适合先快速形成结果 | 跨 VLA 普适性较弱 | 首轮最小可交付 |
 | D | SpikingBrain + OpenVLA | 可讲类脑异构结构 | 会把论文叙事拉回 SpikingBrain，主线复杂度高 | 只作为后续扩展 |
 
-当前默认采用 A；若 π0 系接口在两周内无法稳定抽取动作归因，则退回 C，不等待 SpikingBrain。
+A 仅为建议，未由用户冻结；不设置未经确认的两周期限。先完成候选接口审计，再由用户筛选模型组合。C 可先做最小试验，但单个 VLA 不足以证明跨 VLA 普适性。
 
 ### 从论文借鉴的 benchmark 设计
 
@@ -436,7 +436,7 @@ cd /home/bubble/类脑计算/doc-sync-main
 
 核心 idea 是用 Lavender 的语言条件空间教师约束空间归因，并让 VLA 动作归因与语言相关区域一致。P1–P4 是主线必需，负责接口、坐标桥和 VLM 证据；P5–P6/P8–P9 是主线验证，负责 LIBERO 机制验证、DROID 泛化验证和反事实排除；P7 的 B/C 与 D1 是后期扩展，不能改变 D0 核心假设。任何新增模型必须说明其对归因可信度、动作相关性或跨模型迁移的贡献。
 
-WAM/VAM 的主线升级条件：只有当其 `R_future` 在 DROID 上稳定预测未来成功/失败、通过 wrong-action/wrong-future 负控，并在控制成功率上带来跨场景增益时，才从 B 扩展升级为主线。视频生成质量、attention 图美观或单步 action loss 改善本身不构成升级依据。
+WAM/VAM 先验证记录轨迹上的未来目标与 wrong-action/wrong-future 负控，再检查泛化收益；DROID 离线误差不能证明闭环成功率，后者须在 LIBERO/真机验证。视频生成质量、attention 图美观或单步 action loss 改善本身不构成升级依据。
 
 LIBERO 只承担可控的接口与机制 smoke test；DROID 是最终数据泛化验证集。DROID 阶段必须固定官方版本和 commit，选择与 pick-place 对应的子集，统一 RGB、语言、proprioception 和 7D delta EEF，按场景或任务划分数据，并重跑 occlusion、语言反事实、state 遮挡和 sink-free 对照。主结果至少包含 baseline、D0、错误教师和随机教师。
 

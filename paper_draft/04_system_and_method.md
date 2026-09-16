@@ -43,7 +43,9 @@ $$
 
 首选 `D=MSE`，同时记录 KL 和 cosine。
 
-## 4.3 SpikingBrain 的类脑结构选择
+## 4.3 后期可选：SpikingBrain 的类脑结构选择
+
+本节不参与首轮主方法验收。主线模型按实际视觉/语言/动作接口选择层，不搬用下面的层号；SpikingBrain 有空再做。
 
 SpikingBrain 同时包含局部窗口、全局 attention 和 GLA。本文不把所有层视为同一种 attention：
 
