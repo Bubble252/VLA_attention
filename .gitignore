@@ -26,6 +26,8 @@ tensorboard/
 *.log
 !references/download_failures.log
 references/.download_failures.current
+.doc_sync_state.json
+paper_draft/.doc_sync_state.json
 
 # Local secrets and machine configuration
 .env
