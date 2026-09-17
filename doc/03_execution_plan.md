@@ -260,6 +260,19 @@ BlindVLA 的 ratio 可视化、token/grid 审计和教师缓存思想可作为�
 
 V2 的 feature teacher、teacher preprocess、层位置、projector seed、额外前向成本必须固定；若使用 BlindVLA 上游脚本，先修正可训练 projector 参数组和 checkpoint 恢复问题。V3 的扩散教师在校准集冻结。VLM 阶段不计算 `A_act`、不训练 D0，也不使用 VLA action success 作为主指标。
 
+### 首轮监督形式：与 Lavender 可比的 caption SFT
+
+首轮 V1--V4 固定为 image-to-caption SFT：输入是图像加固定 caption prompt（例如 *Describe the image in a single sentence as a caption.*），标签是 Flickr30k 的原始 caption。每个 caption token 都可与其冻结 diffusion 词图对应，因此：
+
+\[
+L_{V1}=L_{\mathrm{caption\ CE}},\quad
+L_{V3}=L_{\mathrm{caption\ CE}}+\lambda_{\mathrm{sem}}L_{\mathrm{sem}},
+\]
+
+V2/V4 只在相同样本、prompt、caption token、训练步数和 seed 上增加 retention loss。这样 V3/V4 相对 V1/V2 的提升才可归因于 `T_sem → A_lang`，并可与 Lavender 的 caption-SFT + diffusion attention-alignment 公平比较。
+
+Flickr30k Entities 的 phrase/box **不进入首轮训练标签**；它们只用于独立 teacher calibration、pointing/IoU/mass-in-box 评价、错误词/错误图反事实和 P1 phrase target 审计。若后续加入 image + referring prompt 的定位训练，必须作为独立消融组（例如 `R1`），与 V0--V4 主表分开报告，因为显式定位任务会改变输出形式、语言 token 分布和监督强度。
+
 **VLM 继续条件**：V3 或 V4 必须在 phrase grounding 上优于 V1/V2，且正确教师优于错词/错图/随机教师；若 V2 已经覆盖 V3/V4 的收益，空间教师主张退回为 feature retention 的替代实现，不直接进入 D0 的强创新叙事。
 
 ### 任务

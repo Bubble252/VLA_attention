@@ -53,6 +53,12 @@ VLM retention diagnostic: VL-Think/SimplerEnv static screenshot QA
 
 主结论来自带 phrase-region 标注的 Flickr30k Entities；RefCOCOg 检验更复杂指代，但不与 Flickr 分数合并成平均榜；图像扰动保持原 region 标注不变，单列报告每种 photometric corruption；VL-Think style QA 检验概念保留，不替代空间定位。
 
+### 首轮训练监督与 Lavender 的可比性
+
+VLM 主表的 V1--V4 使用图像 caption SFT，而不把 Entities box 或 referring-expression 作为训练标签：固定 caption prompt，监督原始 Flickr30k caption。Lavender 的基础监督也是 image-to-caption SFT，并将 Stable Diffusion 的 per-caption-token attention 作为额外 MSE 信号。我们的 V3/V4 在相同 caption token 上以语言条件空间归因 `A_lang` 对齐 `T_sem`；V2/V4 的 retention 项也不改变任务、数据或生成目标。
+
+因此，Entities 的人工 phrase-box 只在独立 calibration/test 中选择、评价和反证教师图。若将来训练 “Where is the red ball?” 一类 referring prompt，必须单列为额外数据形式消融，不能与 V0--V4 主表混合，否则性能变化无法归因于归因对齐方法。
+
 ## 5.1.1 OOD 假设与分维度报告
 
 论文不声称解决所有 OOD。D0 的可检验假设仅针对语言无关视觉捷径与语言空间重新 grounding：背景/光照/干扰物变化时保持动作稳定，目标对象/属性/位置/语言变化时相应改变动作。
