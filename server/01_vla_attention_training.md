@@ -56,7 +56,7 @@ bash server/vla101.sh freeze-env
 bash server/vla101.sh download-qwen
 ```
 
-`download-qwen` 的唯一模型源是官方 `Qwen/Qwen2.5-VL-7B-Instruct`，且先强制通过 `http://127.0.0.1:7897`。若该代理在服务器上不可用，命令应失败并留下终端证据；不得自动改用未审核镜像。
+`download-qwen` 的唯一模型仓库是官方 `Qwen/Qwen2.5-VL-7B-Instruct`。101 不使用 7897：脚本先测试 Hugging Face 直连；若官方端点不可达，才显式使用 `https://hf-mirror.com`，并在 checkpoint 同目录的 `SOURCE.txt` 和 `SHA256SUMS` 记录实际端点与文件校验。镜像只是传输源，模型仓库名、revision 和校验文件必须照实记录。
 
 ## 3. 101 在本项目中的角色
 

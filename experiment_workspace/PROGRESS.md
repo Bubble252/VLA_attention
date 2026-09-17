@@ -14,7 +14,7 @@
 - [ ] 将当前 Git commit 传到 VEPFS `repo/VLA_attention`，记录 commit 与文件 SHA256。
 - [ ] 在 VEPFS 创建 `envs/p1`；只读继承共享依赖或按锁定 requirements 安装，绝不修改 `/root/starvla_cu124`。
 - [ ] 记录网络和代理检测；下载使用 7897 代理，若服务器无该代理则先记录失败后再选已验证镜像。
-- [ ] 下载并核验 Qwen2.5-VL-7B、Flickr30k Images、Flickr30k Entities。2026-09-17 首次 Qwen 下载已到达服务器端 CLI，但旧 `huggingface-cli` 被环境禁用；受限脚本已切换为已安装的 `hf download`，仍只使用官方源与 7897 代理。
+- [ ] 下载并核验 Qwen2.5-VL-7B、Flickr30k Images、Flickr30k Entities。2026-09-17 首次 Qwen 下载已到达服务器端 CLI，但旧 `huggingface-cli` 被环境禁用；受限脚本已切换为已安装的 `hf download`。101 不使用 7897：直连 Hugging Face 已在网络诊断中超时；脚本将测试并显式记录合规镜像端点、模型 repository、时间与 SHA256，绝不把镜像记为官方直连。
 - [ ] 建立全量 manifest，随后从 calibration split 固定 P1 的 20 个 sample ID。
 - [ ] 输出 Qwen P1 报告；通过后才下载/审计 Prismatic。
 
