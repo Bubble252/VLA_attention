@@ -35,6 +35,7 @@
 - [x] SD1.5 DDIM image-conditioned map smoke：完整 caption `A man in a blue hard hat ...` 内目标 phrase 成功定位到 CLIP token positions `[4,5,6,7]`；5-step conditional DDIM inversion 生成 25 个 16×16 cross-attention tensors 和归一化 map。metadata 固定为 `method=ddim_conditional_no_nulltext`、`formal_calibration_eligible=false`；下一 gate 是 per-timestep null-text optimization 与原始 Lavender legacy baseline 对照。
 - [ ] null-text runner：本地实现与 15 个测试已提交（`ad46d0a`）；待在 101 VEPFS 同步后依次执行 `5×1` 接口 smoke、`20×10` 单图正式验收。尚未运行，不能称为 Lavender-equivalent map 或用于候选教师排名。
 - [x] null-text runner GPU1 验收：FP16 `5×1` 出现 NaN，已保留为失败证据并改用新增 FP32-v2 runner；FP32 `5×1` 通过（mean MSE `0.09803`），FP32 `20×10` 正式单图通过（mean MSE `0.03884`、100 个 16×16 attention tensors、目标 span `[4,5,6,7]`）。SD1.5 可以进入 10 图 calibration pilot；该单图通过不等于四教师 best-single 已选择。
+- [x] SD1.5 pilot10：固定 calibration manifest 前十图全部成功（10/10），`20×10`、seed 17、FP32 null-text。唯一 summary `summary_sd1_5_20x10_seed17.json`：pointing `0.50`、mean mass-in-box `0.4754`、mean MSE `0.03207`（min `0.01317` / max `0.06615`）。这证明 SD pipeline/map/metric 可运行；样本太小且尚未与 PixArt/Playground 相比，严禁据此选 best-single 或生成 V3/V4 train cache。
 
 ## 下一条可接受的证据
 
