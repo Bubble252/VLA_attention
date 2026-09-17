@@ -39,6 +39,7 @@
 - [x] PixArt-alpha runtime audit：P1 环境补充 `sentencepiece==0.2.2` 与 `tiktoken==0.14.0` 后成功加载本地 pipeline；T5Tokenizer、DPMSolverMultistepScheduler、56 个 transformer attention processors。初始化告警仅为 unused `caption_projection.y_embedding`；PixArt 需独立 transformer-token attention adapter，不能复用 SD UNet/null-text runner。
 - [ ] PixArt-alpha phrase-map adapter：pipeline 与 tokenizer已加载，但 Diffusers 0.38 的 PixArt transformer 内部模块路径和预期名称不一致；当前只确认 processor count，尚未捕获真实 image-conditioned token attention。此兼容性 gate 不影响 SD1.5 pilot，也禁止将 SD map 用作 PixArt map。
 - [ ] V1 caption manifest/GPU smoke：101 上已确认 builder、runner、LoRA config 存在且 `caption_sft_train.jsonl` 初始缺失；构建命令随后出现 SSH 无输出异常，连只读 `echo`/process 查询亦未回显。未假定 manifest 已完成，未启动 V1 smoke，避免重复创建或训练；恢复可靠远端观察后先检查文件 SHA256/行数与是否有活跃 builder。
+- [ ] 快速主线 10k：全量 caption manifest 后续已确认有 145,355 条（SHA256 `deb2d4…`），10k seed17 子集与 metadata 已确认存在。V1 20-step GPU1 smoke 已提交到唯一新输出路径，但会话句柄和后续 GPU/process 查询无输出，状态必须回收结果 JSON 后才能判定；禁止重启第二个 V1 smoke。
 
 ## 下一条可接受的证据
 
