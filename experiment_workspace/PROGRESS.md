@@ -41,6 +41,8 @@
 - [ ] V1 caption manifest/GPU smoke：101 上已确认 builder、runner、LoRA config 存在且 `caption_sft_train.jsonl` 初始缺失；构建命令随后出现 SSH 无输出异常，连只读 `echo`/process 查询亦未回显。未假定 manifest 已完成，未启动 V1 smoke，避免重复创建或训练；恢复可靠远端观察后先检查文件 SHA256/行数与是否有活跃 builder。
 - [ ] 快速主线 10k：全量 caption manifest 后续已确认有 145,355 条（SHA256 `deb2d4…`），10k seed17 子集与 metadata 已确认存在。V1 20-step GPU1 smoke 已提交到唯一新输出路径，但会话句柄和后续 GPU/process 查询无输出，状态必须回收结果 JSON 后才能判定；禁止重启第二个 V1 smoke。
 - [ ] F0-256：从 10k seed17 manifest 抽取固定 256 pair 的构建已提交至此前不存在的目标路径；101 未回传输出且随后的最小存在性检查无输出，尚不能确认 F0 manifest 是否写成。禁止重抽样、生成 F0 SD cache 或启动 F0 V1--V4，直到可读取唯一文件的 SHA256。
+- [x] F0v2 shared manifest：发现 caption-only F0 不含目标 phrase，停止了尚未产出 map 的错误全句 cache job。改从 Entities train 生成 256 条 image-caption-phrase-box 对齐记录，并显式补固定 caption prompt；最终训练输入 `F0_aligned_caption_phrase_256_seed19_v2.jsonl`，SHA256 `2a37c49…`。F0v2 V1/V2 20-step smoke 均通过；V2 DINO retention 从约 0.995 降至 0.862，visual LoRA=0、DINO frozen。
+- [ ] F0v2 SD cache：已提交后台 job PID `1554962`，路径 `teacher_maps/F0v2_sd1_5_nulltext_phrase_256_seed17`；每条使用完整 caption 条件、同一行 Entities phrase token target、20×10 FP32 null-text、seed17、sample_id 唯一键。完成后须核对 256 map/metadata、failures 和有效交集，才可开始 V3/V4。
 
 ## 下一条可接受的证据
 
