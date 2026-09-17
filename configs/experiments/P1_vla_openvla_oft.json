@@ -1,0 +1,13 @@
+{
+  "experiment_id": "P1-VLA-OPENVLA-OFT",
+  "stage": "interface_audit",
+  "hypothesis": "OpenVLA/OFT exposes an action-token or adapter target with recoverable visual-token provenance.",
+  "model": {"id": "openvla-oft", "revision": "TO_AUDIT", "adapter": "openvla_oft"},
+  "teacher": {"mode": "none"},
+  "data": {"manifest": "TO_CREATE:libero_pick_place_smoke", "split": "train"},
+  "targets": ["action_token_logprob", "action_loss"],
+  "budget": {"samples": 20, "training_steps": 0},
+  "stopping_rules": ["Stop if native action target cannot be linked to visual tokens.", "Stop if adapter changes action semantics without a recorded conversion."],
+  "metrics": ["token_grid_valid", "gradient_finite", "action_shape_valid"],
+  "seed": 17
+}

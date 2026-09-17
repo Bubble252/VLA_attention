@@ -1,0 +1,13 @@
+{
+  "experiment_id": "P1-VLM-QWEN25",
+  "stage": "interface_audit",
+  "hypothesis": "Qwen2.5-VL-7B can expose phrase-conditioned visual-token attribution with dynamic-resolution provenance.",
+  "model": {"id": "qwen2.5-vl-7b", "revision": "TO_AUDIT", "adapter": "qwen25"},
+  "teacher": {"mode": "none"},
+  "data": {"manifest": "TO_CREATE:flickr30k_entities_calibration", "split": "calibration"},
+  "targets": ["phrase_score", "answer_logprob"],
+  "budget": {"samples": 20, "training_steps": 0},
+  "stopping_rules": ["Stop if grid_thw/crop order cannot be reconstructed.", "Stop if repeated attribution is non-finite or token order is ambiguous."],
+  "metrics": ["token_grid_valid", "gradient_finite", "repeatability"],
+  "seed": 17
+}

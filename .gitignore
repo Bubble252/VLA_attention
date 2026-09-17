@@ -17,6 +17,8 @@ checkpoints/
 weights/
 datasets/
 data/
+artifacts/
+experiments/**/results/
 
 # Experiment outputs
 logs/

@@ -1,0 +1,13 @@
+{
+  "experiment_id": "P1-VLM-PRISMATIC",
+  "stage": "interface_audit",
+  "hypothesis": "Prismatic-7B can expose phrase-conditioned visual-token attribution on the declared grid.",
+  "model": {"id": "prismatic-7b", "revision": "TO_AUDIT", "adapter": "prismatic"},
+  "teacher": {"mode": "none"},
+  "data": {"manifest": "TO_CREATE:flickr30k_entities_calibration", "split": "calibration"},
+  "targets": ["phrase_score", "answer_logprob"],
+  "budget": {"samples": 20, "training_steps": 0},
+  "stopping_rules": ["Stop if visual-token grid cannot be recovered exactly.", "Stop if phrase target has no differentiable path to visual tokens."],
+  "metrics": ["token_grid_valid", "gradient_finite", "repeatability"],
+  "seed": 17
+}

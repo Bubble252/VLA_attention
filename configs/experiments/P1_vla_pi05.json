@@ -1,0 +1,13 @@
+{
+  "experiment_id": "P1-VLA-PI05",
+  "stage": "interface_audit",
+  "hypothesis": "pi0.5 exposes a fixed-noise, fixed-flow-time action attribution target with recoverable visual provenance.",
+  "model": {"id": "pi0.5", "revision": "TO_AUDIT", "adapter": "pi05"},
+  "teacher": {"mode": "none"},
+  "data": {"manifest": "TO_CREATE:libero_or_droid_smoke", "split": "train"},
+  "targets": ["action_output", "action_loss"],
+  "budget": {"samples": 20, "training_steps": 0},
+  "stopping_rules": ["Stop if checkpoint/license/interface cannot be verified.", "Stop if noise, flow time, or action chunk are not fixed in each attribution record."],
+  "metrics": ["token_grid_valid", "gradient_finite", "action_shape_valid", "noise_repeatability"],
+  "seed": 17
+}
