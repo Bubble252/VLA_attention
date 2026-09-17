@@ -43,3 +43,5 @@
 - [ ] map 与对应 image/phrase/GT box 的 record 写入 calibration output。
 
 只有该单图正式配置通过，才能扩大到 1000 图 SD1.5 calibration；PixArt/Playground 的 adapter 也必须各自满足等价的“真实图像条件 + token span + map”验收，不能复用 SD hook 名称或假定其 attention 张量一致。
+
+**单图验收结果（2026-09-17）**：FP16 `5×1` null-text 的 mean MSE 为 NaN，判失败；改为 FP32 后 `5×1` MSE `0.09803`，`20×10` MSE `0.03884`，并捕获 100 个 16×16 conditional attention tensors。SD1.5 升级到 10 图 pilot；pilot 必须记录逐样本失败、map 指标、耗时和 GPU memory，不能直接跳到 1000 图。
