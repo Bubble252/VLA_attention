@@ -14,6 +14,8 @@ Flickr manifest + image/phrase/box
 
 所有组共用同一 Qwen revision、同一 train manifest、同一 batch schedule、同一 seed 集、同一 evaluation manifest；差异只能来自下表启用的 loss，不能偷偷改变数据或预算。
 
+**确认的首轮实现**：Qwen2.5-VL-7B-Instruct 采用 BF16 LoRA；视觉 encoder 冻结。`T_retention` 固定为 DINOv2 ViT-L/14，`T_sem` 为四个 diffusion 候选在 val calibration 后选择的 best-single，且 semantic map 在训练前离线缓存。Prismatic 不进入本轮 Qwen 主表。
+
 首轮 `train manifest` 的每行是 **image + 固定 caption prompt + 原始 Flickr30k caption**，而非 phrase-box/referring 标签。这样 diffusion map 的 caption token 与学生的 SFT target 一一对应。Entities phrase/box 留在 calibration/evaluation manifest；任何 referring prompt 训练都必须建立主表之外的独立 `R*` 消融。
 
 | 组 | 可训练参数 | loss | 禁止项 |

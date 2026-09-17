@@ -273,6 +273,24 @@ V2/V4 只在相同样本、prompt、caption token、训练步数和 seed 上增�
 
 Flickr30k Entities 的 phrase/box **不进入首轮训练标签**；它们只用于独立 teacher calibration、pointing/IoU/mass-in-box 评价、错误词/错误图反事实和 P1 phrase target 审计。若后续加入 image + referring prompt 的定位训练，必须作为独立消融组（例如 `R1`），与 V0--V4 主表分开报告，因为显式定位任务会改变输出形式、语言 token 分布和监督强度。
 
+### 已确认的 Qwen 首轮实现冻结
+
+- [x] 学生：`Qwen2.5-VL-7B-Instruct`；视觉 encoder 冻结，BF16 LoRA 训练语言层/跨模态投影相关的显式 target modules；V1--V4 使用完全相同的 LoRA rank、target modules、optimizer、LR、batch schedule、seed 与 checkpoint cadence；
+- [x] `T_retention`：冻结 `DINOv2 ViT-L/14`，仅提供 patch feature target 给 V2/V4；其 revision、图像 preprocess、patch grid bridge、抽取层、projector seed 和 `λ_ret` 必须在 calibration 后写入 manifest；
+- [x] `T_sem`：Stable Diffusion、PixArt-alpha、PixArt-Sigma、Playground-v2.5 先在独立 val split 校准，选出唯一 best-single。冻结模型、revision、token span、attention blocks、diffusion step、CFG、normalization 后离线缓存 train 所需 map；V3/V4 训练期间不在线运行 diffusion；
+- [x] 范围：先完成 Qwen V0--V4；Prismatic 的合法授权、下载和同类 P1 是第二 VLM 骨干扩展，不阻塞 Qwen 主结果。
+
+### 调整后的执行顺序
+
+1. 完成并验证 Flickr30k Entities archive，建立官方 `train/val/test` manifest；
+2. Qwen P1：20 个固定 val 图，验证 phrase-score gradient、post-merge grid、可重复 map 和 `report.json`；
+3. 下载/冻结 DINOv2 ViT-L/14，检查 DINO patch 与 Qwen post-merge grid 的坐标桥；
+4. 对四个 diffusion 候选在完整 val calibration split 生成词图，按 pointing/IoU、无效词率、seed 稳定性选择 best-single，并离线缓存 train map；
+5. 实现共享 Qwen LoRA runner 和 V0--V4 五份不可变 manifest；
+6. 对 V1--V4 各跑 20--50 step smoke，确认 caption CE、retention、semantic loss、cache 命中、checkpoint resume 和 GPU memory；V0 仅运行 evaluation；
+7. smoke 全部通过后，依次运行 V0 evaluation、V1、V2、V3、V4 正式训练与统一 Flickr30k Entities test/OOD evaluation；
+8. 只有 Qwen 主结论及错误教师/随机图反证成立后，才扩展 Prismatic 和 referring-prompt `R*` 消融。
+
 **VLM 继续条件**：V3 或 V4 必须在 phrase grounding 上优于 V1/V2，且正确教师优于错词/错图/随机教师；若 V2 已经覆盖 V3/V4 的收益，空间教师主张退回为 feature retention 的替代实现，不直接进入 D0 的强创新叙事。
 
 ### 任务
