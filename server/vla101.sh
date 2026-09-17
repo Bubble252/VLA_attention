@@ -147,9 +147,17 @@ PY"
       export HF_ENDPOINT='https://hf-mirror.com'
       HF_REV=\$(curl --connect-timeout 15 --max-time 30 -fsS 'https://hf-mirror.com/api/datasets/$FLICKR_REPO' | '$P1_ENV/bin/python' -c \"import json,sys; print(json.load(sys.stdin)['sha'])\")
       ENTITIES_REV=\$(curl --connect-timeout 15 --max-time 30 -fsS 'https://api.github.com/repos/$ENTITIES_REPO/commits/master' | '$P1_ENV/bin/python' -c \"import json,sys; print(json.load(sys.stdin)['sha'])\")
-      printf 'image_dataset=%s\\nimage_endpoint=%s\\nimage_revision=%s\\nentities_repository=%s\\nentities_revision=%s\\ndownloaded_at_utc=%s\\nlicense_note=Flickr images: non-commercial research/education under Flickr Terms; cite Flickr30k and Flickr30k Entities.\\n' '$FLICKR_REPO' 'https://hf-mirror.com' \"\$HF_REV\" '$ENTITIES_REPO' \"\$ENTITIES_REV\" \"\$(date -u +%FT%TZ)\" > '$FLICKR_DIR/SOURCE.txt'
       hf download '$FLICKR_REPO' flickr30k-images.zip flickr_annotations_30k.csv --repo-type dataset --revision \"\$HF_REV\" --local-dir '$FLICKR_DIR/raw/hf'
-      curl --connect-timeout 15 --max-time 120 --fail --location 'https://raw.githubusercontent.com/$ENTITIES_REPO/'\"\$ENTITIES_REV\"'/annotations.zip' -o '$FLICKR_DIR/raw/entities/annotations.zip'
+      ENTITIES_TRANSPORT=github_raw
+      if ! curl --connect-timeout 15 --max-time 120 --fail --location 'https://raw.githubusercontent.com/$ENTITIES_REPO/'\"\$ENTITIES_REV\"'/annotations.zip' -o '$FLICKR_DIR/raw/entities/annotations.zip'; then
+        rm -f '$FLICKR_DIR/raw/entities/annotations.zip'
+        rm -rf '$FLICKR_DIR/raw/entities/source_repo'
+        git clone --depth 1 'https://github.com/$ENTITIES_REPO.git' '$FLICKR_DIR/raw/entities/source_repo'
+        ENTITIES_REV=\$(git -C '$FLICKR_DIR/raw/entities/source_repo' rev-parse HEAD)
+        cp '$FLICKR_DIR/raw/entities/source_repo/annotations.zip' '$FLICKR_DIR/raw/entities/annotations.zip'
+        ENTITIES_TRANSPORT=github_git_clone
+      fi
+      printf 'image_dataset=%s\\nimage_endpoint=%s\\nimage_revision=%s\\nentities_repository=%s\\nentities_revision=%s\\nentities_transport=%s\\ndownloaded_at_utc=%s\\nlicense_note=Flickr images: non-commercial research/education under Flickr Terms; cite Flickr30k and Flickr30k Entities.\\n' '$FLICKR_REPO' 'https://hf-mirror.com' \"\$HF_REV\" '$ENTITIES_REPO' \"\$ENTITIES_REV\" \"\$ENTITIES_TRANSPORT\" \"\$(date -u +%FT%TZ)\" > '$FLICKR_DIR/SOURCE.txt'
       unzip -t '$FLICKR_DIR/raw/hf/flickr30k-images.zip' >/dev/null
       unzip -t '$FLICKR_DIR/raw/entities/annotations.zip' >/dev/null
       unzip -q -n '$FLICKR_DIR/raw/hf/flickr30k-images.zip' -d '$FLICKR_DIR/images'
