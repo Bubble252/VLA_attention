@@ -4,7 +4,7 @@
 
 详见 [Don't Blind / Anchor-Align / PosA-VLA 原文分析](../references/abstract_review/07_three_nearest_methods_deep_read.md)。增加三类强对照候选：中层 patch-feature alignment、全层 frozen-VLM anchoring + 同观测方向词监督、任务/EEF 双图前向 gating。它们分别排除表征保持、输出语义一致和空间门控的替代解释。
 
-VLM 阶段独立比较无对齐、各扩散词级教师、错教师和 `T_sem → A_lang`，先证明词级空间 grounding。VLA 阶段才用同一 VLA 学生比较 BC、DB-style feature alignment、`L_sem`、D0；正结果后增加完整 Anchor-Align-style 及其上叠加 D0 的实验。不同教师同时改变监督形态时需注明混杂。冻结与可训练 bridge、合法 EEF/障碍区域、动作输出梯度与动作损失梯度差异、二阶梯度成本均为训练前审计项。
+VLM 阶段独立运行 `V0 checkpoint / V1 SFT / V2 DB-style feature retention / V3 T_sem → A_lang / V4 V2+V3`，先证明词级空间 grounding 是否超过通用 feature retention。这里的 V2 是 BlindVLA 思想的 VLM adaptation，不是完整 VLA 论文复现。VLA 阶段才用同一 VLA 学生比较 BC、DB-style feature alignment、`L_sem`、D0；正结果后增加完整 Anchor-Align-style 及其上叠加 D0 的实验。不同教师同时改变监督形态时需注明混杂。冻结与可训练 bridge、合法 EEF/障碍区域、动作输出梯度与动作损失梯度差异、二阶梯度成本均为训练前审计项。
 
 本文后续原有 containment 公式尚为历史候选，不以 L1 概率图直接称“允许区域 mask”；归一化与 soft support/泄漏余量的修正建议见专题第 6 节，待小样本验证后再冻结。SpikingBrain 后置，主线模型组合继续由用户筛选。
 

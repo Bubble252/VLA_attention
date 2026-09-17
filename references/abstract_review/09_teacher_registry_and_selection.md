@@ -108,6 +108,10 @@ Qwen2.5-VL、InternVL3.5、Ovis2.5、LLaVA-OneVision 可以提供答案/phrase s
 
 同一输入上逐 decoder layer 对齐 vision/text hidden states，并用同一观测的动作方向词监督。它是最强 representation/action semantic baseline；不能将其全部归入“普通 feature teacher”。
 
+### VLM 与 VLA 的使用范围
+
+P4 VLM 阶段可使用 `T_retention-A` 的 DB-style patch feature alignment，检验空间教师是否超过通用视觉表征保持；不使用 action loss、方向词或 `A_act`。`T_retention-B` 的 Anchor-Align direction label 需要 demonstration action，因此只作为 VLA 阶段强 baseline。
+
 ## 4. T_phase：阶段/动作相关弱教师
 
 ### T_phase-A：LIBERO state-rule

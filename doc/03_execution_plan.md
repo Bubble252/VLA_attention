@@ -193,16 +193,30 @@ git push
 
 ### VLM 阶段的独立目标
 
-P4 不以 BlindVLA 为前置 gate。它独立回答：词级扩散空间教师是否让 VLM 的 `A_lang` 更准确地对应语言短语，而不是只让通用视觉 feature 更稳定。
+P4 不以 BlindVLA 的 VLA 结果为前置 gate，但应将其抽象成 **DB-style VLM feature-retention baseline**。P4 独立回答：词级扩散空间教师是否让 VLM 的 `A_lang` 更准确地对应语言短语，而不是只让通用视觉 feature 更稳定。
 
 - [ ] 建立 phrase grounding 校准/验证集和独立 VLM 保留集；前者测 region，后者测目标/属性/位置概念；
 - [ ] 分开保存 raw query attention、general-prompt ratio、answer/phrase-score gradient 与输出扰动图；它们不是同一个归因量；
 - [ ] 使用真实 processor/grid 元数据恢复 patch，不用平方根猜网格；
 - [ ] 分别校准 Stable Diffusion、PixArt-α、PixArt-Σ、Playground-v2.5，冻结 best-single 后做 `T_sem → A_lang`；
-- [ ] 对照无对齐、扩散教师对齐、错词/错图/随机图、单教师/ensemble；
+- [ ] 对照无对齐、DB-style VLM patch feature alignment、扩散教师对齐、错词/错图/随机图、单教师/ensemble；
 - [ ] VLM 阶段干预测 answer/phrase score，不在本阶段声称动作归因或闭环 OOD。
 
-BlindVLA 的 ratio 可视化、token/grid 审计和教师缓存思想可作为实现参考，但 DB-style feature alignment 留到 P6 VLA paired baseline。SpikingBrain 保持后置，具体 VLM/VLA 版本待筛选。
+BlindVLA 的 ratio 可视化、token/grid 审计和教师缓存思想可作为实现参考。P4 的 DB-style 只是将其 feature-retention 思想迁移到 VLM SFT，不是完整 BlindVLA 复现；P6 再以同样思想作为 VLA 强 baseline。SpikingBrain 保持后置，具体 VLM/VLA 版本待筛选。
+
+### P4 的 VLM 对照矩阵
+
+| 组 | VLM 训练项 | 要回答的问题 |
+|---|---|---|
+| V0 | 原始 checkpoint，仅评估 | 未适配视觉/语言/空间能力 |
+| V1 | 相同数据普通 VLM SFT | SFT 对 grounding 与保留能力的影响 |
+| V2 | V1 + DB-style 中层 patch feature alignment | 通用视觉表征保持是否已足以改善 grounding/OOD |
+| V3 | V1 + best-single `T_sem → A_lang` | 词级空间监督是否有独立作用 |
+| V4 | V2 + V3 | 词级空间监督是否在 feature retention 之上仍有增量 |
+
+V2 的 feature teacher、teacher preprocess、层位置、projector seed、额外前向成本必须固定；若使用 BlindVLA 上游脚本，先修正可训练 projector 参数组和 checkpoint 恢复问题。V3 的扩散教师在校准集冻结。VLM 阶段不计算 `A_act`、不训练 D0，也不使用 VLA action success 作为主指标。
+
+**VLM 继续条件**：V3 或 V4 必须在 phrase grounding 上优于 V1/V2，且正确教师优于错词/错图/随机教师；若 V2 已经覆盖 V3/V4 的收益，空间教师主张退回为 feature retention 的替代实现，不直接进入 D0 的强创新叙事。
 
 ### 任务
 
