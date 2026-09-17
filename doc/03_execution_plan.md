@@ -336,6 +336,20 @@ F0 全部通过后，完全复用代码和配置语义扩展为 F1-10k；唯一�
 - F1 增加同 teacher/数据/预算的 raw attention/rollout proxy baseline，用来直接比较 attention 对齐与 attribution 对齐；
 - 随后在可导出显式 cross-attention 的 VLM 上运行小规模 `LAV-exact`，才比较我们与 Lavender 原式的差异。
 
+### F1-10k：判定核心 idea 是否 work 的预设验收矩阵
+
+F0-256 只证明工程链路；以下五条在 F1-10k 的冻结 Flickr30k Entities test 与固定 visual-OOD split 上共同决定能否声称核心 idea work。每条均须报告 mean/std 或多 seed，并保留逐扰动结果；不得只选有利指标。
+
+| 判据 | 必要比较 | 预期支持性结果 | 若不成立，结论边界 |
+|---|---|---|---|
+| C1：独立语义增量 | `V3 > V1` | pointing、mass-in-box、IoU 至少主要指标提升 | 不称 semantic attribution 在普通 SFT 之上有效 |
+| C2：超出 retention | `V4 > V2` | 加 `L_sem` 后仍有增量 | 不称超出 DB-style visual retention；方法可能只是 retention 替代物 |
+| C3：教师语义因果性 | correct map > wrong-word / wrong-image / random | 正确教师最优，错误或随机显著退化 | 不称模型使用语言条件 teacher；可能是任意空间正则 |
+| C4：attribution 必要性 | `V3 > V3-attn-proxy` | phrase-score gradient attribution 优于 raw attention/rollout proxy | 不称 attribution 相比直接 attention 对齐有必要性 |
+| C5：独立泛化 | ID + 固定 OOD 同趋势 | test 与每类 visual-OOD 不劣于对应 baseline | 限定为 ID 训练效果，不称改善视觉 OOD |
+
+`V3-attn-proxy` 与 V3 共用 SD1.5 map、数据、LoRA、预算、seed、评价和负控；唯一差异是学生图从 `A_lang` 替换为有 provenance 的 raw attention/rollout proxy。它不是 Lavender exact 复现，标签必须明确。
+
 **VLM 继续条件**：V3 或 V4 必须在 phrase grounding 上优于 V1/V2，且正确教师优于错词/错图/随机教师；若 V2 已经覆盖 V3/V4 的收益，空间教师主张退回为 feature retention 的替代实现，不直接进入 D0 的强创新叙事。
 
 ### 任务

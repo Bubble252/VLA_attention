@@ -59,6 +59,12 @@ VLM 主表的 V1--V4 使用图像 caption SFT，而不把 Entities box 或 refer
 
 因此，Entities 的人工 phrase-box 只在独立 calibration/test 中选择、评价和反证教师图。若将来训练 “Where is the red ball?” 一类 referring prompt，必须单列为额外数据形式消融，不能与 V0--V4 主表混合，否则性能变化无法归因于归因对齐方法。
 
+### F1 结果的预期结论与反证解释
+
+我们不把任一单项提升当作 idea 成立。F1-10k 预先要求五层证据：`V3 > V1` 证明 semantic attribution 在 SFT 之上有独立价值；`V4 > V2` 证明其不被 visual retention 完全解释；正确教师优于错词/错图/随机图证明词级空间语义被使用；`V3 > V3-attn-proxy` 证明 output-conditioned attribution 优于直接 attention/rollout；独立 Flickr test 与固定 visual-OOD 同趋势才支持有限的 OOD 主张。
+
+若 C1 不成立，主张退回为无增益；若 C2 不成立，主张退回为 retention 替代实现；若 C3 不成立，主张退回为一般空间正则；若 C4 不成立，不宣称 attribution 的必要性；若 C5 不成立，只报告 ID 效果。Lavender exact 与完整 BlindVLA policy 比较用于补强近邻定位，不是这五条核心可证伪判据的替代品。
+
 ## 5.1.1 OOD 假设与分维度报告
 
 论文不声称解决所有 OOD。D0 的可检验假设仅针对语言无关视觉捷径与语言空间重新 grounding：背景/光照/干扰物变化时保持动作稳定，目标对象/属性/位置/语言变化时相应改变动作。
