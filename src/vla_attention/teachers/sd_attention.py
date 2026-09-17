@@ -18,6 +18,7 @@ class CrossAttentionStore:
     """CPU summaries of conditional cross attention by spatial query resolution."""
 
     maps: dict[int, list[Any]] = field(default_factory=lambda: defaultdict(list))
+    conditional_cfg_half: bool = False
 
     def record(self, attention_probs: Any) -> None:
         # Shape: batch*heads, query_tokens, text_tokens. Conditional CFG half is last.
@@ -25,7 +26,7 @@ class CrossAttentionStore:
         side = isqrt(query_tokens)
         if side * side != query_tokens:
             return
-        conditional = attention_probs[heads_times_batch // 2 :] if heads_times_batch % 2 == 0 else attention_probs
+        conditional = attention_probs[heads_times_batch // 2 :] if self.conditional_cfg_half and heads_times_batch % 2 == 0 else attention_probs
         self.maps[side].append(conditional.detach().float().cpu())
 
 
@@ -67,8 +68,8 @@ class CapturingAttnProcessor:
         return hidden_states / attn.rescale_output_factor
 
 
-def install_cross_attention_capture(unet: Any) -> CrossAttentionStore:
+def install_cross_attention_capture(unet: Any, *, conditional_cfg_half: bool = False) -> CrossAttentionStore:
     """Replace all UNet attention processors; caller owns the loaded pipeline."""
-    store = CrossAttentionStore()
+    store = CrossAttentionStore(conditional_cfg_half=conditional_cfg_half)
     unet.set_attn_processor({name: CapturingAttnProcessor(store) for name in unet.attn_processors})
     return store
