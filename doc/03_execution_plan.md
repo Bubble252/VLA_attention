@@ -280,6 +280,23 @@ Flickr30k Entities 的 phrase/box **不进入首轮训练标签**；它们只用
 - [x] `T_sem`：Stable Diffusion、PixArt-alpha、PixArt-Sigma、Playground-v2.5 先在独立 val split 校准，选出唯一 best-single。冻结模型、revision、token span、attention blocks、diffusion step、CFG、normalization 后离线缓存 train 所需 map；V3/V4 训练期间不在线运行 diffusion；
 - [x] 范围：先完成 Qwen V0--V4；Prismatic 的合法授权、下载和同类 P1 是第二 VLM 骨干扩展，不阻塞 Qwen 主结果。
 
+### 2026-09-17 实际运行状态
+
+| 项目 | 状态 | 证据或限制 |
+|---|---|---|
+| Qwen checkpoint | [x] | 16GB，`SHA256SUMS` 完整通过；GPU1 单图真实前向成功。 |
+| Flickr30k + Entities | [x] | 图片、caption、原作者 Entities annotation、官方 train/val/test 均已归档；manifest 为 train 427,226、val 14,433、test 14,481 条 phrase-box 记录。 |
+| Qwen P1 | [x] | 固定 20 个 val 样本通过 `validate_p1_report.py`；真实 phrase-score gradient、post-merge grid、重复性均已记录。 |
+| DINOv2 ViT-L/14 | [x] | `facebook/dinov2-large` 已下载校验，单图 forward 成功；16×16 patch 到 Qwen 动态 grid bridge 有合同与测试。 |
+| 四个 diffusion 候选 | [x] | SD1.5、PixArt-alpha、PixArt-Sigma、Playground-v2.5 均已下载并有 revision/license/SHA256。 |
+| SD attention/DDIM | [x] | real-image latent hook 与 5-step DDIM conditional map smoke 成功；仍非 null-text 正式教师图。 |
+| SD null-text | [ ] | 本地 runner/tests 已完成，尚未同步 101 运行 `5×1` / `20×10` 验收。 |
+| V1 caption smoke | [ ] | runner 已实现、LoRA PEFT match 已验证为 language-only；尚未同步 101 运行。 |
+| V2 retention smoke | [ ] | DINO bridge/loss 已实现，尚未与 Qwen LoRA runner 集成上机。 |
+| V3/V4 semantic smoke | [ ] | KL loss/teacher cache contract 已实现；等待正式 best-single `T_sem`。 |
+
+远端尚未运行的条目共同依赖将当前已提交源码同步到 `VEPFS/repo/VLA_attention`。同步后严格顺序为：SD null-text 单图 → 1000 图 teacher calibration → selected `T_sem` cache → V1/V2/V3/V4 20--50 step smoke → 正式 V0--V4。
+
 ### 调整后的执行顺序
 
 1. 完成并验证 Flickr30k Entities archive，建立官方 `train/val/test` manifest；
