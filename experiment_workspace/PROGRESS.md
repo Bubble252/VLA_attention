@@ -11,6 +11,7 @@
 - [x] 存储检查：VEPFS 有约 620 TB 可用；101 `/root` 仅约 207 MB 可用，因此禁止将 cache、虚拟环境、模型或数据写到 `/root`。
 - [x] 依赖基线：`/root/starvla_cu124/bin/python` 可发现 torch、transformers、huggingface_hub、datasets、diffusers、accelerate、peft。
 - [x] 在 VEPFS 创建 `envs/p1` 并生成 `envs/p1/versions.txt`；环境只读继承共享包，不修改 `/root/starvla_cu124`。
+- [x] Qwen checkpoint 配置审计：`Qwen2_5_VLForConditionalGeneration`，vision depth 32、`fullatt_block_indexes=[7,15,23,31]`、patch size 14、`spatial_merge_size=2`、window size 112；运行环境为 Transformers 4.57.1，`qwen_vl_utils` 已存在。P1 必须记录 post-merge token 网格，不可仅据 token 数猜方格。
 - [ ] 将当前 Git commit 传到 VEPFS `repo/VLA_attention`，记录 commit 与文件 SHA256。
 - [ ] 在 VEPFS 创建 `envs/p1`；只读继承共享依赖或按锁定 requirements 安装，绝不修改 `/root/starvla_cu124`。
 - [ ] 记录网络和代理检测；下载使用 7897 代理，若服务器无该代理则先记录失败后再选已验证镜像。
