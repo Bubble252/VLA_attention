@@ -52,6 +52,18 @@ seed / noise / flow time / action chunk（若适用）
 raw map / normalized map / validity flags
 ```
 
+### Qwen2.5-VL 的额外坐标约束
+
+`image_grid_thw` 是视觉 encoder 的 pre-merge patch 几何，不能直接把 `H×W` 当作语言模型中的 visual-token grid。对单张图，P1 从 checkpoint config 读取 `spatial_merge_size`，并固定记录：
+
+```text
+pre-merge grid: T,H,W = image_grid_thw
+post-merge map: H / merge, W / merge
+visual token order: 处理器输出的 image token positions
+```
+
+`src/vla_attention/adapters/qwen25.py` 只接受 `T=1` 来产生二维 P1 图；视频或多帧输入必须先声明 frame selection，禁止隐式铺平到一张图。测试以非方形 `12×20 → 6×10` grid 排除“由 token 总数猜平方网格”的错误。
+
 ## 停止条件
 
 - grid 无法恢复；
