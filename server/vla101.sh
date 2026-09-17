@@ -98,6 +98,8 @@ from huggingface_hub import HfApi
 api = HfApi(endpoint='https://hf-mirror.com')
 for name in api.list_repo_files('nlphuji/flickr30k', repo_type='dataset'):
     print('HF_FILE=' + name)
+for item in api.list_datasets(search='flickr30k entities', limit=30):
+    print('HF_CANDIDATE=' + item.id)
 PY
       curl --connect-timeout 15 --max-time 30 -sSIL -o /dev/null -w 'ENTITIES_PLUMMER_HTTP=%{http_code}\\n' https://bryanplummer.com/Flickr30kEntities/Annotations.zip || echo ENTITIES_PLUMMER_REQUEST_FAILED
       curl --connect-timeout 15 --max-time 30 -sSIL -o /dev/null -w 'ENTITIES_VGG_ANNOTATIONS_HTTP=%{http_code}\\n' https://www.robots.ox.ac.uk/~vgg/data/flickr30k_entities/Annotations.zip || echo ENTITIES_VGG_ANNOTATIONS_REQUEST_FAILED
