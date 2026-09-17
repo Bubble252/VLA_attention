@@ -83,7 +83,7 @@ PY"
       fi
       printf 'repository=%s\\nendpoint=%s\\ndownloaded_at_utc=%s\\n' '$QWEN_REPO' \"\$HF_ENDPOINT\" \"\$(date -u +%FT%TZ)\" > '$QWEN_DIR/SOURCE.txt'
       hf download '$QWEN_REPO' --local-dir '$QWEN_DIR'
-      find '$QWEN_DIR' -type f -print0 | sort -z | xargs -0 sha256sum > '$QWEN_DIR/SHA256SUMS'
+      find '$QWEN_DIR' -type f ! -name SHA256SUMS -print0 | sort -z | xargs -0 sha256sum > '$QWEN_DIR/SHA256SUMS'
       du -sh '$QWEN_DIR'"
     ;;
   -h|--help|help|'') usage ;;
