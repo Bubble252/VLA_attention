@@ -28,6 +28,8 @@
 
 因此，20 样本不会削弱结果规模；它只是在完整训练前尽早发现“归因图位置错了但 loss 还能下降”的致命问题。
 
+Flickr30k Entities 的全量 manifest 由 `scripts/build_flickr_entities_manifest.py` 在服务器数据归档通过完整性验证后生成。它使用原作者提供的 `train.txt`、`val.txt`、`test.txt`：`train` 保持完整训练集，`val` 是不与 train/test 混用的 teacher calibration split，`test` 是最终主空间 grounding 评价；P1 的 20 个样本从 `val` 确定性抽取并存图像 SHA256。
+
 ## 每次实验的提交顺序
 
 ```bash
