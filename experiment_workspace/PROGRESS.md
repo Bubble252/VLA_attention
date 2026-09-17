@@ -19,6 +19,7 @@
 - [x] 数据源审计：`nlphuji/flickr30k` 提供完整 image zip 和 caption CSV；原作者 `BryanPlummer/flickr30k_entities` 提供 `annotations.zip`（约 29 MB）。原作者 README 明确该 archive 含 `Sentences/` 的 phrase/coreference chain 和 `Annotations/` 的 XML boxes，且含 train/val/test split；图片遵循 Flickr Terms，仅非商业研究/教学使用。旧 Plummer 网页与 Oxford VGG archive URL 均为 404，故不使用它们。
 - [ ] 运行 `download-flickr`，验 archive、解压、SHA256 与 JPEG/Sentences/XML 文件计数；通过前不建立 split 或运行 P1。
 - [x] Flickr 图片与 caption 下载：完整图片 archive 和 `flickr_annotations_30k.csv` 已从 `hf-mirror.com` 下载到 VEPFS。原作者 annotation 的 `raw.githubusercontent.com` 直传在 120 秒内仅约 1 MB，随后 shallow Git clone 约 15 分钟仅到 16 MB，均不适合作为可靠传输。GitHub API blob 的 JSON 传输也在约 458KB 中断；已验证 API raw media 支持该 exact blob 的 ZIP Range 读取（返回 `PK` magic），故改用 4MB、字节校验、可重试的 versioned range 下载。最终 `SOURCE.txt` 会记录 transport、commit、blob SHA 与 SHA256；不是不明第三方镜像。
+- [ ] Entities archive 当前为**部分下载**：第一个 4MB range 已通过长度检查；第二段在 HTTP/2 `CANCEL` 后未通过，临时段未被追加。下载器改为从已验证 archive 大小续传，使用 1MB + HTTP/1.1 + 每段字节检查 + 最多五次重试。`SOURCE.txt` 在 archive 完整、`unzip -t` 通过前不得作为完整来源证据。
 - [ ] 建立全量 manifest，随后从 calibration split 固定 P1 的 20 个 sample ID。
 - [x] Manifest 规则冻结：原作者 `train.txt` 完整用于训练、`val.txt` 用于独立 teacher calibration、`test.txt` 用于最终 grounding；`build_flickr_entities_manifest.py` 将从 val 确定性抽取 20 张 P1 图并为其保存 image SHA256。该规则不从 train 偷取 calibration 样本，也不让 P1 缩小正式实验规模。
 - [ ] 输出 Qwen P1 报告；通过后才下载/审计 Prismatic。

@@ -167,7 +167,6 @@ PY
       hf download '$FLICKR_REPO' flickr30k-images.zip flickr_annotations_30k.csv --repo-type dataset --revision \"\$HF_REV\" --local-dir '$FLICKR_DIR/raw/hf'
       # 101 reaches api.github.com but raw.githubusercontent.com and git HTTPS
       # are too slow. Fetch the exact versioned Git blob through resumable ranges.
-      rm -f '$FLICKR_DIR/raw/entities/annotations.zip'
       rm -rf '$FLICKR_DIR/raw/entities/source_repo'
       ENTITIES_BLOB=\$(ENTITIES_REPO='$ENTITIES_REPO' ENTITIES_REV=\"\$ENTITIES_REV\" '$P1_ENV/bin/python' - <<'PY'
 import json, os
@@ -181,20 +180,27 @@ PY
       test -n \"\$ENTITIES_TOTAL\"
       ENTITIES_OUT='$FLICKR_DIR/raw/entities/annotations.zip'
       ENTITIES_PART=\"\$ENTITIES_OUT.part\"
-      rm -f \"\$ENTITIES_OUT\" \"\$ENTITIES_PART\"
-      ENTITIES_START=0
+      rm -f \"\$ENTITIES_PART\"
+      if test -f \"\$ENTITIES_OUT\"; then
+        ENTITIES_START=\$(stat -c %s \"\$ENTITIES_OUT\")
+      else
+        : > \"\$ENTITIES_OUT\"
+        ENTITIES_START=0
+      fi
+      test \"\$ENTITIES_START\" -le \"\$ENTITIES_TOTAL\"
       while test \"\$ENTITIES_START\" -lt \"\$ENTITIES_TOTAL\"; do
-        ENTITIES_END=\$((ENTITIES_START + 4194303))
+        ENTITIES_END=\$((ENTITIES_START + 1048575))
         if test \"\$ENTITIES_END\" -ge \"\$ENTITIES_TOTAL\"; then ENTITIES_END=\$((ENTITIES_TOTAL - 1)); fi
         ENTITIES_EXPECTED=\$((ENTITIES_END - ENTITIES_START + 1))
         ENTITIES_ATTEMPT=1
         while :; do
           rm -f \"\$ENTITIES_PART\"
-          if curl --connect-timeout 15 --max-time 180 --fail --location -H 'Accept: application/vnd.github.raw+json' --range \"\$ENTITIES_START-\$ENTITIES_END\" \"\$ENTITIES_URL\" -o \"\$ENTITIES_PART\" && test \"\$(wc -c < \"\$ENTITIES_PART\")\" -eq \"\$ENTITIES_EXPECTED\"; then break; fi
+          if curl --http1.1 --connect-timeout 15 --max-time 120 --fail --location -H 'Accept: application/vnd.github.raw+json' --range \"\$ENTITIES_START-\$ENTITIES_END\" \"\$ENTITIES_URL\" -o \"\$ENTITIES_PART\" && test \"\$(wc -c < \"\$ENTITIES_PART\")\" -eq \"\$ENTITIES_EXPECTED\"; then break; fi
           if test \"\$ENTITIES_ATTEMPT\" -ge 5; then echo "entities range failed: \$ENTITIES_START-\$ENTITIES_END" >&2; exit 1; fi
           ENTITIES_ATTEMPT=\$((ENTITIES_ATTEMPT + 1))
         done
         cat \"\$ENTITIES_PART\" >> \"\$ENTITIES_OUT\"
+        echo \"entities_range_ok=\$ENTITIES_START-\$ENTITIES_END\"
         ENTITIES_START=\$((ENTITIES_END + 1))
       done
       rm -f \"\$ENTITIES_PART\"
