@@ -24,6 +24,10 @@ Commands:
                It tries official Hugging Face directly. When official access is not
                reachable, it uses the explicit hf-mirror endpoint and writes the
                actual endpoint plus SHA256 manifest beside the checkpoint.
+  inspect-flickr
+               Read only: list the available files of the selected Flickr30k
+               Hub dataset through the recorded mirror and probe the original
+               Flickr30k Entities annotation archive endpoint.
 
 This script requires a local SSH alias named `vla101`.  It deliberately has no
 arbitrary remote-shell mode, no credential handling, no /root writes, no dataset
@@ -85,6 +89,17 @@ PY"
       hf download '$QWEN_REPO' --local-dir '$QWEN_DIR'
       find '$QWEN_DIR' -type f ! -name SHA256SUMS -print0 | sort -z | xargs -0 sha256sum > '$QWEN_DIR/SHA256SUMS'
       du -sh '$QWEN_DIR'"
+    ;;
+  inspect-flickr)
+    remote "set -eu
+      export HF_ENDPOINT='https://hf-mirror.com'
+      '$P1_ENV/bin/python' - <<'PY'
+from huggingface_hub import HfApi
+api = HfApi(endpoint='https://hf-mirror.com')
+for name in api.list_repo_files('nlphuji/flickr30k', repo_type='dataset'):
+    print('HF_FILE=' + name)
+PY
+      curl --connect-timeout 15 --max-time 30 -sSIL -o /dev/null -w 'ENTITIES_HTTP=%{http_code}\\n' https://bryanplummer.com/Flickr30kEntities/Annotations.zip || echo ENTITIES_REQUEST_FAILED"
     ;;
   -h|--help|help|'') usage ;;
   *) echo "Unknown command: $1" >&2; usage >&2; exit 2 ;;
