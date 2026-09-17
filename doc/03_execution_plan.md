@@ -350,6 +350,14 @@ F0-256 只证明工程链路；以下五条在 F1-10k 的冻结 Flickr30k Entiti
 
 `V3-attn-proxy` 与 V3 共用 SD1.5 map、数据、LoRA、预算、seed、评价和负控；唯一差异是学生图从 `A_lang` 替换为有 provenance 的 raw attention/rollout proxy。它不是 Lavender exact 复现，标签必须明确。
 
+### BlindVLA / Lavender 源码的执行时机
+
+**现在（F0/F1 前）只吸收源码机制，不做完整迁移训练。** 已从 Lavender 固定：真实图像条件、caption token、SD cross-attention、DDIM/null-text inversion、离线 map cache；已从 BlindVLA 固定：冻结视觉 patch teacher、中间视觉 token、patch bridge、cosine retention、paired data/budget baseline。它们分别对应当前 V3/V4 与 V2 的实现约束。
+
+**不应现在完整复现的原因：** Lavender 原式假设学生有标准 cross-attention，Qwen 的 student map 是 phrase-score attribution；把源码直接 patch 进 Qwen 会制造不公平且不可靠的“exact baseline”。BlindVLA 是 VLA policy/action 论文，完整复现需要其 OpenVLA/ManiSkill/SimplerEnv action pipeline，在 VLM F0/F1 上运行不能回答主问题。
+
+**后置补强顺序：** F0 打通 → F1 的 C1--C5 成立或明确失败 → `V3-attn-proxy`（Qwen）→ 有可靠显式 cross-attention 的 VLM `LAV-exact` 小规模对照 → OpenVLA/OFT VLA 阶段完整 BlindVLA-style paired policy comparison。若 F1 C1/C2 已失败，不投入完整近邻复现来掩盖核心机制无效。
+
 **VLM 继续条件**：V3 或 V4 必须在 phrase grounding 上优于 V1/V2，且正确教师优于错词/错图/随机教师；若 V2 已经覆盖 V3/V4 的收益，空间教师主张退回为 feature retention 的替代实现，不直接进入 D0 的强创新叙事。
 
 ### 任务
