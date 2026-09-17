@@ -62,6 +62,17 @@ DROID：pick-place 对应子集做离线 action prediction 和跨场景泛化
 真机：只有 DROID 与 LIBERO 结果稳定后再做
 ```
 
+### 首轮 VLM benchmark 冻结
+
+| 用途 | 冻结选择 | 为什么 |
+|---|---|---|
+| 主空间 grounding | Flickr30k Entities | phrase-region 标注可直接校准词级扩散教师和评价 `A_lang` |
+| 外部指代迁移 | RefCOCOg | 更长、关系化 referring expression，检验不只记住 caption 模板 |
+| 视觉 OOD | Flickr30k Entities test 的固定 photometric perturbations | task/box 不变，能隔离背景颜色、噪声、模糊等无关视觉变化 |
+| 保留诊断 | VL-Think/SimplerEnv static QA | 目标概念、属性、位置与 yes/no，不替代 grounding 主榜 |
+
+VLM 首轮模型冻结为 Prismatic-7B 与 Qwen2.5-VL-7B。InternVL3.5、Ovis2.5、LLaVA-OneVision 是接口和泛化扩展，只有首轮 V0–V4 结论明确后再加入。
+
 ## 8.4 评价指标必须分表
 
 - VLM grounding：pointing accuracy、phrase IoU、entropy、augmentation consistency；

@@ -41,6 +41,18 @@ B4  B3 + D0 soft action-evidence leakage constraint
 | E8 B WAM/VAM | DROID 离线 future attribution | 未来归因是否比静态图更接近动作成败 | 只有通过 horizon/动作负控才进入主结果 |
 | E9 跨骨干 | OpenVLA/OFT、π0 系、Qwen/LLaVA；SpikingBrain 后置 | 方法是否依赖某个骨干 | 统一归因接口在至少两种结构上有效 |
 
+### VLM benchmark 的固定分工
+
+```text
+Teacher calibration: Flickr30k Entities calibration split
+ID spatial grounding: Flickr30k Entities test
+Semantic referring transfer: RefCOCOg official split
+Visual task-preserving OOD: Flickr30k Entities test perturbations
+VLM retention diagnostic: VL-Think/SimplerEnv static screenshot QA
+```
+
+主结论来自带 phrase-region 标注的 Flickr30k Entities；RefCOCOg 检验更复杂指代，但不与 Flickr 分数合并成平均榜；图像扰动保持原 region 标注不变，单列报告每种 photometric corruption；VL-Think style QA 检验概念保留，不替代空间定位。
+
 ## 5.1.1 OOD 假设与分维度报告
 
 论文不声称解决所有 OOD。D0 的可检验假设仅针对语言无关视觉捷径与语言空间重新 grounding：背景/光照/干扰物变化时保持动作稳定，目标对象/属性/位置/语言变化时相应改变动作。

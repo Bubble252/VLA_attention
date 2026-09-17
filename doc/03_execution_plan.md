@@ -191,6 +191,26 @@ git push
 
 ## 7. P4：VLM grounding 证明
 
+### P4 benchmark 冻结：词级空间 grounding 与 VLM OOD
+
+VLM 阶段不直接使用 SimplerEnv 作为主 benchmark，因为它是控制环境，不能替代 phrase-region 真值。首轮按以下四层组织：
+
+| 层级 | 数据/设置 | 角色 | 主指标 |
+|---|---|---|---|
+| Teacher calibration | Flickr30k Entities 训练集以外的独立 calibration split | 选择 `T_sem` 的 best-single、token span、层/步/CFG | phrase pointing、region IoU、无效词率、跨 seed 一致性 |
+| ID grounding | Flickr30k Entities 官方冻结 test split | 主 VLM 空间 benchmark | phrase pointing、mass-in-box、IoU、answer/phrase attribution agreement |
+| Semantic transfer | RefCOCOg 官方冻结 split | 更长 referring expression、多实例与关系指代的外部迁移 | pointing、IoU、指代正确率 |
+| Visual task-preserving OOD | 在 Flickr30k Entities test 图上生成固定 brightness/contrast/color/noise/blur/JPEG/resize 扰动，box 不变 | 不依赖无关视觉因素的空间 grounding | 每种扰动相对 ID 的下降、正确/错教师差距 |
+
+VL-Think/SimplerEnv 风格的静态截图 QA 仅做 VLM 保留诊断，检验目标、属性、位置和 yes/no，不作为 phrase-region 主榜；完整 SimplerEnv control 放在 VLA OOD 阶段。不得把 RefCOCOg 的外部表达迁移、Flickr 的图像扰动和 VLA 闭环 OOD 混成一个平均分。
+
+### 已冻结的首轮模型与 OOD 角色
+
+- [x] VLM 首轮：Prismatic-7B + Qwen2.5-VL-7B；InternVL3.5、Ovis2.5、LLaVA-OneVision 后置；
+- [x] VLA 首轮：OpenVLA/OFT + π0.5；MolmoAct2 后置；
+- [x] OOD 分工：LIBERO-Plus 做可控闭环 OOD，SimplerEnv 做 VLA 视觉/语义保留诊断，DROID 做真实数据离线泛化；RoboTwin 后置到 WAM/VLA 扩展；
+- [x] SpikingBrain 后置，不作为上述任一首轮门槛。
+
 ### VLM 阶段的独立目标
 
 P4 不以 BlindVLA 的 VLA 结果为前置 gate，但应将其抽象成 **DB-style VLM feature-retention baseline**。P4 独立回答：词级扩散空间教师是否让 VLM 的 `A_lang` 更准确地对应语言短语，而不是只让通用视觉 feature 更稳定。
@@ -220,7 +240,7 @@ V2 的 feature teacher、teacher preprocess、层位置、projector seed、额�
 
 ### 任务
 
-- [ ] 选择首轮 VLM grounding 数据：Flickr30k / Flickr30k Entities，优先复用 Lavender 公开的 Flickr1k Stable Diffusion attention maps；
+- [ ] 准备 Flickr30k Entities 的 train/calibration/test manifest，冻结 calibration 与 test ID；RefCOCOg split、扰动生成 seed/强度和 VL-Think screenshot set 单独记录；
 - [ ] 对每个样本生成 Stable Diffusion、PixArt-α、PixArt-Σ、Playground-v2.5 的可用词级教师图；无法导出语言条件二维图的候选退出 T_sem 比较；
 - [ ] 在独立校准集审计每个教师的 token span、层/步/CFG、pointing/IoU、无效词率和跨 seed 一致性；
 - [ ] 冻结 best-single 教师后再训练主实验；多教师 ensemble 仅作为校准权重冻结的消融，不能先平均后称主教师；
