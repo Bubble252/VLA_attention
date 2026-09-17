@@ -85,6 +85,7 @@ def main() -> int:
             map_path = maps_dir / f"{sample['sample_id'].replace(':', '_')}.npy"
             np.save(map_path, maps[0].reshape(grid_h // merge, grid_w // merge))
             cosine = float(np.dot(maps[0], maps[1]) / (np.linalg.norm(maps[0]) * np.linalg.norm(maps[1]) + 1e-12))
+            cosine = min(1.0, max(0.0, cosine))  # float32 roundoff can exceed 1 by epsilon
             visual_positions = (batch["input_ids"][0] == model.config.image_token_id).nonzero().flatten().tolist()
             rows.append({
                 "sample_id": sample["sample_id"], "model_id": "qwen2.5-vl-7b",
