@@ -181,7 +181,6 @@ PY
       # 101 reaches api.github.com but raw.githubusercontent.com and git HTTPS
       # are too slow. ghproxy.net passed a ZIP-magic probe; accept it only when
       # the downloaded bytes reproduce the official Git blob SHA.
-      rm -rf '$FLICKR_DIR/raw/entities/source_repo'
       ENTITIES_BLOB=\$(ENTITIES_REPO='$ENTITIES_REPO' ENTITIES_REV=\"\$ENTITIES_REV\" '$P1_ENV/bin/python' - <<'PY'
 import json, os
 from urllib.request import urlopen
@@ -191,8 +190,9 @@ PY
 )
       ENTITIES_OUT='$FLICKR_DIR/raw/entities/annotations.zip'
       ENTITIES_CANDIDATE=\"\$ENTITIES_OUT.proxy\"
-      rm -f \"\$ENTITIES_CANDIDATE\"
-      curl --http1.1 --connect-timeout 15 --max-time 900 --retry 5 --retry-all-errors --retry-delay 3 --fail --location 'https://ghproxy.net/https://raw.githubusercontent.com/$ENTITIES_REPO/'\"\$ENTITIES_REV\"'/annotations.zip' -o \"\$ENTITIES_CANDIDATE\"
+      # `--continue-at -` preserves verified transport progress across a retry.
+      # The final Git blob SHA remains the acceptance criterion.
+      curl --http1.1 --continue-at - --connect-timeout 15 --max-time 900 --retry 5 --retry-all-errors --retry-delay 3 --fail --location 'https://ghproxy.net/https://raw.githubusercontent.com/$ENTITIES_REPO/'\"\$ENTITIES_REV\"'/annotations.zip' -o \"\$ENTITIES_CANDIDATE\"
       ENTITIES_BLOB=\"\$ENTITIES_BLOB\" ENTITIES_CANDIDATE=\"\$ENTITIES_CANDIDATE\" '$P1_ENV/bin/python' - <<'PY'
 import hashlib, os
 from pathlib import Path
