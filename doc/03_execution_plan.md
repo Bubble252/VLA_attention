@@ -109,6 +109,7 @@ P1 在本机或 101 的空闲 GPU 做小样本 audit；正式训练只在 101 �
 - [ ] 下载 Flickr30k Images 与 Entities annotations 的完整原始资料，保存来源和校验值；取得许可/访问限制时停在该 gate，不用不明镜像替代；
 - [ ] 从完整数据建立可复现 train/calibration/test manifest；P1 从 calibration manifest 固定抽取 20 个样本，不替代后续全量训练；
 - [ ] 对 Qwen2.5-VL-7B 和 Prismatic-7B 分别完成 P1 `report.json`，用 `scripts/validate_p1_report.py` 校验后才允许进入 teacher calibration 或 V0--V4；
+- [ ] Prismatic checkpoint gate：首轮采用官方 `prism-dinosiglip+7b`；其 Llama-2 衍生权重需要合法 Hugging Face 登录与条款访问。2026-09-17 的 101 `hf auth whoami` 显示未登录，禁止以镜像或未授权副本绕过；
 - [x] Qwen checkpoint 配置已审计：vision depth 32、full-attention blocks `[7,15,23,31]`、patch size 14、spatial merge 2、window size 112；P1 坐标桥须使用 post-merge grid；
 - [ ] 记录 Lavender 当前 commit `58fc71b`；
 - [ ] 【后期可选】记录 SpikingBrain 当前 commit `ef99987`；
