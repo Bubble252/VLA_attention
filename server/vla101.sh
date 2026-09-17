@@ -124,6 +124,11 @@ for repo in ('BryanPlummer/flickr30k_entities', 'xmodal-multilang-retrieval/flic
         name = item['path'].lower()
         if any(key in name for key in ('annotation', 'sentence', 'license', 'readme', '.zip', '.xml')):
             print('REPO_FILE=' + item['path'] + ' size=' + str(item.get('size', 'NA')))
+    if repo == 'BryanPlummer/flickr30k_entities':
+        readme = urlopen('https://raw.githubusercontent.com/' + repo + '/' + branch + '/README.md', timeout=30).read().decode()
+        print('README_BEGIN')
+        print(readme)
+        print('README_END')
 PY"
     ;;
   -h|--help|help|'') usage ;;
