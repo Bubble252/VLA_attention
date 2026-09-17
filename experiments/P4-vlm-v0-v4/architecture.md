@@ -58,3 +58,7 @@ LoRA 配置在 `configs/qwen_lora_v1.json`：rank 16、alpha 32、dropout 0.05�
 `src/vla_attention/spatial.py` 的 bridge 单测要求每个目标 token 权重和为 1；任何 crop/pad/resize 未记录时停止运行，而不是默认视为相同原图坐标。
 
 V1--V4 将统一实例化相同维度的 DINO-to-Qwen projector，确保模型参数结构不因组别改变；V1/V3 的 `λ_ret=0`，V2/V4 启用 `L_retention=mean(1-cos(projector(bridge(DINO_patch)), Qwen_visual_token))`。DINO CLS 一律删除，DINO 参数始终 `requires_grad=False`。运行时必须断言 teacher feature 的 source grid 与 Qwen target grid 和 bridge 完全一致。
+
+### V3/V4 semantic map loss
+
+`T_sem` cache 和 `A_lang` 必须已在相同 Qwen post-merge image-coordinate grid。二者先变为非负和为 1 的空间概率分布，再计算 `L_sem = KL(T_sem || A_lang)`；实现于 `src/vla_attention/losses.py`。负控不改变 loss 或训练循环：只把 cache key 指向 wrong-word、wrong-image 或 random normalized map，并在 manifest 中记录 map source。若 map 有 NaN、负值、零 token mass、尺寸或 crop provenance 不一致，runner 必须停止。
