@@ -204,6 +204,29 @@ git push
 
 实施细节和上游代码问题见 `references/abstract_review/08_blindvla_code_audit.md`。SpikingBrain 保持后置，具体 Qwen/LLaVA 和 VLA 版本待筛选。
 
+### P4-0：先完成与 BlindVLA 的可比性审计（P4 的首要 gate）
+
+在扩展多扩散教师、D1、WAM/VAM 或大规模 OOD 前，必须先回答：当前词级空间归因方案是否只是 BlindVLA-style feature retention 的另一种实现？
+
+- [ ] 固定一个可运行学生、一个起始 checkpoint、同一训练样本/划分、同一 LoRA/动作头、同一 image augmentation、同一训练步数和相同 seed；
+- [ ] 固定 DB-style 视觉教师、层位置、projector seed 和 bridge 配置，记录其额外前向、显存与 wall-clock；
+- [ ] 首轮先固定一个经校准的单扩散 `T_sem`，不同时把 PixArt/Playground ensemble 引入，以免 teacher 数量成为混杂；
+- [ ] 按下表从小到大运行：
+
+| 组 | 训练项 | 要排除的解释 |
+|---|---|---|
+| B0 | 原生 SFT / BC | 原始能力 |
+| B1 | DB-style 中层 patch feature alignment | 视觉表征遗忘是否已足以解释收益 |
+| B2 | 词级空间教师 `T_sem → A_lang` | 空间语言 grounding 是否有独立作用 |
+| B3 | B1 + B2 | feature retention 与空间语义是否互补 |
+| B4 | B3 + D0 soft action-evidence leakage constraint | 在表征已经保持后，动作空间证据约束是否仍有增量 |
+
+- [ ] 采用同源教师控制或明确记录 teacher/监督形式同时变化的混杂：C-RADIO feature 与扩散 map 不应直接被用来证明“空间图优于 feature”；
+- [ ] 同时报告 VL-Think 风格保留能力、phrase grounding、动作离线/闭环、raw/ratio/gradient/occlusion 一致性和训练成本；
+- [ ] 对 B4 的合法非对象证据增加 object-only、object+EEF、面积匹配随机 mask 三组，不能将夹爪/接触/障碍区域一律视为泄漏；
+
+**继续条件**：B2 或 B3 先在空间 grounding 上优于 B0/B1；B4 再在 B3 之上改善动作相关指标或 task-preserving OOD，且正确教师优于错词/错图/随机教师。若 B4 无独立增量，停止把 D0 写作核心创新，转为 feature retention 或空间监督的诊断结果。若 B1 已经解释全部收益，先不进入 D1/B 路线。
+
 ### 任务
 
 - [ ] 选择首轮 VLM grounding 数据：Flickr30k / Flickr30k Entities，优先复用 Lavender 公开的 Flickr1k Stable Diffusion attention maps；
@@ -456,6 +479,28 @@ A 仅为建议，未由用户冻结；不设置未经确认的两周期限。先
 - 每个主线 VLA 使用 paired baseline，不直接比较不同模型的原生绝对分数；
 - attention/gradient 图必须和 patch occlusion、语言反事实、state 遮挡一起报告；
 - 结果分为性能表、OOD 表、机制诊断表和组件消融表，不把所有指标塞进单一总表。
+
+### OOD 专项计划：检验视觉/语义捷径，而非泛化万能论
+
+本方法的 OOD 假设是：当任务目标和动作可行性保持不变，而背景、光照、干扰物或语言表述变化时，经过语义空间与动作证据约束的策略应更稳定；当目标词或目标位置变化时，策略应相应改变。该假设不自动覆盖新运动学、跨 embodiment、重接触动力学和未校准相机几何。
+
+| OOD 类别 | 具体变化 | 首选评估 | 预期可验证结论 | 不可据此声称 |
+|---|---|---|---|---|
+| 视觉无关变化 | background、texture、lighting、distractor、sensor noise | LIBERO-Plus / SimplerEnv / DROID 分组 | 动作对无关视觉变化更稳定，且 `A_act` 对无关区域泄漏减少 | 已解决所有视觉 OOD |
+| 语言/指代变化 | rephrase、object swap、多实例颜色/属性、position swap | LIBERO-PRO / VL-Think 风格保留集 / DROID 指令分组 | 模型能重新将语言落到正确对象或位置 | 已具备任意开放世界语言能力 |
+| 状态变化 | robot initial state、有限范围 proprioception 变化 | LIBERO-Plus / paired state intervention | 正常 state 使用与错误 shortcut 可区分 | state 依赖本身就是捷径 |
+| 相机与几何 | viewpoint、crop、有限相机变化 | LIBERO-Plus / SimplerEnv / DROID camera split | 对已校准或可处理的视角变化更稳健 | 已解决三维空间和相机外参问题 |
+| 动作/embodiment/动力学 | 新 action space、接触、长时序、双臂、移动底盘 | RoboTwin、CALVIN、真机、后期 LingBot | 只在单独实现 D1/B/动作适配后评估 | D0 自动解决跨 embodiment |
+
+每类 OOD 至少报告：ID 对照、每个扰动维度的结果、正确教师与错教师/随机教师、以及语言/视觉/state 反事实。总平均只能作摘要，不能掩盖特定维度退化。若 ID 提升但 task-preserving OOD 无提升，主张限定为 ID 训练效果；若 DROID 离线误差改善但没有闭环测试，主张限定为真实数据离线泛化。
+
+### OOD 验收门槛
+
+- [ ] 对无关视觉扰动：动作变化、success 或离线误差不劣于 baseline，并且目标区域干预比背景干预更能改变预测；
+- [ ] 对目标/指令反事实：替换目标词、颜色或位置时，预测应朝新目标改变；不变化不是“鲁棒”；
+- [ ] 对 state 反事实：在物理有效范围内成对改变 state，区分必要控制信息与背景/状态捷径；
+- [ ] 对 DROID：按 episode 与可靠 metadata 分组，禁止随机切帧；没有 object/operator 字段时不虚构该 split；
+- [ ] 对结论：只有正确教师优于错词/错图/随机教师，且 OOD 趋势在至少一个闭环 benchmark 与一个真实数据离线分组中成立，才使用“缓解视觉/语义 OOD”表述。
 
 ## 文档同步规则
 

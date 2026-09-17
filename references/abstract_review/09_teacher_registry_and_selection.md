@@ -147,6 +147,20 @@ Qwen2.5-VL、InternVL3.5、Ovis2.5、LLaVA-OneVision 可以提供答案/phrase s
 | VLA-D1 | best-single `T_sem` + T_phase-B | phase-only / Anchor-Align-style direction | T_future-A |
 | B 路线 | T_future-A/B | static `T_sem`、direct future-feature alignment | Next Forcing multi-horizon |
 
+### 首要顺序：先与 BlindVLA 比较
+
+`T_retention` 是强 baseline，不是可跳过的附属实验。当前方法进入 OOD 主结论前，必须完成：
+
+```text
+B0 native SFT/BC
+B1 T_retention-A (DB-style patch feature alignment)
+B2 best-single T_sem spatial alignment
+B3 B1 + B2
+B4 B3 + D0 action-evidence constraint
+```
+
+固定相同学生、数据、动作头、预算与增强。只有 B4 超过 B3，且正确 `T_sem` 超过错教师负控，才可声称动作证据约束超过表征保持；否则将它降级为诊断或相关工作分析。多扩散教师 ensemble、D1、T_future 均在此 gate 之后。
+
 ## 7. 不允许的混用
 
 - 不把 frozen visual feature 当作词级语义真值；

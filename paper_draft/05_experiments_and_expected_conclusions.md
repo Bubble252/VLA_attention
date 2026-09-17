@@ -8,6 +8,22 @@
 
 本文后续原有 containment 公式尚为历史候选，不以 L1 概率图直接称“允许区域 mask”；归一化与 soft support/泄漏余量的修正建议见专题第 6 节，待小样本验证后再冻结。SpikingBrain 后置，主线模型组合继续由用户筛选。
 
+### 首要比较：当前方法是否超过 BlindVLA-style feature retention
+
+在任何 OOD 扩展前，首个论文结论必须来自下列同预算 paired comparison：
+
+```text
+B0  native SFT/BC
+B1  DB-style intermediate patch feature alignment
+B2  fixed best-single diffusion T_sem → A_lang
+B3  B1 + B2
+B4  B3 + D0 soft action-evidence leakage constraint
+```
+
+所有组固定 backbone/checkpoint、训练 episodes、train/val/test split、LoRA、action head、action chunk、图像增强、优化步数和随机种子；教师额外前向、离线 map 生成和二阶梯度成本单独报告。B1 的代码实现参照 BlindVLA，若未完整修复其 projector/optimizer/恢复链路，只写 `DB-style inspired baseline`。
+
+判定顺序：先以 VLM grounding 和保留能力决定 B2/B3 是否值得接入动作；再以动作输出归因、目标/背景干预和 ID/OOD 动作指标判断 B4 是否超过 B3。若 B4 只令图更集中、却不改善干预一致性或 OOD，则不能作为主贡献。若 B1 已经覆盖 B3/B4 的收益，论文主张退回 representation retention；若 B2/B3 有收益而 B1 无收益，才说明词级空间教师值得保留。
+
 ## 5.1 实验总表
 
 本实验表借鉴 *Breaking the Vision–Action Shortcut* 的四个设计原则：异构结构覆盖、architecture-matched paired baseline、ID/OOD 成对评估、反事实与组件拆分。具体借鉴分析见 `references/paper_reading/breaking_vision_action_shortcut_notes.md`。
@@ -24,6 +40,20 @@
 | E7 D1 phase | LIBERO/DROID 轨迹 | `source→mixed→target` 是否存在且有益 | 正确 phase 优于反向/随机/固定百分比；否则保留 D0 |
 | E8 B WAM/VAM | DROID 离线 future attribution | 未来归因是否比静态图更接近动作成败 | 只有通过 horizon/动作负控才进入主结果 |
 | E9 跨骨干 | OpenVLA/OFT、π0 系、Qwen/LLaVA；SpikingBrain 后置 | 方法是否依赖某个骨干 | 统一归因接口在至少两种结构上有效 |
+
+## 5.1.1 OOD 假设与分维度报告
+
+论文不声称解决所有 OOD。D0 的可检验假设仅针对语言无关视觉捷径与语言空间重新 grounding：背景/光照/干扰物变化时保持动作稳定，目标对象/属性/位置/语言变化时相应改变动作。
+
+| OOD 轴 | 实例 | 主要证据 | 方法预期 | 失败时的解释 |
+|---|---|---|---|---|
+| Nuisance visual | background、lighting、texture、distractor、sensor noise | LIBERO-Plus、SimplerEnv、DROID 场景/相机分组 | 少依赖无关区域，保持任务相关反应 | 若提升只在 ID，不能称快捷方式缓解 |
+| Semantic/referential | rephrase、object swap、颜色/属性、多实例、position swap | LIBERO-PRO、VL-Think 风格保留集 | 正确重定向 source/target | 若不随目标变化，稳定可能是忽略语言 |
+| State | robot initial state、有限 proprioception 改变 | paired state intervention | 区分合理控制依赖与 state shortcut | 屏蔽全部 state 后失败不等于发现 shortcut |
+| Camera/geometry | viewpoint、crop、有限视角变化 | Plus/SimplerEnv/DROID camera split | 对已校准变化更稳定 | 不能据此声称学会 3D 几何 |
+| Dynamics/embodiment | 接触、长时序、新动作空间/平台 | D1/B、RoboTwin、CALVIN、真机 | 后期单独检验 | 不属于 D0 默认能力 |
+
+主表必须显示逐轴结果，不能只报平均 OOD。每个轴至少包含 baseline、正确教师、错词/错图/随机教师；视觉与语义变化还需包含对应反事实。DROID 的结论只写“离线真实数据泛化”，闭环 success 仅由 LIBERO/真机支撑。
 
 ## 5.2 基线与消融
 
@@ -85,9 +115,11 @@ Don't Blind 现为本阶段重点参照。加入 **原始 checkpoint（仅评估
 5. **E4 D0 降低动作误差且 containment 改善**：进入 E5；若 grounding 改善但动作无效，检查 action head 归因接口。
 6. **E5 成功率下降**：降低 `λ_contain`、检查过强约束和 state 输入；D0 不能作为成功方法。
 7. **E6 DROID 无收益**：主结论限定为 LIBERO 机制，不声称真实泛化，并优先排查数据转换和分布差异。
-8. **E7 phase 负控无差异**：D1 退回诊断，D0 保持主线。
-9. **E8 future attribution 无额外信息**：B 放入 future work，不增加 world-model loss。
-10. **E9 只在一个骨干有效**：限定模型适用范围，解释失败原因；不自动改回 SpikingBrain 主线。
+8. **OOD 平均改善但目标反事实失败**：不声称语言 grounding 改善；模型可能只是变得不敏感。
+9. **视觉扰动稳定但背景/目标 occlusion 同样无影响**：不声称动作证据正确，模型可能忽略视觉或依赖 state。
+10. **E7 phase 负控无差异**：D1 退回诊断，D0 保持主线。
+11. **E8 future attribution 无额外信息**：B 放入 future work，不增加 world-model loss。
+12. **E9 只在一个骨干有效**：限定模型适用范围，解释失败原因；不自动改回 SpikingBrain 主线。
 
 ## 5.5 预期主表结构
 
