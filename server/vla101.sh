@@ -16,6 +16,9 @@ Commands:
   status       Read only: host, project-path, disk, repo and P1-environment state.
   bootstrap    Create only this project's VEPFS subdirectories and P1 virtual environment.
   freeze-env   Write a package-version snapshot under this project's envs/p1/ directory.
+  network-check
+               Read only: check whether the requested local 7897 proxy and the
+               official Hugging Face endpoint are reachable from 101.
   download-qwen
                Download only the official Qwen2.5-VL-7B-Instruct checkpoint to VEPFS.
                It first uses http://127.0.0.1:7897; failure is recorded and does not
@@ -60,6 +63,15 @@ out = Path('$P1_ENV') / 'versions.txt'
 out.write_text(''.join(f'{name}=={version(name)}\\n' for name in names))
 print(out)
 PY"
+    ;;
+  network-check)
+    remote "set -eu
+      if timeout 5 bash -c '</dev/tcp/127.0.0.1/7897' 2>/dev/null; then
+        echo PROXY_7897_REACHABLE
+      else
+        echo PROXY_7897_UNREACHABLE
+      fi
+      curl --connect-timeout 15 --max-time 30 -sS -o /dev/null -w 'HF_HTTP=%{http_code}\\n' https://huggingface.co || echo HF_REQUEST_FAILED"
     ;;
   download-qwen)
     remote "set -eu
