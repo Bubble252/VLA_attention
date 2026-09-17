@@ -37,6 +37,7 @@
 - [x] null-text runner GPU1 验收：FP16 `5×1` 出现 NaN，已保留为失败证据并改用新增 FP32-v2 runner；FP32 `5×1` 通过（mean MSE `0.09803`），FP32 `20×10` 正式单图通过（mean MSE `0.03884`、100 个 16×16 attention tensors、目标 span `[4,5,6,7]`）。SD1.5 可以进入 10 图 calibration pilot；该单图通过不等于四教师 best-single 已选择。
 - [x] SD1.5 pilot10：固定 calibration manifest 前十图全部成功（10/10），`20×10`、seed 17、FP32 null-text。唯一 summary `summary_sd1_5_20x10_seed17.json`：pointing `0.50`、mean mass-in-box `0.4754`、mean MSE `0.03207`（min `0.01317` / max `0.06615`）。这证明 SD pipeline/map/metric 可运行；样本太小且尚未与 PixArt/Playground 相比，严禁据此选 best-single 或生成 V3/V4 train cache。
 - [x] PixArt-alpha runtime audit：P1 环境补充 `sentencepiece==0.2.2` 与 `tiktoken==0.14.0` 后成功加载本地 pipeline；T5Tokenizer、DPMSolverMultistepScheduler、56 个 transformer attention processors。初始化告警仅为 unused `caption_projection.y_embedding`；PixArt 需独立 transformer-token attention adapter，不能复用 SD UNet/null-text runner。
+- [ ] PixArt-alpha phrase-map adapter：pipeline 与 tokenizer已加载，但 Diffusers 0.38 的 PixArt transformer 内部模块路径和预期名称不一致；当前只确认 processor count，尚未捕获真实 image-conditioned token attention。此兼容性 gate 不影响 SD1.5 pilot，也禁止将 SD map 用作 PixArt map。
 
 ## 下一条可接受的证据
 
