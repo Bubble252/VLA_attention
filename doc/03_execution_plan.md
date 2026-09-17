@@ -96,6 +96,8 @@ git push -u origin main  # 配置远端后执行
 
 ## 4. P1：本地代码与接口审计
 
+P1 在本机或 101 的空闲 GPU 做小样本 audit；正式训练只在 101 提交火山 8 卡任务。服务器连接、VEPFS 目录、环境隔离、提交模板和资源约束见 `server/01_vla_attention_training.md`。
+
 ### 任务
 
 - [ ] 记录 Lavender 当前 commit `58fc71b`；
