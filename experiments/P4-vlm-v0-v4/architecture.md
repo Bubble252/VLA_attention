@@ -56,3 +56,5 @@ LoRA 配置在 `configs/qwen_lora_v1.json`：rank 16、alpha 32、dropout 0.05�
 已冻结 `facebook/dinov2-large@47b73eefe95e8d44ec3623f8890bd894b6ea2d6c`（Apache-2.0）。其 smoke 对 224×224 输入返回 `1 + 16×16` 个 token、1024 维；CLS 不进入 `L_retention`。Qwen 的 `image_grid_thw` 依图变化，例如 P1 样本是 pre-merge `1×34×36`，post-merge 为 `17×18`。因此 `L_retention` 不能按 token index 直接相减：先删除 DINO CLS，再用以 token center 为定义的 normalized-image bilinear bridge 把 DINO feature grid 采样到 Qwen post-merge grid，最后经固定 projector 比较。
 
 `src/vla_attention/spatial.py` 的 bridge 单测要求每个目标 token 权重和为 1；任何 crop/pad/resize 未记录时停止运行，而不是默认视为相同原图坐标。
+
+V1--V4 将统一实例化相同维度的 DINO-to-Qwen projector，确保模型参数结构不因组别改变；V1/V3 的 `λ_ret=0`，V2/V4 启用 `L_retention=mean(1-cos(projector(bridge(DINO_patch)), Qwen_visual_token))`。DINO CLS 一律删除，DINO 参数始终 `requires_grad=False`。运行时必须断言 teacher feature 的 source grid 与 Qwen target grid 和 bridge 完全一致。
