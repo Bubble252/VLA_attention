@@ -28,3 +28,5 @@
 ## 当前实现证据（不等于校准通过）
 
 2026-09-17：已用现代 Diffusers 0.38 + 本地 SD1.5 成功在一条固定 real-image latent / phrase 输入上捕获 conditional cross-attention：64px query grid 5 层、32px 5 层、16px 5 层、8px 1 层。运行时 FlashAttention 不能加载，自动回退 PyTorch attention。该结果只证明 hook 与模型接口可用；它没有 DDIM/null-text inversion，因此不能填入候选的 pointing/IoU 表，不能成为 `T_sem` 图或训练 cache。
+
+同日 DDIM smoke 已在完整 caption 中定位目标 phrase 的 CLIP token span `[4,5,6,7]`，以 5-step conditional DDIM inversion 聚合 25 个 16×16 attention tensors，说明 image-conditioned trajectory 与 token-span bridge 可运行。此结果仍是 `ddim_conditional_no_nulltext`：它可作为实现诊断，不可替代 Lavender 的 null-text inversion baseline，也不能用于候选排名。
