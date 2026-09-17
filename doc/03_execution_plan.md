@@ -309,6 +309,12 @@ Flickr30k Entities 的 phrase/box **不进入首轮训练标签**；它们只用
 7. smoke 全部通过后，依次运行 V0 evaluation、V1、V2、V3、V4 正式训练与统一 Flickr30k Entities test/OOD evaluation；
 8. 只有 Qwen 主结论及错误教师/随机图反证成立后，才扩展 Prismatic 和 referring-prompt `R*` 消融。
 
+### 快速全流程 gate：F0-256，然后 F1-10k
+
+为避免 10k 条 `20×10` null-text map cache（单 GPU 约数天）阻塞工程验证，先运行 `F0-QWEN-SD-DINO-V0V4-256`：从已冻结 10k caption pair manifest 确定性抽取 256 条；V0--V4 全部使用这同一个 256 集合，SD1.5 map 在训练前离线生成；各训练组完成 20-step smoke 和 100-step flow run，验证 cache、loss、checkpoint、evaluation 和负控路径。F0 不用于论文主表或显著性结论。
+
+F0 全部通过后，完全复用代码和配置语义扩展为 F1-10k；唯一改变是固定 pair 数量和对应的离线 map cache，不能在组间改变数据或训练预算。
+
 **VLM 继续条件**：V3 或 V4 必须在 phrase grounding 上优于 V1/V2，且正确教师优于错词/错图/随机教师；若 V2 已经覆盖 V3/V4 的收益，空间教师主张退回为 feature retention 的替代实现，不直接进入 D0 的强创新叙事。
 
 ### 任务

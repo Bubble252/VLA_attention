@@ -1,0 +1,11 @@
+{
+  "experiment_id": "F0-QWEN-SD-DINO-V0V4-256",
+  "purpose": "End-to-end engineering gate before the 10k main run; not a paper-result table.",
+  "data": {"source": "caption_sft_train_10k_seed17.jsonl", "pairs": 256, "selection": "seed=19 without replacement", "shared_by": ["V0", "V1", "V2", "V3", "V4"]},
+  "student": "Qwen2.5-VL-7B-Instruct",
+  "retention_teacher": "facebook/dinov2-large@47b73eefe95e8d44ec3623f8890bd894b6ea2d6c",
+  "semantic_teacher": "runwayml/stable-diffusion-v1-5@451f4fe16113bff5a5d2269ed5ad43b0592e9a14",
+  "semantic_map": {"method": "ddim_nulltext_fp32_v2", "steps": 20, "inner_steps": 10, "seed": 17, "cache_before_train": true},
+  "training": {"smoke_steps": 20, "flow_steps": 100, "lora_config": "configs/qwen_lora_v1.json"},
+  "acceptance": ["all 256 teacher map records valid or one fixed valid intersection shared by V1-V4", "V1/V2/V3/V4 complete 20-step smoke", "V0 evaluation runs", "V1-V4 checkpoint save/load succeeds", "losses finite and visual LoRA parameter count zero"]
+}
