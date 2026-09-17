@@ -191,41 +191,18 @@ git push
 
 ## 7. P4：VLM grounding 证明
 
-### 重点参考 Don't Blind（用户确认）
+### VLM 阶段的独立目标
 
-已归档 BlindVLA 官方仓库 `references/repos/blindvla`，commit `06855fcb`。首轮必须加入原始 VLM 评估、普通 SFT、DB-style 中层 patch feature alignment、Lavender-style 图监督和我们的输出归因监督候选；不再只做后两项。DB-style 移植 Qwen/LLaVA 属于 adaptation baseline，不能冒称完整 OpenVLA 论文复现。
+P4 不以 BlindVLA 为前置 gate。它独立回答：词级扩散空间教师是否让 VLM 的 `A_lang` 更准确地对应语言短语，而不是只让通用视觉 feature 更稳定。
 
-- [ ] 建立固定视觉语言保留集：借鉴 VL-Think 的同场景目标/属性/位置变化，presence QA 同时包含 yes/no 样本；
-- [ ] 冻结 teacher 与 projector 时仍保留学生梯度路径；比较可训练 projector 前先修正参数组并验证其被更新；
-- [ ] 分开存 raw query、general、ratio、gradient 和扰动图；不得把官方 ratio 图称为原始 attention 或动作归因；
-- [ ] 按真实图像 processor/grid 恢复 patch，不用平方根猜网格截断；
-- [ ] 记录早/中/晚层与同数量随机层，teacher 类型、投影器 seed 和训练开销；
-- [ ] VLM 阶段干预测 answer/phrase score；VLA 阶段才测动作变化，两个阶段指标不混用。
+- [ ] 建立 phrase grounding 校准/验证集和独立 VLM 保留集；前者测 region，后者测目标/属性/位置概念；
+- [ ] 分开保存 raw query attention、general-prompt ratio、answer/phrase-score gradient 与输出扰动图；它们不是同一个归因量；
+- [ ] 使用真实 processor/grid 元数据恢复 patch，不用平方根猜网格；
+- [ ] 分别校准 Stable Diffusion、PixArt-α、PixArt-Σ、Playground-v2.5，冻结 best-single 后做 `T_sem → A_lang`；
+- [ ] 对照无对齐、扩散教师对齐、错词/错图/随机图、单教师/ensemble；
+- [ ] VLM 阶段干预测 answer/phrase score，不在本阶段声称动作归因或闭环 OOD。
 
-实施细节和上游代码问题见 `references/abstract_review/08_blindvla_code_audit.md`。SpikingBrain 保持后置，具体 Qwen/LLaVA 和 VLA 版本待筛选。
-
-### P4-0：先完成与 BlindVLA 的可比性审计（P4 的首要 gate）
-
-在扩展多扩散教师、D1、WAM/VAM 或大规模 OOD 前，必须先回答：当前词级空间归因方案是否只是 BlindVLA-style feature retention 的另一种实现？
-
-- [ ] 固定一个可运行学生、一个起始 checkpoint、同一训练样本/划分、同一 LoRA/动作头、同一 image augmentation、同一训练步数和相同 seed；
-- [ ] 固定 DB-style 视觉教师、层位置、projector seed 和 bridge 配置，记录其额外前向、显存与 wall-clock；
-- [ ] 首轮先固定一个经校准的单扩散 `T_sem`，不同时把 PixArt/Playground ensemble 引入，以免 teacher 数量成为混杂；
-- [ ] 按下表从小到大运行：
-
-| 组 | 训练项 | 要排除的解释 |
-|---|---|---|
-| B0 | 原生 SFT / BC | 原始能力 |
-| B1 | DB-style 中层 patch feature alignment | 视觉表征遗忘是否已足以解释收益 |
-| B2 | 词级空间教师 `T_sem → A_lang` | 空间语言 grounding 是否有独立作用 |
-| B3 | B1 + B2 | feature retention 与空间语义是否互补 |
-| B4 | B3 + D0 soft action-evidence leakage constraint | 在表征已经保持后，动作空间证据约束是否仍有增量 |
-
-- [ ] 采用同源教师控制或明确记录 teacher/监督形式同时变化的混杂：C-RADIO feature 与扩散 map 不应直接被用来证明“空间图优于 feature”；
-- [ ] 同时报告 VL-Think 风格保留能力、phrase grounding、动作离线/闭环、raw/ratio/gradient/occlusion 一致性和训练成本；
-- [ ] 对 B4 的合法非对象证据增加 object-only、object+EEF、面积匹配随机 mask 三组，不能将夹爪/接触/障碍区域一律视为泄漏；
-
-**继续条件**：B2 或 B3 先在空间 grounding 上优于 B0/B1；B4 再在 B3 之上改善动作相关指标或 task-preserving OOD，且正确教师优于错词/错图/随机教师。若 B4 无独立增量，停止把 D0 写作核心创新，转为 feature retention 或空间监督的诊断结果。若 B1 已经解释全部收益，先不进入 D1/B 路线。
+BlindVLA 的 ratio 可视化、token/grid 审计和教师缓存思想可作为实现参考，但 DB-style feature alignment 留到 P6 VLA paired baseline。SpikingBrain 保持后置，具体 VLM/VLA 版本待筛选。
 
 ### 任务
 
@@ -287,6 +264,29 @@ git push
 ```
 
 ## 9. P6：VLA 主方法训练
+
+### P6-0：与 BlindVLA 的 VLA 强 baseline 比较（P6 首要 gate）
+
+BlindVLA 是 VLA 微调阶段的 feature-retention 方法，不是 P4 VLM grounding 的前置方法。本阶段要检验：即使视觉表征已被 DB-style 方法保持，语言条件空间归因与动作证据约束是否仍有独立价值。
+
+- [ ] 固定一个 VLA 学生、起始 checkpoint、训练 episodes/划分、LoRA、动作头、action chunk、图像增强、优化步数和随机 seed；
+- [ ] 固定 DB-style 视觉教师、层位置、projector seed/恢复状态和 bridge 配置，记录额外前向、显存与 wall-clock；
+- [ ] 使用 P4 已冻结的 best-single `T_sem`，不在此阶段重新选择扩散教师或混入 ensemble；
+- [ ] 按下表进行 paired comparison：
+
+| 组 | VLA 训练项 | 目的 |
+|---|---|---|
+| B0 | 原生 VLA BC/SFT | 原始动作能力 |
+| B1 | DB-style 中层 patch feature alignment | 视觉表征保持是否已足以解释收益 |
+| B2 | `L_sem`：冻结 `T_sem → A_lang` | VLA 内语言空间 grounding 是否有独立作用 |
+| B3 | B1 + B2 | 表征保持与语言空间语义是否互补 |
+| B4 | B3 + D0 soft action-evidence leakage constraint | 在特征已保持后，动作空间证据约束是否仍有增量 |
+
+- [ ] 对 B4 加入 object-only、object+EEF、面积匹配随机 mask 对照，不能把夹爪/接触/障碍区域一律视为泄漏；
+- [ ] 采用同源教师控制或明确记录 C-RADIO feature 与扩散 map 同时改变 teacher/监督形式的混杂；
+- [ ] 报告 VLM 保留能力、phrase grounding、动作离线/闭环、raw/ratio/gradient/occlusion 一致性和训练成本；
+
+**继续条件**：P4 已确认正确扩散教师改善语言空间 grounding；B4 再在 B3 之上改善动作相关指标或 task-preserving OOD，且正确教师优于错词/错图/随机教师。若 B4 无独立增量，停止把 D0 写作核心创新，转为 feature retention 或空间监督的诊断结果；若 B1 已解释全部动作收益，暂不进入 D1/B 路线。
 
 ### 任务
 

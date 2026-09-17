@@ -147,9 +147,9 @@ Qwen2.5-VL、InternVL3.5、Ovis2.5、LLaVA-OneVision 可以提供答案/phrase s
 | VLA-D1 | best-single `T_sem` + T_phase-B | phase-only / Anchor-Align-style direction | T_future-A |
 | B 路线 | T_future-A/B | static `T_sem`、direct future-feature alignment | Next Forcing multi-horizon |
 
-### 首要顺序：先与 BlindVLA 比较
+### VLA 首要顺序：先与 BlindVLA 比较
 
-`T_retention` 是强 baseline，不是可跳过的附属实验。当前方法进入 OOD 主结论前，必须完成：
+`T_retention` 是 VLA 强 baseline，不是 VLM grounding 的前置教师。P4 先独立冻结词级 `T_sem`；当前方法进入 VLA OOD 主结论前，再完成：
 
 ```text
 B0 native SFT/BC

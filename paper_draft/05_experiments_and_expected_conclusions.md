@@ -4,13 +4,13 @@
 
 详见 [Don't Blind / Anchor-Align / PosA-VLA 原文分析](../references/abstract_review/07_three_nearest_methods_deep_read.md)。增加三类强对照候选：中层 patch-feature alignment、全层 frozen-VLM anchoring + 同观测方向词监督、任务/EEF 双图前向 gating。它们分别排除表征保持、输出语义一致和空间门控的替代解释。
 
-首轮可先用同一学生运行 BC、DB-style feature alignment、L_sem only、D0 四组；正结果后增加完整 Anchor-Align-style 及其上叠加 D0 的实验。不同教师同时改变监督形态时需注明混杂。冻结与可训练 bridge、合法 EEF/障碍区域、动作输出梯度与动作损失梯度差异、二阶梯度成本均为训练前审计项。
+VLM 阶段独立比较无对齐、各扩散词级教师、错教师和 `T_sem → A_lang`，先证明词级空间 grounding。VLA 阶段才用同一 VLA 学生比较 BC、DB-style feature alignment、`L_sem`、D0；正结果后增加完整 Anchor-Align-style 及其上叠加 D0 的实验。不同教师同时改变监督形态时需注明混杂。冻结与可训练 bridge、合法 EEF/障碍区域、动作输出梯度与动作损失梯度差异、二阶梯度成本均为训练前审计项。
 
 本文后续原有 containment 公式尚为历史候选，不以 L1 概率图直接称“允许区域 mask”；归一化与 soft support/泄漏余量的修正建议见专题第 6 节，待小样本验证后再冻结。SpikingBrain 后置，主线模型组合继续由用户筛选。
 
 ### 首要比较：当前方法是否超过 BlindVLA-style feature retention
 
-在任何 OOD 扩展前，首个论文结论必须来自下列同预算 paired comparison：
+在 VLA 的任何 OOD 扩展前，首个动作结论必须来自下列同预算 paired comparison；它不替代 VLM 阶段的词级 grounding 验证：
 
 ```text
 B0  native SFT/BC
@@ -22,7 +22,7 @@ B4  B3 + D0 soft action-evidence leakage constraint
 
 所有组固定 backbone/checkpoint、训练 episodes、train/val/test split、LoRA、action head、action chunk、图像增强、优化步数和随机种子；教师额外前向、离线 map 生成和二阶梯度成本单独报告。B1 的代码实现参照 BlindVLA，若未完整修复其 projector/optimizer/恢复链路，只写 `DB-style inspired baseline`。
 
-判定顺序：先以 VLM grounding 和保留能力决定 B2/B3 是否值得接入动作；再以动作输出归因、目标/背景干预和 ID/OOD 动作指标判断 B4 是否超过 B3。若 B4 只令图更集中、却不改善干预一致性或 OOD，则不能作为主贡献。若 B1 已经覆盖 B3/B4 的收益，论文主张退回 representation retention；若 B2/B3 有收益而 B1 无收益，才说明词级空间教师值得保留。
+判定顺序：先以 P4 的 VLM grounding 决定是否把 best-single `T_sem` 接入 VLA；再以动作输出归因、目标/背景干预和 ID/OOD 动作指标判断 B4 是否超过 B3。若 B4 只令图更集中、却不改善干预一致性或 OOD，则不能作为主贡献。若 B1 已经覆盖 B3/B4 的收益，论文主张退回 representation retention；若 B2/B3 有收益而 B1 无收益，才说明词级空间教师值得保留。
 
 ## 5.1 实验总表
 
