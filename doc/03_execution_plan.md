@@ -229,8 +229,7 @@ V2 的 feature teacher、teacher preprocess、层位置、projector seed、额�
 - [ ] 在 LLaVA-1.6/OneVision 上使用同一 teacher-to-attribution 接口做 VLM 普适性对照；
 - [ ] 记录正确教师图、错词教师图、错图教师图、随机教师图；
 - [ ] 报告 pointing accuracy、目标区域 IoU、VQA/grounding accuracy、归因图熵。
-- [ ] 对 VLA 热力图增加 patch occlusion 的 `Δa` IoU/pointing 对照，检查 attention 与真实动作敏感区域是否一致；
-- [ ] 增加语言反事实（相关/不相关指令）和 state 遮挡反事实，区分视觉 grounding、语言条件和 state shortcut；
+- [ ] 对 VLM 增加 phrase/answer-score 的 patch occlusion、目标词替换和错词反事实，检查图是否对应语言条件输出；
 - [ ] 同时报告 raw attribution 与 sink-free attribution，避免仅凭未经校正的热力图宣称方法有效；
 - [ ] 增加 sink-only、边缘 patch-only 和随机空间图负控，检验指标是否会被固定热点投机获得；
 
@@ -323,6 +322,8 @@ BlindVLA 是 VLA 微调阶段的 feature-retention 方法，不是 P4 VLM ground
 - [ ] 首版采用 `H=1`，不同时引入 action chunk；
 - [ ] 记录训练/验证/测试拆分和随机种子。
 - [ ] 记录微调前后一个轻量 VLM/VQA 保留集结果，检查 action loss 是否造成视觉语言能力退化；
+- [ ] 对 VLA 动作图增加 patch occlusion 的 `Δa` IoU/pointing 对照，检查 `A_act` 与动作敏感区域是否一致；
+- [ ] 增加语言反事实和有限范围 state 反事实，区分视觉 grounding、语言条件、合理 proprioception 与 state shortcut；
 
 ### 验收
 

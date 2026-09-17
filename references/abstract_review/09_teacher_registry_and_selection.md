@@ -146,7 +146,7 @@ P4 VLM 阶段可使用 `T_retention-A` 的 DB-style patch feature alignment，�
 
 | 阶段 | 主教师 | 强 baseline | 后置扩展 |
 |---|---|---|---|
-| VLM | 每个经校准的 T_sem-A/D 单教师 | T_retention-A/B | T_sem-C、confidence ensemble |
+| VLM | 每个经校准的 T_sem-A/D 单教师 | T_retention-A（DB-style feature baseline） | T_sem-C、confidence ensemble |
 | VLA-D0 | 冻结的 best-single `T_sem` → `A_lang` | T_retention + PosA-inspired gating | T_phase-A、teacher ensemble |
 | VLA-D1 | best-single `T_sem` + T_phase-B | phase-only / Anchor-Align-style direction | T_future-A |
 | B 路线 | T_future-A/B | static `T_sem`、direct future-feature alignment | Next Forcing multi-horizon |
