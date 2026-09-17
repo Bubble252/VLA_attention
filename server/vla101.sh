@@ -68,8 +68,8 @@ PY"
       export HF_HOME='$PROJECT_ROOT/hf_cache'
       export HTTP_PROXY='http://127.0.0.1:7897'
       export HTTPS_PROXY='http://127.0.0.1:7897'
-      command -v huggingface-cli
-      huggingface-cli download '$QWEN_REPO' --local-dir '$QWEN_DIR'
+      command -v hf
+      hf download '$QWEN_REPO' --local-dir '$QWEN_DIR'
       find '$QWEN_DIR' -type f -print0 | sort -z | xargs -0 sha256sum > '$QWEN_DIR/SHA256SUMS'
       du -sh '$QWEN_DIR'"
     ;;
