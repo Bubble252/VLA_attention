@@ -241,6 +241,7 @@ P4 不以 BlindVLA 的 VLA 结果为前置 gate，但应将其抽象成 **DB-sty
 - [ ] 建立 phrase grounding 校准/验证集和独立 VLM 保留集；前者测 region，后者测目标/属性/位置概念；
 - [ ] 分开保存 raw query attention、general-prompt ratio、answer/phrase-score gradient 与输出扰动图；它们不是同一个归因量；
 - [ ] 使用真实 processor/grid 元数据恢复 patch，不用平方根猜网格；
+- [x] 登记 T_sem 候选的实际 checkpoint revision、许可与 gated 状态：见 `configs/teachers/semantic_teacher_candidates.json`；选择仍须等待独立 calibration split；
 - [ ] 分别校准 Stable Diffusion、PixArt-α、PixArt-Σ、Playground-v2.5，冻结 best-single 后做 `T_sem → A_lang`；
 - [ ] 对照无对齐、DB-style VLM patch feature alignment、扩散教师对齐、错词/错图/随机图、单教师/ensemble；
 - [ ] VLM 阶段干预测 answer/phrase score，不在本阶段声称动作归因或闭环 OOD。

@@ -1,0 +1,10 @@
+{
+  "purpose": "Pre-training calibration registry. Do not treat a candidate as the selected T_sem before held-out Flickr30k Entities calibration.",
+  "calibration_protocol": "P2-teacher-calibration-v1",
+  "candidates": [
+    {"id": "stable-diffusion-v1-5", "repository": "runwayml/stable-diffusion-v1-5", "revision": "451f4fe16113bff5a5d2269ed5ad43b0592e9a14", "license": "creativeml-openrail-m", "gated": false},
+    {"id": "pixart-alpha-xl", "repository": "PixArt-alpha/PixArt-XL-2-1024-MS", "revision": "b89adadeccd9ead2adcb9fa2825d3fabec48d404", "license": "openrail++", "gated": false},
+    {"id": "pixart-sigma-xl", "repository": "PixArt-alpha/PixArt-Sigma-XL-2-1024-MS", "revision": "e102b3591cc82e97071b8b4cb90d834d0c487207", "license": "openrail++", "gated": false},
+    {"id": "playground-v2-5", "repository": "playgroundai/playground-v2.5-1024px-aesthetic", "revision": "1e032f13f2fe6db2dc49947dbdbd196e753de573", "license": "playground-v2dot5-community", "gated": false}
+  ]
+}
