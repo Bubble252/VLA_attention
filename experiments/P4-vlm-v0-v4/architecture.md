@@ -62,3 +62,13 @@ V1--V4 将统一实例化相同维度的 DINO-to-Qwen projector，确保模型�
 ### V3/V4 semantic map loss
 
 `T_sem` cache 和 `A_lang` 必须已在相同 Qwen post-merge image-coordinate grid。二者先变为非负和为 1 的空间概率分布，再计算 `L_sem = KL(T_sem || A_lang)`；实现于 `src/vla_attention/losses.py`。负控不改变 loss 或训练循环：只把 cache key 指向 wrong-word、wrong-image 或 random normalized map，并在 manifest 中记录 map source。若 map 有 NaN、负值、零 token mass、尺寸或 crop provenance 不一致，runner 必须停止。
+
+### 与 Lavender / BlindVLA 的比较边界和补强组
+
+V2 是 **DB-style / BlindVLA-inspired visual retention**：同样冻结外部视觉 patch teacher 并约束学生中间视觉证据，但它不是完整 BlindVLA VLA policy、ManiSkill/SimplerEnv 配方或 action-level 复现。因此 Qwen V2 只能回答“通用视觉表征保持是否解释收益”，不能写成“已击败 BlindVLA”。完整 BlindVLA 对照应在后续 OpenVLA/OFT 的 VLA 阶段，以其公开 policy setup 比较。
+
+V3 是 **Lavender-compatible diffusion-teacher objective**：共享真实图像条件 Stable Diffusion 词图思想，但 Qwen 没有 Lavender 所依赖的标准 VLM cross-attention。`A_lang` 是 phrase-score gradient×activation，故 V3 不能被称作 Lavender 原式复现。
+
+为实证“为什么用 attribution 而非 raw attention”，Qwen F1 增加 `V3-attn-proxy`：使用相同 SD map、数据和预算，但将学生图替换为已明确 provenance 的 raw visual-token attention/rollout proxy；它只叫 attention-proxy baseline，不冒充 Lavender。若 `V3 > V3-attn-proxy`，才支持 gradient attribution 的必要性。
+
+为实证“相对 Lavender 原式的关系”，在 Qwen 主线稳定后，在具有可导出显式 cross-attention 的 VLM 上加入 `LAV-exact` 小规模对照，复用 caption SFT、SD map、训练预算与 Flickr test；该组才可称 Lavender-style cross-attention alignment。若无法获得可靠 cross-attention，不虚构 exact comparison。

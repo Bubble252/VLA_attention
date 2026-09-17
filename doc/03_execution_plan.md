@@ -329,6 +329,13 @@ Flickr30k Entities 的 phrase/box **不进入首轮训练标签**；它们只用
 
 F0 全部通过后，完全复用代码和配置语义扩展为 F1-10k；唯一改变是固定 pair 数量和对应的离线 map cache，不能在组间改变数据或训练预算。
 
+### 近邻方法比较的解释边界
+
+- V2 是 BlindVLA-inspired DB-style retention，目的在于排除“仅保持视觉表征即可”的解释；它不是完整 BlindVLA VLA 复现，BlindVLA 的 action/policy 比较留给 OpenVLA/OFT VLA 阶段；
+- V3 是 Qwen 上的 diffusion teacher → language-conditioned attribution alignment；因 Qwen 缺少 Lavender 原文的标准 cross-attention，不能称为 Lavender exact reproduction；
+- F1 增加同 teacher/数据/预算的 raw attention/rollout proxy baseline，用来直接比较 attention 对齐与 attribution 对齐；
+- 随后在可导出显式 cross-attention 的 VLM 上运行小规模 `LAV-exact`，才比较我们与 Lavender 原式的差异。
+
 **VLM 继续条件**：V3 或 V4 必须在 phrase grounding 上优于 V1/V2，且正确教师优于错词/错图/随机教师；若 V2 已经覆盖 V3/V4 的收益，空间教师主张退回为 feature retention 的替代实现，不直接进入 D0 的强创新叙事。
 
 ### 任务
