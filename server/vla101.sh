@@ -37,6 +37,10 @@ Commands:
   probe-entities-blob
                Read only: test whether GitHub API raw media with an HTTP Range
                request returns ZIP bytes for the exact versioned annotations blob.
+  probe-entities-proxies
+               Read only: test candidate GitHub raw proxy endpoints with a
+               16-byte Range request. A later full download must still verify
+               the official Git blob SHA before being accepted.
   download-flickr
                Download full Flickr30k images/caption files and the original
                Flickr30k Entities annotation archive into VEPFS; extract only
@@ -155,6 +159,15 @@ PY
       echo ENTITIES_REV=\"\$REV\"
       echo ENTITIES_BLOB=\"\$BLOB\"
       curl --connect-timeout 15 --max-time 30 -fsS -H 'Accept: application/vnd.github.raw+json' --range 0-15 'https://api.github.com/repos/$ENTITIES_REPO/git/blobs/'\"\$BLOB\" | od -An -tx1"
+    ;;
+  probe-entities-proxies)
+    remote "set -eu
+      REV=\$(curl --connect-timeout 15 --max-time 30 -fsS 'https://api.github.com/repos/$ENTITIES_REPO/commits/master' | '$P1_ENV/bin/python' -c \"import json,sys; print(json.load(sys.stdin)['sha'])\")
+      RAW='https://raw.githubusercontent.com/$ENTITIES_REPO/'\"\$REV\"'/annotations.zip'
+      for proxy in 'https://ghproxy.net/' 'https://gh-proxy.com/' 'https://mirror.ghproxy.com/'; do
+        printf 'PROXY=%s MAGIC=' \"\$proxy\"
+        curl --http1.1 --connect-timeout 15 --max-time 30 -fsS --range 0-15 \"\$proxy\$RAW\" | od -An -tx1 | tr -d ' \\n' || echo REQUEST_FAILED
+      done"
     ;;
   download-flickr)
     remote "set -eu
