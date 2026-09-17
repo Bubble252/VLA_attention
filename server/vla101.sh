@@ -28,6 +28,9 @@ Commands:
                Read only: list the available files of the selected Flickr30k
                Hub dataset through the recorded mirror and probe the original
                Flickr30k Entities annotation archive endpoint.
+  inspect-entities-repos
+               Read only: inspect file names, sizes and licenses in the original
+               Flickr30k Entities repository and one public mirror candidate.
 
 This script requires a local SSH alias named `vla101`.  It deliberately has no
 arbitrary remote-shell mode, no credential handling, no /root writes, no dataset
@@ -105,6 +108,23 @@ PY
       curl --connect-timeout 15 --max-time 30 -sSIL -o /dev/null -w 'ENTITIES_PLUMMER_HTTP=%{http_code}\\n' https://bryanplummer.com/Flickr30kEntities/Annotations.zip || echo ENTITIES_PLUMMER_REQUEST_FAILED
       curl --connect-timeout 15 --max-time 30 -sSIL -o /dev/null -w 'ENTITIES_VGG_ANNOTATIONS_HTTP=%{http_code}\\n' https://www.robots.ox.ac.uk/~vgg/data/flickr30k_entities/Annotations.zip || echo ENTITIES_VGG_ANNOTATIONS_REQUEST_FAILED
       curl --connect-timeout 15 --max-time 30 -sSIL -o /dev/null -w 'ENTITIES_VGG_SENTENCES_HTTP=%{http_code}\\n' https://www.robots.ox.ac.uk/~vgg/data/flickr30k_entities/Sentences.zip || echo ENTITIES_VGG_SENTENCES_REQUEST_FAILED"
+    ;;
+  inspect-entities-repos)
+    remote "set -eu
+      '$P1_ENV/bin/python' - <<'PY'
+import json
+from urllib.request import urlopen
+for repo in ('BryanPlummer/flickr30k_entities', 'xmodal-multilang-retrieval/flickr30k_entities'):
+    info = json.load(urlopen('https://api.github.com/repos/' + repo, timeout=30))
+    branch = info['default_branch']
+    tree = json.load(urlopen('https://api.github.com/repos/' + repo + '/git/trees/' + branch + '?recursive=1', timeout=30))['tree']
+    print('REPO=' + repo)
+    print('LICENSE=' + str((info.get('license') or {}).get('spdx_id')))
+    for item in tree:
+        name = item['path'].lower()
+        if any(key in name for key in ('annotation', 'sentence', 'license', 'readme', '.zip', '.xml')):
+            print('REPO_FILE=' + item['path'] + ' size=' + str(item.get('size', 'NA')))
+PY"
     ;;
   -h|--help|help|'') usage ;;
   *) echo "Unknown command: $1" >&2; usage >&2; exit 2 ;;
