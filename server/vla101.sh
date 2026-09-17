@@ -101,7 +101,7 @@ for name in api.list_repo_files('nlphuji/flickr30k', repo_type='dataset'):
 for item in api.list_datasets(search='flickr30k entities', limit=30):
     print('HF_CANDIDATE=' + item.id)
 PY
-      curl --connect-timeout 15 --max-time 30 -sS 'https://api.github.com/search/repositories?q=flickr30k%20entities&per_page=10' | '$P1_ENV/bin/python' -c 'import json,sys; [print("GITHUB_CANDIDATE=" + x["full_name"] + " " + x["html_url"]) for x in json.load(sys.stdin).get("items", [])]' || echo GITHUB_SEARCH_FAILED
+      curl --connect-timeout 15 --max-time 30 -sS 'https://api.github.com/search/repositories?q=flickr30k%20entities&per_page=10' | '$P1_ENV/bin/python' -c \"import json,sys; [print('GITHUB_CANDIDATE=' + x['full_name'] + ' ' + x['html_url']) for x in json.load(sys.stdin).get('items', [])]\" || echo GITHUB_SEARCH_FAILED
       curl --connect-timeout 15 --max-time 30 -sSIL -o /dev/null -w 'ENTITIES_PLUMMER_HTTP=%{http_code}\\n' https://bryanplummer.com/Flickr30kEntities/Annotations.zip || echo ENTITIES_PLUMMER_REQUEST_FAILED
       curl --connect-timeout 15 --max-time 30 -sSIL -o /dev/null -w 'ENTITIES_VGG_ANNOTATIONS_HTTP=%{http_code}\\n' https://www.robots.ox.ac.uk/~vgg/data/flickr30k_entities/Annotations.zip || echo ENTITIES_VGG_ANNOTATIONS_REQUEST_FAILED
       curl --connect-timeout 15 --max-time 30 -sSIL -o /dev/null -w 'ENTITIES_VGG_SENTENCES_HTTP=%{http_code}\\n' https://www.robots.ox.ac.uk/~vgg/data/flickr30k_entities/Sentences.zip || echo ENTITIES_VGG_SENTENCES_REQUEST_FAILED"
