@@ -148,15 +148,27 @@ PY"
       HF_REV=\$(curl --connect-timeout 15 --max-time 30 -fsS 'https://hf-mirror.com/api/datasets/$FLICKR_REPO' | '$P1_ENV/bin/python' -c \"import json,sys; print(json.load(sys.stdin)['sha'])\")
       ENTITIES_REV=\$(curl --connect-timeout 15 --max-time 30 -fsS 'https://api.github.com/repos/$ENTITIES_REPO/commits/master' | '$P1_ENV/bin/python' -c \"import json,sys; print(json.load(sys.stdin)['sha'])\")
       hf download '$FLICKR_REPO' flickr30k-images.zip flickr_annotations_30k.csv --repo-type dataset --revision \"\$HF_REV\" --local-dir '$FLICKR_DIR/raw/hf'
-      ENTITIES_TRANSPORT=github_raw
-      if ! curl --connect-timeout 15 --max-time 120 --fail --location 'https://raw.githubusercontent.com/$ENTITIES_REPO/'\"\$ENTITIES_REV\"'/annotations.zip' -o '$FLICKR_DIR/raw/entities/annotations.zip'; then
-        rm -f '$FLICKR_DIR/raw/entities/annotations.zip'
-        rm -rf '$FLICKR_DIR/raw/entities/source_repo'
-        git clone --depth 1 'https://github.com/$ENTITIES_REPO.git' '$FLICKR_DIR/raw/entities/source_repo'
-        ENTITIES_REV=\$(git -C '$FLICKR_DIR/raw/entities/source_repo' rev-parse HEAD)
-        cp '$FLICKR_DIR/raw/entities/source_repo/annotations.zip' '$FLICKR_DIR/raw/entities/annotations.zip'
-        ENTITIES_TRANSPORT=github_git_clone
-      fi
+      # 101 reaches api.github.com but raw.githubusercontent.com and git HTTPS
+      # are too slow. Fetch the exact versioned Git blob through the API.
+      rm -f '$FLICKR_DIR/raw/entities/annotations.zip'
+      rm -rf '$FLICKR_DIR/raw/entities/source_repo'
+      ENTITIES_REPO='$ENTITIES_REPO' ENTITIES_REV=\"\$ENTITIES_REV\" ENTITIES_OUT='$FLICKR_DIR/raw/entities/annotations.zip' '$P1_ENV/bin/python' - <<'PY'
+import base64
+import json
+import os
+from pathlib import Path
+from urllib.request import urlopen
+
+repo, revision, out = os.environ['ENTITIES_REPO'], os.environ['ENTITIES_REV'], Path(os.environ['ENTITIES_OUT'])
+tree = json.load(urlopen(f'https://api.github.com/repos/{repo}/git/trees/{revision}?recursive=1', timeout=60))['tree']
+blob = next(item['sha'] for item in tree if item['path'] == 'annotations.zip')
+payload = json.load(urlopen(f'https://api.github.com/repos/{repo}/git/blobs/{blob}', timeout=300))
+if payload.get('encoding') != 'base64':
+    raise RuntimeError('GitHub API did not return base64 blob content')
+out.write_bytes(base64.b64decode(payload['content']))
+print(f'entities_blob={blob} bytes={out.stat().st_size}')
+PY
+      ENTITIES_TRANSPORT=github_api_versioned_blob
       printf 'image_dataset=%s\\nimage_endpoint=%s\\nimage_revision=%s\\nentities_repository=%s\\nentities_revision=%s\\nentities_transport=%s\\ndownloaded_at_utc=%s\\nlicense_note=Flickr images: non-commercial research/education under Flickr Terms; cite Flickr30k and Flickr30k Entities.\\n' '$FLICKR_REPO' 'https://hf-mirror.com' \"\$HF_REV\" '$ENTITIES_REPO' \"\$ENTITIES_REV\" \"\$ENTITIES_TRANSPORT\" \"\$(date -u +%FT%TZ)\" > '$FLICKR_DIR/SOURCE.txt'
       unzip -t '$FLICKR_DIR/raw/hf/flickr30k-images.zip' >/dev/null
       unzip -t '$FLICKR_DIR/raw/entities/annotations.zip' >/dev/null
