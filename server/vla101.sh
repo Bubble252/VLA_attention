@@ -179,7 +179,8 @@ PY
       ENTITIES_REV=\$(curl --connect-timeout 15 --max-time 30 -fsS 'https://api.github.com/repos/$ENTITIES_REPO/commits/master' | '$P1_ENV/bin/python' -c \"import json,sys; print(json.load(sys.stdin)['sha'])\")
       hf download '$FLICKR_REPO' flickr30k-images.zip flickr_annotations_30k.csv --repo-type dataset --revision \"\$HF_REV\" --local-dir '$FLICKR_DIR/raw/hf'
       # 101 reaches api.github.com but raw.githubusercontent.com and git HTTPS
-      # are too slow. Fetch the exact versioned Git blob through resumable ranges.
+      # are too slow. ghproxy.net passed a ZIP-magic probe; accept it only when
+      # the downloaded bytes reproduce the official Git blob SHA.
       rm -rf '$FLICKR_DIR/raw/entities/source_repo'
       ENTITIES_BLOB=\$(ENTITIES_REPO='$ENTITIES_REPO' ENTITIES_REV=\"\$ENTITIES_REV\" '$P1_ENV/bin/python' - <<'PY'
 import json, os
@@ -188,36 +189,23 @@ tree = json.load(urlopen(f\"https://api.github.com/repos/{os.environ['ENTITIES_R
 print(next(item['sha'] for item in tree if item['path'] == 'annotations.zip'))
 PY
 )
-      ENTITIES_URL='https://api.github.com/repos/$ENTITIES_REPO/git/blobs/'\"\$ENTITIES_BLOB\"
-      ENTITIES_TOTAL=\$(curl --connect-timeout 15 --max-time 30 -fsSI -H 'Accept: application/vnd.github.raw+json' -H 'Range: bytes=0-0' \"\$ENTITIES_URL\" | tr -d '\\r' | sed -n 's/^[Cc]ontent-[Rr]ange: bytes 0-0\\/\\([0-9][0-9]*\\).*/\\1/p')
-      test -n \"\$ENTITIES_TOTAL\"
       ENTITIES_OUT='$FLICKR_DIR/raw/entities/annotations.zip'
-      ENTITIES_PART=\"\$ENTITIES_OUT.part\"
-      rm -f \"\$ENTITIES_PART\"
-      if test -f \"\$ENTITIES_OUT\"; then
-        ENTITIES_START=\$(stat -c %s \"\$ENTITIES_OUT\")
-      else
-        : > \"\$ENTITIES_OUT\"
-        ENTITIES_START=0
-      fi
-      test \"\$ENTITIES_START\" -le \"\$ENTITIES_TOTAL\"
-      while test \"\$ENTITIES_START\" -lt \"\$ENTITIES_TOTAL\"; do
-        ENTITIES_END=\$((ENTITIES_START + 1048575))
-        if test \"\$ENTITIES_END\" -ge \"\$ENTITIES_TOTAL\"; then ENTITIES_END=\$((ENTITIES_TOTAL - 1)); fi
-        ENTITIES_EXPECTED=\$((ENTITIES_END - ENTITIES_START + 1))
-        ENTITIES_ATTEMPT=1
-        while :; do
-          rm -f \"\$ENTITIES_PART\"
-          if curl --http1.1 --connect-timeout 15 --max-time 120 --fail --location -H 'Accept: application/vnd.github.raw+json' --range \"\$ENTITIES_START-\$ENTITIES_END\" \"\$ENTITIES_URL\" -o \"\$ENTITIES_PART\" && test \"\$(wc -c < \"\$ENTITIES_PART\")\" -eq \"\$ENTITIES_EXPECTED\"; then break; fi
-          if test \"\$ENTITIES_ATTEMPT\" -ge 5; then echo "entities range failed: \$ENTITIES_START-\$ENTITIES_END" >&2; exit 1; fi
-          ENTITIES_ATTEMPT=\$((ENTITIES_ATTEMPT + 1))
-        done
-        cat \"\$ENTITIES_PART\" >> \"\$ENTITIES_OUT\"
-        echo \"entities_range_ok=\$ENTITIES_START-\$ENTITIES_END\"
-        ENTITIES_START=\$((ENTITIES_END + 1))
-      done
-      rm -f \"\$ENTITIES_PART\"
-      ENTITIES_TRANSPORT=github_api_raw_range
+      ENTITIES_CANDIDATE=\"\$ENTITIES_OUT.proxy\"
+      rm -f \"\$ENTITIES_CANDIDATE\"
+      curl --http1.1 --connect-timeout 15 --max-time 900 --retry 5 --retry-all-errors --retry-delay 3 --fail --location 'https://ghproxy.net/https://raw.githubusercontent.com/$ENTITIES_REPO/'\"\$ENTITIES_REV\"'/annotations.zip' -o \"\$ENTITIES_CANDIDATE\"
+      ENTITIES_BLOB=\"\$ENTITIES_BLOB\" ENTITIES_CANDIDATE=\"\$ENTITIES_CANDIDATE\" '$P1_ENV/bin/python' - <<'PY'
+import hashlib, os
+from pathlib import Path
+path = Path(os.environ['ENTITIES_CANDIDATE'])
+payload = path.read_bytes()
+actual = hashlib.sha1(f'blob {len(payload)}\\0'.encode() + payload).hexdigest()
+if actual != os.environ['ENTITIES_BLOB']:
+    raise RuntimeError(f'Git blob SHA mismatch: expected {os.environ["ENTITIES_BLOB"]}, got {actual}')
+print(f'entities_blob_verified={actual} bytes={len(payload)}')
+PY
+      unzip -t \"\$ENTITIES_CANDIDATE\" >/dev/null
+      mv \"\$ENTITIES_CANDIDATE\" \"\$ENTITIES_OUT\"
+      ENTITIES_TRANSPORT=ghproxy_net_raw_verified_blob
       printf 'image_dataset=%s\\nimage_endpoint=%s\\nimage_revision=%s\\nentities_repository=%s\\nentities_revision=%s\\nentities_blob=%s\\nentities_transport=%s\\ndownloaded_at_utc=%s\\nlicense_note=Flickr images: non-commercial research/education under Flickr Terms; cite Flickr30k and Flickr30k Entities.\\n' '$FLICKR_REPO' 'https://hf-mirror.com' \"\$HF_REV\" '$ENTITIES_REPO' \"\$ENTITIES_REV\" \"\$ENTITIES_BLOB\" \"\$ENTITIES_TRANSPORT\" \"\$(date -u +%FT%TZ)\" > '$FLICKR_DIR/SOURCE.txt'
       unzip -t '$FLICKR_DIR/raw/hf/flickr30k-images.zip' >/dev/null
       unzip -t '$FLICKR_DIR/raw/entities/annotations.zip' >/dev/null
