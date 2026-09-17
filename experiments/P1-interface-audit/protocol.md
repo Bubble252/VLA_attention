@@ -21,6 +21,26 @@
 - 一次只审计一个模型，外部代码仓保持只读；
 - 所有结果写入 `results/P1-interface-audit/<model>/`，大图和 tensor 放服务器 VEPFS，Git 只保存 `metrics.json` 和 `analysis.md`。
 
+## 机器可验证的结果合同
+
+每个 native adapter 写一个不含 tensor 的 `report.json`；实际 `.npy/.pt` 图仅以 VEPFS 的绝对路径出现在 `map_path`。格式由 `src/vla_attention/audit_io.py` 读取，最低限度含：
+
+```text
+capability: model_id / revision / visual-token support / declared targets / coordinate notes
+measurements[]: sample_id / target / scalar_definition / seed / map_path /
+                grid(height,width,token_indices,view,crop metadata) /
+                gradient_finite / repeatability / action_shape（动作模型）
+```
+
+模型运行结束后先校验，不能通过就不能作为 P4/P6 的候选：
+
+```bash
+PYTHONPATH=src /root/starvla_cu124/bin/python scripts/validate_p1_report.py \
+  /vepfs-mlp2/c20250405/400040/transfer/vla_attention/results/P1-interface-audit/<model>/report.json
+```
+
+校验器默认要求 20 个唯一样本、全部有限梯度，以及出现 repeatability 时不低于 0.90。阈值改变必须写入 protocol 和 Git commit，不能只在命令行临时改。
+
 ## 每个样本必须保存
 
 ```text
