@@ -51,14 +51,15 @@ def boxes_by_chain(xml_path: Path) -> dict[str, list[list[int]]]:
     return boxes
 
 
-def phrase_records(sentence_path: Path, chain_boxes: dict[str, list[list[int]]]) -> list[tuple[int, str, str, list[list[int]]]]:
+def phrase_records(sentence_path: Path, chain_boxes: dict[str, list[list[int]]]) -> list[tuple[int, int, str, str, str, list[list[int]]]]:
     records = []
     for caption_index, line in enumerate(sentence_path.read_text(errors="replace").splitlines()):
+        caption = " ".join(PHRASE.sub(lambda match: match.group("phrase"), line).split())
         for phrase_index, match in enumerate(PHRASE.finditer(line)):
             chain = match.group("chain")
             phrase = " ".join(match.group("phrase").split())
             if chain != "0" and phrase and chain_boxes.get(chain):
-                records.append((caption_index, phrase_index, chain, phrase, chain_boxes[chain]))
+                records.append((caption_index, phrase_index, chain, phrase, caption, chain_boxes[chain]))
     return records
 
 
@@ -88,12 +89,13 @@ def main() -> int:
             sentence_path, xml_path, image_path = sentences / f"{image_id}.txt", annotations / f"{image_id}.xml", image_index.get(image_id)
             if not (sentence_path.is_file() and xml_path.is_file() and image_path):
                 continue
-            for caption_index, phrase_index, chain, phrase, boxes in phrase_records(sentence_path, boxes_by_chain(xml_path)):
+            for caption_index, phrase_index, chain, phrase, caption, boxes in phrase_records(sentence_path, boxes_by_chain(xml_path)):
                 records.append({
                     "sample_id": f"{image_id}:c{caption_index}:p{phrase_index}:e{chain}",
                     "image_id": image_id,
                     "image_path": str(image_path.relative_to(root)),
                     "phrase": phrase,
+                    "caption": caption,
                     "entity_id": chain,
                     "boxes_xyxy": boxes,
                     "split": split,

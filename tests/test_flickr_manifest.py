@@ -14,4 +14,4 @@ class FlickrEntitiesParserTests(unittest.TestCase):
             sentence = root / "sample.txt"
             sentence.write_text("A [/EN#1/person person] walks with [/EN#0/notvisual someone].\n")
             records = phrase_records(sentence, boxes_by_chain(xml))
-        self.assertEqual(records, [(0, 0, "1", "person", [[1, 2, 10, 20]])])
+        self.assertEqual(records, [(0, 0, "1", "person", "A person walks with someone.", [[1, 2, 10, 20]])])

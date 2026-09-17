@@ -6,7 +6,7 @@
 ## 输入与固定性
 
 - 校准数据：Flickr30k Entities 的完整官方 `val.txt`，1000 张图；
-- 每图恰选一个有非空 box 的 phrase，按 `caption_index → phrase.lower() → sample_id` 的确定性字典序，不根据模型输出筛样本；
+- 每图恰选一个有非空 box 的 phrase，按 `caption_index → phrase.lower() → sample_id` 的确定性字典序，不根据模型输出筛样本；teacher prompt 是同一行去除 Entities 标记后的**完整原始 caption**，目标是其中该 phrase 的 token span；
 - image、phrase、GT boxes、image SHA256、候选 revision 和所有 map 写入 record；
 - 候选：SD1.5、PixArt-alpha、PixArt-Sigma、Playground-v2.5，见 `configs/teachers/semantic_teacher_candidates.json`；
 - 图像 inversion 方法、attention layer/step、token span、resolution、seed、CFG、归一化必须在首次全量运行前写入 candidate config 并 commit。
