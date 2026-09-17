@@ -100,6 +100,15 @@ P1 在本机或 101 的空闲 GPU 做小样本 audit；正式训练只在 101 �
 
 ### 任务
 
+- [x] 2026-09-17：101 直连与 VEPFS 可写性验证；项目根固定为 `/vepfs-mlp2/c20250405/400040/transfer/vla_attention/`；不得使用 `/root` 放置项目文件或缓存；
+- [x] 2026-09-17：创建 `repo/`、`envs/`、`hf_cache/`、`models/`、`data/`、`teacher_maps/`、`runs/`、`checkpoints/`、`results/`、`jobs/` 目录；VEPFS 当时约余 620 TB；
+- [x] 2026-09-17：确认既有 `/root/starvla_cu124` 可导入 Torch、Transformers、Hugging Face Hub、Datasets、Diffusers、Accelerate、PEFT；该环境只作为依赖基线，后续不修改它；
+- [ ] 将本项目已提交代码传入 `repo/VLA_attention/`，并在 `envs/p1/` 建立项目专属环境；记录 Python/torch/transformers/diffusers 版本；
+- [ ] 用服务器网络检查 Hugging Face、Flickr30k/Entities 官方来源和 7897 代理可用性；下载失败时记录 URL、时间、HTTP 状态和镜像替代，不静默换源；
+- [ ] 冻结 Qwen2.5-VL-7B 与 Prismatic-7B 的官方 checkpoint revision、许可证、SHA256 和实际磁盘路径；不先下载 P2 扩展模型；
+- [ ] 下载 Flickr30k Images 与 Entities annotations 的完整原始资料，保存来源和校验值；取得许可/访问限制时停在该 gate，不用不明镜像替代；
+- [ ] 从完整数据建立可复现 train/calibration/test manifest；P1 从 calibration manifest 固定抽取 20 个样本，不替代后续全量训练；
+- [ ] 对 Qwen2.5-VL-7B 和 Prismatic-7B 分别完成 P1 `report.json`，用 `scripts/validate_p1_report.py` 校验后才允许进入 teacher calibration 或 V0--V4；
 - [ ] 记录 Lavender 当前 commit `58fc71b`；
 - [ ] 【后期可选】记录 SpikingBrain 当前 commit `ef99987`；
 - [ ] 导出实际 `window_size`、`fullatt_block_indexes` 和视觉层数；
@@ -107,6 +116,16 @@ P1 在本机或 101 的空闲 GPU 做小样本 audit；正式训练只在 101 �
 - [ ] 确认语言 hidden state 与动作 query 的获取位置；
 - [ ] 检查每个 checkpoint 是否真的支持 `output_attentions`；
 - [ ] 生成 `outputs/interface_audit.md`。
+
+### 2026-09-17 训练前准备进度与严格边界
+
+**已完成**：服务器直连、VEPFS 可写性、独立路径与依赖基线检查。101 的系统盘仅剩约 207 MB，所有本项目的 repo、虚拟环境、HF cache、模型、数据、日志与 checkpoint 都只允许放在上述 VEPFS 根；101 GPU 只用于 P1 调试，正式训练仍须在火山 8 卡队列提交。
+
+**当前未完成**：代码传输、项目环境、模型/数据下载、全量 split、任何一个模型的 P1 结果。当前不能声称“开始训练”，也不能把 20 个 P1 样本称为全量实验。
+
+**下载顺序**：先完整 Flickr30k Images + Entities、Qwen2.5-VL-7B；Qwen P1 通过后下载 Prismatic-7B 并重复 P1；两者都通过后再下载/校准 Stable Diffusion、PixArt-alpha、PixArt-Sigma、Playground-v2.5；只有 VLM V0--V4 主结论成立，才下载 LIBERO、OpenVLA/OFT、pi0.5 与 DROID。该顺序避免教师、VLA checkpoint 和机器人数据在主线接口失败时占用存储与带宽。
+
+**全量数据的使用**：P1 固定抽 20 个校准样本，目标是发现动态分辨率、patch token、phrase score 和梯度路径错误。teacher calibration 使用完整独立 calibration split；V0--V4 使用完整训练集，完整 Flickr30k Entities test 和 RefCOCOg 评估；不因 P1 已通过就跳过全量数据训练与评价。
 
 ### 重点检查
 
