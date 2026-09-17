@@ -309,6 +309,20 @@ Flickr30k Entities 的 phrase/box **不进入首轮训练标签**；它们只用
 7. smoke 全部通过后，依次运行 V0 evaluation、V1、V2、V3、V4 正式训练与统一 Flickr30k Entities test/OOD evaluation；
 8. 只有 Qwen 主结论及错误教师/随机图反证成立后，才扩展 Prismatic 和 referring-prompt `R*` 消融。
 
+### 实验检查点记录规则（运行中强制执行）
+
+每次出现可恢复、可比较或会改变后续决策的节点，必须同时更新：本节的完成勾选、`experiment_workspace/PROGRESS.md`、对应 `experiments/<id>/protocol.md`，并提交小型 Markdown/JSON 摘要。大 tensor、map、checkpoint 仍只放 VEPFS。
+
+必须记录的节点包括：
+
+- 数据或 teacher cache 处理达到 **10%、25%、50%、75%、100%**，或任务异常退出；
+- 固定 manifest、有效样本交集、失败样本集合或 SHA256 发生变化；
+- 20/50-step smoke 完成、出现 NaN/OOM、loss 异常、checkpoint 保存或恢复；
+- teacher calibration 的单模型 pilot 完成、候选淘汰或 best-single 冻结；
+- 每个 V0--V4 训练完成、evaluation/负控完成、配置或解释边界改变。
+
+每条检查点至少写：时间、experiment ID、Git commit、服务器 job PID/日志路径、数据 manifest SHA256、处理总数/成功数/失败数、当前配置（model/teacher/revision/seed/steps）、关键数值、结果/日志路径、下一步和是否允许扩大运行。中间指标必须标记为 **partial / non-final**，不得把 10 图 pilot、20-step smoke 或部分 cache 当作主表结果。
+
 ### 快速全流程 gate：F0-256，然后 F1-10k
 
 为避免 10k 条 `20×10` null-text map cache（单 GPU 约数天）阻塞工程验证，先运行 `F0-QWEN-SD-DINO-V0V4-256`：从已冻结 10k caption pair manifest 确定性抽取 256 条；V0--V4 全部使用这同一个 256 集合，SD1.5 map 在训练前离线生成；各训练组完成 20-step smoke 和 100-step flow run，验证 cache、loss、checkpoint、evaluation 和负控路径。F0 不用于论文主表或显著性结论。

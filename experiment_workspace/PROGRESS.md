@@ -2,6 +2,20 @@
 
 本记录与 `doc/03_execution_plan.md` 的 P1 章节保持一致；这里保留实际运行环境和产物路径，避免把服务器状态混入论文叙事。
 
+## 运行中检查点格式
+
+每次处理量达到 10/25/50/75/100%，以及每次 smoke、checkpoint、失败或配置变更后，新增如下条目：
+
+```text
+时间 / experiment ID / Git commit / 101 PID 或 job ID
+输入 manifest + SHA256 / total-success-failed
+model + teacher + revision + seed + steps
+partial metrics / VEPFS result + log 路径
+是否 non-final / 下一步 / 是否允许扩大
+```
+
+所有 partial 数字必须显式标 `non-final`；处理进度、失败集合和有效样本交集变化时，同步更新对应 protocol。
+
 ## 2026-09-17
 
 - [x] 101 直连：`root@115.190.90.101:27219` 可进行无交互 SSH；连接凭据不写入本文件。
