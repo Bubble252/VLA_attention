@@ -36,6 +36,28 @@ ssh -o BatchMode=yes -o ConnectTimeout=15 \
 
 不要将 SSH 私钥、密码、AK/SK、W&B key、Hugging Face token 或飞书 token 写入项目、shell history、YAML 或 Git。
 
+### 稳定的本机入口（2026-09-17 已配置）
+
+本机 `~/.ssh/config` 已增加不含凭据的 `vla101` 别名，固定 `115.190.90.101:27219`、`root`、`BatchMode=yes` 和 `StrictHostKeyChecking=yes`；对应主机指纹已存在于本机 `known_hosts`。私钥仍由用户的本机 SSH agent/既有配置管理，不进入本仓库。
+
+本仓库的受限入口是：
+
+```bash
+cd /home/bubble/类脑计算/VLM终局
+bash server/vla101.sh status
+```
+
+它不提供任意远程 shell，只允许 `status`、`bootstrap`、`freeze-env` 和单一官方 Qwen 下载。每个命令只触及 `/vepfs-mlp2/c20250405/400040/transfer/vla_attention`；不写 `/root`，不处理凭据，不下载未冻结的数据集，不提交训练。
+
+```bash
+# 依次执行并记录输出
+bash server/vla101.sh bootstrap
+bash server/vla101.sh freeze-env
+bash server/vla101.sh download-qwen
+```
+
+`download-qwen` 的唯一模型源是官方 `Qwen/Qwen2.5-VL-7B-Instruct`，且先强制通过 `http://127.0.0.1:7897`。若该代理在服务器上不可用，命令应失败并留下终端证据；不得自动改用未审核镜像。
+
 ## 3. 101 在本项目中的角色
 
 ```text
