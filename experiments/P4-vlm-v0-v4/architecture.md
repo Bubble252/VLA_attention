@@ -48,3 +48,9 @@ Flickr manifest + image/phrase/box
 6. smoke 均通过后才提交正式训练。
 
 `V3/V4` 不能在 best-single 未冻结时实现为“任意扩散模型都能替换”的运行时开关；候选比较发生在 teacher calibration，不发生在 test 或主训练中。
+
+### DINOv2 ViT-L/14 retention bridge
+
+已冻结 `facebook/dinov2-large@47b73eefe95e8d44ec3623f8890bd894b6ea2d6c`（Apache-2.0）。其 smoke 对 224×224 输入返回 `1 + 16×16` 个 token、1024 维；CLS 不进入 `L_retention`。Qwen 的 `image_grid_thw` 依图变化，例如 P1 样本是 pre-merge `1×34×36`，post-merge 为 `17×18`。因此 `L_retention` 不能按 token index 直接相减：先删除 DINO CLS，再用以 token center 为定义的 normalized-image bilinear bridge 把 DINO feature grid 采样到 Qwen post-merge grid，最后经固定 projector 比较。
+
+`src/vla_attention/spatial.py` 的 bridge 单测要求每个目标 token 权重和为 1；任何 crop/pad/resize 未记录时停止运行，而不是默认视为相同原图坐标。

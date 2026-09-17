@@ -12,6 +12,7 @@
 - [x] 依赖基线：`/root/starvla_cu124/bin/python` 可发现 torch、transformers、huggingface_hub、datasets、diffusers、accelerate、peft。
 - [x] 在 VEPFS 创建 `envs/p1` 并生成 `envs/p1/versions.txt`；环境只读继承共享包，不修改 `/root/starvla_cu124`。
 - [x] Qwen checkpoint 配置审计：`Qwen2_5_VLForConditionalGeneration`，vision depth 32、`fullatt_block_indexes=[7,15,23,31]`、patch size 14、`spatial_merge_size=2`、window size 112；运行环境为 Transformers 4.57.1，`qwen_vl_utils` 已存在。P1 必须记录 post-merge token 网格，不可仅据 token 数猜方格。
+- [x] DINOv2 ViT-L/14 retention teacher：`facebook/dinov2-large@47b73eefe95e8d44ec3623f8890bd894b6ea2d6c` 已下载、SHA256 通过（约 2.3GB；Apache-2.0、非 gated）。GPU1 单图 smoke 成功：224×224、`last_hidden_state=(1,257,1024)`、patch size 14；`use_fast=False` 将在正式 runner 固定。DINO 16×16 patch 与 Qwen 动态 post-merge grid 通过 normalized-coordinate bridge，不直接按 token index 对齐。
 - [ ] 将当前 Git commit 传到 VEPFS `repo/VLA_attention`，记录 commit 与文件 SHA256。
 - [ ] 在 VEPFS 创建 `envs/p1`；只读继承共享依赖或按锁定 requirements 安装，绝不修改 `/root/starvla_cu124`。
 - [ ] 记录网络和代理检测；下载使用 7897 代理，若服务器无该代理则先记录失败后再选已验证镜像。
