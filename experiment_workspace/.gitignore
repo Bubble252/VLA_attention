@@ -1,0 +1,6 @@
+# Generated experiment artifacts live on VEPFS, not in Git.
+logs/
+checkpoints/
+teacher_maps/
+results/**
+!results/.gitkeep

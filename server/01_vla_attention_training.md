@@ -69,6 +69,8 @@ ssh -o BatchMode=yes -o ConnectTimeout=15 \
 └── jobs/                 # 火山 YAML、启动脚本、任务 ID、日志索引
 ```
 
+本地仓库另有 `experiment_workspace/`，用于保存 manifest、冻结配置和小型结果摘要；其目录结构与 VEPFS 运行目录对应。代码实现留在仓库 `src/`，大文件只留在 VEPFS，避免和文档、参考资料或其他项目混放。
+
 首次建立前先检查：
 
 ```bash
@@ -110,6 +112,8 @@ ssh -p 27219 root@115.190.90.101 \
 - [ ] DB-style feature teacher：projector 参数是否在 optimizer、teacher preprocess 与 student grid 是否对应；
 - [ ] D0：object-only、object+EEF、随机 support 的 soft leakage 小样本检查；
 - [ ] 每项 audit 写入 `outputs/interface_audit.md`，通过后才开始训练。
+
+P1 的 20 个固定样本只用于检查接口；不是缩小正式实验。P1 后的 teacher calibration、VLM V0–V4 和 VLA B0–B4 均使用各自冻结的完整训练/测试 split，具体边界见 `experiment_workspace/README.md`。
 
 ### Gate E：训练 protocol 先于结果
 
