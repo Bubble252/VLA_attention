@@ -34,6 +34,9 @@ Commands:
   inspect-entities-repos
                Read only: inspect file names, sizes and licenses in the original
                Flickr30k Entities repository and one public mirror candidate.
+  probe-entities-blob
+               Read only: test whether GitHub API raw media with an HTTP Range
+               request returns ZIP bytes for the exact versioned annotations blob.
   download-flickr
                Download full Flickr30k images/caption files and the original
                Flickr30k Entities annotation archive into VEPFS; extract only
@@ -138,6 +141,20 @@ for repo in ('BryanPlummer/flickr30k_entities', 'xmodal-multilang-retrieval/flic
         print(readme)
         print('README_END')
 PY"
+    ;;
+  probe-entities-blob)
+    remote "set -eu
+      REV=\$(curl --connect-timeout 15 --max-time 30 -fsS 'https://api.github.com/repos/$ENTITIES_REPO/commits/master' | '$P1_ENV/bin/python' -c \"import json,sys; print(json.load(sys.stdin)['sha'])\")
+      BLOB=\$(ENTITIES_REPO='$ENTITIES_REPO' ENTITIES_REV=\"\$REV\" '$P1_ENV/bin/python' - <<'PY'
+import json, os
+from urllib.request import urlopen
+tree = json.load(urlopen(f\"https://api.github.com/repos/{os.environ['ENTITIES_REPO']}/git/trees/{os.environ['ENTITIES_REV']}?recursive=1\", timeout=60))['tree']
+print(next(item['sha'] for item in tree if item['path'] == 'annotations.zip'))
+PY
+)
+      echo ENTITIES_REV=\"\$REV\"
+      echo ENTITIES_BLOB=\"\$BLOB\"
+      curl --connect-timeout 15 --max-time 30 -fsS -H 'Accept: application/vnd.github.raw+json' --range 0-15 'https://api.github.com/repos/$ENTITIES_REPO/git/blobs/'\"\$BLOB\" | od -An -tx1"
     ;;
   download-flickr)
     remote "set -eu
