@@ -47,3 +47,5 @@
 **单图验收结果（2026-09-17）**：FP16 `5×1` null-text 的 mean MSE 为 NaN，判失败；改为 FP32 后 `5×1` MSE `0.09803`，`20×10` MSE `0.03884`，并捕获 100 个 16×16 conditional attention tensors。SD1.5 升级到 10 图 pilot；pilot 必须记录逐样本失败、map 指标、耗时和 GPU memory，不能直接跳到 1000 图。
 
 **SD1.5 pilot10 结果（2026-09-17）**：10/10 成功，`20×10`、seed 17，mean reconstruction MSE `0.03207`，pointing `0.50`，mean mass-in-box `0.4754`。原始 maps/metadata 和唯一 summary 保留在 `results/P2-teacher-calibration/sd1_5_pilot10/`。这个样本量只验证工程路径和初步量级；不能作为 `T_sem` 选择、不能与论文主表比较，也不能据此跳过其他三个候选。
+
+**PixArt-alpha 接口审计（2026-09-17）**：需在 P1 环境安装 `sentencepiece`、`tiktoken` 才能加载 T5Tokenizer；之后成功加载 56 个 transformer attention processors 和 DPMSolverMultistepScheduler。PixArt 的 cross-attention 模块、scheduler 和 image-conditioning/inversion 路径均与 SD 不同，必须单独做真实图像条件和 phrase-token-map smoke；不得将 SD null-text map 或 UNet hook 迁移后直接命名为 PixArt map。
