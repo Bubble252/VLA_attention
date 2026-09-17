@@ -283,7 +283,7 @@ Flickr30k Entities 的 phrase/box **不进入首轮训练标签**；它们只用
 ### 调整后的执行顺序
 
 1. 完成并验证 Flickr30k Entities archive，建立官方 `train/val/test` manifest；
-2. Qwen P1：20 个固定 val 图，验证 phrase-score gradient、post-merge grid、可重复 map 和 `report.json`；
+2. Qwen P1：20 个固定 val 图，验证 phrase-score gradient、post-merge grid、可重复 map 和 `report.json`；已完成单样本真实 Qwen 前向 smoke（`image_grid_thw=[[1,34,36]]`、29 hidden-state layers），后续 processor 固定 `use_fast=False`；
 3. 下载/冻结 DINOv2 ViT-L/14，检查 DINO patch 与 Qwen post-merge grid 的坐标桥；
 4. 对四个 diffusion 候选在完整 val calibration split 生成词图，按 pointing/IoU、无效词率、seed 稳定性选择 best-single，并离线缓存 train map；
 5. 实现共享 Qwen LoRA runner 和 V0--V4 五份不可变 manifest；
