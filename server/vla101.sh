@@ -7,6 +7,7 @@ readonly PROJECT_REPO="$PROJECT_ROOT/repo/VLA_attention"
 readonly P1_ENV="$PROJECT_ROOT/envs/p1"
 readonly QWEN_REPO="Qwen/Qwen2.5-VL-7B-Instruct"
 readonly QWEN_DIR="$PROJECT_ROOT/models/Qwen2.5-VL-7B-Instruct"
+readonly TEACHER_DIR="$PROJECT_ROOT/models/teachers"
 readonly FLICKR_REPO="nlphuji/flickr30k"
 readonly FLICKR_DIR="$PROJECT_ROOT/data/flickr30k_entities"
 readonly ENTITIES_REPO="BryanPlummer/flickr30k_entities"
@@ -46,6 +47,9 @@ Commands:
                Flickr30k Entities annotation archive into VEPFS; extract only
                after archive integrity checks, and record source revisions,
                SHA256 and counts. The data is research/education only.
+  download-teachers
+               Download the four revision-pinned T_sem candidates sequentially
+               through hf-mirror, recording source and SHA256 per teacher.
 
 This script requires a local SSH alias named `vla101`.  It deliberately has no
 arbitrary remote-shell mode, no credential handling, no /root writes, no dataset
@@ -216,6 +220,26 @@ PY
       printf 'sentence_count='; find '$FLICKR_DIR/entities' -path '*/Sentences/*.txt' -type f | wc -l
       printf 'xml_count='; find '$FLICKR_DIR/entities' -path '*/Annotations/*.xml' -type f | wc -l
       du -sh '$FLICKR_DIR'"
+    ;;
+  download-teachers)
+    remote "set -eu
+      export HF_HOME='$PROJECT_ROOT/hf_cache'
+      export HF_ENDPOINT='https://hf-mirror.com'
+      mkdir -p '$TEACHER_DIR'
+      while IFS='|' read -r id repo revision license; do
+        dest='$TEACHER_DIR'/\"\$id\"
+        mkdir -p \"\$dest\"
+        printf 'repository=%s\\nrevision=%s\\nendpoint=%s\\nlicense=%s\\ndownloaded_at_utc=%s\\n' \"\$repo\" \"\$revision\" 'https://hf-mirror.com' \"\$license\" \"\$(date -u +%FT%TZ)\" > \"\$dest/SOURCE.txt\"
+        hf download \"\$repo\" --revision \"\$revision\" --local-dir \"\$dest\"
+        find \"\$dest\" -type f ! -name SHA256SUMS -print0 | sort -z | xargs -0 sha256sum > \"\$dest/SHA256SUMS\"
+        (cd \"\$dest\" && sha256sum -c SHA256SUMS >/dev/null)
+        du -sh \"\$dest\"
+      done <<'TEACHERS'
+stable-diffusion-v1-5|runwayml/stable-diffusion-v1-5|451f4fe16113bff5a5d2269ed5ad43b0592e9a14|creativeml-openrail-m
+pixart-alpha-xl|PixArt-alpha/PixArt-XL-2-1024-MS|b89adadeccd9ead2adcb9fa2825d3fabec48d404|openrail++
+pixart-sigma-xl|PixArt-alpha/PixArt-Sigma-XL-2-1024-MS|e102b3591cc82e97071b8b4cb90d834d0c487207|openrail++
+playground-v2-5|playgroundai/playground-v2.5-1024px-aesthetic|1e032f13f2fe6db2dc49947dbdbd196e753de573|playground-v2dot5-community
+TEACHERS"
     ;;
   -h|--help|help|'') usage ;;
   *) echo "Unknown command: $1" >&2; usage >&2; exit 2 ;;
