@@ -25,7 +25,7 @@
 - [x] 镜像传输修复：发现 `curl --retry` 会在连接重置后覆盖 candidate；已停止唯一受影响的本项目任务，保留当时约 1.18MB candidate，并改为 `--continue-at -`。后续重试从已有字节续传；最终仍以官方 Git blob SHA 和 ZIP test 为唯一准入条件。
 - [ ] 建立全量 manifest，随后从 calibration split 固定 P1 的 20 个 sample ID。
 - [x] Manifest 规则冻结：原作者 `train.txt` 完整用于训练、`val.txt` 用于独立 teacher calibration、`test.txt` 用于最终 grounding；`build_flickr_entities_manifest.py` 将从 val 确定性抽取 20 张 P1 图并为其保存 image SHA256。该规则不从 train 偷取 calibration 样本，也不让 P1 缩小正式实验规模。
-- [ ] 输出 Qwen P1 报告；通过后才下载/审计 Prismatic。
+- [x] Qwen P1 report：2026-09-17 在 GPU1 对固定 20 个 val 样本运行真实 teacher-forced phrase-score gradient×activation 审计；`validate_p1_report.py` 通过，`PASS qwen2.5-vl-7b@Qwen2.5-VL-7B-Instruct: 20 measurements / 20 samples`。report/map 位于 VEPFS `results/P1-interface-audit/qwen2.5-vl-7b/`；此通过只允许进入 DINO/teacher calibration，不等于 V0--V4 训练已完成。
 - [x] Qwen P1 前向 smoke（GPU1）：冻结 P1 manifest 首样本 `1321949151:c0:p0:e8556` 成功加载图像与 Qwen，`image_grid_thw=[[1,34,36]]`，logits shape `(1,338,152064)`，返回 29 个 hidden-state 层。Transformers 提示 fast processor 默认行为会改变输出；首轮 P1/V0--V4 将显式固定 `AutoProcessor(..., use_fast=False)` 并记录版本，避免 processor 漂移。
 - [x] Prismatic 来源审计：官方 `TRI-ML/prismatic-vlms` README 将 `prism-dinosiglip+7b` 作为空间理解/定位首选；代码为 MIT，但该 checkpoint 继承 Llama-2 许可。101 的 `hf auth whoami` 返回未登录，因此不得下载该 gated checkpoint。待合法 HF token 登录并确认已接受 Llama-2 条款后，再下载并运行 Prismatic P1。
 - [x] T_sem 候选冻结前 registry：Stable Diffusion v1.5、PixArt-alpha、PixArt-Sigma、Playground-v2.5 均经 `hf-mirror.com` metadata 查询为非 gated；准确 repo/revision/license 已写入 `configs/teachers/semantic_teacher_candidates.json`。这只是下载与校准候选列表，不能替代在独立 val split 上按 pointing/IoU、无效词率和跨 seed 一致性选 best-single。
