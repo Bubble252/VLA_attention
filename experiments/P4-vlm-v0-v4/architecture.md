@@ -16,6 +16,8 @@ Flickr manifest + image/phrase/box
 
 **确认的首轮实现**：Qwen2.5-VL-7B-Instruct 采用 BF16 LoRA；视觉 encoder 冻结。`T_retention` 固定为 DINOv2 ViT-L/14，`T_sem` 为四个 diffusion 候选在 val calibration 后选择的 best-single，且 semantic map 在训练前离线缓存。Prismatic 不进入本轮 Qwen 主表。
 
+LoRA 配置在 `configs/qwen_lora_v1.json`：rank 16、alpha 32、dropout 0.05、AdamW 2e-4、3% cosine warmup、global grad clip 1.0。`target_modules` 不是常见的 suffix list，而是完整路径正则，仅匹配 `model.language_model.layers.*` 的 attention/MLP projection；这从配置层排除名称相同的 `model.visual.blocks.*` 模块。所有 V1--V4 必须复用此文件的内容，训练前用真实 PEFT 匹配审计确认没有 visual LoRA parameter。
+
 首轮 `train manifest` 的每行是 **image + 固定 caption prompt + 原始 Flickr30k caption**，而非 phrase-box/referring 标签。这样 diffusion map 的 caption token 与学生的 SFT target 一一对应。Entities phrase/box 留在 calibration/evaluation manifest；任何 referring prompt 训练都必须建立主表之外的独立 `R*` 消融。
 
 | 组 | 可训练参数 | loss | 禁止项 |
