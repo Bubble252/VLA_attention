@@ -24,3 +24,7 @@
 - [ ] 冻结唯一 best-single 与全部抽取参数；
 - [ ] 对训练集离线生成该教师 map cache；
 - [ ] 将 selected teacher 以新的 commit 写入 V3/V4 manifest。
+
+## 当前实现证据（不等于校准通过）
+
+2026-09-17：已用现代 Diffusers 0.38 + 本地 SD1.5 成功在一条固定 real-image latent / phrase 输入上捕获 conditional cross-attention：64px query grid 5 层、32px 5 层、16px 5 层、8px 1 层。运行时 FlashAttention 不能加载，自动回退 PyTorch attention。该结果只证明 hook 与模型接口可用；它没有 DDIM/null-text inversion，因此不能填入候选的 pointing/IoU 表，不能成为 `T_sem` 图或训练 cache。
