@@ -1,0 +1,18 @@
+{
+  "schema": "vla-attention/vlm-v0-v4/v1",
+  "status": "template_not_runnable_until_teacher_calibration",
+  "shared": {
+    "student": {"repository": "Qwen/Qwen2.5-VL-7B-Instruct", "local_revision_record": "models/Qwen2.5-VL-7B-Instruct/SOURCE.txt", "processor_use_fast": false},
+    "data": {"train_manifest": "TO_FREEZE:caption_sft_train.jsonl", "calibration_manifest": "experiment_workspace/manifests/flickr30k_entities/teacher_calibration_val_1000.jsonl", "test_manifest": "experiment_workspace/manifests/flickr30k_entities/flickr30k_entities_test.jsonl", "supervision": "image + fixed caption prompt -> original Flickr30k caption"},
+    "optimization": {"precision": "bf16", "adapter": "LoRA", "vision_encoder": "frozen", "target_modules": "TO_FREEZE_AFTER_QWEN_RUNTIME_AUDIT", "rank": "TO_FREEZE", "learning_rate": "TO_FREEZE", "batch_schedule": "TO_FREEZE", "seeds": [17]},
+    "evaluation": ["Flickr30k Entities pointing", "mass-in-box", "IoU", "fixed image perturbations", "wrong-word/wrong-image/random-teacher controls"]
+  },
+  "groups": {
+    "V0": {"train": false, "losses": ["none"], "teachers": []},
+    "V1": {"train": true, "losses": ["caption_cross_entropy"], "teachers": []},
+    "V2": {"train": true, "losses": ["caption_cross_entropy", "retention"], "teachers": ["DINOv2_ViT_L_14"]},
+    "V3": {"train": true, "losses": ["caption_cross_entropy", "semantic_attribution"], "teachers": ["best_single_T_sem_TO_FREEZE"]},
+    "V4": {"train": true, "losses": ["caption_cross_entropy", "retention", "semantic_attribution"], "teachers": ["DINOv2_ViT_L_14", "best_single_T_sem_TO_FREEZE"]}
+  },
+  "invariants": ["same student/data/prompt/LoRA/optimizer/schedule/seed/evaluation for all groups", "only declared losses differ", "T_sem selected on calibration and cached before V3/V4", "V0 evaluates original checkpoint only"]
+}
