@@ -7,6 +7,9 @@ readonly PROJECT_REPO="$PROJECT_ROOT/repo/VLA_attention"
 readonly P1_ENV="$PROJECT_ROOT/envs/p1"
 readonly QWEN_REPO="Qwen/Qwen2.5-VL-7B-Instruct"
 readonly QWEN_DIR="$PROJECT_ROOT/models/Qwen2.5-VL-7B-Instruct"
+readonly FLICKR_REPO="nlphuji/flickr30k"
+readonly FLICKR_DIR="$PROJECT_ROOT/data/flickr30k_entities"
+readonly ENTITIES_REPO="BryanPlummer/flickr30k_entities"
 
 usage() {
   cat <<'EOF'
@@ -31,6 +34,11 @@ Commands:
   inspect-entities-repos
                Read only: inspect file names, sizes and licenses in the original
                Flickr30k Entities repository and one public mirror candidate.
+  download-flickr
+               Download full Flickr30k images/caption files and the original
+               Flickr30k Entities annotation archive into VEPFS; extract only
+               after archive integrity checks, and record source revisions,
+               SHA256 and counts. The data is research/education only.
 
 This script requires a local SSH alias named `vla101`.  It deliberately has no
 arbitrary remote-shell mode, no credential handling, no /root writes, no dataset
@@ -130,6 +138,27 @@ for repo in ('BryanPlummer/flickr30k_entities', 'xmodal-multilang-retrieval/flic
         print(readme)
         print('README_END')
 PY"
+    ;;
+  download-flickr)
+    remote "set -eu
+      test -x '$P1_ENV/bin/python'
+      mkdir -p '$FLICKR_DIR/raw/hf' '$FLICKR_DIR/raw/entities' '$FLICKR_DIR/images' '$FLICKR_DIR/entities'
+      export HF_HOME='$PROJECT_ROOT/hf_cache'
+      export HF_ENDPOINT='https://hf-mirror.com'
+      HF_REV=\$(curl --connect-timeout 15 --max-time 30 -fsS 'https://hf-mirror.com/api/datasets/$FLICKR_REPO' | '$P1_ENV/bin/python' -c \"import json,sys; print(json.load(sys.stdin)['sha'])\")
+      ENTITIES_REV=\$(curl --connect-timeout 15 --max-time 30 -fsS 'https://api.github.com/repos/$ENTITIES_REPO/commits/master' | '$P1_ENV/bin/python' -c \"import json,sys; print(json.load(sys.stdin)['sha'])\")
+      printf 'image_dataset=%s\\nimage_endpoint=%s\\nimage_revision=%s\\nentities_repository=%s\\nentities_revision=%s\\ndownloaded_at_utc=%s\\nlicense_note=Flickr images: non-commercial research/education under Flickr Terms; cite Flickr30k and Flickr30k Entities.\\n' '$FLICKR_REPO' 'https://hf-mirror.com' \"\$HF_REV\" '$ENTITIES_REPO' \"\$ENTITIES_REV\" \"\$(date -u +%FT%TZ)\" > '$FLICKR_DIR/SOURCE.txt'
+      hf download '$FLICKR_REPO' flickr30k-images.zip flickr_annotations_30k.csv --repo-type dataset --revision \"\$HF_REV\" --local-dir '$FLICKR_DIR/raw/hf'
+      curl --connect-timeout 15 --max-time 120 --fail --location 'https://raw.githubusercontent.com/$ENTITIES_REPO/'\"\$ENTITIES_REV\"'/annotations.zip' -o '$FLICKR_DIR/raw/entities/annotations.zip'
+      unzip -t '$FLICKR_DIR/raw/hf/flickr30k-images.zip' >/dev/null
+      unzip -t '$FLICKR_DIR/raw/entities/annotations.zip' >/dev/null
+      unzip -q -n '$FLICKR_DIR/raw/hf/flickr30k-images.zip' -d '$FLICKR_DIR/images'
+      unzip -q -n '$FLICKR_DIR/raw/entities/annotations.zip' -d '$FLICKR_DIR/entities'
+      find '$FLICKR_DIR/raw' -type f -print0 | sort -z | xargs -0 sha256sum > '$FLICKR_DIR/SHA256SUMS'
+      printf 'jpeg_count='; find '$FLICKR_DIR/images' -type f -iname '*.jpg' | wc -l
+      printf 'sentence_count='; find '$FLICKR_DIR/entities' -path '*/Sentences/*.txt' -type f | wc -l
+      printf 'xml_count='; find '$FLICKR_DIR/entities' -path '*/Annotations/*.xml' -type f | wc -l
+      du -sh '$FLICKR_DIR'"
     ;;
   -h|--help|help|'') usage ;;
   *) echo "Unknown command: $1" >&2; usage >&2; exit 2 ;;

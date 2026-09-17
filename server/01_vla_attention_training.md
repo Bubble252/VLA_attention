@@ -54,9 +54,13 @@ bash server/vla101.sh status
 bash server/vla101.sh bootstrap
 bash server/vla101.sh freeze-env
 bash server/vla101.sh download-qwen
+bash server/vla101.sh inspect-flickr
+bash server/vla101.sh download-flickr
 ```
 
 `download-qwen` 的唯一模型仓库是官方 `Qwen/Qwen2.5-VL-7B-Instruct`。101 不使用 7897：脚本先测试 Hugging Face 直连；若官方端点不可达，才显式使用 `https://hf-mirror.com`，并在 checkpoint 同目录的 `SOURCE.txt` 和 `SHA256SUMS` 记录实际端点与文件校验。镜像只是传输源，模型仓库名、revision 和校验文件必须照实记录。
+
+`download-flickr` 下载完整 `nlphuji/flickr30k` 图片 archive/caption CSV，以及 `BryanPlummer/flickr30k_entities` 的原作者标注 archive。它在解压前运行 archive integrity test，并记录两个 revision、传输端点、SHA256、JPEG/Sentences/XML 数量。Flickr 图片不归本项目或标注作者所有，只限 Flickr 条款允许的非商业研究/教育用途；训练前须在实验卡中引用 Flickr30k 与 Flickr30k Entities。
 
 ## 3. 101 在本项目中的角色
 
