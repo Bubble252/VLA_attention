@@ -44,6 +44,31 @@ T_sem^ens = Normalize(Σ_d c_d · Valid_d · T_sem^d)
 
 `c_d` 和 `Valid_d` 在校准后冻结；token 不可映射、图面积过小或目标词无效则 `Valid_d=0`。
 
+### “校准后冻结”与 best-single 的精确定义
+
+这里的“校准”不训练扩散模型，也不在最终测试集上选老师。它是一次**教师选择和提图配置选择**：
+
+```text
+候选：SD / PixArt-α / PixArt-Σ / Playground-v2.5
+配置：每个模型的 text span、attention block、denoising step、CFG 分支、map 聚合方式
+数据：带 region 标注的独立 calibration split
+指标：pointing、IoU、无效词率、跨 seed 稳定性
+```
+
+`best-single` 指整个校准协议中分数最好的**一个固定教师配置**，例如：
+
+```text
+PixArt-Σ + object-token span + blocks {b1,b2} + steps {t1,t2} + conditional CFG branch
+```
+
+而不是每个训练样本根据区域真值挑一个“最漂亮”的教师图。选定后固定三类内容：
+
+1. 扩散模型参数始终冻结；
+2. teacher identity 和提图配置冻结；
+3. 若使用 ensemble，ensemble 权重和有效性门槛冻结。
+
+随后才在独立的 VLM/VLA 训练集上生成 `T_sem`，最终测试集只评估，不能重新选择 teacher、层、step、阈值或权重。若所有候选都未通过最低 teacher-quality 门槛，则停止语义图监督，不把低质量 ensemble 硬塞进训练。
+
 ### T_sem-B：冻结 VLM/视觉表征 teacher（强 baseline，不是主教师）
 
 来源：Don't Blind 的 C-RADIOv3/DINOv2/Theia 路线，以及 Anchor-Align 的 frozen VLM copy。

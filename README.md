@@ -37,6 +37,63 @@ bash scripts/download_references.sh
 python3 scripts/verify_references.py
 ```
 
+## 在新电脑恢复工作区
+
+GitHub 仓库只保存文档、代码、配置、引用元数据和阅读归纳；不保存 PDF、参考代码快照、模型权重、LIBERO/DROID 数据、实验输出或飞书凭据。
+
+### 1. 恢复 Git 文档与计划
+
+```bash
+git clone https://github.com/Bubble252/VLA_attention.git
+cd VLA_attention
+git status
+git log -1 --oneline
+```
+
+日后在另一台电脑继续时：
+
+```bash
+git pull --ff-only
+```
+
+### 2. 恢复参考资料
+
+先运行已有归档脚本；它只恢复脚本中登记的资料：
+
+```bash
+bash scripts/download_references.sh
+python3 scripts/verify_references.py
+```
+
+新近候选的 URL、角色和期望 commit 记录在 `references/repositories.yaml`，例如 BlindVLA、PixArt、InternVL、Ovis。它们若尚未由下载脚本覆盖，应按 YAML 中的官方 URL 单独 clone，并记录实际 commit：
+
+```bash
+git -c http.proxy=http://127.0.0.1:7897 clone --depth 1 \
+  https://github.com/CognitiveAISystems/BlindVLA.git references/repos/blindvla
+```
+
+本地 PDF 不随 Git 恢复；论文归纳仍可从 `references/abstract_review/` 阅读。若需要重建 PDF 页码证据，先补回 `references/papers/` 中的 PDF，再运行：
+
+```bash
+/usr/bin/python3.10 scripts/index_pdf_abstracts.py
+/usr/bin/python3.10 scripts/finalize_pdf_review_index.py
+```
+
+### 3. 恢复实验环境、权重和数据
+
+模型权重与数据必须按最终冻结的模型组合重新下载。先审计动作接口、许可、checkpoint 版本和数据字段，再下载 OpenVLA/OFT、π0、π0.5、MolmoAct2、VLM 候选、LIBERO 或 DROID。不要将权重、数据或运行输出 `git add`。
+
+### 4. 可选恢复飞书同步
+
+飞书凭据不在本仓库。新电脑需要单独取得 `doc-sync-main`，创建本地且被忽略的 `sync_config.json`，填入自己的 App ID、Secret、User Access Token 和文件夹 Token；不要从 Git 恢复或提交该文件。完成后运行：
+
+```bash
+cd /path/to/doc-sync-main
+/usr/bin/python3.10 main.py sync --force
+```
+
+同步前先检查云端是否存在人工编辑，避免 `--force` 覆盖它们。详细同步状态见 `references/abstract_review/06_delivery_status.md`。
+
 ## 飞书实时同步
 
 `doc/` 下的三个核心 Markdown 已同步到飞书。后续修改文件后，需保持 DocSync 实时同步进程运行：

@@ -28,6 +28,27 @@ git push -u origin main
 
 当前没有预设远端地址，因此只做本地初始化和 commit，不伪造 push 结果。
 
+### 1.1 新电脑恢复与继续开发
+
+线上仓库：`https://github.com/Bubble252/VLA_attention.git`。新电脑先恢复文档、计划和代码：
+
+```bash
+git clone https://github.com/Bubble252/VLA_attention.git
+cd VLA_attention
+git status
+git pull --ff-only
+```
+
+Git 不含 PDF、`references/repos/`、权重、数据、实验日志、`outputs/` 或 `doc-sync-main/sync_config.json`。恢复顺序必须是：
+
+1. 读取 `README.md`、`references/abstract_review/README.md` 与 `paper_draft/08_model_baseline_benchmark_options.md`；
+2. 运行 `bash scripts/download_references.sh` 恢复脚本已登记资料；
+3. 查看 `references/repositories.yaml`，补 clone 新候选并记录实际 commit；
+4. 根据冻结的模型/benchmark 下载权重、LIBERO 或 DROID；
+5. 新建本机飞书凭据配置，再选择是否同步。
+
+恢复后不得因 PDF、权重或数据缺失而修改 Git 历史或把大文件提交到线上仓库。
+
 ## 2. 阶段总览
 
 | 阶段 | 目标 | 产物 | 完成标记 |
