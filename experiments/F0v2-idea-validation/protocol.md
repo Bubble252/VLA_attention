@@ -78,3 +78,12 @@ bash scripts/run_f0_heldout_all.sh
 manifest 上比较正确 SD phrase map、wrong-image（循环错配）、固定横向 shift 和 seeded random
 map；若 held-out SD cache 尚未生成，先用 `run_sd_cache.py` 生成 64 条，不能把训练集 cache
 冒充测试教师图。
+
+评估结束后可查看只读状态与初步趋势：
+
+```bash
+bash server/summarize_f0_heldout.sh
+```
+
+`MODEL_HELDOUT_READY` 只表示五组报告齐全；最终 idea 判定还必须加入 teacher
+correct、错配、shift 和 random 负控。

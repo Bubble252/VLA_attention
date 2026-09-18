@@ -67,6 +67,7 @@ partial metrics / VEPFS result + log 路径
 - [ ] 2026-09-18 checkpoint smoke 首次启动在 V3 forward 阶段因 GPU0 显存耗尽失败：PID `291422` 占用约 59.86 GiB、PID `2093781` 占用约 19.27 GiB，仅剩约 5.5 MiB；未生成有效 V3 checkpoint。未杀进程，避免影响其他任务。启动器已改为显式传递 `CUDA_VISIBLE_DEVICES`，默认改用 GPU1；重试前需由 `nvidia-smi` 确认 GPU1 空闲或选择明确空闲卡。
 - [x] 2026-09-18 用户在 GPU1 成功完成 V3/V4 checkpoint smoke：两个结果 JSON、V3/V4 adapter 均生成，V4 `dino_projector.pt` 存在，远端输出 `CHECKPOINT_SMOKES_OK`。下一步为同一 64 条 image-disjoint held-out 的 V0--V4 attribution evaluation。
 - [x] held-out 远端入口已加入：`server/run_f0_heldout_remote.sh` 在 101 P1 环境运行五组评估，拒绝覆盖已有报告，成功标志 `HELDOUT_MODELS_OK`。
+- [x] held-out 只读汇总入口已加入：`server/summarize_f0_heldout.sh` 检查 V0--V4 报告、打印三项指标和 V3/V1、V4/V2 初步趋势；`MODEL_HELDOUT_READY` 不等价于最终 idea 通过，仍需 teacher 负控。
 - [ ] 2026-09-18 当前执行窗口无法建立 `vla101` SSH socket（`Operation not permitted`）；未假定远端状态、未重复启动任务。待连接恢复后按 protocol 先同步 runner，再补 V3/V4 checkpoint 和 64 条 held-out 指标。此为环境阻塞，不是实验失败。
 
 ## 下一条可接受的证据
