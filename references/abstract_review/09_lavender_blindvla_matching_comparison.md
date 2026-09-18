@@ -226,3 +226,41 @@ SD map、词筛选、空间网格和 MSE 定义跨模型固定；唯一模型相
 > Our adapter instantiates the same word-conditioned spatial-map matching objective across heterogeneous VLM fusion mechanisms.
 
 这仍不意味着所有黑箱、无 attention 输出的模型都可使用；对这类模型，我们的 gradient attribution adapter 才是更普适的路线。
+
+## 我们真正的多模型主线：统一接口，不是统一 attention
+
+用户的目标是多模型适配。正确的抽象不是“所有模型都对齐 Lavender attention”，而是所有模型均输出同一语义的**语言条件空间证据图**：
+
+$$
+\mathcal A_f(x,c,q)=(M, G, \text{metadata}),
+$$
+
+其中 `f` 是任意 VLM/VLA，`x` 是图像，`c` 是语言条件，`q` 是回答 phrase 或 action target，`M` 是视觉 token 的非负空间证据，`G` 是 token-to-image coordinate bridge。教师 SD map、空间 loss、反事实和 grounding 指标统一；模型间变化只局限于如何得到 `M`。
+
+| 组件 | 作用 | 适用范围 | 是否是我们的核心贡献 |
+|---|---|---|---|
+| `AttentionAdapter` / L0 | 直接从 phrase query 到 visual token 的 attention 得到 `M` | 有可读 cross-attention 或 self-attention 的模型 | 否；Lavender-adapted 强 baseline |
+| `GradientAdapter` / Ours | 从 phrase/action score 对视觉 token 的 gradient×activation 得到 `M` | 有白盒梯度的 VLM/VLA；不要求标准 cross-attention | 是；多模型主线候选 |
+| `OcclusionAdapter` | 遮挡视觉区域后测 phrase/action score 变化 | 黑箱或 attention 不可读模型 | 否；最通用的审计/评价 fallback，训练成本高 |
+| `FeatureRetentionAdapter` / B0 | DINO/C-RADIO teacher cosine 保持 patch feature | 有视觉 patch feature 的模型 | 否；BlindVLA-style 正交基线 |
+
+### 它们的区别不是“谁替代谁”
+
+`AttentionAdapter` 回答“模型显式 attention 指向哪里”；它训练便宜、一阶可导，但依赖结构，且 attention 不必等于输出因果证据。
+
+`GradientAdapter` 回答“为了提高当前 phrase/action score，哪些视觉 token 的激活最重要”；它天然绑定输出目标，适配 Qwen、prefix VLM、action-token VLA 等不同融合形式，但要计算二阶梯度，训练更贵且可能不稳定。
+
+`OcclusionAdapter` 回答“遮掉哪里会让输出分数下降”；它最接近因果检验、最模型无关，但不适合逐 batch 训练，更适合验证 heatmap 的真实性。
+
+`FeatureRetentionAdapter` 不回答“语言词看哪里”。它仅维持视觉 feature，因此可与前三者叠加，用于排除“空间图变好只是因为视觉编码器没有遗忘”的解释。
+
+### 跨模型执行规则
+
+对每个模型先进行 capability audit，再选择最强可用 adapter：
+
+1. 有稳定可读 attention：同时运行 `AttentionAdapter` 和 `GradientAdapter`；前者是 Lavender L0，后者是 Ours，直接比较 `Ours > L0`。
+2. 没有标准 cross-attention、但可以对 score 反传：运行 `GradientAdapter`；不能为了凑 baseline 把不可靠 attention 命名为 Lavender。
+3. 无梯度或无 attention：仅用 `OcclusionAdapter` 做评价；该模型不进入 gradient-training claim。
+4. 有视觉 patch feature：额外运行 `FeatureRetentionAdapter`，并检查 `B0+Ours > B0`。
+
+VLM 阶段的 `q` 是 teacher-forced phrase score；VLA 阶段的 `q` 改为 delta-EEF action token log-probability、action head scalar 或 action loss。接口和 teacher map 不变，只有 output target 变了。这样“从 VLM 到 VLA”的扩展不是另起炉灶，而是把同一个语言条件空间证据定义从 answer target 换到 action target。
