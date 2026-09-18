@@ -2,6 +2,20 @@
 
 所有结果使用同一 phrase-score gradient×activation 归因定义。20-step、100-step 和 500-step 使用相同的 F0v2 训练 manifest；held-out 固定为 64 条 image-disjoint Flickr30k Entities test records。`lambda=0.1` 的 sweep-100 与原先的 100-step V3/V4 结果相同，因为 seed、数据、配置完全一致。
 
+## V0–V4 主表：100 steps
+
+这是当前最适合横向比较的一张总表。V0 是原始 Qwen，V1 是 caption SFT，V2 加 DINO retention，V3/V4 使用 semantic loss `lambda_sem=0.1`。
+
+| Model | 训练信号 | Pointing | Mass-in-box | Top-20% box IoU | 相对匹配基线 |
+|---|---|---:|---:|---:|---|
+| V0 | 原始 Qwen | 0.2813 | 0.3095 | 0.2693 | — |
+| V1 | Caption SFT | 0.3594 | 0.3378 | 0.2680 | 相对 V0：+0.0781 / +0.0283 / −0.0013 |
+| V2 | Caption SFT + DINO retention | 0.3438 | 0.3284 | 0.2681 | 相对 V1：−0.0156 / −0.0093 / +0.0001 |
+| V3 | Caption SFT + semantic loss, λ=0.1 | **0.3906** | 0.3365 | 0.2679 | 相对 V1：+0.0313 / −0.0013 / −0.0001 |
+| V4 | DINO retention + semantic loss, λ=0.1 | 0.3438 | **0.3333** | **0.2696** | 相对 V2：0 / +0.0049 / +0.0015 |
+
+指标增量顺序均为 `Pointing / Mass-in-box / IoU`。
+
 ## V3：semantic attribution
 
 | 训练阶段 | Pointing | Mass-in-box | Top-20% box IoU | 对照 | Δ Pointing | Δ Mass | Δ IoU |
