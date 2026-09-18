@@ -67,6 +67,9 @@ partial metrics / VEPFS result + log 路径
 - [ ] 2026-09-18 checkpoint smoke 首次启动在 V3 forward 阶段因 GPU0 显存耗尽失败：PID `291422` 占用约 59.86 GiB、PID `2093781` 占用约 19.27 GiB，仅剩约 5.5 MiB；未生成有效 V3 checkpoint。未杀进程，避免影响其他任务。启动器已改为显式传递 `CUDA_VISIBLE_DEVICES`，默认改用 GPU1；重试前需由 `nvidia-smi` 确认 GPU1 空闲或选择明确空闲卡。
 - [x] 2026-09-18 用户在 GPU1 成功完成 V3/V4 checkpoint smoke：两个结果 JSON、V3/V4 adapter 均生成，V4 `dino_projector.pt` 存在，远端输出 `CHECKPOINT_SMOKES_OK`。下一步为同一 64 条 image-disjoint held-out 的 V0--V4 attribution evaluation。
 - [x] held-out 远端入口已加入：`server/run_f0_heldout_remote.sh` 在 101 P1 环境运行五组评估，拒绝覆盖已有报告，成功标志 `HELDOUT_MODELS_OK`。
+- [x] 2026-09-18 15:20（UTC+8）V0--V4 held-out attribution 已完成 64/64，远端输出 `HELDOUT_MODELS_OK`。初步结果（20-step checkpoint，non-final）：V0 pointing/mass/IoU=`0.2813/0.3095/0.2693`；V1=`0.3594/0.3183/0.2692`；V2=`0.3594/0.3313/0.2696`；V3=`0.2969/0.3197/0.2683`；V4=`0.3594/0.3210/0.2682`。因此当前短 smoke 未显示 `V3>V1` 或 `V4>V2` 的一致提升；不能据此否定 idea，需先完成 teacher 负控并明确这是工程 gate 还是训练不足。
+- [x] held-out evaluator 修复记录：远端缺少 `evaluation/spatial.py`（已同步并通过 `SPATIAL_IMPORT_OK`）；PEFT wrapper 层级差异与 phrase BPE 直接匹配问题已修复（本地 commits `6129934`、`4dc2e14`）。
+- [ ] 2026-09-18 SD held-out cache 首次尝试因工作目录未设置导致 64 条 `ModuleNotFoundError: scripts`，未生成有效 map；已切换到 repo 工作目录并设置 `PYTHONPATH` 重跑，当前第 5/64 条已成功，使用 FP32 null-text `20x10`、seed23。
 - [x] held-out 只读汇总入口已加入：`server/summarize_f0_heldout.sh` 检查 V0--V4 报告、打印三项指标和 V3/V1、V4/V2 初步趋势；`MODEL_HELDOUT_READY` 不等价于最终 idea 通过，仍需 teacher 负控。
 - [x] 一键 F0 入口已加入：`server/run_f0_full_validation_remote.sh` 复用或生成 V0--V4 held-out 报告、64 条 SD teacher cache，并运行四类 teacher map controls；拒绝覆盖 checkpoint/report，最终标志 `F0_FULL_VALIDATION_OK`。尚待用户终端执行。
 - [ ] 2026-09-18 当前执行窗口无法建立 `vla101` SSH socket（`Operation not permitted`）；未假定远端状态、未重复启动任务。待连接恢复后按 protocol 先同步 runner，再补 V3/V4 checkpoint 和 64 条 held-out 指标。此为环境阻塞，不是实验失败。
