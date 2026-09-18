@@ -136,3 +136,38 @@ BlindVLA 的 lesson 是：不要用 L0 的成功或失败解释所有现象。�
 ## 推荐下一步
 
 暂停无边界 scalar sweep。先实现 L0 和经修正的 B0，使用固定 64 条 held-out 和至少三 seed。只有在 `Ours > L0` 且 `B0+Ours > B0` 时，才扩大到 F1-10k 和 VLA。
+
+## 目前哪些“涨点”可以有理有据地主张
+
+这里的“可主张”严格限于已经完成的 F0v2 受控实验：固定 256 条训练 pair、固定 64 条 image-disjoint held-out records、同一归因定义和同一 metric 实现。它不等于跨模型、跨数据集或论文最终结论。
+
+### 证据等级
+
+| 等级 | 含义 | 允许的表述 |
+|---|---|---|
+| A：直接且稳定 | 同一比较在多 seed / 多训练长度中同方向，且覆盖目标指标 | “在本设定下稳定提升” |
+| B：方向性支持 | 单次或部分 seed 提升；其他指标或 bootstrap 不稳定 | “显示方向性收益 / 值得作为候选” |
+| C：机制有效但未转移 | teacher 或中间量通过控制，但学生最终指标未稳定改善 | “teacher signal 有效，transfer 尚未证实” |
+| D：尚未实测 | 只有源码分析或设计，未运行公平实验 | “应作为 baseline，不能声称提升” |
+
+### 已运行方法与可说、不可说的结论
+
+| 方法 | 最公平的当前比较 | 观测增量 | 证据等级 | 目前可以写什么 | 目前不能写什么 |
+|---|---|---|---|---|---|
+| V1 caption SFT | 100-step V1 相对 V0 | Pointing `+0.0781`；Mass `+0.0283`；IoU `-0.0013` | B | caption SFT 改善本 held-out 的 target pointing 和 attribution mass | SFT 提升全部 grounding 指标，或提升来自 semantic supervision |
+| SD teacher map | correct 相对 same-image wrong-word | Pointing `+0.3594`；Mass `+0.0816`；IoU `+0.0472` | A/C | SD phrase map 含有可识别的词—区域空间信息，且不是任意空间先验 | SD teacher 被学生成功利用，或 SD teacher 必然优于所有视觉教师 |
+| BlindVLA-style V2 | 100-step V2 相对 V1 | Pointing `-0.0156`；Mass `-0.0093`；IoU `+0.0001` | C | DINO feature retention 已作为独立对照接入；当前配置未显示 grounding 增益 | BlindVLA-style retention 在 Qwen/Flickr 上有效，或其能改善语言条件 spatial grounding |
+| Ours V3, λ=.10,T=1 | 100-step 相对 semantic-off V3 λ=0 | Pointing `+0.0469`；Mass `+0.0110`；IoU `-0.0043` | B | semantic loss 存在改善 pointing/mass 的候选 scale | 当前 KL map matching 稳定提升三项 grounding 指标 |
+| Ours V3, λ=.10,T=1.25 | seed17 相对 λ=0,T=1；seed29 matched baseline | seed17 `+0.0781/+0.0068/+0.0001`；seed29 `+0.0469/+0.0047/-0.0011` | B | teacher softening 到 T=1.25 在两个 seed 上都提高 pointing/mass；是最值得后续保留的 candidate | T=1.25 已确定提升 IoU，或已证明方法整体有效；两 seed paired bootstrap 区间仍跨 0 |
+| Ours V3 warm-up 50 | seed29 相对同 seed no-warm-up candidate | Pointing `+0.0156`；Mass `+0.0076`；IoU `-0.0009` | B | semantic loss 的介入时机影响优化，warm-up 可改善 pointing/mass | warm-up 解决了几何定位问题，或对所有指标有收益 |
+| Lavender-adapted L0 | 尚未运行 | — | D | 这是最必要的 external semantic-map attention baseline | Lavender 式 MSE 必然优于当前 KL，或我们已经超过 Lavender |
+
+增量的顺序为 `Pointing / Mass-in-box / Top-20% box IoU`。A/C 表示 teacher 的空间质量已得到强控制支持，但该结论不自动转移到 student fine-tuning 后的 grounding 改善。
+
+### 对论文结果表的直接建议
+
+在当前阶段，唯一能明确写成“已验证”的正面结果应是 **SD teacher map 的词—区域质量优于 wrong-word、wrong-image 和 random controls**。对于学生模型，只能写：
+
+> 在小规模固定设置下，semantic attribution supervision 在两个 seed 上呈现 pointing 与 mass-in-box 的方向性收益；然而 top-20% box IoU 未稳定改善，因此尚不能称为稳健 grounding gain。
+
+若 L0 跑完后 `Ours > L0`，并且在至少三 seed 上同时满足 `V3 > V1` 的 pointing、mass 和 IoU，才可以升级为“语言条件空间归因匹配带来 grounding 提升”。若 `B0+Ours > B0` 同时成立，才能进一步声称该收益并非普通视觉表征保持造成。
