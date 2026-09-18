@@ -32,7 +32,9 @@ def main() -> int:
     captured=[]
     for parameter in model.base_model.model.model.visual.parameters():
         parameter.requires_grad_(True)  # gradients for attribution only; excluded from optimizer
-    def hook(_m,_i,o): captured[:] = [o]
+    def hook(_m,_i,o):
+        captured[:] = [o]
+        return o
     h=model.base_model.model.model.visual.merger.register_forward_hook(hook); opt=torch.optim.AdamW((x for x in model.parameters() if x.requires_grad),lr=cfg['optimizer']['learning_rate'],betas=tuple(cfg['optimizer']['betas']),eps=cfg['optimizer']['eps']); rows=list(jsonl(a.manifest)); logs=[]
     try:
       for step in range(a.max_steps):
