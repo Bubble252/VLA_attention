@@ -28,6 +28,7 @@ def main() -> int:
     parser.add_argument("--output", type=Path, required=True)
     parser.add_argument("--max-steps", type=int, default=20)
     parser.add_argument("--seed", type=int, default=17)
+    parser.add_argument("--checkpoint", type=Path, default=None)
     args = parser.parse_args()
     config = json.loads(args.lora_config.read_text())
     torch.manual_seed(args.seed)
@@ -60,8 +61,12 @@ def main() -> int:
         torch.nn.utils.clip_grad_norm_(model.parameters(), config["optimizer"]["gradient_clip_norm"])
         optimizer.step()
         losses.append(float(loss.detach().cpu()))
+    if args.checkpoint is not None:
+        args.checkpoint.mkdir(parents=True, exist_ok=True)
+        model.save_pretrained(args.checkpoint)
+        processor.save_pretrained(args.checkpoint)
     args.output.parent.mkdir(parents=True, exist_ok=True)
-    args.output.write_text(json.dumps({"experiment": "V1-caption-smoke", "steps": args.max_steps, "losses": losses, "visual_trainable_tensors": len(visual_trainable), "processor_use_fast": config["processor_use_fast"]}, indent=2) + "\n")
+    args.output.write_text(json.dumps({"experiment": "V1-caption-smoke", "steps": args.max_steps, "losses": losses, "visual_trainable_tensors": len(visual_trainable), "processor_use_fast": config["processor_use_fast"], "checkpoint": str(args.checkpoint) if args.checkpoint else None}, indent=2) + "\n")
     print(args.output)
     return 0
 
