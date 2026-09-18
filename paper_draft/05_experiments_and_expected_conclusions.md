@@ -65,6 +65,10 @@ VLM 主表的 V1--V4 使用图像 caption SFT，而不把 Entities box 或 refer
 
 若 C1 不成立，主张退回为无增益；若 C2 不成立，主张退回为 retention 替代实现；若 C3 不成立，主张退回为一般空间正则；若 C4 不成立，不宣称 attribution 的必要性；若 C5 不成立，只报告 ID 效果。Lavender exact 与完整 BlindVLA policy 比较用于补强近邻定位，不是这五条核心可证伪判据的替代品。
 
+### 快速 idea validation 与正式主实验的分层
+
+在投入 F1-10k 前，先用 F0v2-256 训练结果和一个完全 held-out 的 64--128 image-phrase test subset 做方向性验证：恢复 V0--V4 checkpoint，统一计算 pointing/mass-in-box/IoU，再加入 wrong-word、wrong-image、random-map 三类负控。只有 `V3 > V1`、`V4 > V2`、正确教师优于负控且 held-out 趋势一致，才把方法推进到 F1-10k；该阶段不宣称最终泛化或论文显著性。
+
 完整 Lavender / BlindVLA 源码比较安排在 F1 后：当前阶段只采用其已审计且可迁移的机制。Lavender exact 需要显式 cross-attention VLM，BlindVLA exact 需要 OpenVLA/OFT policy/action benchmark；把任一源码强行直接迁移到 Qwen caption F0 会混淆学生图定义或任务层级，不能作为公平结论。
 
 ## 5.1.1 OOD 假设与分维度报告

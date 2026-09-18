@@ -329,6 +329,18 @@ Flickr30k Entities 的 phrase/box **不进入首轮训练标签**；它们只用
 
 F0 全部通过后，完全复用代码和配置语义扩展为 F1-10k；唯一改变是固定 pair 数量和对应的离线 map cache，不能在组间改变数据或训练预算。
 
+### 最小可证伪路径：尽快判断 idea 是否 work
+
+如果当前目标只是判断核心 idea 是否值得继续投入，不等待 F1-10k、PixArt、Playground 或 Prismatic。使用已经完成的 F0v2-256 对齐 manifest、SD1.5 cache 和 DINO teacher，增加一个**未参与 F0 训练的 held-out 小测试集**（建议从官方 Entities test 固定 64--128 个 image-phrase pair，记录 SHA256），按以下顺序执行：
+
+1. **V0 evaluation**：原始 Qwen checkpoint，只生成 phrase-score attribution，不训练；保存 pointing、mass-in-box、IoU 和 map validity；
+2. **V1--V4 checkpoint gate**：每组保存 LoRA/projector checkpoint，立即在同一 held-out 集合恢复并评测；不能只用 smoke loss 判断；
+3. **核心增量表**：比较 `V3-V1` 和 `V4-V2`，同时报告绝对值、相对变化和每个样本/phrase 的 bootstrap 置信区间；
+4. **语义负控**：V3/V4 分别替换为 wrong-word、wrong-image、random normalized map，其他配置完全不变；正确 map 必须优于三类负控；
+5. **快速判定**：只有当 `V3 > V1`、`V4 > V2`、correct > wrong/random 且 held-out 指标方向一致时，才进入 F1-10k。任一条件失败，先分析失败样本和归因图，不扩大训练。
+
+该路径的产物是 `experiments/F0v2-idea-validation/` 下的 protocol、checkpoint manifest、metrics.json、negative_controls.json 和 analysis.md。它是方向性证据，不替代 F1-10k 主实验；F0 smoke loss 下降本身不算 idea 验证。
+
 ### 近邻方法比较的解释边界
 
 - V2 是 BlindVLA-inspired DB-style retention，目的在于排除“仅保持视觉表征即可”的解释；它不是完整 BlindVLA VLA 复现，BlindVLA 的 action/policy 比较留给 OpenVLA/OFT VLA 阶段；
