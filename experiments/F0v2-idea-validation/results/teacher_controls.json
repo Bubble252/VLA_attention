@@ -7,6 +7,11 @@
       "mass_in_box": 0.4087753354335855,
       "top20_box_iou": 0.32525413717300944
     },
+    "wrong_word_same_image": {
+      "pointing": 0.296875,
+      "mass_in_box": 0.327164995246015,
+      "top20_box_iou": 0.2780836529419485
+    },
     "wrong_image": {
       "pointing": 0.296875,
       "mass_in_box": 0.32343760373594665,
