@@ -7,6 +7,7 @@ MODEL=${MODEL:?path to Qwen checkpoint}
 ROOT=${ROOT:?Flickr30k Entities data root}
 MANIFEST=${MANIFEST:?held-out jsonl}
 OUT=${OUT:?held-out result root}
+CHECKPOINT_ROOT=${CHECKPOINT_ROOT:?checkpoint root containing V1..V4}
 EVAL=${EVAL:-scripts/eval_qwen_heldout.py}
 PYTHON=${PYTHON:-python3}
 
@@ -20,7 +21,7 @@ run_one() {
 }
 
 run_one V0
-run_one V1 "$OUT/../checkpoints/F0v2_idea_validation/V1"
-run_one V2 "$OUT/../checkpoints/F0v2_idea_validation/V2"
-run_one V3 "$OUT/../checkpoints/F0v2_idea_validation/V3"
-run_one V4 "$OUT/../checkpoints/F0v2_idea_validation/V4"
+run_one V1 "$CHECKPOINT_ROOT/V1"
+run_one V2 "$CHECKPOINT_ROOT/V2"
+run_one V3 "$CHECKPOINT_ROOT/V3"
+run_one V4 "$CHECKPOINT_ROOT/V4"
