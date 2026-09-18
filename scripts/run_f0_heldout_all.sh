@@ -10,6 +10,7 @@ OUT=${OUT:?held-out result root}
 CHECKPOINT_ROOT=${CHECKPOINT_ROOT:?checkpoint root containing V1..V4}
 EVAL=${EVAL:-scripts/eval_qwen_heldout.py}
 PYTHON=${PYTHON:-python3}
+export PYTHONPATH="$(pwd)/src${PYTHONPATH:+:$PYTHONPATH}"
 
 run_one() {
   local id=$1 ckpt=${2:-}
