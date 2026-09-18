@@ -20,6 +20,20 @@ Lavender 让 **同一个词的学生空间 attention map** 逼近 Stable Diffusi
 
 ## Lavender 实际如何匹配
 
+### Lavender 是否报告 IoU、pointing 或 mass-in-box
+
+原论文和开源 README 没有把 `phrase-region IoU`、`pointing accuracy` 或 `mass-in-box` 作为主 grounding 指标。Lavender 使用 Flickr30k 的图像-caption 对进行扩散 attention 蒸馏，但没有把 Flickr30k Entities 的区域框作为训练或主评测标签；论文主表报告的是 COCO/Flickr caption、VQA、OCR、幻觉和 WorldMedQA 等下游任务分数。
+
+它报告的最接近指标有三类：
+
+| Lavender 指标 | 实际含义 | 能否替代我们的 IoU |
+|---|---|---|
+| attention MSE | 学生 attention map 是否接近 SD teacher map | 不能；它只衡量教师匹配，不检查是否覆盖真实目标框 |
+| attention entropy | map 是否集中、尖锐 | 不能；错误地集中在背景上也可能有低 entropy |
+| caption/VQA/OCR/幻觉 benchmark accuracy | 下游回答或生成能力 | 不能；任务分数提升不等于词—区域定位正确 |
+
+因此，当前的 `pointing`、`mass-in-box` 和 `top-k box IoU` 是我们额外引入的可验证 grounding 层。它们使用 Flickr30k Entities 的 phrase box 来回答 Lavender 没有直接回答的问题：学生图是否真的落在标注目标区域，而不是仅仅更像 SD 图或让下游答案变好。论文中应把 Lavender 的 MSE/entropy 作为机制诊断，把三项 box-based 指标作为独立空间正确性评测，不能混称为 Lavender 原始指标。
+
 ### 1. 教师图不是训练时在线 SD
 
 `attention-map-generation/run_seg_batch_multip.py` 先从 SD 提取每个词的 attention map；数据集 loader 再把它们以 `sd_attn: Dict[word, map]` 读入 batch。因此 VLM 微调阶段不反传 SD，也不需要每步运行 diffusion。
