@@ -18,6 +18,26 @@ def find_last_subsequence(sequence: list[int], subsequence: list[int]) -> int:
     raise ValueError("phrase token span was not found in teacher-forced input")
 
 
+def phrase_positions_in_caption(full_ids, caption, phrase, tokenizer):
+    """Locate a phrase by character offset, then map it to caption BPE offsets.
+
+    Directly searching phrase token IDs in the complete chat sequence is
+    brittle because the tokenizer can attach whitespace/punctuation to a
+    neighboring subword. This mirrors the training runners' alignment rule.
+    """
+    caption_ids = tokenizer(caption, add_special_tokens=False)["input_ids"]
+    caption_start = find_last_subsequence(full_ids, caption_ids)
+    char_start = caption.casefold().find(phrase.casefold())
+    if char_start < 0:
+        raise ValueError(f"phrase text is absent from caption: {phrase!r}")
+    phrase_text = caption[char_start : char_start + len(phrase)]
+    prefix_ids = tokenizer(caption[:char_start], add_special_tokens=False)["input_ids"]
+    phrase_ids = tokenizer(phrase_text, add_special_tokens=False)["input_ids"]
+    if not phrase_ids:
+        raise ValueError(f"phrase tokenization is empty: {phrase!r}")
+    return caption_start + len(prefix_ids), phrase_ids
+
+
 def box_iou_from_top_mass(grid, boxes, *, image_width: int, image_height: int, fraction: float = 0.20) -> float:
     """IoU of GT boxes and the image-space box enclosing top-fraction cells."""
     import numpy as np
@@ -121,8 +141,7 @@ def main() -> int:
             batch = proc(text=[text], images=images, videos=videos, padding=True, return_tensors="pt")
             batch = {k: (v.cuda() if hasattr(v, "cuda") else v) for k, v in batch.items()}
             ids = batch["input_ids"][0].tolist()
-            phrase_ids = proc.tokenizer(phrase, add_special_tokens=False)["input_ids"]
-            start = find_last_subsequence(ids, phrase_ids)
+            start, phrase_ids = phrase_positions_in_caption(ids, caption, phrase, proc.tokenizer)
             model.zero_grad(set_to_none=True)
             captured.clear()
             out = model(**batch, return_dict=True)
