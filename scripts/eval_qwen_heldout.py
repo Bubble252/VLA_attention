@@ -68,6 +68,11 @@ def main() -> int:
         from peft import PeftModel
         model = PeftModel.from_pretrained(base, a.checkpoint, is_trainable=False).eval()
     visual = model.base_model.model.model.visual if hasattr(model, "base_model") else model.model.visual
+    # PEFT inference freezes the base model. Re-enable only the visual path so
+    # the phrase-score backward pass has a valid feature gradient; no optimizer
+    # is created and no weights are changed.
+    for parameter in visual.parameters():
+        parameter.requires_grad_(True)
     captured = []
 
     def hook(_module, _inputs, output):
@@ -104,7 +109,7 @@ def main() -> int:
             features = captured[0]
             attribution = (features.grad.float() * features.float()).sum(-1).abs().detach().cpu().numpy()
             grid_t, grid_h, grid_w = batch["image_grid_thw"][0].tolist()
-            merge = model.config.vision_config.spatial_merge_size
+            merge = base.config.vision_config.spatial_merge_size
             gh, gw = grid_h // merge, grid_w // merge
             grid = attribution.reshape(gh, gw)
             grid = grid / max(float(grid.sum()), 1e-12)
