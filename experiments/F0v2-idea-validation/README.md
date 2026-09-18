@@ -26,3 +26,5 @@
 该目录只存小型 manifest、JSON、Markdown 和图表；模型、map、checkpoint 放 VEPFS。
 
 当前状态：V1/V2 checkpoint 已保存；V3/V4 checkpoint 导出代码已提交（`339bbb3`），评估器和批量入口已提交（`cf7a7d4`、`9426f19`）。恢复 101 SSH 后先上传两个 runner，补跑 V3/V4 checkpoint，再执行 64 条 held-out 的 V0--V4 评估。
+
+F0 500-step confirmation 已完成，但未达到进入 F1-10k 的双重标准：V3 没有全面超过 V1，V4 没有超过 V2。当前应把结果作为部分支持/负证据保存，先修正训练目标和做 lambda sweep。

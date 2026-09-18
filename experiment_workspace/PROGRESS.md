@@ -74,6 +74,8 @@ partial metrics / VEPFS result + log 路径
 - [ ] 20-step held-out 已完成但只是 smoke：V3/V1、V4/V2 没有一致提升；已增加 `server/run_f0_100step_train.sh` 进行公平 100-step 学习曲线，避免把短 smoke 误判为最终科研结论。
 - [x] same-image wrong-word teacher control 已补跑：correct=`0.6563/0.4088/0.3253`，wrong-word=`0.2969/0.3272/0.2781`（pointing/mass/IoU）。
 - [ ] 由于 100-step 只显示部分支持，继续 500-step 公平复核；`run_f0_100step_train.sh` 已参数化 `F0_STEPS`/`F0_TAG`，新增 `run_f0_500step_heldout.sh`。
+- [x] 2026-09-18 500-step confirmation 完成：四组训练 loss 全部 finite、checkpoint restore 成功，held-out 输出 `HELDOUT_500_MODELS_OK`。V1=`0.2969/0.3284/0.2698`，V2=`0.3906/0.3282/0.2690`，V3=`0.3750/0.3312/0.2685`，V4=`0.2344/0.2678/0.2692`（pointing/mass/IoU）。V3 仅 mass 略高于 V1，V4 低于 V2；`V3>V1`、`V4>V2` 均未成立。结果与解释写入 `experiments/F0v2-idea-validation/results/analysis_500step.md` 和 `metrics_500.json`。
+- [x] F0 当前结论：SD correct map 相对 same-image wrong-word、wrong-image、random 在 pointing/mass 上明显更好，说明 teacher signal 有效；但现有 semantic loss 转移到学生归因后没有稳定增益，不能启动 F1-10k unchanged。下一步应审计 semantic-loss scale/schedule、map normalization/temperature，并做小规模 lambda sweep。
 - [x] 2026-09-18 100-step V1--V4 训练已完成，远端输出 `LONG_TRAIN_100_OK`；四个 adapter checkpoint 和 JSON 均存在，下一步在同一 64 条 held-out 上评估，入口 `server/run_f0_100step_heldout.sh`。
 - [x] held-out 只读汇总入口已加入：`server/summarize_f0_heldout.sh` 检查 V0--V4 报告、打印三项指标和 V3/V1、V4/V2 初步趋势；`MODEL_HELDOUT_READY` 不等价于最终 idea 通过，仍需 teacher 负控。
 - [x] 一键 F0 入口已加入：`server/run_f0_full_validation_remote.sh` 复用或生成 V0--V4 held-out 报告、64 条 SD teacher cache，并运行四类 teacher map controls；拒绝覆盖 checkpoint/report，最终标志 `F0_FULL_VALIDATION_OK`。尚待用户终端执行。

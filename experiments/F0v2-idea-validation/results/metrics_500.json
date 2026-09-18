@@ -1,0 +1,52 @@
+{
+  "heldout_500step": {
+    "V1": {
+      "model_id": "V1_500step",
+      "checkpoint": "/vepfs-mlp2/c20250405/400040/transfer/vla_attention/checkpoints/F0v2_idea_validation_500/V1",
+      "manifest": "/vepfs-mlp2/c20250405/400040/transfer/vla_attention/repo/VLA_attention/experiment_workspace/manifests/flickr30k_entities/F0v2_heldout_test_64.jsonl",
+      "n": 64,
+      "pointing": 0.296875,
+      "mass_in_box": 0.3284190058336654,
+      "top20_box_iou": 0.26979408807044836
+    },
+    "V2": {
+      "model_id": "V2_500step",
+      "checkpoint": "/vepfs-mlp2/c20250405/400040/transfer/vla_attention/checkpoints/F0v2_idea_validation_500/V2",
+      "manifest": "/vepfs-mlp2/c20250405/400040/transfer/vla_attention/repo/VLA_attention/experiment_workspace/manifests/flickr30k_entities/F0v2_heldout_test_64.jsonl",
+      "n": 64,
+      "pointing": 0.390625,
+      "mass_in_box": 0.3281841653478531,
+      "top20_box_iou": 0.26896358953587773
+    },
+    "V3": {
+      "model_id": "V3_500step",
+      "checkpoint": "/vepfs-mlp2/c20250405/400040/transfer/vla_attention/checkpoints/F0v2_idea_validation_500/V3",
+      "manifest": "/vepfs-mlp2/c20250405/400040/transfer/vla_attention/repo/VLA_attention/experiment_workspace/manifests/flickr30k_entities/F0v2_heldout_test_64.jsonl",
+      "n": 64,
+      "pointing": 0.375,
+      "mass_in_box": 0.33123474034302164,
+      "top20_box_iou": 0.26851414796555234
+    },
+    "V4": {
+      "model_id": "V4_500step",
+      "checkpoint": "/vepfs-mlp2/c20250405/400040/transfer/vla_attention/checkpoints/F0v2_idea_validation_500/V4",
+      "manifest": "/vepfs-mlp2/c20250405/400040/transfer/vla_attention/repo/VLA_attention/experiment_workspace/manifests/flickr30k_entities/F0v2_heldout_test_64.jsonl",
+      "n": 64,
+      "pointing": 0.234375,
+      "mass_in_box": 0.26777005230200474,
+      "top20_box_iou": 0.26916993284129215
+    }
+  },
+  "deltas": {
+    "V3_minus_V1": {
+      "pointing": 0.078125,
+      "mass_in_box": 0.002815734509356238,
+      "top20_box_iou": -0.0012799401048960157
+    },
+    "V4_minus_V2": {
+      "pointing": -0.15625,
+      "mass_in_box": -0.06041411304584837,
+      "top20_box_iou": 0.0002063433054144137
+    }
+  }
+}

@@ -1,0 +1,26 @@
+{
+  "n": 64,
+  "seed": 23,
+  "summary": {
+    "correct": {
+      "pointing": 0.65625,
+      "mass_in_box": 0.4087753354335855,
+      "top20_box_iou": 0.32525413717300944
+    },
+    "wrong_image": {
+      "pointing": 0.296875,
+      "mass_in_box": 0.32343760373594665,
+      "top20_box_iou": 0.27008155876748724
+    },
+    "shifted": {
+      "pointing": 0.375,
+      "mass_in_box": 0.35668235418588473,
+      "top20_box_iou": 0.32552703622489676
+    },
+    "random": {
+      "pointing": 0.296875,
+      "mass_in_box": 0.3032782927919704,
+      "top20_box_iou": 0.26759465137972693
+    }
+  }
+}
