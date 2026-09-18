@@ -63,6 +63,7 @@ partial metrics / VEPFS result + log 路径
 - [x] 教师负控脚本已实现：`scripts/eval_teacher_map_controls.py` 对 held-out SD phrase cache 计算 correct、wrong-image、shifted、random，commit `0fb77a1`。尚未执行，因为 101 SSH 当前不可用，且 64 条 held-out teacher cache 尚未确认存在。
 - [x] 评估器修正：PEFT inference 会冻结 Qwen base；`eval_qwen_heldout.py` 现在只重新打开 visual path 的 `requires_grad` 以取得 phrase-score attribution，仍不创建 optimizer、不更新权重，commit `d756212`。
 - [x] 上传工具已加入：`server/upload_validation_scripts.sh` 会从用户本机上传 5 个验证脚本并在 101 端逐个 SHA256 校验，成功标志为 `UPLOAD_VERIFY_OK`。由于 Codex 执行沙盒的 socket 限制，该脚本应在用户自己的 SSH 可用终端运行。
+- [x] 用户已确认本机 `ssh vla101 'echo SSH_OK'` 成功；下一步入口为 `server/run_f0_checkpoint_smokes.sh`，顺序生成 V3/V4 checkpoint，拒绝覆盖旧产物，成功标志为 `CHECKPOINT_SMOKES_OK`。
 - [ ] 2026-09-18 当前执行窗口无法建立 `vla101` SSH socket（`Operation not permitted`）；未假定远端状态、未重复启动任务。待连接恢复后按 protocol 先同步 runner，再补 V3/V4 checkpoint 和 64 条 held-out 指标。此为环境阻塞，不是实验失败。
 
 ## 下一条可接受的证据

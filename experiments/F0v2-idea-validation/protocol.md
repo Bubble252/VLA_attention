@@ -26,6 +26,16 @@ cd /home/bubble/类脑计算/VLM终局
 bash server/upload_validation_scripts.sh
 ```
 
+上传成功并确认 `SSH_OK` 后，在本机运行：
+
+```bash
+bash server/run_f0_checkpoint_smokes.sh
+```
+
+该入口会在 101 上检查 256 个 SD map、模型、manifest 和配置；拒绝覆盖已有
+V3/V4 产物；顺序完成 V3→V4 各 20 step，并分别检查 adapter 文件和 V4 的
+`dino_projector.pt`。最终标志为 `CHECKPOINT_SMOKES_OK`。
+
 它会上传 5 个验证脚本并在 101 端逐个执行 SHA256 校验；只有看到
 `UPLOAD_VERIFY_OK` 才继续 checkpoint 或 held-out 评估。若本机 SSH alias 不是
 `vla101`，可显式指定：
