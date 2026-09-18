@@ -134,3 +134,5 @@ SWEEP_STEPS=100 CUDA_VISIBLE_DEVICES=1 bash server/run_f0_lambda_sweep_eval.sh
 ```
 
 完成后使用 `scripts/analyze_lambda_sweep.py` 生成汇总。
+
+本轮若没有一个 λ 同时改善 pointing、mass 和 IoU，不得直接扩大到 F1-10k；应固定窄候选（当前 V3 λ=0.10）后单独检查 teacher map temperature/normalization。
