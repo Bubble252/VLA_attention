@@ -67,7 +67,19 @@ def main() -> int:
     if a.checkpoint is not None:
         from peft import PeftModel
         model = PeftModel.from_pretrained(base, a.checkpoint, is_trainable=False).eval()
-    visual = model.base_model.model.model.visual if hasattr(model, "base_model") else model.model.visual
+    # PeftModel created from scratch and PeftModel.from_pretrained expose one
+    # different wrapper depth across PEFT versions. Resolve the visual module
+    # structurally instead of relying on one hard-coded attribute chain.
+    candidates = []
+    if hasattr(model, "model"):
+        candidates.append(getattr(model.model, "visual", None))
+    if hasattr(model, "base_model"):
+        inner = model.base_model.model
+        candidates.append(getattr(inner, "visual", None))
+        candidates.append(getattr(getattr(inner, "model", None), "visual", None))
+    visual = next((item for item in candidates if item is not None), None)
+    if visual is None:
+        raise AttributeError("could not resolve Qwen visual module for attribution")
     # PEFT inference freezes the base model. Re-enable only the visual path so
     # the phrase-score backward pass has a valid feature gradient; no optimizer
     # is created and no weights are changed.
