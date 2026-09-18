@@ -71,13 +71,24 @@ def main() -> int:
     # different wrapper depth across PEFT versions. Resolve the visual module
     # structurally instead of relying on one hard-coded attribute chain.
     candidates = []
-    if hasattr(model, "model"):
-        candidates.append(getattr(model.model, "visual", None))
-    if hasattr(model, "base_model"):
-        inner = model.base_model.model
-        candidates.append(getattr(inner, "visual", None))
-        candidates.append(getattr(getattr(inner, "model", None), "visual", None))
-    visual = next((item for item in candidates if item is not None), None)
+    queue = [model]
+    seen = set()
+    while queue:
+        item = queue.pop(0)
+        if item is None or id(item) in seen:
+            continue
+        seen.add(id(item))
+        direct = getattr(item, "visual", None)
+        if direct is not None:
+            candidates.append(direct)
+        for attr in ("model", "base_model"):
+            try:
+                child = getattr(item, attr, None)
+            except AttributeError:
+                child = None
+            if child is not None and id(child) not in seen:
+                queue.append(child)
+    visual = next((item for item in candidates if hasattr(item, "merger")), None)
     if visual is None:
         raise AttributeError("could not resolve Qwen visual module for attribution")
     # PEFT inference freezes the base model. Re-enable only the visual path so
