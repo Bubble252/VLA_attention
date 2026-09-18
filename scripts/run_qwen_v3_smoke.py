@@ -26,7 +26,7 @@ def main() -> int:
     from vla_attention.data import jsonl
     from vla_attention.losses import semantic_map_kl
     from vla_attention.teachers.retention import resample_teacher_features
-    p=argparse.ArgumentParser(); p.add_argument('--model',type=Path,required=True); p.add_argument('--dataset-root',type=Path,required=True); p.add_argument('--manifest',type=Path,required=True); p.add_argument('--cache',type=Path,required=True); p.add_argument('--lora-config',type=Path,required=True); p.add_argument('--output',type=Path,required=True); p.add_argument('--max-steps',type=int,default=20); p.add_argument('--lambda-sem',type=float,default=0.1); p.add_argument('--seed',type=int,default=17); a=p.parse_args()
+    p=argparse.ArgumentParser(); p.add_argument('--model',type=Path,required=True); p.add_argument('--dataset-root',type=Path,required=True); p.add_argument('--manifest',type=Path,required=True); p.add_argument('--cache',type=Path,required=True); p.add_argument('--lora-config',type=Path,required=True); p.add_argument('--output',type=Path,required=True); p.add_argument('--checkpoint',type=Path,default=None); p.add_argument('--max-steps',type=int,default=20); p.add_argument('--lambda-sem',type=float,default=0.1); p.add_argument('--seed',type=int,default=17); a=p.parse_args()
     cfg=json.loads(a.lora_config.read_text()); torch.manual_seed(a.seed); processor=AutoProcessor.from_pretrained(a.model,local_files_only=True,use_fast=False)
     base=Qwen2_5_VLForConditionalGeneration.from_pretrained(a.model,torch_dtype=torch.bfloat16,local_files_only=True,attn_implementation='eager').cuda(); pc=cfg['peft']; model=get_peft_model(base,LoraConfig(task_type=TaskType.CAUSAL_LM,r=pc['r'],lora_alpha=pc['lora_alpha'],lora_dropout=pc['lora_dropout'],bias=pc['bias'],target_modules=pc['target_modules_regex']))
     captured=[]
@@ -35,7 +35,7 @@ def main() -> int:
     def hook(_m,_i,o):
         captured[:] = [o]
         return o
-    h=model.base_model.model.model.visual.merger.register_forward_hook(hook); opt=torch.optim.AdamW((x for x in model.parameters() if x.requires_grad),lr=cfg['optimizer']['learning_rate'],betas=tuple(cfg['optimizer']['betas']),eps=cfg['optimizer']['eps']); rows=list(jsonl(a.manifest)); logs=[]
+    h=model.base_model.model.model.visual.merger.register_forward_hook(hook); opt_params=[x for n,x in model.named_parameters() if x.requires_grad and '.visual.' not in n]; opt=torch.optim.AdamW(opt_params,lr=cfg['optimizer']['learning_rate'],betas=tuple(cfg['optimizer']['betas']),eps=cfg['optimizer']['eps']); rows=list(jsonl(a.manifest)); logs=[]
     try:
       for step in range(a.max_steps):
         row=rows[step%len(rows)]; key=row['sample_id'].replace(':','_'); teacher_np=np.load(a.cache/(key+'.npy'))
@@ -60,5 +60,7 @@ def main() -> int:
         if not torch.isfinite(loss): raise RuntimeError('non-finite V3 loss')
         opt.zero_grad(set_to_none=True); loss.backward(); torch.nn.utils.clip_grad_norm_(model.parameters(),cfg['optimizer']['gradient_clip_norm']); opt.step(); logs.append({'total':float(loss.detach()),'caption':float(out.loss.detach()),'semantic':float(sem.detach())})
     finally: h.remove()
-    vis=[n for n,x in model.named_parameters() if x.requires_grad and '.visual.' in n and 'lora_' in n]; a.output.parent.mkdir(parents=True,exist_ok=True); a.output.write_text(json.dumps({'experiment':'V3-caption-plus-semantic-smoke','steps':a.max_steps,'lambda_sem':a.lambda_sem,'losses':logs,'visual_lora_tensors':len(vis),'visual_attribution_gradients_enabled':True,'teacher_cache':str(a.cache)},indent=2)+'\n'); print(a.output)
+    if a.checkpoint is not None:
+        a.checkpoint.mkdir(parents=True,exist_ok=True); model.save_pretrained(a.checkpoint); processor.save_pretrained(a.checkpoint)
+    vis=[n for n,x in model.named_parameters() if x.requires_grad and '.visual.' in n]; a.output.parent.mkdir(parents=True,exist_ok=True); a.output.write_text(json.dumps({'experiment':'V3-caption-plus-semantic-smoke','steps':a.max_steps,'lambda_sem':a.lambda_sem,'losses':logs,'visual_optimizer_tensors':0,'visual_attribution_parameters':len(vis),'visual_attribution_gradients_enabled':True,'teacher_cache':str(a.cache)},indent=2)+'\n'); print(a.output)
 if __name__=='__main__': main()
