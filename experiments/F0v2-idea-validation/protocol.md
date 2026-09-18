@@ -136,3 +136,5 @@ SWEEP_STEPS=100 CUDA_VISIBLE_DEVICES=1 bash server/run_f0_lambda_sweep_eval.sh
 完成后使用 `scripts/analyze_lambda_sweep.py` 生成汇总。
 
 本轮若没有一个 λ 同时改善 pointing、mass 和 IoU，不得直接扩大到 F1-10k；应固定窄候选（当前 V3 λ=0.10）后单独检查 teacher map temperature/normalization。
+
+已完成的后续诊断包括 V3 的细 λ、teacher temperature 与 warm-up。结论是 `λ=.10,T=1.25` 对 pointing/mass 有可重复的方向性收益，但 IoU 未跨 seed 稳定改善。故下一轮不能再做无边界 scalar sweep；应改变 teacher/student map match 的形式，再与 semantic-off baseline 做至少三 seed 对照。
