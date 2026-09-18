@@ -57,6 +57,7 @@ partial metrics / VEPFS result + log 路径
 - [ ] F0-256：从 10k seed17 manifest 抽取固定 256 pair 的构建已提交至此前不存在的目标路径；101 未回传输出且随后的最小存在性检查无输出，尚不能确认 F0 manifest 是否写成。禁止重抽样、生成 F0 SD cache 或启动 F0 V1--V4，直到可读取唯一文件的 SHA256。
 - [x] F0v2 shared manifest：发现 caption-only F0 不含目标 phrase，停止了尚未产出 map 的错误全句 cache job。改从 Entities train 生成 256 条 image-caption-phrase-box 对齐记录，并显式补固定 caption prompt；最终训练输入 `F0_aligned_caption_phrase_256_seed19_v2.jsonl`，SHA256 `2a37c49…`。F0v2 V1/V2 20-step smoke 均通过；V2 DINO retention 从约 0.995 降至 0.862，visual LoRA=0、DINO frozen。
 - [ ] F0v2 SD cache：已提交后台 job PID `1554962`，路径 `teacher_maps/F0v2_sd1_5_nulltext_phrase_256_seed17`；每条使用完整 caption 条件、同一行 Entities phrase token target、20×10 FP32 null-text、seed17、sample_id 唯一键。完成后须核对 256 map/metadata、failures 和有效交集，才可开始 V3/V4。
+- [x] F0v2 V1--V4 smoke：正确对齐 manifest 和 SD phrase cache（256 maps、`failures=[]`）下，V1/V2/V3/V4 均完成 20-step，所有记录的 loss 有限。V3 使用 eager attention 以支持二阶 phrase-score attribution；visual encoder parameter 仅为 attribution 计算开启 grad，不在 optimizer，visual LoRA=0。`F0v2_status_nonfinal.json` 是工程 gate 汇总，不是论文结果。剩余 F0：checkpoint restore、V0 eval、三种负控与状态表。 
 
 ## 下一条可接受的证据
 
