@@ -70,6 +70,8 @@ partial metrics / VEPFS result + log 路径
 - [x] 2026-09-18 15:20（UTC+8）V0--V4 held-out attribution 已完成 64/64，远端输出 `HELDOUT_MODELS_OK`。初步结果（20-step checkpoint，non-final）：V0 pointing/mass/IoU=`0.2813/0.3095/0.2693`；V1=`0.3594/0.3183/0.2692`；V2=`0.3594/0.3313/0.2696`；V3=`0.2969/0.3197/0.2683`；V4=`0.3594/0.3210/0.2682`。因此当前短 smoke 未显示 `V3>V1` 或 `V4>V2` 的一致提升；不能据此否定 idea，需先完成 teacher 负控并明确这是工程 gate 还是训练不足。
 - [x] held-out evaluator 修复记录：远端缺少 `evaluation/spatial.py`（已同步并通过 `SPATIAL_IMPORT_OK`）；PEFT wrapper 层级差异与 phrase BPE 直接匹配问题已修复（本地 commits `6129934`、`4dc2e14`）。
 - [ ] 2026-09-18 SD held-out cache 首次尝试因工作目录未设置导致 64 条 `ModuleNotFoundError: scripts`，未生成有效 map；已切换到 repo 工作目录并设置 `PYTHONPATH` 重跑，当前第 5/64 条已成功，使用 FP32 null-text `20x10`、seed23。
+- [x] 2026-09-18 held-out SD cache 已完成 64/64，`failures=0`；teacher controls 已运行：correct pointing/mass/IoU=`0.6563/0.4088/0.3253`，wrong-image=`0.2969/0.3234/0.2701`，shifted=`0.3750/0.3567/0.3255`，random=`0.2969/0.3033/0.2676`。correct 对 pointing/mass 和 wrong-image/random 的三项均明显更好；shifted 的 IoU 与 correct 几乎持平，故 IoU 单项负控不完全通过。
+- [ ] 20-step held-out 已完成但只是 smoke：V3/V1、V4/V2 没有一致提升；已增加 `server/run_f0_100step_train.sh` 进行公平 100-step 学习曲线，避免把短 smoke 误判为最终科研结论。
 - [x] held-out 只读汇总入口已加入：`server/summarize_f0_heldout.sh` 检查 V0--V4 报告、打印三项指标和 V3/V1、V4/V2 初步趋势；`MODEL_HELDOUT_READY` 不等价于最终 idea 通过，仍需 teacher 负控。
 - [x] 一键 F0 入口已加入：`server/run_f0_full_validation_remote.sh` 复用或生成 V0--V4 held-out 报告、64 条 SD teacher cache，并运行四类 teacher map controls；拒绝覆盖 checkpoint/report，最终标志 `F0_FULL_VALIDATION_OK`。尚待用户终端执行。
 - [ ] 2026-09-18 当前执行窗口无法建立 `vla101` SSH socket（`Operation not permitted`）；未假定远端状态、未重复启动任务。待连接恢复后按 protocol 先同步 runner，再补 V3/V4 checkpoint 和 64 条 held-out 指标。此为环境阻塞，不是实验失败。

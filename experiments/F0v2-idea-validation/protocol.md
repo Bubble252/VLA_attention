@@ -88,6 +88,14 @@ bash server/summarize_f0_heldout.sh
 `MODEL_HELDOUT_READY` 只表示五组报告齐全；最终 idea 判定还必须加入 teacher
 correct、错配、shift 和 random 负控。
 
+20-step 若未出现趋势，只能作为工程 smoke，不能直接宣判 idea 失败。为区分训练步数不足与方法无效，使用同一 256 条训练 manifest、同一 seed 和超参运行 100-step 四组对照：
+
+```bash
+CUDA_VISIBLE_DEVICES=1 bash server/run_f0_100step_train.sh
+```
+
+成功标志为 `LONG_TRAIN_100_OK`；该阶段仍是小规模方向性验证，不替代后续 F1-10k。
+
 如需一次性完成模型评估、held-out SD cache 和负控，可运行：
 
 ```bash
