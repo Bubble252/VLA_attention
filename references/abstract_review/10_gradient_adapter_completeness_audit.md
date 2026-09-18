@@ -96,3 +96,58 @@ G0 是方法的通用训练接口；L0/B0 是竞争或正交基线；G1/G2/C0 �
 6. VLA 中用 action target 定义替换 phrase target 后，同样趋势在 LIBERO/DROID action evaluation 出现。
 
 当前状态满足第 1 项的 Qwen 子集和 teacher 控制的一部分，但尚未满足 2–6。因此应把当前方法称作 **promising universal adapter candidate**，而不是最终完备方案。
+
+## 最终方法与实验组件的裁决
+
+### 当前应冻结的主方法
+
+主方法应保持最小且可解释：
+
+$$
+L_{total}=L_{task}+\lambda_{sem}L_{G0\leftrightarrow SD},
+$$
+
+其中 `G0` 是 output-conditioned interface gradient×activation map，SD 是离线 phrase map teacher。词筛选、token-grid coordinate bridge、teacher temperature 和 warm-up 属于该损失的实现配置，不是独立方法模块。当前最有希望的候选配置为 `lambda=.10, T=1.25`；仍需多 seed 验证后才冻结。
+
+这保持了论文的核心主张：**不是让模型模仿原始 attention，而是让与目标输出有关的视觉证据具有语言条件空间一致性。**
+
+### L0 必须比较，但不属于最终方法
+
+L0 是 Lavender-adapted direct attention-map MSE。它与主方法使用相同 SD cache、phrase filter、坐标桥、训练数据、LoRA budget 和 held-out protocol。它回答唯一关键问题：
+
+> 如果直接对齐 attention 已足够，为什么还需要 output-conditioned attribution？
+
+所以 `G0 > L0` 是我们核心叙事必需的实验；L0 是强 baseline，不应并入主方法。
+
+### B0 与 B0+G0 的正确位置
+
+B0 是 BlindVLA-style feature retention，回答“是否只是避免视觉遗忘”。它也是 baseline，而非默认核心模块。
+
+`B0+G0` 应作为组合消融组：
+
+$$
+L_{total}=L_{task}+\lambda_{ret}L_{B0}+\lambda_{sem}L_{G0\leftrightarrow SD}.
+$$
+
+只有当多 seed 下 `B0+G0 > B0`，且没有损伤 task performance，才把 B0+G0 作为最终部署配置或“可选 retention stabilizer”。当前 V4 没有稳定优于 V2，因此**现在不应把 B0 写进最终方法定义**。即使以后组合有效，论文核心仍是 G0；B0 只是独立贡献的控制和稳定化项。
+
+### G1、G2、C0 是什么，是否进训练
+
+| 组件 | 含义 | 是否进入每个 batch 训练 | 最终论文位置 |
+|---|---|---|---|
+| G1 | integrated gradients：从 blank-image / reference visual embedding 到真实 embedding 的路径积分归因 | 否；成本是多次前反传，适合小验证集 | attribution robustness audit / appendix |
+| G2 | selected hidden-layer attribution：对若干融合层分别取 target-conditioned map | 否；先用于找最有语义的层 | layer-selection ablation；只有审计明确某层更好才将单层替换 G0 interface layer |
+| C0 | top-k、bottom-k、random occlusion：遮挡不同区域并测 phrase/action score 的下降 | 否；离散遮挡更适合作因果测量 | faithfulness evaluation 主文或 appendix |
+
+它们不应与 G0 一起堆进训练，因为这会同时增加二阶梯度、多层权重和离散扰动，导致无法判断哪个模块产生收益。正确顺序是：G0 训练；G1/G2/C0 验证 G0 是否可信；验证后最多把 G2 选出的**一个**层作为新的 G0 提取位置。
+
+### 最终实验表应如何读
+
+| 组 | 目的 | 是否属于主方法 |
+|---|---|---|
+| V1 | caption SFT | 否，基础 baseline |
+| B0 | BlindVLA-style retention | 否，视觉遗忘 baseline |
+| L0 | Lavender-adapted attention MSE | 否，attention matching baseline |
+| G0 | output-conditioned GradientAdapter | 是，核心方法 |
+| B0+G0 | 测试互补 / 可能的稳定化部署配置 | 取决于 `B0+G0 > B0` 是否成立 |
+| G1/G2/C0 | 鲁棒性、层选择、因果 faithfulness 审计 | 否，验证工具 |
