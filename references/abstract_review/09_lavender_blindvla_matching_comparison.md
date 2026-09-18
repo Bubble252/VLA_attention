@@ -171,3 +171,58 @@ BlindVLA 的 lesson 是：不要用 L0 的成功或失败解释所有现象。�
 > 在小规模固定设置下，semantic attribution supervision 在两个 seed 上呈现 pointing 与 mass-in-box 的方向性收益；然而 top-20% box IoU 未稳定改善，因此尚不能称为稳健 grounding gain。
 
 若 L0 跑完后 `Ours > L0`，并且在至少三 seed 上同时满足 `V3 > V1` 的 pointing、mass 和 IoU，才可以升级为“语言条件空间归因匹配带来 grounding 提升”。若 `B0+Ours > B0` 同时成立，才能进一步声称该收益并非普通视觉表征保持造成。
+
+## Lavender-adapted 的跨模型适用性合同
+
+不能保证原版 Lavender 在所有 VLM 上无改动运行。原版依赖 MLLama 的标准 cross-attention API；大量 VLM 用的是视觉 token prefix 加 causal self-attention、window attention 或 fused attention kernel。我们能保证的是一个**有能力前提的适配接口**，而不是声称所有模型共享同一 hook。
+
+### 统一数学接口
+
+对样本 `(x, c)`，每个模型 adapter 必须提供一个由目标词/phrase `w` 条件化的、非负的视觉 token 图：
+
+$$
+M^{stu}_{w}=\operatorname{MapAdapter}(f,x,c,w)\in\mathbb R_+^{N},
+\qquad
+G:\{1,\ldots,N\}\rightarrow[0,1]^2.
+$$
+
+`G` 是 visual token 到归一化二维坐标的桥。将学生图 reshape/resample 到共同网格，经轻量 projector 和每词 normalization 后，才计算：
+
+$$
+L_{L0}=\frac{1}{|\mathcal W|}\sum_{w\in\mathcal W}
+\operatorname{MSE}\left(\operatorname{Norm}(P(M^{stu}_w)),\operatorname{Norm}(M^{SD}_w)\right).
+$$
+
+SD map、词筛选、空间网格和 MSE 定义跨模型固定；唯一模型相关的部分是 `MapAdapter` 与坐标桥 `G`。这才是可比较的通用性。
+
+### 四类模型与对应 adapter
+
+| 模型结构 | 可用学生图 | 是否称 Lavender-adapted | 例子/说明 |
+|---|---|---|---|
+| 显式 cross-attention | phrase query → visual key 的 cross-attention | 是，最接近原版 | MLLama 类结构 |
+| 视觉 prefix + decoder self-attention | answer/caption phrase token → visual token 的 self-attention slice | 是，机制等价 | Qwen2.5-VL、LLaVA/Prismatic 类、许多 InternVL 类结构 |
+| 动作 token / action query decoder | action token 或 action query → visual token attention | 只能称 Lavender-inspired VLA baseline | 监督对象从词变成动作，不等于原论文词图监督 |
+| 无可读 attention 或 fused kernel 不返回权重 | phrase/action score 的 gradient attribution 或 occlusion | 否；这是我们的 attribution adapter | 不能把 fallback 伪装成 Lavender |
+
+对 prefix decoder，目标 query 必须位于 visual token **之后**，否则 causal mask 不允许该 token 读取图像。对多图、动态分辨率或 window reorder，`G` 必须来自模型返回的 grid metadata，绝不能用 `sqrt(N)` 猜二维网格。
+
+### 每个新模型的准入测试
+
+模型只有同时通过以下测试，才能进入 L0 表：
+
+1. **视觉块定位**：精确记录 visual token index、view ID、grid height/width、merge/window reorder；
+2. **目标词定位**：目标 phrase 在 teacher-forced sequence 中的 token span 可找到，且 query 位于可见视觉 token 的 causal 位置；
+3. **attention 可读且可微**：关闭 flash/fused attention 或使用 eager/SDPA 路径后，能返回目标 query 对 visual keys 的权重，并验证 loss 对该图有梯度；
+4. **坐标桥可逆审计**：将一个人工单热点从 token grid 映回 image coordinate，确认与 patch center 一致；
+5. **同图反事实**：同图错误词、错误图、random map 不能得到与正确词图相同的 teacher/student agreement；
+6. **地图独立评估**：同时报告 pointing、mass-in-box、IoU 和 perturbation，不用模型自身 attention 充当 ground truth。
+
+失败时的处理也必须固定：如果 1--4 中任何一项失败，该模型只能进入 `AttributionAdapter` 或 feature-retention baseline，不进入 Lavender-adapted aggregate。这样“适用于多模型”是可证伪的工程合同，而不是泛化宣传。
+
+### 能在论文中怎样表述
+
+在至少两种不同融合结构模型通过上述准入测试前，应该写“architecture-adapted attention-map baseline”，而不是“universal Lavender”。当 explicit cross-attention 和 prefix-self-attention 各有一个模型通过相同 teacher、相同 token-grid protocol 和相同 evaluation 后，才能写：
+
+> Our adapter instantiates the same word-conditioned spatial-map matching objective across heterogeneous VLM fusion mechanisms.
+
+这仍不意味着所有黑箱、无 attention 输出的模型都可使用；对这类模型，我们的 gradient attribution adapter 才是更普适的路线。
