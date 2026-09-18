@@ -72,6 +72,7 @@ partial metrics / VEPFS result + log 路径
 - [ ] 2026-09-18 SD held-out cache 首次尝试因工作目录未设置导致 64 条 `ModuleNotFoundError: scripts`，未生成有效 map；已切换到 repo 工作目录并设置 `PYTHONPATH` 重跑，当前第 5/64 条已成功，使用 FP32 null-text `20x10`、seed23。
 - [x] 2026-09-18 held-out SD cache 已完成 64/64，`failures=0`；teacher controls 已运行：correct pointing/mass/IoU=`0.6563/0.4088/0.3253`，wrong-image=`0.2969/0.3234/0.2701`，shifted=`0.3750/0.3567/0.3255`，random=`0.2969/0.3033/0.2676`。correct 对 pointing/mass 和 wrong-image/random 的三项均明显更好；shifted 的 IoU 与 correct 几乎持平，故 IoU 单项负控不完全通过。
 - [ ] 20-step held-out 已完成但只是 smoke：V3/V1、V4/V2 没有一致提升；已增加 `server/run_f0_100step_train.sh` 进行公平 100-step 学习曲线，避免把短 smoke 误判为最终科研结论。
+- [x] 2026-09-18 100-step V1--V4 训练已完成，远端输出 `LONG_TRAIN_100_OK`；四个 adapter checkpoint 和 JSON 均存在，下一步在同一 64 条 held-out 上评估，入口 `server/run_f0_100step_heldout.sh`。
 - [x] held-out 只读汇总入口已加入：`server/summarize_f0_heldout.sh` 检查 V0--V4 报告、打印三项指标和 V3/V1、V4/V2 初步趋势；`MODEL_HELDOUT_READY` 不等价于最终 idea 通过，仍需 teacher 负控。
 - [x] 一键 F0 入口已加入：`server/run_f0_full_validation_remote.sh` 复用或生成 V0--V4 held-out 报告、64 条 SD teacher cache，并运行四类 teacher map controls；拒绝覆盖 checkpoint/report，最终标志 `F0_FULL_VALIDATION_OK`。尚待用户终端执行。
 - [ ] 2026-09-18 当前执行窗口无法建立 `vla101` SSH socket（`Operation not permitted`）；未假定远端状态、未重复启动任务。待连接恢复后按 protocol 先同步 runner，再补 V3/V4 checkpoint 和 64 条 held-out 指标。此为环境阻塞，不是实验失败。

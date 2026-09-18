@@ -96,6 +96,14 @@ CUDA_VISIBLE_DEVICES=1 bash server/run_f0_100step_train.sh
 
 成功标志为 `LONG_TRAIN_100_OK`；该阶段仍是小规模方向性验证，不替代后续 F1-10k。
 
+100-step checkpoint 完成后，在同一 held-out 上复评：
+
+```bash
+CUDA_VISIBLE_DEVICES=1 bash server/run_f0_100step_heldout.sh
+```
+
+最终标志为 `HELDOUT_100_MODELS_OK`。
+
 如需一次性完成模型评估、held-out SD cache 和负控，可运行：
 
 ```bash
