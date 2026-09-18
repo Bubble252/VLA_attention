@@ -6,6 +6,17 @@ from pathlib import Path
 from scripts.run_qwen_caption_smoke import last_subsequence
 
 
+def phrase_positions_in_caption(full_ids, caption, phrase, tokenizer):
+    caption_ids = tokenizer(caption, add_special_tokens=False)['input_ids']
+    caption_start = last_subsequence(full_ids, caption_ids)
+    char_start = caption.lower().find(phrase.lower())
+    if char_start < 0:
+        raise ValueError('phrase text is absent from caption')
+    prefix_ids = tokenizer(caption[:char_start], add_special_tokens=False)['input_ids']
+    phrase_ids = tokenizer(caption[char_start:char_start + len(phrase)], add_special_tokens=False)['input_ids']
+    return caption_start + len(prefix_ids), phrase_ids
+
+
 def main() -> int:
     import numpy as np
     import torch
@@ -28,7 +39,7 @@ def main() -> int:
         text=processor.apply_chat_template(messages,tokenize=False,add_generation_prompt=False); images,videos=process_vision_info(messages); batch=processor(text=[text],images=images,videos=videos,padding=True,return_tensors='pt'); batch={k:v.cuda() if hasattr(v,'cuda') else v for k,v in batch.items()}
         caption_ids=processor.tokenizer(row['caption'],add_special_tokens=False)['input_ids']; start=last_subsequence(batch['input_ids'][0].tolist(),caption_ids); labels=torch.full_like(batch['input_ids'],-100); labels[0,start:start+len(caption_ids)]=batch['input_ids'][0,start:start+len(caption_ids)]
         captured.clear(); out=model(**batch,labels=labels); features=captured[0].reshape(1,-1,captured[0].shape[-1])
-        phrase_ids=processor.tokenizer(row['phrase'],add_special_tokens=False)['input_ids']; phrase_start=last_subsequence(batch['input_ids'][0].tolist(),phrase_ids); logp=out.logits[0,phrase_start-1:phrase_start-1+len(phrase_ids)].float().log_softmax(-1); phrase_score=logp.gather(1,torch.tensor(phrase_ids,device='cuda').unsqueeze(1)).sum()
+        phrase_start,phrase_ids=phrase_positions_in_caption(batch['input_ids'][0].tolist(),row['caption'],row['phrase'],processor.tokenizer); logp=out.logits[0,phrase_start-1:phrase_start-1+len(phrase_ids)].float().log_softmax(-1); phrase_score=logp.gather(1,torch.tensor(phrase_ids,device='cuda').unsqueeze(1)).sum()
         gradient=torch.autograd.grad(phrase_score,features,create_graph=True,retain_graph=True)[0]; student=(gradient*features).sum(-1).abs()
         grid_t,gh,gw=batch['image_grid_thw'][0].tolist(); merge=base.config.vision_config.spatial_merge_size; teacher=torch.from_numpy(teacher_np).to('cuda',dtype=student.dtype).reshape(1,-1,1); teacher=resample_teacher_features(teacher,source_height=16,source_width=16,target_height=gh//merge,target_width=gw//merge).squeeze(-1)
         sem=semantic_map_kl(student,teacher); loss=out.loss+a.lambda_sem*sem
