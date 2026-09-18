@@ -119,3 +119,9 @@ CUDA_VISIBLE_DEVICES=1 bash server/run_f0_full_validation_remote.sh
 
 它会复用已有报告和 map，不覆盖 checkpoint；最终标志为
 `F0_FULL_VALIDATION_OK`。
+
+### 为什么先做 lambda、归一化和温度诊断
+
+teacher 负控已经证明 SD phrase map 携带真实空间信息，但 V3/V4 的 500-step 结果没有稳定优于对应基线。下一步需要分离：`lambda_sem` 与 gradient clipping 是否让 semantic signal 太弱、太强或过早干扰 caption SFT；以及 `abs(gradient×activation)` 与 16×16 teacher map 的归一化、温度和插值是否造成病态 KL。
+
+首轮固定 map 与评价代码，只比较 `lambda_sem={0,0.01,0.03,0.1,0.3}`；记录 clipping 前后的 gradient norm、caption/semantic loss 和 held-out 三项指标。`lambda=0` 是匹配的 caption-only 对照。只有出现稳定候选后，才单独测试 temperature 或 normalization，避免把随机指标波动误当作核心方法收益。
