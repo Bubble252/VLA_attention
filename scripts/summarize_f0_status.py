@@ -6,7 +6,9 @@ from pathlib import Path
 def main():
     root=Path(__import__('sys').argv[1]); names=['F0v2_V1_caption_smoke_20_seed17.json','F0v2_V2_dino_smoke_20_seed17.json','F0v2_V3_semantic_smoke_20_seed17.json','F0v2_V4_ret_sem_smoke_20_seed17.json']; out={}
     for name in names:
-        data=json.loads((root/name).read_text()); out[name]={'steps':data['steps'],'losses_finite':all(all(v==v and abs(v)<1e6 for v in item.values() if isinstance(v,(int,float))) for item in data['losses']),'visual_lora_tensors':data.get('visual_lora_tensors',data.get('visual_trainable_tensors'))}
+        data=json.loads((root/name).read_text())
+        values=(value for item in data['losses'] for value in (item.values() if isinstance(item,dict) else [item]) if isinstance(value,(int,float)))
+        out[name]={'steps':data['steps'],'losses_finite':all(value==value and abs(value)<1e6 for value in values),'visual_lora_tensors':data.get('visual_lora_tensors',data.get('visual_trainable_tensors'))}
     out['scope']='F0-256 engineering gate; non-final; no paper claim'; print(json.dumps(out,indent=2))
 
 if __name__=='__main__': main()
