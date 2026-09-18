@@ -60,5 +60,5 @@ def main() -> int:
         if not torch.isfinite(loss): raise RuntimeError('non-finite V3 loss')
         opt.zero_grad(set_to_none=True); loss.backward(); torch.nn.utils.clip_grad_norm_(model.parameters(),cfg['optimizer']['gradient_clip_norm']); opt.step(); logs.append({'total':float(loss.detach()),'caption':float(out.loss.detach()),'semantic':float(sem.detach())})
     finally: h.remove()
-    vis=[n for n,x in model.named_parameters() if x.requires_grad and '.visual.' in n]; a.output.parent.mkdir(parents=True,exist_ok=True); a.output.write_text(json.dumps({'experiment':'V3-caption-plus-semantic-smoke','steps':a.max_steps,'lambda_sem':a.lambda_sem,'losses':logs,'visual_trainable_tensors':len(vis),'teacher_cache':str(a.cache)},indent=2)+'\n'); print(a.output)
+    vis=[n for n,x in model.named_parameters() if x.requires_grad and '.visual.' in n and 'lora_' in n]; a.output.parent.mkdir(parents=True,exist_ok=True); a.output.write_text(json.dumps({'experiment':'V3-caption-plus-semantic-smoke','steps':a.max_steps,'lambda_sem':a.lambda_sem,'losses':logs,'visual_lora_tensors':len(vis),'visual_attribution_gradients_enabled':True,'teacher_cache':str(a.cache)},indent=2)+'\n'); print(a.output)
 if __name__=='__main__': main()
