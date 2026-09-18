@@ -42,7 +42,15 @@ def main() -> int:
         messages=[{'role':'user','content':[{'type':'image','image':str(a.dataset_root/row['image_path'])},{'type':'text','text':row['prompt']}]},{'role':'assistant','content':[{'type':'text','text':row['caption']}]}]
         text=processor.apply_chat_template(messages,tokenize=False,add_generation_prompt=False); images,videos=process_vision_info(messages); batch=processor(text=[text],images=images,videos=videos,padding=True,return_tensors='pt'); batch={k:v.cuda() if hasattr(v,'cuda') else v for k,v in batch.items()}
         caption_ids=processor.tokenizer(row['caption'],add_special_tokens=False)['input_ids']; start=last_subsequence(batch['input_ids'][0].tolist(),caption_ids); labels=torch.full_like(batch['input_ids'],-100); labels[0,start:start+len(caption_ids)]=batch['input_ids'][0,start:start+len(caption_ids)]
-        captured.clear(); out=model(**batch,labels=labels); features=captured[0].reshape(1,-1,captured[0].shape[-1])
+        captured.clear()
+        qmodel=model.base_model.model.model
+        inputs_embeds=qmodel.get_input_embeddings()(batch['input_ids'])
+        image_embeds=qmodel.get_image_features(batch['pixel_values'],batch['image_grid_thw'])
+        image_embeds=torch.cat(image_embeds,dim=0).to(inputs_embeds.device,inputs_embeds.dtype)
+        image_mask,_=qmodel.get_placeholder_mask(batch['input_ids'],inputs_embeds=inputs_embeds,image_features=image_embeds)
+        inputs_embeds=inputs_embeds.masked_scatter(image_mask,image_embeds)
+        out=model(input_ids=batch['input_ids'],inputs_embeds=inputs_embeds,attention_mask=batch.get('attention_mask'),image_grid_thw=batch.get('image_grid_thw'),labels=labels)
+        features=image_embeds.reshape(1,-1,image_embeds.shape[-1])
         phrase_start,phrase_ids=phrase_positions_in_caption(batch['input_ids'][0].tolist(),row['caption'],row['phrase'],processor.tokenizer); logp=out.logits[0,phrase_start-1:phrase_start-1+len(phrase_ids)].float().log_softmax(-1); phrase_score=logp.gather(1,torch.tensor(phrase_ids,device='cuda').unsqueeze(1)).sum()
         gradient=torch.autograd.grad(phrase_score,features,create_graph=True,retain_graph=True)[0]; student=(gradient*features).sum(-1).abs()
         grid_t,gh,gw=batch['image_grid_thw'][0].tolist(); merge=base.config.vision_config.spatial_merge_size; teacher=torch.from_numpy(teacher_np).to('cuda',dtype=student.dtype).reshape(1,-1,1); teacher=resample_teacher_features(teacher,source_height=16,source_width=16,target_height=gh//merge,target_width=gw//merge).squeeze(-1)
