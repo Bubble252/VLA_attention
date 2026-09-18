@@ -91,7 +91,7 @@ correct、错配、shift 和 random 负控。
 20-step 若未出现趋势，只能作为工程 smoke，不能直接宣判 idea 失败。为区分训练步数不足与方法无效，使用同一 256 条训练 manifest、同一 seed 和超参运行 100-step 四组对照：
 
 ```bash
-CUDA_VISIBLE_DEVICES=1 bash server/run_f0_100step_train.sh
+F0_STEPS=100 F0_TAG=100 CUDA_VISIBLE_DEVICES=1 bash server/run_f0_100step_train.sh
 ```
 
 成功标志为 `LONG_TRAIN_100_OK`；该阶段仍是小规模方向性验证，不替代后续 F1-10k。
@@ -103,6 +103,13 @@ CUDA_VISIBLE_DEVICES=1 bash server/run_f0_100step_heldout.sh
 ```
 
 最终标志为 `HELDOUT_100_MODELS_OK`。
+
+若 100-step 仍为部分支持，使用同一入口进行 500-step 复核：
+
+```bash
+F0_STEPS=500 F0_TAG=500 CUDA_VISIBLE_DEVICES=1 bash server/run_f0_100step_train.sh
+CUDA_VISIBLE_DEVICES=1 bash server/run_f0_500step_heldout.sh
+```
 
 如需一次性完成模型评估、held-out SD cache 和负控，可运行：
 
