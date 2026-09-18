@@ -17,7 +17,7 @@ def main() -> int:
     from vla_attention.teachers.retention import cosine_retention_loss, resample_teacher_features
 
     parser=argparse.ArgumentParser()
-    parser.add_argument('--model',type=Path,required=True); parser.add_argument('--dino',type=Path,required=True)
+    parser.add_argument('--model',type=Path,required=True); parser.add_argument('--dino',type=Path,required=True); parser.add_argument('--checkpoint',type=Path,default=None)
     parser.add_argument('--dataset-root',type=Path,required=True); parser.add_argument('--manifest',type=Path,required=True)
     parser.add_argument('--lora-config',type=Path,required=True); parser.add_argument('--output',type=Path,required=True)
     parser.add_argument('--max-steps',type=int,default=20); parser.add_argument('--lambda-ret',type=float,default=0.1); parser.add_argument('--seed',type=int,default=17)
@@ -52,6 +52,8 @@ def main() -> int:
         optimizer.zero_grad(set_to_none=True); loss.backward(); torch.nn.utils.clip_grad_norm_(list(model.parameters())+list(projector.parameters()),cfg['optimizer']['gradient_clip_norm']); optimizer.step()
         losses.append({'total':float(loss.detach()),'caption':float(out.loss.detach()),'retention':float(retention.detach())})
     finally: handle.remove()
+    if args.checkpoint is not None:
+        args.checkpoint.mkdir(parents=True,exist_ok=True); model.save_pretrained(args.checkpoint); torch.save(projector.state_dict(),args.checkpoint/'dino_projector.pt')
     visual=[n for n,p in model.named_parameters() if p.requires_grad and '.visual.' in n]
     args.output.parent.mkdir(parents=True,exist_ok=True); args.output.write_text(json.dumps({'experiment':'V2-caption-plus-dino-smoke','steps':args.max_steps,'lambda_ret':args.lambda_ret,'losses':losses,'visual_trainable_tensors':len(visual),'dino_frozen':True},indent=2)+'\n'); print(args.output)
 
