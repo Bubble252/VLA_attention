@@ -11,6 +11,14 @@
 
 `scripts/eval_qwen_heldout.py` 只读加载模型与 LoRA，不更新权重；`scripts/run_f0_heldout_all.sh` 使用同一 64 条图像独立样本批量评估 V0--V4。每条样本输出：`pointing`、`mass_in_box`，以及最高 20% 归因 token 外接框与 GT 框的 `top20_box_iou`。
 
+先将新增脚本上传到 101（GitHub 暂不可达时可直接用 scp）：
+
+```bash
+scp scripts/run_qwen_v3_smoke.py scripts/run_qwen_v4_smoke.py \
+    scripts/eval_qwen_heldout.py scripts/eval_teacher_map_controls.py \
+    scripts/run_f0_heldout_all.sh vla101:/vepfs-mlp2/c20250405/400040/transfer/vla_attention/repo/VLA_attention/scripts/
+```
+
 服务器上补齐 V3/V4 checkpoint 后执行：
 
 ```bash
