@@ -52,7 +52,9 @@ def main() -> int:
         out=model(input_ids=batch['input_ids'],inputs_embeds=inputs_embeds,attention_mask=batch.get('attention_mask'),image_grid_thw=batch.get('image_grid_thw'),labels=labels)
         features=inputs_embeds[image_mask].reshape(1,-1,inputs_embeds.shape[-1])
         phrase_start,phrase_ids=phrase_positions_in_caption(batch['input_ids'][0].tolist(),row['caption'],row['phrase'],processor.tokenizer); logp=out.logits[0,phrase_start-1:phrase_start-1+len(phrase_ids)].float().log_softmax(-1); phrase_score=logp.gather(1,torch.tensor(phrase_ids,device='cuda').unsqueeze(1)).sum()
-        gradient=torch.autograd.grad(phrase_score,features,create_graph=True,retain_graph=True)[0]; student=(gradient*features).sum(-1).abs()
+        gradient_full=torch.autograd.grad(phrase_score,inputs_embeds,create_graph=True,retain_graph=True)[0]
+        gradient=gradient_full[image_mask].reshape(1,-1,inputs_embeds.shape[-1])
+        student=(gradient*features).sum(-1).abs()
         grid_t,gh,gw=batch['image_grid_thw'][0].tolist(); merge=base.config.vision_config.spatial_merge_size; teacher=torch.from_numpy(teacher_np).to('cuda',dtype=student.dtype).reshape(1,-1,1); teacher=resample_teacher_features(teacher,source_height=16,source_width=16,target_height=gh//merge,target_width=gw//merge).squeeze(-1)
         sem=semantic_map_kl(student,teacher); loss=out.loss+a.lambda_sem*sem
         if not torch.isfinite(loss): raise RuntimeError('non-finite V3 loss')
