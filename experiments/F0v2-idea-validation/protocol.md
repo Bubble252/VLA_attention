@@ -23,3 +23,8 @@ OUT=/vepfs-mlp2/c20250405/400040/transfer/vla_attention/results/F0v2_heldout_64 
 PYTHON=/vepfs-mlp2/c20250405/400040/transfer/vla_attention/envs/p1/bin/python \
 bash scripts/run_f0_heldout_all.sh
 ```
+
+教师负控随后使用 `scripts/eval_teacher_map_controls.py`。它在同一 held-out
+manifest 上比较正确 SD phrase map、wrong-image（循环错配）、固定横向 shift 和 seeded random
+map；若 held-out SD cache 尚未生成，先用 `run_sd_cache.py` 生成 64 条，不能把训练集 cache
+冒充测试教师图。

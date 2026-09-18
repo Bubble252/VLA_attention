@@ -60,6 +60,7 @@ partial metrics / VEPFS result + log 路径
 - [x] F0v2 V1--V4 smoke：正确对齐 manifest 和 SD phrase cache（256 maps、`failures=[]`）下，V1/V2/V3/V4 均完成 20-step，所有记录的 loss 有限。V3 使用 eager attention 以支持二阶 phrase-score attribution；visual encoder parameter 仅为 attribution 计算开启 grad，不在 optimizer，visual LoRA=0。`F0v2_status_nonfinal.json` 是工程 gate 汇总，不是论文结果。剩余 F0：checkpoint restore、V0 eval、三种负控与状态表。 
 - [x] F0v2 idea-validation checkpoint gate 开始：V1 LoRA adapter 已保存到 `checkpoints/F0v2_idea_validation/V1`（约 161MB），V2 LoRA adapter + `dino_projector.pt` 已保存到 `.../V2`；held-out manifest 已生成 64 条、SHA256 `7b16778e…`。下一步保存 V3/V4 checkpoint 后评测 64 条 held-out 和三类负控。
 - [x] held-out evaluator 已实现：`scripts/eval_qwen_heldout.py` 固定 teacher-forced phrase-score gradient×activation，输出 pointing、mass-in-box、top20 attribution box IoU；`scripts/run_f0_heldout_all.sh` 冻结 V0--V4 同一 manifest 批量入口。V3/V4 checkpoint 导出与视觉参数排除修正提交 `339bbb3`，评估器提交 `cf7a7d4`，批量入口提交 `9426f19`。
+- [x] 教师负控脚本已实现：`scripts/eval_teacher_map_controls.py` 对 held-out SD phrase cache 计算 correct、wrong-image、shifted、random，commit `0fb77a1`。尚未执行，因为 101 SSH 当前不可用，且 64 条 held-out teacher cache 尚未确认存在。
 - [ ] 2026-09-18 当前执行窗口无法建立 `vla101` SSH socket（`Operation not permitted`）；未假定远端状态、未重复启动任务。待连接恢复后按 protocol 先同步 runner，再补 V3/V4 checkpoint 和 64 条 held-out 指标。此为环境阻塞，不是实验失败。
 
 ## 下一条可接受的证据
