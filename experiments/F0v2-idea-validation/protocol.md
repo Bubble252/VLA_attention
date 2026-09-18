@@ -87,3 +87,12 @@ bash server/summarize_f0_heldout.sh
 
 `MODEL_HELDOUT_READY` 只表示五组报告齐全；最终 idea 判定还必须加入 teacher
 correct、错配、shift 和 random 负控。
+
+如需一次性完成模型评估、held-out SD cache 和负控，可运行：
+
+```bash
+CUDA_VISIBLE_DEVICES=1 bash server/run_f0_full_validation_remote.sh
+```
+
+它会复用已有报告和 map，不覆盖 checkpoint；最终标志为
+`F0_FULL_VALIDATION_OK`。
