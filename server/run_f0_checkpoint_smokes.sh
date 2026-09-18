@@ -4,7 +4,9 @@ set -euo pipefail
 # Run from a local machine with working `ssh vla101`. This starts only the
 # missing 20-step V3/V4 checkpoint smokes and refuses to overwrite artifacts.
 readonly REMOTE_HOST="${REMOTE_HOST:-vla101}"
-ssh "$REMOTE_HOST" bash -s <<'REMOTE'
+readonly GPU="${CUDA_VISIBLE_DEVICES:-1}"
+echo "Using remote CUDA_VISIBLE_DEVICES=$GPU"
+ssh "$REMOTE_HOST" "CUDA_VISIBLE_DEVICES='$GPU' bash -s" <<'REMOTE'
 set -euo pipefail
 P=/vepfs-mlp2/c20250405/400040/transfer/vla_attention
 R="$P/repo/VLA_attention"
@@ -18,7 +20,7 @@ LORA="$R/configs/qwen_lora_v1.json"
 RESULT="$P/results/F0v2_idea_validation"
 CKPT="$P/checkpoints/F0v2_idea_validation"
 export PYTHONPATH="$R/src:$R"
-export CUDA_VISIBLE_DEVICES="${CUDA_VISIBLE_DEVICES:-0}"
+echo "Remote CUDA_VISIBLE_DEVICES=${CUDA_VISIBLE_DEVICES}"
 
 for path in "$PY" "$MODEL" "$DATA" "$MANIFEST" "$CACHE" "$LORA"; do
   test -e "$path" || { echo "MISSING_REMOTE=$path" >&2; exit 2; }

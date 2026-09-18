@@ -36,6 +36,14 @@ bash server/run_f0_checkpoint_smokes.sh
 V3/V4 产物；顺序完成 V3→V4 各 20 step，并分别检查 adapter 文件和 V4 的
 `dino_projector.pt`。最终标志为 `CHECKPOINT_SMOKES_OK`。
 
+若某张卡显存被其他任务占用，可显式选择空闲卡，例如：
+
+```bash
+CUDA_VISIBLE_DEVICES=1 bash server/run_f0_checkpoint_smokes.sh
+```
+
+重试前必须执行 `ssh vla101 nvidia-smi`，确认目标卡上没有未知任务；不要直接终止 PID。
+
 它会上传 5 个验证脚本并在 101 端逐个执行 SHA256 校验；只有看到
 `UPLOAD_VERIFY_OK` 才继续 checkpoint 或 held-out 评估。若本机 SSH alias 不是
 `vla101`，可显式指定：
