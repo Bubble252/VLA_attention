@@ -28,7 +28,7 @@ def main() -> int:
     from vla_attention.teachers.retention import resample_teacher_features
     p=argparse.ArgumentParser(); p.add_argument('--model',type=Path,required=True); p.add_argument('--dataset-root',type=Path,required=True); p.add_argument('--manifest',type=Path,required=True); p.add_argument('--cache',type=Path,required=True); p.add_argument('--lora-config',type=Path,required=True); p.add_argument('--output',type=Path,required=True); p.add_argument('--max-steps',type=int,default=20); p.add_argument('--lambda-sem',type=float,default=0.1); p.add_argument('--seed',type=int,default=17); a=p.parse_args()
     cfg=json.loads(a.lora_config.read_text()); torch.manual_seed(a.seed); processor=AutoProcessor.from_pretrained(a.model,local_files_only=True,use_fast=False)
-    base=Qwen2_5_VLForConditionalGeneration.from_pretrained(a.model,torch_dtype=torch.bfloat16,local_files_only=True).cuda(); pc=cfg['peft']; model=get_peft_model(base,LoraConfig(task_type=TaskType.CAUSAL_LM,r=pc['r'],lora_alpha=pc['lora_alpha'],lora_dropout=pc['lora_dropout'],bias=pc['bias'],target_modules=pc['target_modules_regex']))
+    base=Qwen2_5_VLForConditionalGeneration.from_pretrained(a.model,torch_dtype=torch.bfloat16,local_files_only=True,attn_implementation='eager').cuda(); pc=cfg['peft']; model=get_peft_model(base,LoraConfig(task_type=TaskType.CAUSAL_LM,r=pc['r'],lora_alpha=pc['lora_alpha'],lora_dropout=pc['lora_dropout'],bias=pc['bias'],target_modules=pc['target_modules_regex']))
     captured=[]
     for parameter in model.base_model.model.model.visual.parameters():
         parameter.requires_grad_(True)  # gradients for attribution only; excluded from optimizer
