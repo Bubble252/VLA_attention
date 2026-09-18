@@ -26,7 +26,7 @@ def main() -> int:
     from vla_attention.data import jsonl
     from vla_attention.losses import semantic_map_kl
     from vla_attention.teachers.retention import resample_teacher_features
-    p=argparse.ArgumentParser(); p.add_argument('--model',type=Path,required=True); p.add_argument('--dataset-root',type=Path,required=True); p.add_argument('--manifest',type=Path,required=True); p.add_argument('--cache',type=Path,required=True); p.add_argument('--lora-config',type=Path,required=True); p.add_argument('--output',type=Path,required=True); p.add_argument('--checkpoint',type=Path,default=None); p.add_argument('--max-steps',type=int,default=20); p.add_argument('--lambda-sem',type=float,default=0.1); p.add_argument('--seed',type=int,default=17); a=p.parse_args()
+    p=argparse.ArgumentParser(); p.add_argument('--model',type=Path,required=True); p.add_argument('--dataset-root',type=Path,required=True); p.add_argument('--manifest',type=Path,required=True); p.add_argument('--cache',type=Path,required=True); p.add_argument('--lora-config',type=Path,required=True); p.add_argument('--output',type=Path,required=True); p.add_argument('--checkpoint',type=Path,default=None); p.add_argument('--max-steps',type=int,default=20); p.add_argument('--lambda-sem',type=float,default=0.1); p.add_argument('--teacher-temperature',type=float,default=1.0); p.add_argument('--seed',type=int,default=17); a=p.parse_args()
     cfg=json.loads(a.lora_config.read_text()); torch.manual_seed(a.seed); processor=AutoProcessor.from_pretrained(a.model,local_files_only=True,use_fast=False)
     base=Qwen2_5_VLForConditionalGeneration.from_pretrained(a.model,torch_dtype=torch.bfloat16,local_files_only=True,attn_implementation='eager').cuda(); pc=cfg['peft']; model=get_peft_model(base,LoraConfig(task_type=TaskType.CAUSAL_LM,r=pc['r'],lora_alpha=pc['lora_alpha'],lora_dropout=pc['lora_dropout'],bias=pc['bias'],target_modules=pc['target_modules_regex']))
     captured=[]
@@ -56,11 +56,11 @@ def main() -> int:
         gradient=gradient_full[image_mask].reshape(1,-1,inputs_embeds.shape[-1])
         student=(gradient*features).sum(-1).abs()
         grid_t,gh,gw=batch['image_grid_thw'][0].tolist(); merge=base.config.vision_config.spatial_merge_size; teacher=torch.from_numpy(teacher_np).to('cuda',dtype=student.dtype).reshape(1,-1,1); teacher=resample_teacher_features(teacher,source_height=16,source_width=16,target_height=gh//merge,target_width=gw//merge).squeeze(-1)
-        sem=semantic_map_kl(student,teacher); loss=out.loss+a.lambda_sem*sem
+        sem=semantic_map_kl(student,teacher,teacher_temperature=a.teacher_temperature); loss=out.loss+a.lambda_sem*sem
         if not torch.isfinite(loss): raise RuntimeError('non-finite V3 loss')
-        opt.zero_grad(set_to_none=True); loss.backward(); torch.nn.utils.clip_grad_norm_(model.parameters(),cfg['optimizer']['gradient_clip_norm']); opt.step(); logs.append({'total':float(loss.detach()),'caption':float(out.loss.detach()),'semantic':float(sem.detach())})
+        opt.zero_grad(set_to_none=True); loss.backward(); grad_pre=float(torch.nn.utils.clip_grad_norm_(model.parameters(),float('inf'))); grad_post=float(torch.nn.utils.clip_grad_norm_(model.parameters(),cfg['optimizer']['gradient_clip_norm'])); opt.step(); logs.append({'total':float(loss.detach()),'caption':float(out.loss.detach()),'semantic':float(sem.detach()),'grad_norm_pre_clip':grad_pre,'grad_norm_post_clip':min(grad_pre,cfg['optimizer']['gradient_clip_norm'])})
     finally: h.remove()
     if a.checkpoint is not None:
         a.checkpoint.mkdir(parents=True,exist_ok=True); model.save_pretrained(a.checkpoint); processor.save_pretrained(a.checkpoint)
-    vis=[n for n,x in model.named_parameters() if x.requires_grad and '.visual.' in n]; a.output.parent.mkdir(parents=True,exist_ok=True); a.output.write_text(json.dumps({'experiment':'V3-caption-plus-semantic-smoke','steps':a.max_steps,'lambda_sem':a.lambda_sem,'losses':logs,'visual_optimizer_tensors':0,'visual_attribution_parameters':len(vis),'visual_attribution_gradients_enabled':True,'teacher_cache':str(a.cache)},indent=2)+'\n'); print(a.output)
+    vis=[n for n,x in model.named_parameters() if x.requires_grad and '.visual.' in n]; a.output.parent.mkdir(parents=True,exist_ok=True); a.output.write_text(json.dumps({'experiment':'V3-caption-plus-semantic-smoke','steps':a.max_steps,'lambda_sem':a.lambda_sem,'teacher_temperature':a.teacher_temperature,'losses':logs,'visual_optimizer_tensors':0,'visual_attribution_parameters':len(vis),'visual_attribution_gradients_enabled':True,'teacher_cache':str(a.cache)},indent=2)+'\n'); print(a.output)
 if __name__=='__main__': main()
