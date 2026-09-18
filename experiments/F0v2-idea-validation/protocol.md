@@ -11,12 +11,27 @@
 
 `scripts/eval_qwen_heldout.py` 只读加载模型与 LoRA，不更新权重；`scripts/run_f0_heldout_all.sh` 使用同一 64 条图像独立样本批量评估 V0--V4。每条样本输出：`pointing`、`mass_in_box`，以及最高 20% 归因 token 外接框与 GT 框的 `top20_box_iou`。
 
-先将新增脚本上传到 101（GitHub 暂不可达时可直接用 scp）：
+先将新增脚本上传到 101（GitHub 暂不可达时可直接用本机 SSH）：
 
 ```bash
 scp scripts/run_qwen_v3_smoke.py scripts/run_qwen_v4_smoke.py \
     scripts/eval_qwen_heldout.py scripts/eval_teacher_map_controls.py \
     scripts/run_f0_heldout_all.sh vla101:/vepfs-mlp2/c20250405/400040/transfer/vla_attention/repo/VLA_attention/scripts/
+```
+
+为避免漏传或传错版本，推荐直接运行仓库内的校验脚本：
+
+```bash
+cd /home/bubble/类脑计算/VLM终局
+bash server/upload_validation_scripts.sh
+```
+
+它会上传 5 个验证脚本并在 101 端逐个执行 SHA256 校验；只有看到
+`UPLOAD_VERIFY_OK` 才继续 checkpoint 或 held-out 评估。若本机 SSH alias 不是
+`vla101`，可显式指定：
+
+```bash
+REMOTE_HOST='root@115.190.90.101' bash server/upload_validation_scripts.sh
 ```
 
 服务器上补齐 V3/V4 checkpoint 后执行：
