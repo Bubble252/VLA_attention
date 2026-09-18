@@ -34,6 +34,12 @@ Lavender 让 **同一个词的学生空间 attention map** 逼近 Stable Diffusi
 
 因此，当前的 `pointing`、`mass-in-box` 和 `top-k box IoU` 是我们额外引入的可验证 grounding 层。它们使用 Flickr30k Entities 的 phrase box 来回答 Lavender 没有直接回答的问题：学生图是否真的落在标注目标区域，而不是仅仅更像 SD 图或让下游答案变好。论文中应把 Lavender 的 MSE/entropy 作为机制诊断，把三项 box-based 指标作为独立空间正确性评测，不能混称为 Lavender 原始指标。
 
+### 已加入的 Lavender-style 能力评测轨道
+
+为了避免把“热力图更像教师”误写成“模型能力提升”，实验计划增加独立的下游能力轨道。首轮最小套件为 `COCO Captions、VQAv2、TextVQA、POPE、MME、WorldMedQA-V`，分别覆盖 caption、一般 VQA、细粒度/OCR、幻觉、综合感知和 OOD；方向性验证通过后，再扩展到 OK-VQA、DocVQA、OCRBench、MMBench、MMStar、MMMU、ScienceQA、InfoVQA 和 HatefulMemes。每个模型均比较同初始化的 V0/V1/V2/V3/V4，并固定 prompt、解码、评测脚本和数据重叠审计。
+
+能力套件和 Flickr30k Entities 的 pointing/mass/IoU 分开报告。几何提升但能力下降表示约束过强；能力提升但几何不变只能归因于 SFT 或一般正则；两者同时改善才支持“语义空间对齐带来真实能力增益”。这套评测借鉴 Lavender 的 benchmark 分组、OOD、数据规模和定性可视化，但不声称复现 Lavender 的完整 20 项结果。
+
 ### 1. 教师图不是训练时在线 SD
 
 `attention-map-generation/run_seg_batch_multip.py` 先从 SD 提取每个词的 attention map；数据集 loader 再把它们以 `sd_attn: Dict[word, map]` 读入 batch。因此 VLM 微调阶段不反传 SD，也不需要每步运行 diffusion。

@@ -227,6 +227,46 @@ VLM 阶段不直接使用 SimplerEnv 作为主 benchmark，因为它是控制环
 
 VL-Think/SimplerEnv 风格的静态截图 QA 仅做 VLM 保留诊断，检验目标、属性、位置和 yes/no，不作为 phrase-region 主榜；完整 SimplerEnv control 放在 VLA OOD 阶段。不得把 RefCOCOg 的外部表达迁移、Flickr 的图像扰动和 VLA 闭环 OOD 混成一个平均分。
 
+### P4.1 Lavender-style 下游能力评测轨道
+
+P4 不只评估热力图的几何质量，还要复刻 Lavender 的能力验证逻辑。几何轨道回答“归因是否落在目标区域”，能力轨道回答“这种对齐是否改善真实 VLM 能力并保持原有能力”。两条轨道独立报告，不能用一条轨道的提升替代另一条。
+
+**首轮最小能力套件**固定为：
+
+| 能力类别 | Benchmark | 指标 | 作用 |
+|---|---|---|---|
+| Caption | COCO Captions、Flickr30k captions | CIDEr、BLEU-4、METEOR、ROUGE-L | 对齐是否改善描述生成 |
+| General VQA | VQAv2 | 官方 accuracy | 一般视觉问答是否保持 |
+| Fine-grained/OCR | TextVQA | 官方 accuracy | 细粒度文字和局部区域能力 |
+| Hallucination | POPE | 官方 accuracy / hallucination rate | 是否减少视觉幻觉 |
+| Broad perception | MME | 官方默认分数 | 综合感知是否退化 |
+| OOD | WorldMedQA-V | 官方多语言 VQA accuracy | 未见领域和语言的迁移 |
+
+F1-10k 方向性结果通过后，扩展加入 `OK-VQA、DocVQA、OCRBench、InfoVQA、MMBench、MMStar、MMMU、ScienceQA、HatefulMemes`。这借鉴 Lavender 的 benchmark 分组和 OOD 设计，但不宣称完整复现其 20 项结果；没有冻结版本或可靠 evaluator 的项目不进入平均分。
+
+能力套件使用与 V0--V4 完全配对的 checkpoint、prompt、解码参数、图像分辨率、few-shot 设置、评测脚本和数据重叠审计。每个项目报告绝对分数、相对 V1/V2 的增量、V3 对 V1 以及 V4 对 V2 的 paired difference；只有一个类别的项目全部完成时才计算 macro average。记录训练样本数、wall-clock、教师 cache 成本、显存和 semantic-map loss，绘制 loss/grounding 与下游分数的关系，但不把相关性当作因果证据。
+
+首轮能力套件只在 `V0/V1/V3` 上先跑通，确认评测脚本与输出格式；随后补齐 `V2/V4`。正确教师、错词、错图和随机图优先在 `VQAv2、TextVQA、POPE` 小子集执行，以判断能力收益是否依赖正确语义图，而不是任意空间正则。
+
+**能力—几何联合判定：**
+
+| Flickr30k Entities 几何结果 | Lavender-style 能力结果 | 解释 |
+|---|---|---|
+| 提升 | 提升或保持 | 支持语义空间对齐同时改善定位和任务能力 |
+| 提升 | 下降 | 对齐约束过强或破坏语言能力，不能称成功 |
+| 不变/下降 | 提升 | 只能归因于 SFT/一般正则，不能声称 grounding 改善 |
+| 不变/下降 | 不变/下降 | 暂停扩大教师和损失组合，先查接口、数据和评测 |
+
+WorldMedQA-V 必须保持完全未参与训练、teacher calibration 和阈值选择。OOD 结果按语言、问题类型和错误案例分组；视觉扰动结果按 corruption 类型报告。定性图同时保存输入、教师图、`A_lang`、模型答案、正确答案和错误类型，但定性图不能替代定量证据。
+
+**P4.1 完成条件：**
+
+- [ ] Flickr30k Entities 上完成 pointing、mass-in-box、IoU 和 intervention agreement；
+- [ ] 首轮六项能力套件在 V0--V4 上使用统一 evaluator 完成；
+- [ ] 正确教师、错词、错图、随机图在至少三个能力 benchmark 小子集上完成；
+- [ ] 至少一个几何指标和一个下游能力类别在 3 个 seed 上保持方向一致；
+- [ ] 几何提升但能力下降时，停止将该配置推进到 VLA，并记录为过强约束失败。
+
 ### 已冻结的首轮模型与 OOD 角色
 
 - [x] VLM 首轮：Prismatic-7B + Qwen2.5-VL-7B；InternVL3.5、Ovis2.5、LLaVA-OneVision 后置；

@@ -53,6 +53,60 @@ VLM retention diagnostic: VL-Think/SimplerEnv static screenshot QA
 
 主结论来自带 phrase-region 标注的 Flickr30k Entities；RefCOCOg 检验更复杂指代，但不与 Flickr 分数合并成平均榜；图像扰动保持原 region 标注不变，单列报告每种 photometric corruption；VL-Think style QA 检验概念保留，不替代空间定位。
 
+### Lavender-style 能力评测轨道
+
+几何 grounding 只能回答“模型的空间证据是否落在目标区域”。为了检验方法是否像 Lavender 一样真正改善 VLM 能力，增加一条独立的下游能力轨道。这里复刻的是 Lavender 的**评测逻辑和分组方式**，不是声称完整复现其 20 个 benchmark 或原始模型结果。
+
+#### 评测分层
+
+| 层级 | 首轮数据集 | 指标 | 要回答的问题 |
+|---|---|---|---|
+| Caption | COCO Captions、Flickr30k captions | CIDEr、BLEU-4、METEOR、ROUGE-L | 语义对齐是否改善描述，而不是只改变热力图 |
+| General VQA | VQAv2、OK-VQA、ScienceQA | 官方 accuracy / exact match | 一般视觉问答和知识推理是否保持或提升 |
+| Fine-grained/OCR | TextVQA、DocVQA、OCRBench、InfoVQA | 官方 accuracy / ANLS 或 benchmark 默认分数 | 细粒度文字、文档和局部区域能力是否提升 |
+| Hallucination/robustness | POPE、HallucinationBench、HatefulMemes | 官方 accuracy、F1 或 hallucination rate | 是否减少视觉幻觉，而非只提高语言流畅度 |
+| Broad perception | MME、MMBench、MMStar、MMMU | 官方分数 | 方法是否损伤通用感知和多学科推理 |
+| OOD | WorldMedQA-V、固定视觉扰动集 | 多语言/医学 VQA accuracy；按扰动类型分组 | 是否具有跨领域和视觉分布的有限泛化 |
+
+#### 首轮与完整套件
+
+首轮不直接跑完整 20 项，而采用固定的最小套件：`COCO Captions + VQAv2 + TextVQA + POPE + MME + WorldMedQA-V`。它覆盖 caption、一般问答、细粒度/OCR、幻觉、综合感知和 OOD 六类能力。F1-10k 方向性结果通过后，再加入 `OK-VQA、DocVQA、OCRBench、MMBench、MMStar、MMMU、ScienceQA、InfoVQA、HatefulMemes`，形成扩展套件。
+
+Lavender 论文中的“20 benchmark”用于说明其覆盖面；我们的主表只报告实际运行、版本冻结且能公平比较的项目。没有可复现 evaluator 或预算不足的项目放入附录，不用缺失项计算平均分。
+
+#### 统一比较协议
+
+所有能力套件都使用 `V0 原始 checkpoint / V1 caption SFT / V2 feature retention / V3 T_sem→A_lang / V4 V2+T_sem→A_lang` 的 paired checkpoint。每个模型固定 prompt、解码参数、图像分辨率、few-shot 设置、评测脚本和 evaluator；不同模型的原生 leaderboard 分数不混入主表。
+
+每个 benchmark 同时报告：
+
+1. 绝对分数；
+2. 相对 V1 的绝对增量和相对增幅；
+3. V3 相对 V1、V4 相对 V2 的 paired difference；
+4. 按能力类别的 macro average，但只在该类别所有项目都完成时计算；
+5. 训练数据与测试集的来源重叠审计。
+
+Lavender 还观察了数据规模、训练步数、attention MSE 与下游分数的关系。我们对应记录训练样本数、wall-clock、教师 cache 成本、显存和 loss 曲线，并画 `semantic-map loss / attribution metric` 与下游分数的相关图；相关性只作分析，不作为因果证据。
+
+#### 能力与几何结果如何合并解释
+
+两条轨道必须分开报告，再用预先定义的判定表解释：
+
+| 几何 grounding | Lavender-style 能力 | 结论 |
+|---|---|---|
+| 提升 | 提升或保持 | 最强证据：空间监督带来真实能力增益 |
+| 提升 | 下降 | 归因约束过强或损伤语言能力；不能宣称方法有效 |
+| 不变/下降 | 提升 | 只能声称下游 SFT/正则收益，不能声称 grounding 改善 |
+| 不变/下降 | 不变/下降 | 停止扩大 teacher 或 loss 组合，先检查接口与数据 |
+
+正确教师、错词、错图和随机图控制也要跑能力套件中的小子集，优先选择 `TextVQA、POPE、VQAv2`。如果任意空间图都带来相同能力增益，说明收益可能来自正则化或训练预算，而不是词级语义。
+
+#### OOD 和定性分析
+
+WorldMedQA-V 必须保持完全未参与训练、teacher calibration 和阈值选择。报告总体分数、语言分组、问题类型分组和错误案例；固定视觉扰动集报告每类 corruption，而不只报平均值。定性图同时展示输入图、教师图、学生 `A_lang`、预测答案、正确答案和错误类型，延续 Lavender 的可视化方式，但不把好看的图当作定量证据。
+
+因此，VLM 阶段的主结论需要满足两条相互独立的证据：`V3/V4` 在 Flickr30k Entities 上改善或至少保持几何 grounding，并在 Lavender-style 能力套件上相对对应 baseline 有稳定收益或无显著损伤。只满足其中一条时，论文主张必须相应收窄。
+
 ### 首轮训练监督与 Lavender 的可比性
 
 VLM 主表的 V1--V4 使用图像 caption SFT，而不把 Entities box 或 referring-expression 作为训练标签：固定 caption prompt，监督原始 Flickr30k caption。Lavender 的基础监督也是 image-to-caption SFT，并将 Stable Diffusion 的 per-caption-token attention 作为额外 MSE 信号。我们的 V3/V4 在相同 caption token 上以语言条件空间归因 `A_lang` 对齐 `T_sem`；V2/V4 的 retention 项也不改变任务、数据或生成目标。
