@@ -59,8 +59,15 @@ def main():
     for row in rows:
         row["image_path"] = str(a.dataset_root / row["image_path"])
     maps = [np.load(a.cache / (row["sample_id"].replace(":", "_") + ".npy")) for row in rows]
+    by_image = {}
+    for index, row in enumerate(rows):
+        by_image.setdefault(row.get("image_id"), []).append(index)
+    wrong_word = []
+    for index, row in enumerate(rows):
+        peers = [j for j in by_image.get(row.get("image_id"), []) if j != index]
+        wrong_word.append(maps[peers[0] if peers else (index + 1) % len(maps)])
     rng = np.random.default_rng(a.seed)
-    controls = {"correct": maps, "wrong_image": maps[1:] + maps[:1], "shifted": [np.roll(x, 3, axis=1) for x in maps],
+    controls = {"correct": maps, "wrong_word_same_image": wrong_word, "wrong_image": maps[1:] + maps[:1], "shifted": [np.roll(x, 3, axis=1) for x in maps],
                 "random": [rng.random(x.shape) for x in maps]}
     summary = {name: mean([score(grid, row) for grid, row in zip(values, rows)]) for name, values in controls.items()}
     a.output.parent.mkdir(parents=True, exist_ok=True)
