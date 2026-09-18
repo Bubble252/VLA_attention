@@ -33,3 +33,13 @@ All runs use the same 256-row F0v2 training manifest, 64 image-disjoint held-out
 The completed parameter sweep identifies a scientifically useful **partial candidate**: V3 with `lambda_sem=0.10`, teacher temperature `1.25`, and possibly 50-step warm-up. It does **not** establish a robust method configuration because all three spatial metrics do not improve consistently across independent seeds. Do not run F1-10k under the current claim.
 
 The next method change should not be more scalar search. It should change the geometry of the teacher/student match: compare the current raw-mass KL to a rank/quantile-normalized or thresholded-region objective, then repeat only the selected candidate and its semantic-off control over at least three seeds. This directly tests the remaining failure mode: a spatially meaningful teacher map whose distributional KL is poorly aligned with the desired compact region geometry.
+
+## IoU 优化执行单
+
+当前不把 IoU 目标写成“保证达到某个数”。SD 教师在 64 条 held-out 上约为 `0.325`，V1 约为 `0.268`；而 top-k 外接框 IoU 是离散几何读出，和当前 KL 分布损失存在目标错位。下一轮只按以下顺序执行：
+
+1. 在 validation 上冻结 top-k/阈值、共同空间分辨率和 soft-IoU 读出，并用平移、旋转、模糊、错词图检查指标是否被支持集规则主导；test 不参与调参。
+2. 固定 `lambda=0.10, T=1.25`，分别跑 `KL`、`KL+rank`、`KL+moment` 和 `JS`，每组 3 个 seed；每次只改变一个几何项。
+3. 仅当几何目标在 G0 上通过最低门槛后，才重新跑 L0、B0、B0+G0；否则不进入 F1-10k。
+
+F0 最低门槛为：中位 IoU 相对 matched semantic-off baseline 提高至少 `0.01`，且 pointing/mass 不下降超过 `0.005`。更强的目标是闭合 baseline 到 teacher 差距的 50%（当前参考值约 `0.296`），这是 go/no-go 研究门槛而非事先承诺的结果。
