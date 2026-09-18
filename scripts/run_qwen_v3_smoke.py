@@ -30,12 +30,9 @@ def main() -> int:
     cfg=json.loads(a.lora_config.read_text()); torch.manual_seed(a.seed); processor=AutoProcessor.from_pretrained(a.model,local_files_only=True,use_fast=False)
     base=Qwen2_5_VLForConditionalGeneration.from_pretrained(a.model,torch_dtype=torch.bfloat16,local_files_only=True).cuda(); pc=cfg['peft']; model=get_peft_model(base,LoraConfig(task_type=TaskType.CAUSAL_LM,r=pc['r'],lora_alpha=pc['lora_alpha'],lora_dropout=pc['lora_dropout'],bias=pc['bias'],target_modules=pc['target_modules_regex']))
     captured=[]
-    def hook(_m,_i,o):
-        # Visual encoder stays frozen, but attribution must differentiate the
-        # language score with respect to the visual-token representation.
-        leaf = o.detach().requires_grad_(True)
-        captured[:] = [leaf]
-        return leaf
+    for parameter in model.base_model.model.model.visual.parameters():
+        parameter.requires_grad_(True)  # gradients for attribution only; excluded from optimizer
+    def hook(_m,_i,o): captured[:] = [o]
     h=model.base_model.model.model.visual.merger.register_forward_hook(hook); opt=torch.optim.AdamW((x for x in model.parameters() if x.requires_grad),lr=cfg['optimizer']['learning_rate'],betas=tuple(cfg['optimizer']['betas']),eps=cfg['optimizer']['eps']); rows=list(jsonl(a.manifest)); logs=[]
     try:
       for step in range(a.max_steps):
