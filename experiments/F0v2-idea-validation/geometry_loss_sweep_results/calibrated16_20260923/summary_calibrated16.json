@@ -1,0 +1,467 @@
+{
+  "training": {
+    "manifest_sha256": "2a37c49e447c27825c3a46769d0752eaebcf564f1c2f73de9c8f5f407f348757",
+    "heldout_manifest_sha256": "7b16778efb416872ab2fb2d79e9244b5f28947fbd1414574c890373258039764",
+    "steps": 100,
+    "common_resolution": [
+      16,
+      16
+    ],
+    "lambda_sem": 0.1,
+    "teacher_temperature": 1.25,
+    "rank_quantile": 0.25,
+    "seeds": [
+      17,
+      29,
+      41
+    ],
+    "heldout_n_per_seed": 64
+  },
+  "v1_baseline_by_seed": [
+    {
+      "seed": 17,
+      "metrics": {
+        "model_id": "v1_seed17",
+        "checkpoint": "/vepfs-mlp2/c20250405/400040/transfer/vla_attention/checkpoints/F0v2_idea_validation_100/V1",
+        "manifest": "/vepfs-mlp2/c20250405/400040/transfer/vla_attention/repo/VLA_attention/experiment_workspace/manifests/flickr30k_entities/F0v2_heldout_test_64.jsonl",
+        "n": 64,
+        "pointing": 0.359375,
+        "mass_in_box": 0.33776056580034763,
+        "top20_box_iou": 0.26804562489399897,
+        "common_soft_iou": 0.0828696403434376,
+        "common_mass_in_box": 0.33196281126695937,
+        "common_box_iou_top10": 0.26840982668362184,
+        "common_box_iou_top20": 0.26606725065489717,
+        "common_box_iou_top30": 0.26968013821233144,
+        "common_box_iou_top40": 0.26890973518202843,
+        "common_box_iou_q50": 0.26831536140312906,
+        "common_box_iou_q70": 0.26968013821233144,
+        "common_box_iou_q80": 0.26606725065489717,
+        "common_box_iou_q90": 0.26840982668362184,
+        "common_box_iou_q95": 0.2790662507379056,
+        "calibrated_box_iou": 0.2790662507379056
+      }
+    },
+    {
+      "seed": 29,
+      "metrics": {
+        "model_id": "v1_seed29",
+        "checkpoint": "/vepfs-mlp2/c20250405/400040/transfer/vla_attention/checkpoints/F0v2_geometry/matched_v1_seed29_s100",
+        "manifest": "/vepfs-mlp2/c20250405/400040/transfer/vla_attention/repo/VLA_attention/experiment_workspace/manifests/flickr30k_entities/F0v2_heldout_test_64.jsonl",
+        "n": 64,
+        "pointing": 0.328125,
+        "mass_in_box": 0.3179847676881945,
+        "top20_box_iou": 0.26970693860810296,
+        "common_soft_iou": 0.05865343974898651,
+        "common_mass_in_box": 0.3149974102358608,
+        "common_box_iou_top10": 0.2759304922540139,
+        "common_box_iou_top20": 0.2706574089888656,
+        "common_box_iou_top30": 0.2690870920194937,
+        "common_box_iou_top40": 0.26889168924195683,
+        "common_box_iou_q50": 0.26889168924195683,
+        "common_box_iou_q70": 0.2690870920194937,
+        "common_box_iou_q80": 0.2706574089888656,
+        "common_box_iou_q90": 0.2759304922540139,
+        "common_box_iou_q95": 0.2849681464045001,
+        "calibrated_box_iou": 0.2849681464045001
+      }
+    },
+    {
+      "seed": 41,
+      "metrics": {
+        "model_id": "v1_seed41",
+        "checkpoint": "/vepfs-mlp2/c20250405/400040/transfer/vla_attention/checkpoints/F0v2_geometry/matched_v1_seed41_s100",
+        "manifest": "/vepfs-mlp2/c20250405/400040/transfer/vla_attention/repo/VLA_attention/experiment_workspace/manifests/flickr30k_entities/F0v2_heldout_test_64.jsonl",
+        "n": 64,
+        "pointing": 0.234375,
+        "mass_in_box": 0.31857199590477026,
+        "top20_box_iou": 0.2693263928502033,
+        "common_soft_iou": 0.06085475312052939,
+        "common_mass_in_box": 0.31599685708506353,
+        "common_box_iou_top10": 0.27322864433565675,
+        "common_box_iou_top20": 0.27003080667611556,
+        "common_box_iou_top30": 0.26911139067904327,
+        "common_box_iou_top40": 0.2690859167207099,
+        "common_box_iou_q50": 0.2687937451440128,
+        "common_box_iou_q70": 0.26911139067904327,
+        "common_box_iou_q80": 0.27003080667611556,
+        "common_box_iou_q90": 0.27322864433565675,
+        "common_box_iou_q95": 0.28637034182914584,
+        "calibrated_box_iou": 0.28637034182914584
+      }
+    }
+  ],
+  "losses": [
+    {
+      "loss": "kl",
+      "seeds": [
+        17,
+        29,
+        41
+      ],
+      "metrics": {
+        "calibrated_box_iou": {
+          "mean": 0.2754272979206758,
+          "sample_sd": 0.029747737734193494,
+          "values": [
+            0.2525893830278738,
+            0.30906674439891874,
+            0.2646257663352347
+          ]
+        },
+        "common_soft_iou": {
+          "mean": 0.06830496549286053,
+          "sample_sd": 0.018652297036615872,
+          "values": [
+            0.04679884124983416,
+            0.07804651895164039,
+            0.08006953627710703
+          ]
+        },
+        "common_box_iou_top10": {
+          "mean": 0.28053412333185374,
+          "sample_sd": 0.011069981747131101,
+          "values": [
+            0.2699199374401254,
+            0.292009586343926,
+            0.27967284621150984
+          ]
+        },
+        "common_box_iou_top20": {
+          "mean": 0.2726497892130743,
+          "sample_sd": 0.004197837328407266,
+          "values": [
+            0.2698010995805314,
+            0.2774705385648585,
+            0.27067772949383306
+          ]
+        },
+        "common_box_iou_top30": {
+          "mean": 0.26922680224769263,
+          "sample_sd": 0.0003847287949292678,
+          "values": [
+            0.26939410198706093,
+            0.26949955712482476,
+            0.26878674763119215
+          ]
+        },
+        "common_box_iou_top40": {
+          "mean": 0.26867710874400724,
+          "sample_sd": 8.873550528388141e-05,
+          "values": [
+            0.2686258772761449,
+            0.2686258772761449,
+            0.2687795716797319
+          ]
+        },
+        "common_mass_in_box": {
+          "mean": 0.32471843736202527,
+          "sample_sd": 0.006736419028066684,
+          "values": [
+            0.31872798833899696,
+            0.3234165428737241,
+            0.33201078087335467
+          ]
+        },
+        "pointing": {
+          "mean": 0.3072916666666667,
+          "sample_sd": 0.08884751098558323,
+          "values": [
+            0.234375,
+            0.28125,
+            0.40625
+          ]
+        },
+        "mass_in_box": {
+          "mean": 0.3252145930116375,
+          "sample_sd": 0.010251435686286978,
+          "values": [
+            0.3145339320729694,
+            0.32613513332023036,
+            0.33497471364171283
+          ]
+        }
+      }
+    },
+    {
+      "loss": "kl_rank",
+      "seeds": [
+        17,
+        29,
+        41
+      ],
+      "metrics": {
+        "calibrated_box_iou": {
+          "mean": 0.2852822041274812,
+          "sample_sd": 0.0049388199848466865,
+          "values": [
+            0.28397022934756094,
+            0.2811318431660043,
+            0.29074453986887827
+          ]
+        },
+        "common_soft_iou": {
+          "mean": 0.0879088509486414,
+          "sample_sd": 0.0015747629975249263,
+          "values": [
+            0.0896678319930037,
+            0.086630151505525,
+            0.08742856934739551
+          ]
+        },
+        "common_box_iou_top10": {
+          "mean": 0.2845001001690302,
+          "sample_sd": 0.0035660815026513104,
+          "values": [
+            0.28409879609238653,
+            0.28115164618440713,
+            0.2882498582302969
+          ]
+        },
+        "common_box_iou_top20": {
+          "mean": 0.2718725545046618,
+          "sample_sd": 0.004400553098854699,
+          "values": [
+            0.27094478156875734,
+            0.26800986084387585,
+            0.2766630211013522
+          ]
+        },
+        "common_box_iou_top30": {
+          "mean": 0.2691991953149068,
+          "sample_sd": 0.003278491278836449,
+          "values": [
+            0.26802429246200865,
+            0.2666700448209792,
+            0.27290324866173254
+          ]
+        },
+        "common_box_iou_top40": {
+          "mean": 0.2686711031942335,
+          "sample_sd": 0.0008765966533281561,
+          "values": [
+            0.2688748541425068,
+            0.2677105742067782,
+            0.26942788123341543
+          ]
+        },
+        "common_mass_in_box": {
+          "mean": 0.3356784469726898,
+          "sample_sd": 0.005748718039465359,
+          "values": [
+            0.33428988692037087,
+            0.34199426458505305,
+            0.33075118941264536
+          ]
+        },
+        "pointing": {
+          "mean": 0.3854166666666667,
+          "sample_sd": 0.047735163489123336,
+          "values": [
+            0.375,
+            0.4375,
+            0.34375
+          ]
+        },
+        "mass_in_box": {
+          "mean": 0.33566527195768936,
+          "sample_sd": 0.005447797398350621,
+          "values": [
+            0.333574514079808,
+            0.3418487483183936,
+            0.33157255347486647
+          ]
+        }
+      }
+    },
+    {
+      "loss": "kl_moment",
+      "seeds": [
+        17,
+        29,
+        41
+      ],
+      "metrics": {
+        "calibrated_box_iou": {
+          "mean": 0.27891151758623656,
+          "sample_sd": 0.003447254422675805,
+          "values": [
+            0.27561353419828427,
+            0.2786302133872857,
+            0.28249080517313974
+          ]
+        },
+        "common_soft_iou": {
+          "mean": 0.07473394297365527,
+          "sample_sd": 0.004165197533820581,
+          "values": [
+            0.07736012972472171,
+            0.07691029480576426,
+            0.0699314043904798
+          ]
+        },
+        "common_box_iou_top10": {
+          "mean": 0.2798607909594145,
+          "sample_sd": 0.0015225037188456264,
+          "values": [
+            0.2810461030370911,
+            0.28039254322398927,
+            0.27814372661716313
+          ]
+        },
+        "common_box_iou_top20": {
+          "mean": 0.27198564733571234,
+          "sample_sd": 0.0026762054027111154,
+          "values": [
+            0.2695551100046708,
+            0.27154820865590235,
+            0.2748536233465639
+          ]
+        },
+        "common_box_iou_top30": {
+          "mean": 0.26867517607354136,
+          "sample_sd": 0.0012731460205511278,
+          "values": [
+            0.2672200681342578,
+            0.2695841038379293,
+            0.269221356248437
+          ]
+        },
+        "common_box_iou_top40": {
+          "mean": 0.268600545701234,
+          "sample_sd": 0.000375181106049208,
+          "values": [
+            0.2681914919556959,
+            0.26868151231630555,
+            0.2689286328317005
+          ]
+        },
+        "common_mass_in_box": {
+          "mean": 0.31988228174538763,
+          "sample_sd": 0.006967146195937306,
+          "values": [
+            0.3118434322530139,
+            0.32417336849625245,
+            0.3236300444868966
+          ]
+        },
+        "pointing": {
+          "mean": 0.28125,
+          "sample_sd": 0.0,
+          "values": [
+            0.28125,
+            0.28125,
+            0.28125
+          ]
+        },
+        "mass_in_box": {
+          "mean": 0.3198967449763961,
+          "sample_sd": 0.006120801715811309,
+          "values": [
+            0.31324190218065884,
+            0.3211628526748737,
+            0.32528548007365565
+          ]
+        }
+      }
+    },
+    {
+      "loss": "js",
+      "seeds": [
+        17,
+        29,
+        41
+      ],
+      "metrics": {
+        "calibrated_box_iou": {
+          "mean": 0.2912919830174548,
+          "sample_sd": 0.013249891264616526,
+          "values": [
+            0.27703011716476234,
+            0.2936261456424405,
+            0.3032196862451616
+          ]
+        },
+        "common_soft_iou": {
+          "mean": 0.07055162379673047,
+          "sample_sd": 0.0031686981349177278,
+          "values": [
+            0.0693955262174247,
+            0.06812330822713253,
+            0.07413603694563417
+          ]
+        },
+        "common_box_iou_top10": {
+          "mean": 0.2754005161648285,
+          "sample_sd": 0.00033707776648451396,
+          "values": [
+            0.27501142882951346,
+            0.2755861320790589,
+            0.2756039875859132
+          ]
+        },
+        "common_box_iou_top20": {
+          "mean": 0.27122984511351317,
+          "sample_sd": 0.0022622487128501614,
+          "values": [
+            0.2687257825683648,
+            0.27312609864298404,
+            0.2718376541291907
+          ]
+        },
+        "common_box_iou_top30": {
+          "mean": 0.26982618396288116,
+          "sample_sd": 0.0008099798141644231,
+          "values": [
+            0.27044772028501296,
+            0.2689101582123899,
+            0.2701206733912406
+          ]
+        },
+        "common_box_iou_top40": {
+          "mean": 0.2693350116850362,
+          "sample_sd": 0.0006082297497780727,
+          "values": [
+            0.26910543120615066,
+            0.2688749862746389,
+            0.2700246175743191
+          ]
+        },
+        "common_mass_in_box": {
+          "mean": 0.32417666167253906,
+          "sample_sd": 0.004322667097778819,
+          "values": [
+            0.32911826390669807,
+            0.32109686436685436,
+            0.3223148567440648
+          ]
+        },
+        "pointing": {
+          "mean": 0.3177083333333333,
+          "sample_sd": 0.07864410870073697,
+          "values": [
+            0.390625,
+            0.234375,
+            0.328125
+          ]
+        },
+        "mass_in_box": {
+          "mean": 0.3235098450803159,
+          "sample_sd": 0.003257130751049172,
+          "values": [
+            0.32722477399413374,
+            0.32114407156054253,
+            0.3221606896862713
+          ]
+        }
+      }
+    }
+  ],
+  "paired_bootstrap_files": {
+    "kl": "paired_kl_vs_v1.json",
+    "kl_rank": "paired_kl_rank_vs_v1.json",
+    "kl_moment": "paired_kl_moment_vs_v1.json",
+    "js": "paired_js_vs_v1.json"
+  },
+  "interpretation": "KL+rank is the strongest geometry candidate across soft IoU, top-10 IoU, mass-in-box and pointing; its q95 calibrated box IoU is not significant under sample bootstrap. Candidate for downstream capability pilot, not a final win."
+}

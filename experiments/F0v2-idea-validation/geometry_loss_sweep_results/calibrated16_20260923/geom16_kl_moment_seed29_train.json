@@ -1,0 +1,822 @@
+{
+  "experiment": "V3-caption-plus-semantic-smoke",
+  "steps": 100,
+  "lambda_sem": 0.1,
+  "teacher_temperature": 1.25,
+  "semantic_warmup_steps": 0,
+  "semantic_loss_mode": "kl_moment",
+  "common_resolution": [
+    16,
+    16
+  ],
+  "rank_quantile": 0.25,
+  "rank_margin": 0.5,
+  "rank_weight": 1.0,
+  "moment_weight": 1.0,
+  "losses": [
+    {
+      "total": 3.807816982269287,
+      "caption": 3.759232997894287,
+      "semantic": 0.486328125,
+      "effective_lambda_sem": 0.1,
+      "grad_norm_pre_clip": 9.289363861083984,
+      "grad_norm_post_clip": 1.0
+    },
+    {
+      "total": 2.8097524642944336,
+      "caption": 2.7562856674194336,
+      "semantic": 0.53515625,
+      "effective_lambda_sem": 0.1,
+      "grad_norm_pre_clip": 3.708693504333496,
+      "grad_norm_post_clip": 1.0
+    },
+    {
+      "total": 1.7396138906478882,
+      "caption": 1.6868795156478882,
+      "semantic": 0.52734375,
+      "effective_lambda_sem": 0.1,
+      "grad_norm_pre_clip": 11.611577033996582,
+      "grad_norm_post_clip": 1.0
+    },
+    {
+      "total": 1.8160053491592407,
+      "caption": 1.7412983179092407,
+      "semantic": 0.74609375,
+      "effective_lambda_sem": 0.1,
+      "grad_norm_pre_clip": 14.067233085632324,
+      "grad_norm_post_clip": 1.0
+    },
+    {
+      "total": 2.137115716934204,
+      "caption": 2.061920404434204,
+      "semantic": 0.75,
+      "effective_lambda_sem": 0.1,
+      "grad_norm_pre_clip": 4.631673812866211,
+      "grad_norm_post_clip": 1.0
+    },
+    {
+      "total": 2.654726505279541,
+      "caption": 2.612246036529541,
+      "semantic": 0.42578125,
+      "effective_lambda_sem": 0.1,
+      "grad_norm_pre_clip": 88.70965576171875,
+      "grad_norm_post_clip": 1.0
+    },
+    {
+      "total": 2.4797751903533936,
+      "caption": 2.4079978466033936,
+      "semantic": 0.71875,
+      "effective_lambda_sem": 0.1,
+      "grad_norm_pre_clip": 5.46326208114624,
+      "grad_norm_post_clip": 1.0
+    },
+    {
+      "total": 2.0066375732421875,
+      "caption": 1.9724578857421875,
+      "semantic": 0.341796875,
+      "effective_lambda_sem": 0.1,
+      "grad_norm_pre_clip": 4.464524269104004,
+      "grad_norm_post_clip": 1.0
+    },
+    {
+      "total": 2.4420549869537354,
+      "caption": 2.4025042057037354,
+      "semantic": 0.396484375,
+      "effective_lambda_sem": 0.1,
+      "grad_norm_pre_clip": 5.054520130157471,
+      "grad_norm_post_clip": 1.0
+    },
+    {
+      "total": 1.981941819190979,
+      "caption": 1.884285569190979,
+      "semantic": 0.9765625,
+      "effective_lambda_sem": 0.1,
+      "grad_norm_pre_clip": 6.383556365966797,
+      "grad_norm_post_clip": 1.0
+    },
+    {
+      "total": 2.199422836303711,
+      "caption": 2.149618148803711,
+      "semantic": 0.498046875,
+      "effective_lambda_sem": 0.1,
+      "grad_norm_pre_clip": 15.114472389221191,
+      "grad_norm_post_clip": 1.0
+    },
+    {
+      "total": 2.443237066268921,
+      "caption": 2.393188238143921,
+      "semantic": 0.5,
+      "effective_lambda_sem": 0.1,
+      "grad_norm_pre_clip": 7.9725823402404785,
+      "grad_norm_post_clip": 1.0
+    },
+    {
+      "total": 1.7950571775436401,
+      "caption": 1.7213267087936401,
+      "semantic": 0.73828125,
+      "effective_lambda_sem": 0.1,
+      "grad_norm_pre_clip": 5.349882125854492,
+      "grad_norm_post_clip": 1.0
+    },
+    {
+      "total": 3.0735321044921875,
+      "caption": 3.0051727294921875,
+      "semantic": 0.68359375,
+      "effective_lambda_sem": 0.1,
+      "grad_norm_pre_clip": 10.9818696975708,
+      "grad_norm_post_clip": 1.0
+    },
+    {
+      "total": 0.9361974000930786,
+      "caption": 0.8951817750930786,
+      "semantic": 0.41015625,
+      "effective_lambda_sem": 0.1,
+      "grad_norm_pre_clip": 4.10306978225708,
+      "grad_norm_post_clip": 1.0
+    },
+    {
+      "total": 1.9074020385742188,
+      "caption": 1.8112106323242188,
+      "semantic": 0.9609375,
+      "effective_lambda_sem": 0.1,
+      "grad_norm_pre_clip": 5.137191295623779,
+      "grad_norm_post_clip": 1.0
+    },
+    {
+      "total": 1.8773534297943115,
+      "caption": 1.8060643672943115,
+      "semantic": 0.7109375,
+      "effective_lambda_sem": 0.1,
+      "grad_norm_pre_clip": 5.14030647277832,
+      "grad_norm_post_clip": 1.0
+    },
+    {
+      "total": 1.8267426490783691,
+      "caption": 1.7842621803283691,
+      "semantic": 0.42578125,
+      "effective_lambda_sem": 0.1,
+      "grad_norm_pre_clip": 17.058446884155273,
+      "grad_norm_post_clip": 1.0
+    },
+    {
+      "total": 2.569679021835327,
+      "caption": 2.489600896835327,
+      "semantic": 0.80078125,
+      "effective_lambda_sem": 0.1,
+      "grad_norm_pre_clip": 11.682693481445312,
+      "grad_norm_post_clip": 1.0
+    },
+    {
+      "total": 1.8890743255615234,
+      "caption": 1.8216915130615234,
+      "semantic": 0.67578125,
+      "effective_lambda_sem": 0.1,
+      "grad_norm_pre_clip": 5.543291091918945,
+      "grad_norm_post_clip": 1.0
+    },
+    {
+      "total": 2.021523952484131,
+      "caption": 1.8887114524841309,
+      "semantic": 1.328125,
+      "effective_lambda_sem": 0.1,
+      "grad_norm_pre_clip": 13.247129440307617,
+      "grad_norm_post_clip": 1.0
+    },
+    {
+      "total": 2.1222317218780518,
+      "caption": 2.0777981281280518,
+      "semantic": 0.4453125,
+      "effective_lambda_sem": 0.1,
+      "grad_norm_pre_clip": 8.512280464172363,
+      "grad_norm_post_clip": 1.0
+    },
+    {
+      "total": 1.5054019689559937,
+      "caption": 1.4502261877059937,
+      "semantic": 0.55078125,
+      "effective_lambda_sem": 0.1,
+      "grad_norm_pre_clip": 27.058198928833008,
+      "grad_norm_post_clip": 1.0
+    },
+    {
+      "total": 1.6987545490264893,
+      "caption": 1.6426022052764893,
+      "semantic": 0.5625,
+      "effective_lambda_sem": 0.1,
+      "grad_norm_pre_clip": 3.8970015048980713,
+      "grad_norm_post_clip": 1.0
+    },
+    {
+      "total": 1.234468698501587,
+      "caption": 1.176363229751587,
+      "semantic": 0.58203125,
+      "effective_lambda_sem": 0.1,
+      "grad_norm_pre_clip": 7.372230052947998,
+      "grad_norm_post_clip": 1.0
+    },
+    {
+      "total": 2.577836513519287,
+      "caption": 2.525590419769287,
+      "semantic": 0.5234375,
+      "effective_lambda_sem": 0.1,
+      "grad_norm_pre_clip": 3.291828155517578,
+      "grad_norm_post_clip": 1.0
+    },
+    {
+      "total": 1.1753684282302856,
+      "caption": 1.1153098344802856,
+      "semantic": 0.6015625,
+      "effective_lambda_sem": 0.1,
+      "grad_norm_pre_clip": 6.29035758972168,
+      "grad_norm_post_clip": 1.0
+    },
+    {
+      "total": 1.508173942565918,
+      "caption": 1.439326286315918,
+      "semantic": 0.6875,
+      "effective_lambda_sem": 0.1,
+      "grad_norm_pre_clip": 3.6419999599456787,
+      "grad_norm_post_clip": 1.0
+    },
+    {
+      "total": 2.4921507835388184,
+      "caption": 2.4389281272888184,
+      "semantic": 0.53125,
+      "effective_lambda_sem": 0.1,
+      "grad_norm_pre_clip": 5.923095703125,
+      "grad_norm_post_clip": 1.0
+    },
+    {
+      "total": 2.9932453632354736,
+      "caption": 2.9554035663604736,
+      "semantic": 0.37890625,
+      "effective_lambda_sem": 0.1,
+      "grad_norm_pre_clip": 3.364466667175293,
+      "grad_norm_post_clip": 1.0
+    },
+    {
+      "total": 2.7046618461608887,
+      "caption": 2.6499743461608887,
+      "semantic": 0.546875,
+      "effective_lambda_sem": 0.1,
+      "grad_norm_pre_clip": 3.426668167114258,
+      "grad_norm_post_clip": 1.0
+    },
+    {
+      "total": 1.892380952835083,
+      "caption": 1.815232515335083,
+      "semantic": 0.76953125,
+      "effective_lambda_sem": 0.1,
+      "grad_norm_pre_clip": 7.1453022956848145,
+      "grad_norm_post_clip": 1.0
+    },
+    {
+      "total": 1.086963415145874,
+      "caption": 1.039111852645874,
+      "semantic": 0.478515625,
+      "effective_lambda_sem": 0.1,
+      "grad_norm_pre_clip": 2.3376967906951904,
+      "grad_norm_post_clip": 1.0
+    },
+    {
+      "total": 1.9996358156204224,
+      "caption": 1.9425069093704224,
+      "semantic": 0.5703125,
+      "effective_lambda_sem": 0.1,
+      "grad_norm_pre_clip": 4.386425018310547,
+      "grad_norm_post_clip": 1.0
+    },
+    {
+      "total": 1.4789048433303833,
+      "caption": 1.4388657808303833,
+      "semantic": 0.400390625,
+      "effective_lambda_sem": 0.1,
+      "grad_norm_pre_clip": 4.024814605712891,
+      "grad_norm_post_clip": 1.0
+    },
+    {
+      "total": 2.079396963119507,
+      "caption": 2.001760244369507,
+      "semantic": 0.77734375,
+      "effective_lambda_sem": 0.1,
+      "grad_norm_pre_clip": 30.48836326599121,
+      "grad_norm_post_clip": 1.0
+    },
+    {
+      "total": 3.6725261211395264,
+      "caption": 3.6197917461395264,
+      "semantic": 0.52734375,
+      "effective_lambda_sem": 0.1,
+      "grad_norm_pre_clip": 6.75919246673584,
+      "grad_norm_post_clip": 1.0
+    },
+    {
+      "total": 1.2839471101760864,
+      "caption": 1.2214471101760864,
+      "semantic": 0.625,
+      "effective_lambda_sem": 0.1,
+      "grad_norm_pre_clip": 5.541226863861084,
+      "grad_norm_post_clip": 1.0
+    },
+    {
+      "total": 1.8721497058868408,
+      "caption": 1.8108704090118408,
+      "semantic": 0.61328125,
+      "effective_lambda_sem": 0.1,
+      "grad_norm_pre_clip": 16.40749168395996,
+      "grad_norm_post_clip": 1.0
+    },
+    {
+      "total": 3.0719990730285645,
+      "caption": 3.0346455574035645,
+      "semantic": 0.373046875,
+      "effective_lambda_sem": 0.1,
+      "grad_norm_pre_clip": 31.59848403930664,
+      "grad_norm_post_clip": 1.0
+    },
+    {
+      "total": 2.0303401947021484,
+      "caption": 1.970525860786438,
+      "semantic": 0.59765625,
+      "effective_lambda_sem": 0.1,
+      "grad_norm_pre_clip": 5.0254364013671875,
+      "grad_norm_post_clip": 1.0
+    },
+    {
+      "total": 3.2141659259796143,
+      "caption": 3.1653378009796143,
+      "semantic": 0.48828125,
+      "effective_lambda_sem": 0.1,
+      "grad_norm_pre_clip": 9.380526542663574,
+      "grad_norm_post_clip": 1.0
+    },
+    {
+      "total": 2.4562342166900635,
+      "caption": 2.3717615604400635,
+      "semantic": 0.84375,
+      "effective_lambda_sem": 0.1,
+      "grad_norm_pre_clip": 5.530978679656982,
+      "grad_norm_post_clip": 1.0
+    },
+    {
+      "total": 1.864710807800293,
+      "caption": 1.817347526550293,
+      "semantic": 0.47265625,
+      "effective_lambda_sem": 0.1,
+      "grad_norm_pre_clip": 3.5730273723602295,
+      "grad_norm_post_clip": 1.0
+    },
+    {
+      "total": 0.8284773826599121,
+      "caption": 0.7757430076599121,
+      "semantic": 0.52734375,
+      "effective_lambda_sem": 0.1,
+      "grad_norm_pre_clip": 3.681504726409912,
+      "grad_norm_post_clip": 1.0
+    },
+    {
+      "total": 1.5532310009002686,
+      "caption": 1.5009849071502686,
+      "semantic": 0.5234375,
+      "effective_lambda_sem": 0.1,
+      "grad_norm_pre_clip": 3.4144506454467773,
+      "grad_norm_post_clip": 1.0
+    },
+    {
+      "total": 2.2964422702789307,
+      "caption": 2.2466375827789307,
+      "semantic": 0.498046875,
+      "effective_lambda_sem": 0.1,
+      "grad_norm_pre_clip": 10.288402557373047,
+      "grad_norm_post_clip": 1.0
+    },
+    {
+      "total": 2.961594581604004,
+      "caption": 2.900559425354004,
+      "semantic": 0.609375,
+      "effective_lambda_sem": 0.1,
+      "grad_norm_pre_clip": 14.809111595153809,
+      "grad_norm_post_clip": 1.0
+    },
+    {
+      "total": 1.6682236194610596,
+      "caption": 1.6069443225860596,
+      "semantic": 0.61328125,
+      "effective_lambda_sem": 0.1,
+      "grad_norm_pre_clip": 4.093499660491943,
+      "grad_norm_post_clip": 1.0
+    },
+    {
+      "total": 1.5920714139938354,
+      "caption": 1.5412901639938354,
+      "semantic": 0.5078125,
+      "effective_lambda_sem": 0.1,
+      "grad_norm_pre_clip": 3.543452262878418,
+      "grad_norm_post_clip": 1.0
+    },
+    {
+      "total": 4.120800018310547,
+      "caption": 4.051464080810547,
+      "semantic": 0.6953125,
+      "effective_lambda_sem": 0.1,
+      "grad_norm_pre_clip": 10.953731536865234,
+      "grad_norm_post_clip": 1.0
+    },
+    {
+      "total": 1.9607088565826416,
+      "caption": 1.9006502628326416,
+      "semantic": 0.6015625,
+      "effective_lambda_sem": 0.1,
+      "grad_norm_pre_clip": 4.5990891456604,
+      "grad_norm_post_clip": 1.0
+    },
+    {
+      "total": 1.491349220275879,
+      "caption": 1.446427345275879,
+      "semantic": 0.44921875,
+      "effective_lambda_sem": 0.1,
+      "grad_norm_pre_clip": 3.052295684814453,
+      "grad_norm_post_clip": 1.0
+    },
+    {
+      "total": 1.4301050901412964,
+      "caption": 1.3597925901412964,
+      "semantic": 0.703125,
+      "effective_lambda_sem": 0.1,
+      "grad_norm_pre_clip": 26.262744903564453,
+      "grad_norm_post_clip": 1.0
+    },
+    {
+      "total": 1.686174750328064,
+      "caption": 1.640764594078064,
+      "semantic": 0.455078125,
+      "effective_lambda_sem": 0.1,
+      "grad_norm_pre_clip": 2.252046823501587,
+      "grad_norm_post_clip": 1.0
+    },
+    {
+      "total": 2.022557020187378,
+      "caption": 1.969090223312378,
+      "semantic": 0.53515625,
+      "effective_lambda_sem": 0.1,
+      "grad_norm_pre_clip": 9.225282669067383,
+      "grad_norm_post_clip": 1.0
+    },
+    {
+      "total": 1.0525407791137695,
+      "caption": 0.9978533387184143,
+      "semantic": 0.546875,
+      "effective_lambda_sem": 0.1,
+      "grad_norm_pre_clip": 3.935398817062378,
+      "grad_norm_post_clip": 1.0
+    },
+    {
+      "total": 1.2826170921325684,
+      "caption": 1.1996092796325684,
+      "semantic": 0.83203125,
+      "effective_lambda_sem": 0.1,
+      "grad_norm_pre_clip": 3.8981404304504395,
+      "grad_norm_post_clip": 1.0
+    },
+    {
+      "total": 2.4862616062164307,
+      "caption": 2.4498846530914307,
+      "semantic": 0.36328125,
+      "effective_lambda_sem": 0.1,
+      "grad_norm_pre_clip": 7.327261924743652,
+      "grad_norm_post_clip": 1.0
+    },
+    {
+      "total": 1.788377285003662,
+      "caption": 1.720506191253662,
+      "semantic": 0.6796875,
+      "effective_lambda_sem": 0.1,
+      "grad_norm_pre_clip": 9.79833698272705,
+      "grad_norm_post_clip": 1.0
+    },
+    {
+      "total": 3.6765847206115723,
+      "caption": 3.6409401893615723,
+      "semantic": 0.35546875,
+      "effective_lambda_sem": 0.1,
+      "grad_norm_pre_clip": 6.309205532073975,
+      "grad_norm_post_clip": 1.0
+    },
+    {
+      "total": 2.4155352115631104,
+      "caption": 2.3725664615631104,
+      "semantic": 0.4296875,
+      "effective_lambda_sem": 0.1,
+      "grad_norm_pre_clip": 2.475651979446411,
+      "grad_norm_post_clip": 1.0
+    },
+    {
+      "total": 2.582728862762451,
+      "caption": 2.506556987762451,
+      "semantic": 0.76171875,
+      "effective_lambda_sem": 0.1,
+      "grad_norm_pre_clip": 8.042326927185059,
+      "grad_norm_post_clip": 1.0
+    },
+    {
+      "total": 2.5701165199279785,
+      "caption": 2.5081048011779785,
+      "semantic": 0.62109375,
+      "effective_lambda_sem": 0.1,
+      "grad_norm_pre_clip": 10.007707595825195,
+      "grad_norm_post_clip": 1.0
+    },
+    {
+      "total": 2.3886263370513916,
+      "caption": 2.3383333683013916,
+      "semantic": 0.50390625,
+      "effective_lambda_sem": 0.1,
+      "grad_norm_pre_clip": 17.16880989074707,
+      "grad_norm_post_clip": 1.0
+    },
+    {
+      "total": 1.2395259141921997,
+      "caption": 1.1943598985671997,
+      "semantic": 0.451171875,
+      "effective_lambda_sem": 0.1,
+      "grad_norm_pre_clip": 2.9413249492645264,
+      "grad_norm_post_clip": 1.0
+    },
+    {
+      "total": 3.535501718521118,
+      "caption": 3.454447031021118,
+      "semantic": 0.8125,
+      "effective_lambda_sem": 0.1,
+      "grad_norm_pre_clip": 7.8946638107299805,
+      "grad_norm_post_clip": 1.0
+    },
+    {
+      "total": 2.6963772773742676,
+      "caption": 2.6485257148742676,
+      "semantic": 0.478515625,
+      "effective_lambda_sem": 0.1,
+      "grad_norm_pre_clip": 4.471059322357178,
+      "grad_norm_post_clip": 1.0
+    },
+    {
+      "total": 1.1989054679870605,
+      "caption": 1.1447062492370605,
+      "semantic": 0.54296875,
+      "effective_lambda_sem": 0.1,
+      "grad_norm_pre_clip": 3.473548650741577,
+      "grad_norm_post_clip": 1.0
+    },
+    {
+      "total": 1.9295039176940918,
+      "caption": 1.8709101676940918,
+      "semantic": 0.5859375,
+      "effective_lambda_sem": 0.1,
+      "grad_norm_pre_clip": 2.812680244445801,
+      "grad_norm_post_clip": 1.0
+    },
+    {
+      "total": 2.3027074337005615,
+      "caption": 2.2511937618255615,
+      "semantic": 0.515625,
+      "effective_lambda_sem": 0.1,
+      "grad_norm_pre_clip": 3.198282241821289,
+      "grad_norm_post_clip": 1.0
+    },
+    {
+      "total": 1.1660281419754028,
+      "caption": 1.1106082201004028,
+      "semantic": 0.5546875,
+      "effective_lambda_sem": 0.1,
+      "grad_norm_pre_clip": 2.7528605461120605,
+      "grad_norm_post_clip": 1.0
+    },
+    {
+      "total": 1.9004697799682617,
+      "caption": 1.8709287643432617,
+      "semantic": 0.294921875,
+      "effective_lambda_sem": 0.1,
+      "grad_norm_pre_clip": 4.986766338348389,
+      "grad_norm_post_clip": 1.0
+    },
+    {
+      "total": 2.4876089096069336,
+      "caption": 2.4270620346069336,
+      "semantic": 0.60546875,
+      "effective_lambda_sem": 0.1,
+      "grad_norm_pre_clip": 4.612232685089111,
+      "grad_norm_post_clip": 1.0
+    },
+    {
+      "total": 0.9062050580978394,
+      "caption": 0.8573769330978394,
+      "semantic": 0.48828125,
+      "effective_lambda_sem": 0.1,
+      "grad_norm_pre_clip": 3.0928120613098145,
+      "grad_norm_post_clip": 1.0
+    },
+    {
+      "total": 1.8667773008346558,
+      "caption": 1.8074511289596558,
+      "semantic": 0.59375,
+      "effective_lambda_sem": 0.1,
+      "grad_norm_pre_clip": 3.89302134513855,
+      "grad_norm_post_clip": 1.0
+    },
+    {
+      "total": 1.6103225946426392,
+      "caption": 1.5727249383926392,
+      "semantic": 0.375,
+      "effective_lambda_sem": 0.1,
+      "grad_norm_pre_clip": 2.377108573913574,
+      "grad_norm_post_clip": 1.0
+    },
+    {
+      "total": 1.2927062511444092,
+      "caption": 1.2360656261444092,
+      "semantic": 0.56640625,
+      "effective_lambda_sem": 0.1,
+      "grad_norm_pre_clip": 3.3400282859802246,
+      "grad_norm_post_clip": 1.0
+    },
+    {
+      "total": 2.3975934982299805,
+      "caption": 2.3626813888549805,
+      "semantic": 0.349609375,
+      "effective_lambda_sem": 0.1,
+      "grad_norm_pre_clip": 21.33191680908203,
+      "grad_norm_post_clip": 1.0
+    },
+    {
+      "total": 1.1590509414672852,
+      "caption": 1.0992364883422852,
+      "semantic": 0.59765625,
+      "effective_lambda_sem": 0.1,
+      "grad_norm_pre_clip": 2.8017773628234863,
+      "grad_norm_post_clip": 1.0
+    },
+    {
+      "total": 1.2969166040420532,
+      "caption": 1.2612720727920532,
+      "semantic": 0.357421875,
+      "effective_lambda_sem": 0.1,
+      "grad_norm_pre_clip": 4.0247650146484375,
+      "grad_norm_post_clip": 1.0
+    },
+    {
+      "total": 1.3682665824890137,
+      "caption": 1.3270068168640137,
+      "semantic": 0.412109375,
+      "effective_lambda_sem": 0.1,
+      "grad_norm_pre_clip": 2.763368606567383,
+      "grad_norm_post_clip": 1.0
+    },
+    {
+      "total": 2.2367119789123535,
+      "caption": 2.1996026039123535,
+      "semantic": 0.37109375,
+      "effective_lambda_sem": 0.1,
+      "grad_norm_pre_clip": 4.005262851715088,
+      "grad_norm_post_clip": 1.0
+    },
+    {
+      "total": 2.5992989540100098,
+      "caption": 2.5458321571350098,
+      "semantic": 0.53515625,
+      "effective_lambda_sem": 0.1,
+      "grad_norm_pre_clip": 4.690817356109619,
+      "grad_norm_post_clip": 1.0
+    },
+    {
+      "total": 1.620432734489441,
+      "caption": 1.578440546989441,
+      "semantic": 0.419921875,
+      "effective_lambda_sem": 0.1,
+      "grad_norm_pre_clip": 7.093757629394531,
+      "grad_norm_post_clip": 1.0
+    },
+    {
+      "total": 0.9870582222938538,
+      "caption": 0.9277320504188538,
+      "semantic": 0.59375,
+      "effective_lambda_sem": 0.1,
+      "grad_norm_pre_clip": 6.596621513366699,
+      "grad_norm_post_clip": 1.0
+    },
+    {
+      "total": 3.6375553607940674,
+      "caption": 3.6072819232940674,
+      "semantic": 0.302734375,
+      "effective_lambda_sem": 0.1,
+      "grad_norm_pre_clip": 6.795014381408691,
+      "grad_norm_post_clip": 1.0
+    },
+    {
+      "total": 2.2938969135284424,
+      "caption": 2.2455570697784424,
+      "semantic": 0.482421875,
+      "effective_lambda_sem": 0.1,
+      "grad_norm_pre_clip": 3.886802911758423,
+      "grad_norm_post_clip": 1.0
+    },
+    {
+      "total": 2.9484729766845703,
+      "caption": 2.8752307891845703,
+      "semantic": 0.734375,
+      "effective_lambda_sem": 0.1,
+      "grad_norm_pre_clip": 22.069921493530273,
+      "grad_norm_post_clip": 1.0
+    },
+    {
+      "total": 1.9863275289535522,
+      "caption": 1.9309076070785522,
+      "semantic": 0.5546875,
+      "effective_lambda_sem": 0.1,
+      "grad_norm_pre_clip": 4.11395788192749,
+      "grad_norm_post_clip": 1.0
+    },
+    {
+      "total": 1.1307659149169922,
+      "caption": 1.0780315399169922,
+      "semantic": 0.52734375,
+      "effective_lambda_sem": 0.1,
+      "grad_norm_pre_clip": 1.9396127462387085,
+      "grad_norm_post_clip": 1.0
+    },
+    {
+      "total": 2.8499081134796143,
+      "caption": 2.8054745197296143,
+      "semantic": 0.4453125,
+      "effective_lambda_sem": 0.1,
+      "grad_norm_pre_clip": 4.601631164550781,
+      "grad_norm_post_clip": 1.0
+    },
+    {
+      "total": 2.1423139572143555,
+      "caption": 2.0951948165893555,
+      "semantic": 0.470703125,
+      "effective_lambda_sem": 0.1,
+      "grad_norm_pre_clip": 3.0862081050872803,
+      "grad_norm_post_clip": 1.0
+    },
+    {
+      "total": 2.1242871284484863,
+      "caption": 2.0727734565734863,
+      "semantic": 0.515625,
+      "effective_lambda_sem": 0.1,
+      "grad_norm_pre_clip": 9.670801162719727,
+      "grad_norm_post_clip": 1.0
+    },
+    {
+      "total": 1.3048615455627441,
+      "caption": 1.2769074440002441,
+      "semantic": 0.279296875,
+      "effective_lambda_sem": 0.1,
+      "grad_norm_pre_clip": 2.9699840545654297,
+      "grad_norm_post_clip": 1.0
+    },
+    {
+      "total": 3.0301666259765625,
+      "caption": 2.9730377197265625,
+      "semantic": 0.5703125,
+      "effective_lambda_sem": 0.1,
+      "grad_norm_pre_clip": 5.687030792236328,
+      "grad_norm_post_clip": 1.0
+    },
+    {
+      "total": 1.8890588283538818,
+      "caption": 1.8265588283538818,
+      "semantic": 0.625,
+      "effective_lambda_sem": 0.1,
+      "grad_norm_pre_clip": 3.600792169570923,
+      "grad_norm_post_clip": 1.0
+    },
+    {
+      "total": 1.6821128129959106,
+      "caption": 1.6313315629959106,
+      "semantic": 0.5078125,
+      "effective_lambda_sem": 0.1,
+      "grad_norm_pre_clip": 6.62568473815918,
+      "grad_norm_post_clip": 1.0
+    },
+    {
+      "total": 2.202254056930542,
+      "caption": 2.167341947555542,
+      "semantic": 0.349609375,
+      "effective_lambda_sem": 0.1,
+      "grad_norm_pre_clip": 8.315357208251953,
+      "grad_norm_post_clip": 1.0
+    },
+    {
+      "total": 1.3839879035949707,
+      "caption": 1.3327183723449707,
+      "semantic": 0.51171875,
+      "effective_lambda_sem": 0.1,
+      "grad_norm_pre_clip": 4.811896324157715,
+      "grad_norm_post_clip": 1.0
+    }
+  ],
+  "visual_optimizer_tensors": 0,
+  "visual_attribution_parameters": 390,
+  "visual_attribution_gradients_enabled": true,
+  "teacher_cache": "/vepfs-mlp2/c20250405/400040/transfer/vla_attention/teacher_maps/F0v2_sd1_5_nulltext_phrase_256_seed17_driver"
+}

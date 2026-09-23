@@ -1,0 +1,121 @@
+{
+  "bootstrap_samples": 10000,
+  "training_seeds": [
+    17,
+    29,
+    41
+  ],
+  "resampling": "paired sample IDs within seed; aggregate fixed seeds",
+  "metrics": [
+    "calibrated_box_iou",
+    "common_soft_iou",
+    "common_box_iou_top10",
+    "common_box_iou_top20",
+    "common_box_iou_top30",
+    "common_mass_in_box",
+    "pointing",
+    "mass_in_box"
+  ],
+  "comparisons": {
+    "js": {
+      "per_seed_delta": {
+        "17": {
+          "calibrated_box_iou": -0.0020361335731432367,
+          "common_soft_iou": -0.013474114126012895,
+          "common_box_iou_top10": 0.006601602145891599,
+          "common_box_iou_top20": 0.00265853191346764,
+          "common_box_iou_top30": 0.0007675820726814912,
+          "common_mass_in_box": -0.0028445473602613557,
+          "pointing": 0.03125,
+          "mass_in_box": -0.010535791806213876
+        },
+        "29": {
+          "calibrated_box_iou": 0.008657999237940486,
+          "common_soft_iou": 0.009469868478146015,
+          "common_box_iou_top10": -0.00034436017495494803,
+          "common_box_iou_top20": 0.002468689654118405,
+          "common_box_iou_top30": -0.00017693380710382073,
+          "common_mass_in_box": 0.006099454130993529,
+          "pointing": -0.09375,
+          "mass_in_box": 0.0031593038723479894
+        },
+        "41": {
+          "calibrated_box_iou": 0.016849344416015773,
+          "common_soft_iou": 0.01328128382510478,
+          "common_box_iou_top10": 0.0023753432502564738,
+          "common_box_iou_top20": 0.0018068474530751216,
+          "common_box_iou_top30": 0.0010092827121972793,
+          "common_mass_in_box": 0.0063179996590012905,
+          "pointing": 0.09375,
+          "mass_in_box": 0.003588693781501074
+        }
+      },
+      "aggregate": {
+        "calibrated_box_iou": {
+          "mean_delta": 0.00782373669360434,
+          "ci95": [
+            -0.0062346181643464825,
+            0.02219228438244568
+          ],
+          "positive_fraction": 0.8665
+        },
+        "common_soft_iou": {
+          "mean_delta": 0.0030923460590792998,
+          "ci95": [
+            -0.002144881907976069,
+            0.008387239990759464
+          ],
+          "positive_fraction": 0.8768
+        },
+        "common_box_iou_top10": {
+          "mean_delta": 0.0028775284070643747,
+          "ci95": [
+            -0.003258590522988455,
+            0.008985517100545591
+          ],
+          "positive_fraction": 0.8237
+        },
+        "common_box_iou_top20": {
+          "mean_delta": 0.002311356340220389,
+          "ci95": [
+            -0.00024019318438458416,
+            0.005232225528505026
+          ],
+          "positive_fraction": 0.959
+        },
+        "common_box_iou_top30": {
+          "mean_delta": 0.0005333103259249832,
+          "ci95": [
+            -0.00043205790394973615,
+            0.00158850225483237
+          ],
+          "positive_fraction": 0.8515
+        },
+        "common_mass_in_box": {
+          "mean_delta": 0.0031909688099111544,
+          "ci95": [
+            -0.00705906195639354,
+            0.013665870178592828
+          ],
+          "positive_fraction": 0.7281
+        },
+        "pointing": {
+          "mean_delta": 0.010416666666666666,
+          "ci95": [
+            -0.0625,
+            0.08333333333333333
+          ],
+          "positive_fraction": 0.583
+        },
+        "mass_in_box": {
+          "mean_delta": -0.001262598050788271,
+          "ci95": [
+            -0.011536843221396201,
+            0.009476050541012606
+          ],
+          "positive_fraction": 0.4104
+        }
+      }
+    }
+  }
+}

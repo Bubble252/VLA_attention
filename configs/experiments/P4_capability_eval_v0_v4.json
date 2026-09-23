@@ -1,6 +1,6 @@
 {
   "schema": "vla-attention/p4-capability-eval/v1",
-  "status": "protocol_runner_and_manifest_validator_defined_execution_pending_data_manifests",
+  "status": "geometry_candidate_selected_pilot_manifests_frozen_capability_evaluation_in_progress",
   "purpose": "Measure Lavender-style downstream VLM capability changes separately from region-map geometry.",
   "student": {
     "model": "Qwen2.5-VL-7B-Instruct",
@@ -25,12 +25,12 @@
     "held_out_from_training_and_teacher_calibration": true
   },
   "pilot_benchmarks": [
-    {"name": "COCO Captions", "split": "official validation split with references", "manifest": "experiment_workspace/manifests/capability/coco_captions_val.jsonl", "source_revision": "TO_FREEZE_BEFORE_RUN", "metrics": ["CIDEr", "BLEU-1", "BLEU-2", "BLEU-3", "BLEU-4", "METEOR", "ROUGE-L"], "category": "caption"},
-    {"name": "VQAv2", "split": "validation", "manifest": "experiment_workspace/manifests/capability/vqav2_val.jsonl", "source_revision": "TO_FREEZE_BEFORE_RUN", "metrics": ["official VQA consensus accuracy"], "category": "general_vqa"},
-    {"name": "TextVQA", "split": "validation", "manifest": "experiment_workspace/manifests/capability/textvqa_val.jsonl", "source_revision": "TO_FREEZE_BEFORE_RUN", "metrics": ["official TextVQA normalized accuracy"], "category": "fine_grained_ocr"},
-    {"name": "POPE", "split": "official evaluation split", "manifest": "experiment_workspace/manifests/capability/pope.jsonl", "source_revision": "TO_FREEZE_BEFORE_RUN", "metrics": ["accuracy", "precision", "recall", "F1", "results by adversarial/popular/random subset"], "category": "hallucination"},
-    {"name": "MME", "split": "official evaluation split", "manifest": "experiment_workspace/manifests/capability/mme.jsonl", "source_revision": "TO_FREEZE_BEFORE_RUN", "metrics": ["official paired perception and cognition scores"], "category": "broad_perception"},
-    {"name": "WorldMedQA-V", "split": "official held-out split", "manifest": "experiment_workspace/manifests/capability/worldmedqa_v.jsonl", "source_revision": "TO_FREEZE_BEFORE_RUN", "metrics": ["accuracy overall", "accuracy by language", "accuracy by question type"], "category": "ood"}
+    {"name": "COCO Captions", "split": "official validation, deterministic 128-image pilot", "manifest": "experiment_workspace/manifests/capability/coco_captions_val_pilot128.jsonl", "full_manifest": "experiment_workspace/manifests/capability/coco_captions_val.jsonl", "dataset_repo": "Multimodal-Fatima/COCO_captions_validation", "source_revision": "bfa149029bb1e2975cb0b9bea8ad948db9e9ddb2", "pilot_n": 128, "metrics": ["CIDEr", "BLEU-1", "BLEU-2", "BLEU-3", "BLEU-4", "METEOR", "ROUGE-L"], "category": "caption"},
+    {"name": "VQAv2", "split": "validation, deterministic sample-repo 128-question pilot", "manifest": "experiment_workspace/manifests/capability/vqav2_val_pilot128.jsonl", "full_manifest": "experiment_workspace/manifests/capability/vqav2_val.jsonl", "dataset_repo": "Multimodal-Fatima/VQAv2_sample_validation", "source_revision": "99487d2651df3799002b2fb3e455741744514a02", "pilot_n": 128, "metrics": ["official VQA consensus accuracy"], "category": "general_vqa", "limitation": "Pilot source is a sample release; final validation must use the full official VQAv2 validation split."},
+    {"name": "TextVQA", "split": "official validation, deterministic 128-question pilot", "manifest": "experiment_workspace/manifests/capability/textvqa_val_pilot128.jsonl", "full_manifest": "experiment_workspace/manifests/capability/textvqa_val.jsonl", "dataset_repo": "lmms-lab-encoder/textvqa", "source_revision": "9c0699cd19768ac5ab97568f6b3cbac4c0062884", "pilot_n": 128, "metrics": ["official TextVQA normalized accuracy"], "category": "fine_grained_ocr"},
+    {"name": "POPE", "split": "official adversarial/popular/random subsets, deterministic 128 per subset pilot", "manifest": "experiment_workspace/manifests/capability/pope_pilot384.jsonl", "full_manifest": "experiment_workspace/manifests/capability/pope.jsonl", "dataset_repo": "lmms-lab-encoder/POPE", "source_revision": "4db1276663dfa5eb8ad16a52d24c31a09e470896", "pilot_n": 384, "metrics": ["accuracy", "precision", "recall", "F1", "results by adversarial/popular/random subset"], "category": "hallucination"},
+    {"name": "MME", "split": "official test, deterministic 128-question pilot", "manifest": "experiment_workspace/manifests/capability/mme_test_pilot128.jsonl", "full_manifest": "experiment_workspace/manifests/capability/mme_test.jsonl", "dataset_repo": "lmms-lab-encoder/MME", "source_revision": "d6c9023f017b564f7b3ccccf5348166bce8fdbcd", "pilot_n": 128, "metrics": ["official perception and cognition scores by category"], "category": "broad_perception"},
+    {"name": "WorldMedQA-V", "split": "official multilingual release, deterministic pilot", "manifest": "experiment_workspace/manifests/capability/worldmedqa_v_pilot.jsonl", "full_manifest": "experiment_workspace/manifests/capability/worldmedqa_v.jsonl", "dataset_repo": "WorldMedQA/V", "source_revision": "7d4b008bdba5c961a249cf44c9a552675d351ca5", "pilot_n": 256, "metrics": ["accuracy overall", "accuracy by language", "accuracy by question type"], "category": "ood"}
   ],
   "comparisons": ["V3 - V1", "V4 - V2", "V1 - V0", "V2 - V1"],
   "report_fields": ["absolute_score", "paired_absolute_delta", "relative_delta_percent", "bootstrap_ci95", "latency", "peak_memory", "prompt_hash", "dataset_revision", "evaluator_revision"],
@@ -38,6 +38,6 @@
   "runner": "scripts/eval_capability_suite.py",
   "manifest_validator": "scripts/validate_capability_manifest.py",
   "manifest_schema": "experiments/P4-vlm-v0-v4/capability_manifest_schema.md",
-  "execution_gate": "Run after the calibrated 16x16 geometry-loss sweep, matched V1 baseline and paired-bootstrap audit. Smoke every evaluator on the same tiny fixed IDs for every checkpoint, then run the same full official split for every checkpoint.",
+  "execution_gate": "Run deterministic pilot manifests on identical sample IDs for V0, matched V1, and selected KL+rank V3 first. Validate benchmark-native scores, prompts, memory and resume. Then evaluate matched V0-V4 checkpoints on full official splits; the pilot does not count as full Lavender-style capability evidence.",
   "limitations": ["This is not a full reproduction of Lavender's 20-benchmark evaluation.", "Runner uses the VQA leave-one-annotator-out consensus formula but generic answer normalization; final scores require official scorers.", "MME and task-specific answer normalization require official scoring adapters before final claims.", "Model pretraining overlap cannot generally be ruled out; audit and disclose fine-tuning data overlap.", "Capability scores do not substitute for phrase-region grounding metrics."]
 }

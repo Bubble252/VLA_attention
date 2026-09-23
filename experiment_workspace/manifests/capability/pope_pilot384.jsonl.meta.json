@@ -1,0 +1,13 @@
+{
+  "benchmark": "POPE",
+  "split": "three-official-subsets-pilot128-each",
+  "source_revision": "4db1276663dfa5eb8ad16a52d24c31a09e470896",
+  "manifest": "/vepfs-mlp2/c20250405/400040/transfer/vla_attention/repo/VLA_attention/experiment_workspace/manifests/capability/pope_pilot384.jsonl",
+  "sha256": "365d35a11ddcaf8ff040ddcd7e70b4dc79791d1f08a3a64dec6d311d3cfaceca",
+  "ordered_id_prompt_sha256": "50886352d0a194c28caa9a0df2fb1de5f75a7d375c0fa8eb7bd7a291dba8f173",
+  "n": 384,
+  "task_counts": {
+    "pope": 384
+  },
+  "official_id_count": 384
+}

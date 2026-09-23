@@ -1,0 +1,13 @@
+{
+  "benchmark": "WorldMedQA-V",
+  "split": "multilingual-pilot256",
+  "source_revision": "7d4b008bdba5c961a249cf44c9a552675d351ca5",
+  "manifest": "/vepfs-mlp2/c20250405/400040/transfer/vla_attention/repo/VLA_attention/experiment_workspace/manifests/capability/worldmedqa_v_pilot256.jsonl",
+  "sha256": "826bfe1ea7a63403ba1695f8c6d2e4e98f04fdfa89a0a950ca5344d93211be20",
+  "ordered_id_prompt_sha256": "508152b89e4581ffc2c0016f4de7f262cd4884e035f135745f2b059175828cb4",
+  "n": 256,
+  "task_counts": {
+    "worldmedqa": 256
+  },
+  "official_id_count": 256
+}

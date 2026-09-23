@@ -1,0 +1,13 @@
+{
+  "benchmark": "COCO-Captions",
+  "split": "validation-pilot128",
+  "source_revision": "bfa149029bb1e2975cb0b9bea8ad948db9e9ddb2",
+  "manifest": "/vepfs-mlp2/c20250405/400040/transfer/vla_attention/repo/VLA_attention/experiment_workspace/manifests/capability/coco_captions_val_pilot128.jsonl",
+  "sha256": "4f0b846adb2ba2dfe419f836dd5e039414f1c0578e7a7cb849d0aa0968f772c7",
+  "ordered_id_prompt_sha256": "f952119682144b15d3a8ab118a8130aeedb848bb0f4d734eda9f64584e833416",
+  "n": 128,
+  "task_counts": {
+    "caption": 128
+  },
+  "official_id_count": 128
+}

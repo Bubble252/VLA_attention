@@ -1,0 +1,13 @@
+{
+  "benchmark": "VQAv2-sample",
+  "split": "validation-pilot128",
+  "source_revision": "99487d2651df3799002b2fb3e455741744514a02",
+  "manifest": "/vepfs-mlp2/c20250405/400040/transfer/vla_attention/repo/VLA_attention/experiment_workspace/manifests/capability/vqav2_val_pilot128.jsonl",
+  "sha256": "af8cc4c71ebc1647913e363311439fe53b28f3e322815f7a0ef44a61bd3cb795",
+  "ordered_id_prompt_sha256": "882f0bf0668cd131c193ee020e14b5570ab57a70099388903e7a73754137c5fb",
+  "n": 128,
+  "task_counts": {
+    "vqa": 128
+  },
+  "official_id_count": 128
+}

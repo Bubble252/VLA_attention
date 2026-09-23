@@ -1,0 +1,13 @@
+{
+  "benchmark": "MME",
+  "split": "test-pilot128",
+  "source_revision": "d6c9023f017b564f7b3ccccf5348166bce8fdbcd",
+  "manifest": "/vepfs-mlp2/c20250405/400040/transfer/vla_attention/repo/VLA_attention/experiment_workspace/manifests/capability/mme_test_pilot128.jsonl",
+  "sha256": "6a5de8efd3da31d19555db5d66b32b41fe12fc793546b3052cb29c26eb1fa03f",
+  "ordered_id_prompt_sha256": "6a38d4452bf8c4d9bb9faef95de85a43ffb1c0eb300d81095a68d7bf25388e92",
+  "n": 128,
+  "task_counts": {
+    "binary": 128
+  },
+  "official_id_count": 128
+}

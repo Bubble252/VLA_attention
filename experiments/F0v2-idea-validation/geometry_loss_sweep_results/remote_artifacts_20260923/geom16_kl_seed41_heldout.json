@@ -1,0 +1,2329 @@
+{
+  "summary": {
+    "model_id": "geom_kl_seed41_s100",
+    "checkpoint": "/vepfs-mlp2/c20250405/400040/transfer/vla_attention/checkpoints/F0v2_geometry/geom_kl_seed41_s100",
+    "manifest": "/vepfs-mlp2/c20250405/400040/transfer/vla_attention/repo/VLA_attention/experiment_workspace/manifests/flickr30k_entities/F0v2_heldout_test_64.jsonl",
+    "n": 64,
+    "pointing": 0.40625,
+    "mass_in_box": 0.338232924679041,
+    "top20_box_iou": 0.26951164801134536,
+    "common_soft_iou": 0.07588014870550994,
+    "common_mass_in_box": 0.33551989240796076,
+    "common_box_iou_top10": 0.27863694962722685,
+    "common_box_iou_top20": 0.26991357379162895,
+    "common_box_iou_top30": 0.2676888269906238,
+    "common_box_iou_top40": 0.26737373507174256,
+    "common_box_iou_q50": 0.26828139089818503,
+    "common_box_iou_q70": 0.2676888269906238,
+    "common_box_iou_q80": 0.26991357379162895,
+    "common_box_iou_q90": 0.27863694962722685,
+    "common_box_iou_q95": 0.28879727948061695,
+    "calibrated_box_iou": 0.28879727948061695
+  },
+  "rows": [
+    {
+      "sample_id": "6987411804:c4:p0:e263232",
+      "image_id": "6987411804",
+      "phrase": "A group of cheerleaders",
+      "map_path": "/vepfs-mlp2/c20250405/400040/transfer/vla_attention/results/F0v2_geometry_heldout/geom16_kl_seed41_heldout/maps/6987411804_c4_p0_e263232.npy",
+      "metrics": {
+        "pointing": true,
+        "mass_in_box": 0.3145791327715415,
+        "top20_box_iou": 0.18614481861540683,
+        "common_resolution": [
+          16,
+          16
+        ],
+        "common_soft_iou": 0.10578353433285786,
+        "common_mass_in_box": 0.30281902142319034,
+        "common_box_iou_top10": 0.21156516516516516,
+        "common_box_iou_top20": 0.1833564764764765,
+        "common_box_iou_top30": 0.1718966966966967,
+        "common_box_iou_top40": 0.1718966966966967,
+        "common_box_iou_q50": 0.1718966966966967,
+        "common_box_iou_q70": 0.1718966966966967,
+        "common_box_iou_q80": 0.1833564764764765,
+        "common_box_iou_q90": 0.21156516516516516,
+        "common_box_iou_q95": 0.17302532886136862,
+        "calibrated_box_iou": 0.17302532886136862
+      },
+      "gradient_finite": true,
+      "grid": [
+        18,
+        12
+      ],
+      "image_size": [
+        333,
+        500
+      ]
+    },
+    {
+      "sample_id": "2123995873:c1:p3:e30052",
+      "image_id": "2123995873",
+      "phrase": "the sidewalk",
+      "map_path": "/vepfs-mlp2/c20250405/400040/transfer/vla_attention/results/F0v2_geometry_heldout/geom16_kl_seed41_heldout/maps/2123995873_c1_p3_e30052.npy",
+      "metrics": {
+        "pointing": true,
+        "mass_in_box": 0.19015341895364551,
+        "top20_box_iou": 0.04464071856287425,
+        "common_resolution": [
+          16,
+          16
+        ],
+        "common_soft_iou": 0.08366028738821187,
+        "common_mass_in_box": 0.14124766371024472,
+        "common_box_iou_top10": 0.04464071856287425,
+        "common_box_iou_top20": 0.04464071856287425,
+        "common_box_iou_top30": 0.04464071856287425,
+        "common_box_iou_top40": 0.04464071856287425,
+        "common_box_iou_q50": 0.04464071856287425,
+        "common_box_iou_q70": 0.04464071856287425,
+        "common_box_iou_q80": 0.04464071856287425,
+        "common_box_iou_q90": 0.04464071856287425,
+        "common_box_iou_q95": 0.04464071856287425,
+        "calibrated_box_iou": 0.04464071856287425
+      },
+      "gradient_finite": true,
+      "grid": [
+        12,
+        18
+      ],
+      "image_size": [
+        500,
+        334
+      ]
+    },
+    {
+      "sample_id": "122301379:c3:p2:e5542",
+      "image_id": "122301379",
+      "phrase": "a chainsaw",
+      "map_path": "/vepfs-mlp2/c20250405/400040/transfer/vla_attention/results/F0v2_geometry_heldout/geom16_kl_seed41_heldout/maps/122301379_c3_p2_e5542.npy",
+      "metrics": {
+        "pointing": false,
+        "mass_in_box": 0.003538694385417216,
+        "top20_box_iou": 0.00884084084084084,
+        "common_resolution": [
+          16,
+          16
+        ],
+        "common_soft_iou": 0.0014236616298145552,
+        "common_mass_in_box": 0.001585762402175583,
+        "common_box_iou_top10": 0.00884084084084084,
+        "common_box_iou_top20": 0.00884084084084084,
+        "common_box_iou_top30": 0.00884084084084084,
+        "common_box_iou_top40": 0.00884084084084084,
+        "common_box_iou_q50": 0.00884084084084084,
+        "common_box_iou_q70": 0.00884084084084084,
+        "common_box_iou_q80": 0.00884084084084084,
+        "common_box_iou_q90": 0.00884084084084084,
+        "common_box_iou_q95": 0.00943023023023023,
+        "calibrated_box_iou": 0.00943023023023023
+      },
+      "gradient_finite": true,
+      "grid": [
+        12,
+        18
+      ],
+      "image_size": [
+        500,
+        333
+      ]
+    },
+    {
+      "sample_id": "4565084634:c4:p0:e179030",
+      "image_id": "4565084634",
+      "phrase": "A couple",
+      "map_path": "/vepfs-mlp2/c20250405/400040/transfer/vla_attention/results/F0v2_geometry_heldout/geom16_kl_seed41_heldout/maps/4565084634_c4_p0_e179030.npy",
+      "metrics": {
+        "pointing": true,
+        "mass_in_box": 0.4412684479757445,
+        "top20_box_iou": 0.18691891891891893,
+        "common_resolution": [
+          16,
+          16
+        ],
+        "common_soft_iou": 0.08467765039946228,
+        "common_mass_in_box": 0.45595683910469187,
+        "common_box_iou_top10": 0.22153353353353353,
+        "common_box_iou_top20": 0.1898858858858859,
+        "common_box_iou_top30": 0.16615015015015014,
+        "common_box_iou_top40": 0.16615015015015014,
+        "common_box_iou_q50": 0.16615015015015014,
+        "common_box_iou_q70": 0.16615015015015014,
+        "common_box_iou_q80": 0.1898858858858859,
+        "common_box_iou_q90": 0.22153353353353353,
+        "common_box_iou_q95": 0.44306706706706706,
+        "calibrated_box_iou": 0.44306706706706706
+      },
+      "gradient_finite": true,
+      "grid": [
+        18,
+        12
+      ],
+      "image_size": [
+        333,
+        500
+      ]
+    },
+    {
+      "sample_id": "4439654945:c2:p1:e168217",
+      "image_id": "4439654945",
+      "phrase": "a crowd full of people",
+      "map_path": "/vepfs-mlp2/c20250405/400040/transfer/vla_attention/results/F0v2_geometry_heldout/geom16_kl_seed41_heldout/maps/4439654945_c2_p1_e168217.npy",
+      "metrics": {
+        "pointing": false,
+        "mass_in_box": 0.4177820791724413,
+        "top20_box_iou": 0.16822712933753944,
+        "common_resolution": [
+          16,
+          16
+        ],
+        "common_soft_iou": 0.0594421781286919,
+        "common_mass_in_box": 0.3218549016426671,
+        "common_box_iou_top10": 0.18258072424284022,
+        "common_box_iou_top20": 0.16822712933753944,
+        "common_box_iou_top30": 0.16822712933753944,
+        "common_box_iou_top40": 0.16822712933753944,
+        "common_box_iou_q50": 0.16822712933753944,
+        "common_box_iou_q70": 0.16822712933753944,
+        "common_box_iou_q80": 0.16822712933753944,
+        "common_box_iou_q90": 0.18258072424284022,
+        "common_box_iou_q95": 0.16474046610653334,
+        "calibrated_box_iou": 0.16474046610653334
+      },
+      "gradient_finite": true,
+      "grid": [
+        11,
+        18
+      ],
+      "image_size": [
+        500,
+        317
+      ]
+    },
+    {
+      "sample_id": "6839984356:c3:p2:e258990",
+      "image_id": "6839984356",
+      "phrase": "his lap",
+      "map_path": "/vepfs-mlp2/c20250405/400040/transfer/vla_attention/results/F0v2_geometry_heldout/geom16_kl_seed41_heldout/maps/6839984356_c3_p2_e258990.npy",
+      "metrics": {
+        "pointing": false,
+        "mass_in_box": 0.05772887047896802,
+        "top20_box_iou": 0.018104,
+        "common_resolution": [
+          16,
+          16
+        ],
+        "common_soft_iou": 0.04183769833265118,
+        "common_mass_in_box": 0.04992509329891726,
+        "common_box_iou_top10": 0.024138666666666666,
+        "common_box_iou_top20": 0.018104,
+        "common_box_iou_top30": 0.018104,
+        "common_box_iou_top40": 0.018104,
+        "common_box_iou_q50": 0.018104,
+        "common_box_iou_q70": 0.018104,
+        "common_box_iou_q80": 0.018104,
+        "common_box_iou_q90": 0.024138666666666666,
+        "common_box_iou_q95": 0.04456369230769231,
+        "calibrated_box_iou": 0.04456369230769231
+      },
+      "gradient_finite": true,
+      "grid": [
+        18,
+        18
+      ],
+      "image_size": [
+        500,
+        500
+      ]
+    },
+    {
+      "sample_id": "170405864:c3:p0:e19038",
+      "image_id": "170405864",
+      "phrase": "Scantily-clad woman",
+      "map_path": "/vepfs-mlp2/c20250405/400040/transfer/vla_attention/results/F0v2_geometry_heldout/geom16_kl_seed41_heldout/maps/170405864_c3_p0_e19038.npy",
+      "metrics": {
+        "pointing": true,
+        "mass_in_box": 0.7283764684179914,
+        "top20_box_iou": 0.7195954345917471,
+        "common_resolution": [
+          16,
+          16
+        ],
+        "common_soft_iou": 0.13000225799662932,
+        "common_mass_in_box": 0.6806717972853358,
+        "common_box_iou_top10": 0.7222415469110477,
+        "common_box_iou_top20": 0.7249257711442786,
+        "common_box_iou_top30": 0.6796179104477612,
+        "common_box_iou_top40": 0.6796179104477612,
+        "common_box_iou_q50": 0.6796179104477612,
+        "common_box_iou_q70": 0.6796179104477612,
+        "common_box_iou_q80": 0.7249257711442786,
+        "common_box_iou_q90": 0.7222415469110477,
+        "common_box_iou_q95": 0.5309759341928667,
+        "calibrated_box_iou": 0.5309759341928667
+      },
+      "gradient_finite": true,
+      "grid": [
+        18,
+        12
+      ],
+      "image_size": [
+        335,
+        500
+      ]
+    },
+    {
+      "sample_id": "263233914:c4:p1:e62709",
+      "image_id": "263233914",
+      "phrase": "a pool",
+      "map_path": "/vepfs-mlp2/c20250405/400040/transfer/vla_attention/results/F0v2_geometry_heldout/geom16_kl_seed41_heldout/maps/263233914_c4_p1_e62709.npy",
+      "metrics": {
+        "pointing": true,
+        "mass_in_box": 0.9235154028046964,
+        "top20_box_iou": 0.9108,
+        "common_resolution": [
+          16,
+          16
+        ],
+        "common_soft_iou": 0.03834698176581232,
+        "common_mass_in_box": 0.9377430248996408,
+        "common_box_iou_top10": 0.7107540173053152,
+        "common_box_iou_top20": 0.9108,
+        "common_box_iou_top30": 0.9108,
+        "common_box_iou_top40": 0.9108,
+        "common_box_iou_q50": 0.9108,
+        "common_box_iou_q70": 0.9108,
+        "common_box_iou_q80": 0.9108,
+        "common_box_iou_q90": 0.7107540173053152,
+        "common_box_iou_q95": 0.7107540173053152,
+        "calibrated_box_iou": 0.7107540173053152
+      },
+      "gradient_finite": true,
+      "grid": [
+        18,
+        13
+      ],
+      "image_size": [
+        375,
+        500
+      ]
+    },
+    {
+      "sample_id": "6206278823:c4:p0:e250042",
+      "image_id": "6206278823",
+      "phrase": "a goalie",
+      "map_path": "/vepfs-mlp2/c20250405/400040/transfer/vla_attention/results/F0v2_geometry_heldout/geom16_kl_seed41_heldout/maps/6206278823_c4_p0_e250042.npy",
+      "metrics": {
+        "pointing": true,
+        "mass_in_box": 0.46587242758823777,
+        "top20_box_iou": 0.510496,
+        "common_resolution": [
+          16,
+          16
+        ],
+        "common_soft_iou": 0.10147298869846184,
+        "common_mass_in_box": 0.4048364512431298,
+        "common_box_iou_top10": 0.510496,
+        "common_box_iou_top20": 0.510496,
+        "common_box_iou_top30": 0.510496,
+        "common_box_iou_top40": 0.510496,
+        "common_box_iou_q50": 0.510496,
+        "common_box_iou_q70": 0.510496,
+        "common_box_iou_q80": 0.510496,
+        "common_box_iou_q90": 0.510496,
+        "common_box_iou_q95": 0.510496,
+        "calibrated_box_iou": 0.510496
+      },
+      "gradient_finite": true,
+      "grid": [
+        13,
+        18
+      ],
+      "image_size": [
+        500,
+        375
+      ]
+    },
+    {
+      "sample_id": "1286805224:c0:p0:e7311",
+      "image_id": "1286805224",
+      "phrase": "A pretty asian girl",
+      "map_path": "/vepfs-mlp2/c20250405/400040/transfer/vla_attention/results/F0v2_geometry_heldout/geom16_kl_seed41_heldout/maps/1286805224_c0_p0_e7311.npy",
+      "metrics": {
+        "pointing": false,
+        "mass_in_box": 0.14759122249149798,
+        "top20_box_iou": 0.1707670588235294,
+        "common_resolution": [
+          16,
+          16
+        ],
+        "common_soft_iou": 0.054863448389624474,
+        "common_mass_in_box": 0.13948627762096588,
+        "common_box_iou_top10": 0.172032,
+        "common_box_iou_top20": 0.172032,
+        "common_box_iou_top30": 0.172032,
+        "common_box_iou_top40": 0.16128,
+        "common_box_iou_q50": 0.16128,
+        "common_box_iou_q70": 0.172032,
+        "common_box_iou_q80": 0.172032,
+        "common_box_iou_q90": 0.172032,
+        "common_box_iou_q95": 0.172032,
+        "calibrated_box_iou": 0.172032
+      },
+      "gradient_finite": true,
+      "grid": [
+        13,
+        18
+      ],
+      "image_size": [
+        500,
+        375
+      ]
+    },
+    {
+      "sample_id": "3256274183:c1:p2:e104799",
+      "image_id": "3256274183",
+      "phrase": "a row of cars",
+      "map_path": "/vepfs-mlp2/c20250405/400040/transfer/vla_attention/results/F0v2_geometry_heldout/geom16_kl_seed41_heldout/maps/3256274183_c1_p2_e104799.npy",
+      "metrics": {
+        "pointing": false,
+        "mass_in_box": 0.30068677669987665,
+        "top20_box_iou": 0.26613333333333333,
+        "common_resolution": [
+          16,
+          16
+        ],
+        "common_soft_iou": 0.10047277397324089,
+        "common_mass_in_box": 0.3011033654820768,
+        "common_box_iou_top10": 0.26613333333333333,
+        "common_box_iou_top20": 0.26613333333333333,
+        "common_box_iou_top30": 0.26613333333333333,
+        "common_box_iou_top40": 0.26613333333333333,
+        "common_box_iou_q50": 0.26613333333333333,
+        "common_box_iou_q70": 0.26613333333333333,
+        "common_box_iou_q80": 0.26613333333333333,
+        "common_box_iou_q90": 0.26613333333333333,
+        "common_box_iou_q95": 0.25629357798165137,
+        "calibrated_box_iou": 0.25629357798165137
+      },
+      "gradient_finite": true,
+      "grid": [
+        13,
+        18
+      ],
+      "image_size": [
+        500,
+        375
+      ]
+    },
+    {
+      "sample_id": "5009047021:c4:p1:e226798",
+      "image_id": "5009047021",
+      "phrase": "a football",
+      "map_path": "/vepfs-mlp2/c20250405/400040/transfer/vla_attention/results/F0v2_geometry_heldout/geom16_kl_seed41_heldout/maps/5009047021_c4_p1_e226798.npy",
+      "metrics": {
+        "pointing": false,
+        "mass_in_box": 0.00380081741604954,
+        "top20_box_iou": 0.008105263157894737,
+        "common_resolution": [
+          16,
+          16
+        ],
+        "common_soft_iou": 0.002537730718282699,
+        "common_mass_in_box": 0.002958125505493764,
+        "common_box_iou_top10": 0.008105263157894737,
+        "common_box_iou_top20": 0.008105263157894737,
+        "common_box_iou_top30": 0.008105263157894737,
+        "common_box_iou_top40": 0.008105263157894737,
+        "common_box_iou_q50": 0.008105263157894737,
+        "common_box_iou_q70": 0.008105263157894737,
+        "common_box_iou_q80": 0.008105263157894737,
+        "common_box_iou_q90": 0.008105263157894737,
+        "common_box_iou_q95": 0.008645614035087719,
+        "calibrated_box_iou": 0.008645614035087719
+      },
+      "gradient_finite": true,
+      "grid": [
+        12,
+        18
+      ],
+      "image_size": [
+        500,
+        342
+      ]
+    },
+    {
+      "sample_id": "6774537791:c4:p1:e257794",
+      "image_id": "6774537791",
+      "phrase": "a skier",
+      "map_path": "/vepfs-mlp2/c20250405/400040/transfer/vla_attention/results/F0v2_geometry_heldout/geom16_kl_seed41_heldout/maps/6774537791_c4_p1_e257794.npy",
+      "metrics": {
+        "pointing": false,
+        "mass_in_box": 0.01041115175394225,
+        "top20_box_iou": 0.026336153846153846,
+        "common_resolution": [
+          16,
+          16
+        ],
+        "common_soft_iou": 0.004420775832564565,
+        "common_mass_in_box": 0.006196157499700841,
+        "common_box_iou_top10": 0.03478044444444445,
+        "common_box_iou_top20": 0.03009846153846154,
+        "common_box_iou_top30": 0.024455,
+        "common_box_iou_top40": 0.024455,
+        "common_box_iou_q50": 0.024455,
+        "common_box_iou_q70": 0.024455,
+        "common_box_iou_q80": 0.03009846153846154,
+        "common_box_iou_q90": 0.03478044444444445,
+        "common_box_iou_q95": 0.03794230303030303,
+        "calibrated_box_iou": 0.03794230303030303
+      },
+      "gradient_finite": true,
+      "grid": [
+        14,
+        18
+      ],
+      "image_size": [
+        500,
+        400
+      ]
+    },
+    {
+      "sample_id": "3667788497:c2:p0:e135451",
+      "image_id": "3667788497",
+      "phrase": "A child",
+      "map_path": "/vepfs-mlp2/c20250405/400040/transfer/vla_attention/results/F0v2_geometry_heldout/geom16_kl_seed41_heldout/maps/3667788497_c2_p0_e135451.npy",
+      "metrics": {
+        "pointing": false,
+        "mass_in_box": 0.06816790051479706,
+        "top20_box_iou": 0.061657657657657655,
+        "common_resolution": [
+          16,
+          16
+        ],
+        "common_soft_iou": 0.03737500579415523,
+        "common_mass_in_box": 0.06685970212962908,
+        "common_box_iou_top10": 0.061657657657657655,
+        "common_box_iou_top20": 0.061657657657657655,
+        "common_box_iou_top30": 0.061657657657657655,
+        "common_box_iou_top40": 0.061657657657657655,
+        "common_box_iou_q50": 0.061657657657657655,
+        "common_box_iou_q70": 0.061657657657657655,
+        "common_box_iou_q80": 0.061657657657657655,
+        "common_box_iou_q90": 0.061657657657657655,
+        "common_box_iou_q95": 0.07588634788634789,
+        "calibrated_box_iou": 0.07588634788634789
+      },
+      "gradient_finite": true,
+      "grid": [
+        18,
+        12
+      ],
+      "image_size": [
+        333,
+        500
+      ]
+    },
+    {
+      "sample_id": "3494151850:c1:p2:e122426",
+      "image_id": "3494151850",
+      "phrase": "the water",
+      "map_path": "/vepfs-mlp2/c20250405/400040/transfer/vla_attention/results/F0v2_geometry_heldout/geom16_kl_seed41_heldout/maps/3494151850_c1_p2_e122426.npy",
+      "metrics": {
+        "pointing": true,
+        "mass_in_box": 0.652647734106722,
+        "top20_box_iou": 0.5620864218616567,
+        "common_resolution": [
+          16,
+          16
+        ],
+        "common_soft_iou": 0.1776617496236539,
+        "common_mass_in_box": 0.6221196264260525,
+        "common_box_iou_top10": 0.49963446840546505,
+        "common_box_iou_top20": 0.5596053189439198,
+        "common_box_iou_top30": 0.5814174174174174,
+        "common_box_iou_top40": 0.5814174174174174,
+        "common_box_iou_q50": 0.5814174174174174,
+        "common_box_iou_q70": 0.5814174174174174,
+        "common_box_iou_q80": 0.5596053189439198,
+        "common_box_iou_q90": 0.49963446840546505,
+        "common_box_iou_q95": 0.49963446840546505,
+        "calibrated_box_iou": 0.49963446840546505
+      },
+      "gradient_finite": true,
+      "grid": [
+        12,
+        18
+      ],
+      "image_size": [
+        500,
+        333
+      ]
+    },
+    {
+      "sample_id": "97162852:c1:p1:e284612",
+      "image_id": "97162852",
+      "phrase": "a red plaid shirt",
+      "map_path": "/vepfs-mlp2/c20250405/400040/transfer/vla_attention/results/F0v2_geometry_heldout/geom16_kl_seed41_heldout/maps/97162852_c1_p1_e284612.npy",
+      "metrics": {
+        "pointing": false,
+        "mass_in_box": 0.1396991965217722,
+        "top20_box_iou": 0.111936,
+        "common_resolution": [
+          16,
+          16
+        ],
+        "common_soft_iou": 0.07345580504965428,
+        "common_mass_in_box": 0.1353985605774421,
+        "common_box_iou_top10": 0.12792685714285715,
+        "common_box_iou_top20": 0.111936,
+        "common_box_iou_top30": 0.111936,
+        "common_box_iou_top40": 0.111936,
+        "common_box_iou_q50": 0.111936,
+        "common_box_iou_q70": 0.111936,
+        "common_box_iou_q80": 0.111936,
+        "common_box_iou_q90": 0.12792685714285715,
+        "common_box_iou_q95": 0.15919786666666666,
+        "calibrated_box_iou": 0.15919786666666666
+      },
+      "gradient_finite": true,
+      "grid": [
+        13,
+        18
+      ],
+      "image_size": [
+        500,
+        375
+      ]
+    },
+    {
+      "sample_id": "4283472819:c4:p1:e161532",
+      "image_id": "4283472819",
+      "phrase": "skis",
+      "map_path": "/vepfs-mlp2/c20250405/400040/transfer/vla_attention/results/F0v2_geometry_heldout/geom16_kl_seed41_heldout/maps/4283472819_c4_p1_e161532.npy",
+      "metrics": {
+        "pointing": true,
+        "mass_in_box": 0.1520622371463105,
+        "top20_box_iou": 0.05655138199858256,
+        "common_resolution": [
+          16,
+          16
+        ],
+        "common_soft_iou": 0.07947644739644712,
+        "common_mass_in_box": 0.10440295935902995,
+        "common_box_iou_top10": 0.06573493975903615,
+        "common_box_iou_top20": 0.05697028112449799,
+        "common_box_iou_top30": 0.05697028112449799,
+        "common_box_iou_top40": 0.05697028112449799,
+        "common_box_iou_q50": 0.05697028112449799,
+        "common_box_iou_q70": 0.05697028112449799,
+        "common_box_iou_q80": 0.05697028112449799,
+        "common_box_iou_q90": 0.06573493975903615,
+        "common_box_iou_q95": 0.07011726907630522,
+        "calibrated_box_iou": 0.07011726907630522
+      },
+      "gradient_finite": true,
+      "grid": [
+        18,
+        12
+      ],
+      "image_size": [
+        332,
+        500
+      ]
+    },
+    {
+      "sample_id": "7746984692:c0:p3:e274484",
+      "image_id": "7746984692",
+      "phrase": "black backpack",
+      "map_path": "/vepfs-mlp2/c20250405/400040/transfer/vla_attention/results/F0v2_geometry_heldout/geom16_kl_seed41_heldout/maps/7746984692_c0_p3_e274484.npy",
+      "metrics": {
+        "pointing": false,
+        "mass_in_box": 0.00169783626915887,
+        "top20_box_iou": 0.006342342342342342,
+        "common_resolution": [
+          16,
+          16
+        ],
+        "common_soft_iou": 0.007125206825265854,
+        "common_mass_in_box": 0.008949723689018049,
+        "common_box_iou_top10": 0.016912912912912914,
+        "common_box_iou_top20": 0.0067651651651651655,
+        "common_box_iou_top30": 0.006342342342342342,
+        "common_box_iou_top40": 0.006342342342342342,
+        "common_box_iou_q50": 0.006342342342342342,
+        "common_box_iou_q70": 0.006342342342342342,
+        "common_box_iou_q80": 0.0067651651651651655,
+        "common_box_iou_q90": 0.016912912912912914,
+        "common_box_iou_q95": 0.021086229086229088,
+        "calibrated_box_iou": 0.021086229086229088
+      },
+      "gradient_finite": true,
+      "grid": [
+        12,
+        18
+      ],
+      "image_size": [
+        500,
+        333
+      ]
+    },
+    {
+      "sample_id": "125635185:c4:p2:e6493",
+      "image_id": "125635185",
+      "phrase": "a barrel",
+      "map_path": "/vepfs-mlp2/c20250405/400040/transfer/vla_attention/results/F0v2_geometry_heldout/geom16_kl_seed41_heldout/maps/125635185_c4_p2_e6493.npy",
+      "metrics": {
+        "pointing": true,
+        "mass_in_box": 0.3323287336661451,
+        "top20_box_iou": 0.22181818181818183,
+        "common_resolution": [
+          16,
+          16
+        ],
+        "common_soft_iou": 0.1617754129032433,
+        "common_mass_in_box": 0.3338261136851583,
+        "common_box_iou_top10": 0.22181818181818183,
+        "common_box_iou_top20": 0.22181818181818183,
+        "common_box_iou_top30": 0.22181818181818183,
+        "common_box_iou_top40": 0.22181818181818183,
+        "common_box_iou_q50": 0.22181818181818183,
+        "common_box_iou_q70": 0.22181818181818183,
+        "common_box_iou_q80": 0.22181818181818183,
+        "common_box_iou_q90": 0.22181818181818183,
+        "common_box_iou_q95": 0.39434343434343433,
+        "calibrated_box_iou": 0.39434343434343433
+      },
+      "gradient_finite": true,
+      "grid": [
+        18,
+        13
+      ],
+      "image_size": [
+        363,
+        500
+      ]
+    },
+    {
+      "sample_id": "3308171165:c0:p0:e108323",
+      "image_id": "3308171165",
+      "phrase": "A girl",
+      "map_path": "/vepfs-mlp2/c20250405/400040/transfer/vla_attention/results/F0v2_geometry_heldout/geom16_kl_seed41_heldout/maps/3308171165_c0_p0_e108323.npy",
+      "metrics": {
+        "pointing": false,
+        "mass_in_box": 0.5260100067850395,
+        "top20_box_iou": 0.5655922330097087,
+        "common_resolution": [
+          16,
+          16
+        ],
+        "common_soft_iou": 0.1051299409962194,
+        "common_mass_in_box": 0.5796137581722114,
+        "common_box_iou_top10": 0.47133829762146934,
+        "common_box_iou_top20": 0.5655922330097087,
+        "common_box_iou_top30": 0.5655922330097087,
+        "common_box_iou_top40": 0.5655922330097087,
+        "common_box_iou_q50": 0.5655922330097087,
+        "common_box_iou_q70": 0.5655922330097087,
+        "common_box_iou_q80": 0.5655922330097087,
+        "common_box_iou_q90": 0.47133829762146934,
+        "common_box_iou_q95": 0.47133829762146934,
+        "calibrated_box_iou": 0.47133829762146934
+      },
+      "gradient_finite": true,
+      "grid": [
+        15,
+        18
+      ],
+      "image_size": [
+        500,
+        412
+      ]
+    },
+    {
+      "sample_id": "4970590451:c3:p1:e224557",
+      "image_id": "4970590451",
+      "phrase": "an interesting helmet",
+      "map_path": "/vepfs-mlp2/c20250405/400040/transfer/vla_attention/results/F0v2_geometry_heldout/geom16_kl_seed41_heldout/maps/4970590451_c3_p1_e224557.npy",
+      "metrics": {
+        "pointing": false,
+        "mass_in_box": 0.2801636469521327,
+        "top20_box_iou": 0.31742,
+        "common_resolution": [
+          16,
+          16
+        ],
+        "common_soft_iou": 0.10472581360900379,
+        "common_mass_in_box": 0.3176710377080737,
+        "common_box_iou_top10": 0.31742,
+        "common_box_iou_top20": 0.31742,
+        "common_box_iou_top30": 0.31742,
+        "common_box_iou_top40": 0.31742,
+        "common_box_iou_q50": 0.31742,
+        "common_box_iou_q70": 0.31742,
+        "common_box_iou_q80": 0.31742,
+        "common_box_iou_q90": 0.31742,
+        "common_box_iou_q95": 0.33858133333333335,
+        "calibrated_box_iou": 0.33858133333333335
+      },
+      "gradient_finite": true,
+      "grid": [
+        14,
+        18
+      ],
+      "image_size": [
+        500,
+        400
+      ]
+    },
+    {
+      "sample_id": "2657844508:c4:p0:e64459",
+      "image_id": "2657844508",
+      "phrase": "Couple",
+      "map_path": "/vepfs-mlp2/c20250405/400040/transfer/vla_attention/results/F0v2_geometry_heldout/geom16_kl_seed41_heldout/maps/2657844508_c4_p0_e64459.npy",
+      "metrics": {
+        "pointing": true,
+        "mass_in_box": 0.5231822534279166,
+        "top20_box_iou": 0.46255020080321285,
+        "common_resolution": [
+          16,
+          16
+        ],
+        "common_soft_iou": 0.07478301145397416,
+        "common_mass_in_box": 0.5785156621978219,
+        "common_box_iou_top10": 0.46255020080321285,
+        "common_box_iou_top20": 0.46255020080321285,
+        "common_box_iou_top30": 0.46255020080321285,
+        "common_box_iou_top40": 0.46255020080321285,
+        "common_box_iou_q50": 0.46255020080321285,
+        "common_box_iou_q70": 0.46255020080321285,
+        "common_box_iou_q80": 0.46255020080321285,
+        "common_box_iou_q90": 0.46255020080321285,
+        "common_box_iou_q95": 0.46255020080321285,
+        "calibrated_box_iou": 0.46255020080321285
+      },
+      "gradient_finite": true,
+      "grid": [
+        18,
+        18
+      ],
+      "image_size": [
+        500,
+        498
+      ]
+    },
+    {
+      "sample_id": "3501457496:c0:p2:e123149",
+      "image_id": "3501457496",
+      "phrase": "the same shirt",
+      "map_path": "/vepfs-mlp2/c20250405/400040/transfer/vla_attention/results/F0v2_geometry_heldout/geom16_kl_seed41_heldout/maps/3501457496_c0_p2_e123149.npy",
+      "metrics": {
+        "pointing": false,
+        "mass_in_box": 0.06866755948431091,
+        "top20_box_iou": 0.06117117117117117,
+        "common_resolution": [
+          16,
+          16
+        ],
+        "common_soft_iou": 0.03239538587047379,
+        "common_mass_in_box": 0.06824617995605686,
+        "common_box_iou_top10": 0.06117117117117117,
+        "common_box_iou_top20": 0.06117117117117117,
+        "common_box_iou_top30": 0.06117117117117117,
+        "common_box_iou_top40": 0.06117117117117117,
+        "common_box_iou_q50": 0.06117117117117117,
+        "common_box_iou_q70": 0.06117117117117117,
+        "common_box_iou_q80": 0.06117117117117117,
+        "common_box_iou_q90": 0.06117117117117117,
+        "common_box_iou_q95": 0.06117117117117117,
+        "calibrated_box_iou": 0.06117117117117117
+      },
+      "gradient_finite": true,
+      "grid": [
+        12,
+        18
+      ],
+      "image_size": [
+        500,
+        333
+      ]
+    },
+    {
+      "sample_id": "345284642:c3:p2:e119262",
+      "image_id": "345284642",
+      "phrase": "an object",
+      "map_path": "/vepfs-mlp2/c20250405/400040/transfer/vla_attention/results/F0v2_geometry_heldout/geom16_kl_seed41_heldout/maps/345284642_c3_p2_e119262.npy",
+      "metrics": {
+        "pointing": false,
+        "mass_in_box": 0.02627366833803535,
+        "top20_box_iou": 0.04492831639659434,
+        "common_resolution": [
+          16,
+          16
+        ],
+        "common_soft_iou": 0.019065131609388813,
+        "common_mass_in_box": 0.03452298027940999,
+        "common_box_iou_top10": 0.04392990936555891,
+        "common_box_iou_top20": 0.04392990936555891,
+        "common_box_iou_top30": 0.04392990936555891,
+        "common_box_iou_top40": 0.04118429003021148,
+        "common_box_iou_q50": 0.04118429003021148,
+        "common_box_iou_q70": 0.04392990936555891,
+        "common_box_iou_q80": 0.04392990936555891,
+        "common_box_iou_q90": 0.04392990936555891,
+        "common_box_iou_q95": 0.04392990936555891,
+        "calibrated_box_iou": 0.04392990936555891
+      },
+      "gradient_finite": true,
+      "grid": [
+        12,
+        18
+      ],
+      "image_size": [
+        500,
+        331
+      ]
+    },
+    {
+      "sample_id": "2307757311:c1:p3:e40544",
+      "image_id": "2307757311",
+      "phrase": "the floor",
+      "map_path": "/vepfs-mlp2/c20250405/400040/transfer/vla_attention/results/F0v2_geometry_heldout/geom16_kl_seed41_heldout/maps/2307757311_c1_p3_e40544.npy",
+      "metrics": {
+        "pointing": true,
+        "mass_in_box": 0.7262056627824904,
+        "top20_box_iou": 0.5544444444444444,
+        "common_resolution": [
+          16,
+          16
+        ],
+        "common_soft_iou": 0.196995245426526,
+        "common_mass_in_box": 0.7210167907271104,
+        "common_box_iou_top10": 0.5544444444444444,
+        "common_box_iou_top20": 0.5544444444444444,
+        "common_box_iou_top30": 0.5544444444444444,
+        "common_box_iou_top40": 0.5544444444444444,
+        "common_box_iou_q50": 0.5544444444444444,
+        "common_box_iou_q70": 0.5544444444444444,
+        "common_box_iou_q80": 0.5544444444444444,
+        "common_box_iou_q90": 0.5544444444444444,
+        "common_box_iou_q95": 0.5363272311212814,
+        "calibrated_box_iou": 0.5363272311212814
+      },
+      "gradient_finite": true,
+      "grid": [
+        12,
+        18
+      ],
+      "image_size": [
+        500,
+        333
+      ]
+    },
+    {
+      "sample_id": "3223809913:c1:p0:e102405",
+      "image_id": "3223809913",
+      "phrase": "A skateboarder",
+      "map_path": "/vepfs-mlp2/c20250405/400040/transfer/vla_attention/results/F0v2_geometry_heldout/geom16_kl_seed41_heldout/maps/3223809913_c1_p0_e102405.npy",
+      "metrics": {
+        "pointing": true,
+        "mass_in_box": 0.13826004415750504,
+        "top20_box_iou": 0.13503903903903905,
+        "common_resolution": [
+          16,
+          16
+        ],
+        "common_soft_iou": 0.07829633503766284,
+        "common_mass_in_box": 0.13757755173462075,
+        "common_box_iou_top10": 0.14404164164164165,
+        "common_box_iou_top20": 0.13503903903903905,
+        "common_box_iou_top30": 0.13503903903903905,
+        "common_box_iou_top40": 0.13503903903903905,
+        "common_box_iou_q50": 0.13503903903903905,
+        "common_box_iou_q70": 0.13503903903903905,
+        "common_box_iou_q80": 0.13503903903903905,
+        "common_box_iou_q90": 0.14404164164164165,
+        "common_box_iou_q95": 0.14404164164164165,
+        "calibrated_box_iou": 0.14404164164164165
+      },
+      "gradient_finite": true,
+      "grid": [
+        18,
+        12
+      ],
+      "image_size": [
+        333,
+        500
+      ]
+    },
+    {
+      "sample_id": "1542970158:c3:p0:e15978",
+      "image_id": "1542970158",
+      "phrase": "Older male",
+      "map_path": "/vepfs-mlp2/c20250405/400040/transfer/vla_attention/results/F0v2_geometry_heldout/geom16_kl_seed41_heldout/maps/1542970158_c3_p0_e15978.npy",
+      "metrics": {
+        "pointing": false,
+        "mass_in_box": 0.10355268062708724,
+        "top20_box_iou": 0.10911703864997277,
+        "common_resolution": [
+          16,
+          16
+        ],
+        "common_soft_iou": 0.026138680052191596,
+        "common_mass_in_box": 0.12154554470306625,
+        "common_box_iou_top10": 0.12193396065012832,
+        "common_box_iou_top20": 0.10669221556886227,
+        "common_box_iou_top30": 0.10669221556886227,
+        "common_box_iou_top40": 0.10002395209580839,
+        "common_box_iou_q50": 0.10002395209580839,
+        "common_box_iou_q70": 0.10669221556886227,
+        "common_box_iou_q80": 0.10669221556886227,
+        "common_box_iou_q90": 0.12193396065012832,
+        "common_box_iou_q95": 0.13131349608475357,
+        "calibrated_box_iou": 0.13131349608475357
+      },
+      "gradient_finite": true,
+      "grid": [
+        18,
+        12
+      ],
+      "image_size": [
+        334,
+        500
+      ]
+    },
+    {
+      "sample_id": "2324804923:c0:p0:e41707",
+      "image_id": "2324804923",
+      "phrase": "A man",
+      "map_path": "/vepfs-mlp2/c20250405/400040/transfer/vla_attention/results/F0v2_geometry_heldout/geom16_kl_seed41_heldout/maps/2324804923_c0_p0_e41707.npy",
+      "metrics": {
+        "pointing": false,
+        "mass_in_box": 0.5257517872087192,
+        "top20_box_iou": 0.5213425181709493,
+        "common_resolution": [
+          16,
+          16
+        ],
+        "common_soft_iou": 0.09818753276016297,
+        "common_mass_in_box": 0.5614658368988078,
+        "common_box_iou_top10": 0.5287196556374233,
+        "common_box_iou_top20": 0.5287196556374233,
+        "common_box_iou_top30": 0.5287196556374233,
+        "common_box_iou_top40": 0.5287196556374233,
+        "common_box_iou_q50": 0.5287196556374233,
+        "common_box_iou_q70": 0.5287196556374233,
+        "common_box_iou_q80": 0.5287196556374233,
+        "common_box_iou_q90": 0.5287196556374233,
+        "common_box_iou_q95": 0.6825570102755268,
+        "calibrated_box_iou": 0.6825570102755268
+      },
+      "gradient_finite": true,
+      "grid": [
+        12,
+        18
+      ],
+      "image_size": [
+        500,
+        333
+      ]
+    },
+    {
+      "sample_id": "201314419:c0:p3:e24995",
+      "image_id": "201314419",
+      "phrase": "a purple ocean",
+      "map_path": "/vepfs-mlp2/c20250405/400040/transfer/vla_attention/results/F0v2_geometry_heldout/geom16_kl_seed41_heldout/maps/201314419_c0_p3_e24995.npy",
+      "metrics": {
+        "pointing": true,
+        "mass_in_box": 0.5224224619614688,
+        "top20_box_iou": 0.4254995383194829,
+        "common_resolution": [
+          16,
+          16
+        ],
+        "common_soft_iou": 0.11208790765654911,
+        "common_mass_in_box": 0.4438750420058386,
+        "common_box_iou_top10": 0.43165694682675815,
+        "common_box_iou_top20": 0.3776728364182091,
+        "common_box_iou_top30": 0.3776728364182091,
+        "common_box_iou_top40": 0.3776728364182091,
+        "common_box_iou_q50": 0.4398439609902476,
+        "common_box_iou_q70": 0.3776728364182091,
+        "common_box_iou_q80": 0.3776728364182091,
+        "common_box_iou_q90": 0.43165694682675815,
+        "common_box_iou_q95": 0.3876000703611737,
+        "calibrated_box_iou": 0.3876000703611737
+      },
+      "gradient_finite": true,
+      "grid": [
+        13,
+        18
+      ],
+      "image_size": [
+        500,
+        375
+      ]
+    },
+    {
+      "sample_id": "3353400143:c0:p0:e112048",
+      "image_id": "3353400143",
+      "phrase": "A man",
+      "map_path": "/vepfs-mlp2/c20250405/400040/transfer/vla_attention/results/F0v2_geometry_heldout/geom16_kl_seed41_heldout/maps/3353400143_c0_p0_e112048.npy",
+      "metrics": {
+        "pointing": false,
+        "mass_in_box": 0.46514539377426445,
+        "top20_box_iou": 0.4174174174174174,
+        "common_resolution": [
+          16,
+          16
+        ],
+        "common_soft_iou": 0.06274425735213975,
+        "common_mass_in_box": 0.4691454367183234,
+        "common_box_iou_top10": 0.4174174174174174,
+        "common_box_iou_top20": 0.4174174174174174,
+        "common_box_iou_top30": 0.4174174174174174,
+        "common_box_iou_top40": 0.4174174174174174,
+        "common_box_iou_q50": 0.4174174174174174,
+        "common_box_iou_q70": 0.4174174174174174,
+        "common_box_iou_q80": 0.4174174174174174,
+        "common_box_iou_q90": 0.4174174174174174,
+        "common_box_iou_q95": 0.4452452452452452,
+        "calibrated_box_iou": 0.4452452452452452
+      },
+      "gradient_finite": true,
+      "grid": [
+        12,
+        18
+      ],
+      "image_size": [
+        500,
+        333
+      ]
+    },
+    {
+      "sample_id": "6059154572:c0:p4:e247248",
+      "image_id": "6059154572",
+      "phrase": "a crowd of people",
+      "map_path": "/vepfs-mlp2/c20250405/400040/transfer/vla_attention/results/F0v2_geometry_heldout/geom16_kl_seed41_heldout/maps/6059154572_c0_p4_e247248.npy",
+      "metrics": {
+        "pointing": true,
+        "mass_in_box": 0.33459357674291823,
+        "top20_box_iou": 0.2551794871794872,
+        "common_resolution": [
+          16,
+          16
+        ],
+        "common_soft_iou": 0.12760654408998334,
+        "common_mass_in_box": 0.36825819329234954,
+        "common_box_iou_top10": 0.272191452991453,
+        "common_box_iou_top20": 0.2551794871794872,
+        "common_box_iou_top30": 0.2551794871794872,
+        "common_box_iou_top40": 0.2551794871794872,
+        "common_box_iou_q50": 0.2551794871794872,
+        "common_box_iou_q70": 0.2551794871794872,
+        "common_box_iou_q80": 0.2551794871794872,
+        "common_box_iou_q90": 0.272191452991453,
+        "common_box_iou_q95": 0.25586598702263863,
+        "calibrated_box_iou": 0.25586598702263863
+      },
+      "gradient_finite": true,
+      "grid": [
+        18,
+        11
+      ],
+      "image_size": [
+        312,
+        500
+      ]
+    },
+    {
+      "sample_id": "3549006919:c0:p2:e126696",
+      "image_id": "3549006919",
+      "phrase": "the side of a large rock wall",
+      "map_path": "/vepfs-mlp2/c20250405/400040/transfer/vla_attention/results/F0v2_geometry_heldout/geom16_kl_seed41_heldout/maps/3549006919_c0_p2_e126696.npy",
+      "metrics": {
+        "pointing": true,
+        "mass_in_box": 0.7580132472357946,
+        "top20_box_iou": 0.7645866666666666,
+        "common_resolution": [
+          16,
+          16
+        ],
+        "common_soft_iou": 0.17959552618618774,
+        "common_mass_in_box": 0.7737959521256793,
+        "common_box_iou_top10": 0.8155591111111111,
+        "common_box_iou_top20": 0.7645866666666666,
+        "common_box_iou_top30": 0.7645866666666666,
+        "common_box_iou_top40": 0.7645866666666666,
+        "common_box_iou_q50": 0.7645866666666666,
+        "common_box_iou_q70": 0.7645866666666666,
+        "common_box_iou_q80": 0.7645866666666666,
+        "common_box_iou_q90": 0.8155591111111111,
+        "common_box_iou_q95": 0.8155591111111111,
+        "calibrated_box_iou": 0.8155591111111111
+      },
+      "gradient_finite": true,
+      "grid": [
+        18,
+        13
+      ],
+      "image_size": [
+        375,
+        500
+      ]
+    },
+    {
+      "sample_id": "1112334131:c0:p5:e2891",
+      "image_id": "1112334131",
+      "phrase": "his hand",
+      "map_path": "/vepfs-mlp2/c20250405/400040/transfer/vla_attention/results/F0v2_geometry_heldout/geom16_kl_seed41_heldout/maps/1112334131_c0_p5_e2891.npy",
+      "metrics": {
+        "pointing": false,
+        "mass_in_box": 0.07683005032595247,
+        "top20_box_iou": 0.03706285714285714,
+        "common_resolution": [
+          16,
+          16
+        ],
+        "common_soft_iou": 0.08114771333696962,
+        "common_mass_in_box": 0.09107058998984605,
+        "common_box_iou_top10": 0.04235755102040816,
+        "common_box_iou_top20": 0.03706285714285714,
+        "common_box_iou_top30": 0.03706285714285714,
+        "common_box_iou_top40": 0.03706285714285714,
+        "common_box_iou_q50": 0.03706285714285714,
+        "common_box_iou_q70": 0.03706285714285714,
+        "common_box_iou_q80": 0.03706285714285714,
+        "common_box_iou_q90": 0.04235755102040816,
+        "common_box_iou_q95": 0.039334951615251745,
+        "calibrated_box_iou": 0.039334951615251745
+      },
+      "gradient_finite": true,
+      "grid": [
+        12,
+        18
+      ],
+      "image_size": [
+        500,
+        350
+      ]
+    },
+    {
+      "sample_id": "553918837:c2:p0:e238488",
+      "image_id": "553918837",
+      "phrase": "A little girl",
+      "map_path": "/vepfs-mlp2/c20250405/400040/transfer/vla_attention/results/F0v2_geometry_heldout/geom16_kl_seed41_heldout/maps/553918837_c2_p0_e238488.npy",
+      "metrics": {
+        "pointing": false,
+        "mass_in_box": 0.14499325340461316,
+        "top20_box_iou": 0.083712,
+        "common_resolution": [
+          16,
+          16
+        ],
+        "common_soft_iou": 0.07691712353953668,
+        "common_mass_in_box": 0.17701839707858127,
+        "common_box_iou_top10": 0.10303015384615384,
+        "common_box_iou_top20": 0.083712,
+        "common_box_iou_top30": 0.083712,
+        "common_box_iou_top40": 0.083712,
+        "common_box_iou_q50": 0.083712,
+        "common_box_iou_q70": 0.083712,
+        "common_box_iou_q80": 0.083712,
+        "common_box_iou_q90": 0.10303015384615384,
+        "common_box_iou_q95": 0.10303015384615384,
+        "calibrated_box_iou": 0.10303015384615384
+      },
+      "gradient_finite": true,
+      "grid": [
+        13,
+        18
+      ],
+      "image_size": [
+        500,
+        375
+      ]
+    },
+    {
+      "sample_id": "28041138:c0:p5:e73873",
+      "image_id": "28041138",
+      "phrase": "a bass",
+      "map_path": "/vepfs-mlp2/c20250405/400040/transfer/vla_attention/results/F0v2_geometry_heldout/geom16_kl_seed41_heldout/maps/28041138_c0_p5_e73873.npy",
+      "metrics": {
+        "pointing": true,
+        "mass_in_box": 0.4368534673515184,
+        "top20_box_iou": 0.20146133333333333,
+        "common_resolution": [
+          16,
+          16
+        ],
+        "common_soft_iou": 0.1426722780110364,
+        "common_mass_in_box": 0.34222712768408714,
+        "common_box_iou_top10": 0.19942894432277353,
+        "common_box_iou_top20": 0.20146133333333333,
+        "common_box_iou_top30": 0.20146133333333333,
+        "common_box_iou_top40": 0.20146133333333333,
+        "common_box_iou_q50": 0.20146133333333333,
+        "common_box_iou_q70": 0.20146133333333333,
+        "common_box_iou_q80": 0.20146133333333333,
+        "common_box_iou_q90": 0.19942894432277353,
+        "common_box_iou_q95": 0.20910222683519983,
+        "calibrated_box_iou": 0.20910222683519983
+      },
+      "gradient_finite": true,
+      "grid": [
+        18,
+        13
+      ],
+      "image_size": [
+        375,
+        500
+      ]
+    },
+    {
+      "sample_id": "1606988704:c0:p2:e17424",
+      "image_id": "1606988704",
+      "phrase": "some",
+      "map_path": "/vepfs-mlp2/c20250405/400040/transfer/vla_attention/results/F0v2_geometry_heldout/geom16_kl_seed41_heldout/maps/1606988704_c0_p2_e17424.npy",
+      "metrics": {
+        "pointing": false,
+        "mass_in_box": 0.07900410581351025,
+        "top20_box_iou": 0.07748348348348348,
+        "common_resolution": [
+          16,
+          16
+        ],
+        "common_soft_iou": 0.034757805144799085,
+        "common_mass_in_box": 0.0775000512719511,
+        "common_box_iou_top10": 0.10331131131131131,
+        "common_box_iou_top20": 0.07748348348348348,
+        "common_box_iou_top30": 0.07748348348348348,
+        "common_box_iou_top40": 0.07748348348348348,
+        "common_box_iou_q50": 0.07748348348348348,
+        "common_box_iou_q70": 0.07748348348348348,
+        "common_box_iou_q80": 0.07748348348348348,
+        "common_box_iou_q90": 0.10331131131131131,
+        "common_box_iou_q95": 0.11019873206539874,
+        "calibrated_box_iou": 0.11019873206539874
+      },
+      "gradient_finite": true,
+      "grid": [
+        12,
+        18
+      ],
+      "image_size": [
+        500,
+        333
+      ]
+    },
+    {
+      "sample_id": "23473996:c2:p0:e43285",
+      "image_id": "23473996",
+      "phrase": "A group of men",
+      "map_path": "/vepfs-mlp2/c20250405/400040/transfer/vla_attention/results/F0v2_geometry_heldout/geom16_kl_seed41_heldout/maps/23473996_c2_p0_e43285.npy",
+      "metrics": {
+        "pointing": false,
+        "mass_in_box": 0.04608195336186327,
+        "top20_box_iou": 0.01772972972972973,
+        "common_resolution": [
+          16,
+          16
+        ],
+        "common_soft_iou": 0.02855967497383661,
+        "common_mass_in_box": 0.0659735464158826,
+        "common_box_iou_top10": 0.01772972972972973,
+        "common_box_iou_top20": 0.01772972972972973,
+        "common_box_iou_top30": 0.01772972972972973,
+        "common_box_iou_top40": 0.01772972972972973,
+        "common_box_iou_q50": 0.01772972972972973,
+        "common_box_iou_q70": 0.01772972972972973,
+        "common_box_iou_q80": 0.01772972972972973,
+        "common_box_iou_q90": 0.01772972972972973,
+        "common_box_iou_q95": 0.020262548262548263,
+        "calibrated_box_iou": 0.020262548262548263
+      },
+      "gradient_finite": true,
+      "grid": [
+        12,
+        18
+      ],
+      "image_size": [
+        500,
+        333
+      ]
+    },
+    {
+      "sample_id": "4491044489:c1:p0:e172824",
+      "image_id": "4491044489",
+      "phrase": "Two men",
+      "map_path": "/vepfs-mlp2/c20250405/400040/transfer/vla_attention/results/F0v2_geometry_heldout/geom16_kl_seed41_heldout/maps/4491044489_c1_p0_e172824.npy",
+      "metrics": {
+        "pointing": false,
+        "mass_in_box": 0.0008516261153778595,
+        "top20_box_iou": 0.0058192771084337345,
+        "common_resolution": [
+          16,
+          16
+        ],
+        "common_soft_iou": 0.004082727357850981,
+        "common_mass_in_box": 0.004522198358079909,
+        "common_box_iou_top10": 0.00620722891566265,
+        "common_box_iou_top20": 0.00620722891566265,
+        "common_box_iou_top30": 0.0058192771084337345,
+        "common_box_iou_top40": 0.0058192771084337345,
+        "common_box_iou_q50": 0.0058192771084337345,
+        "common_box_iou_q70": 0.0058192771084337345,
+        "common_box_iou_q80": 0.00620722891566265,
+        "common_box_iou_q90": 0.00620722891566265,
+        "common_box_iou_q95": 0.017734939759036145,
+        "calibrated_box_iou": 0.017734939759036145
+      },
+      "gradient_finite": true,
+      "grid": [
+        12,
+        18
+      ],
+      "image_size": [
+        500,
+        332
+      ]
+    },
+    {
+      "sample_id": "1053116826:c4:p0:e1356",
+      "image_id": "1053116826",
+      "phrase": "Two kids",
+      "map_path": "/vepfs-mlp2/c20250405/400040/transfer/vla_attention/results/F0v2_geometry_heldout/geom16_kl_seed41_heldout/maps/1053116826_c4_p0_e1356.npy",
+      "metrics": {
+        "pointing": false,
+        "mass_in_box": 0.5486177768474856,
+        "top20_box_iou": 0.4211900826446281,
+        "common_resolution": [
+          16,
+          16
+        ],
+        "common_soft_iou": 0.09391736924196652,
+        "common_mass_in_box": 0.5352037808093839,
+        "common_box_iou_top10": 0.5258555116861994,
+        "common_box_iou_top20": 0.4211900826446281,
+        "common_box_iou_top30": 0.4211900826446281,
+        "common_box_iou_top40": 0.4211900826446281,
+        "common_box_iou_q50": 0.4211900826446281,
+        "common_box_iou_q70": 0.4211900826446281,
+        "common_box_iou_q80": 0.4211900826446281,
+        "common_box_iou_q90": 0.5258555116861994,
+        "common_box_iou_q95": 0.49674406231063684,
+        "calibrated_box_iou": 0.49674406231063684
+      },
+      "gradient_finite": true,
+      "grid": [
+        13,
+        18
+      ],
+      "image_size": [
+        500,
+        363
+      ]
+    },
+    {
+      "sample_id": "4903293024:c3:p0:e216821",
+      "image_id": "4903293024",
+      "phrase": "Two women",
+      "map_path": "/vepfs-mlp2/c20250405/400040/transfer/vla_attention/results/F0v2_geometry_heldout/geom16_kl_seed41_heldout/maps/4903293024_c3_p0_e216821.npy",
+      "metrics": {
+        "pointing": false,
+        "mass_in_box": 0.26988400311165606,
+        "top20_box_iou": 0.1442042042042042,
+        "common_resolution": [
+          16,
+          16
+        ],
+        "common_soft_iou": 0.0805375062478335,
+        "common_mass_in_box": 0.23638206088720556,
+        "common_box_iou_top10": 0.16197140905659474,
+        "common_box_iou_top20": 0.1442042042042042,
+        "common_box_iou_top30": 0.1442042042042042,
+        "common_box_iou_top40": 0.1442042042042042,
+        "common_box_iou_q50": 0.1442042042042042,
+        "common_box_iou_q70": 0.1442042042042042,
+        "common_box_iou_q80": 0.1442042042042042,
+        "common_box_iou_q90": 0.16197140905659474,
+        "common_box_iou_q95": 0.16197140905659474,
+        "calibrated_box_iou": 0.16197140905659474
+      },
+      "gradient_finite": true,
+      "grid": [
+        12,
+        18
+      ],
+      "image_size": [
+        500,
+        333
+      ]
+    },
+    {
+      "sample_id": "2997939824:c0:p4:e86346",
+      "image_id": "2997939824",
+      "phrase": "yellow vests",
+      "map_path": "/vepfs-mlp2/c20250405/400040/transfer/vla_attention/results/F0v2_geometry_heldout/geom16_kl_seed41_heldout/maps/2997939824_c0_p4_e86346.npy",
+      "metrics": {
+        "pointing": false,
+        "mass_in_box": 0.04891641736321617,
+        "top20_box_iou": 0.035328,
+        "common_resolution": [
+          16,
+          16
+        ],
+        "common_soft_iou": 0.052669221689039245,
+        "common_mass_in_box": 0.06987426100396552,
+        "common_box_iou_top10": 0.047104,
+        "common_box_iou_top20": 0.04037485714285714,
+        "common_box_iou_top30": 0.035328,
+        "common_box_iou_top40": 0.035328,
+        "common_box_iou_q50": 0.035328,
+        "common_box_iou_q70": 0.035328,
+        "common_box_iou_q80": 0.04037485714285714,
+        "common_box_iou_q90": 0.047104,
+        "common_box_iou_q95": 0.06087893969180037,
+        "calibrated_box_iou": 0.06087893969180037
+      },
+      "gradient_finite": true,
+      "grid": [
+        13,
+        18
+      ],
+      "image_size": [
+        500,
+        375
+      ]
+    },
+    {
+      "sample_id": "4876504906:c3:p2:e213982",
+      "image_id": "4876504906",
+      "phrase": "nun outfit",
+      "map_path": "/vepfs-mlp2/c20250405/400040/transfer/vla_attention/results/F0v2_geometry_heldout/geom16_kl_seed41_heldout/maps/4876504906_c3_p2_e213982.npy",
+      "metrics": {
+        "pointing": true,
+        "mass_in_box": 0.9384299945294953,
+        "top20_box_iou": 0.9552151162790697,
+        "common_resolution": [
+          16,
+          16
+        ],
+        "common_soft_iou": 0.061000482599228516,
+        "common_mass_in_box": 0.9328487276796871,
+        "common_box_iou_top10": 0.9030101800730113,
+        "common_box_iou_top20": 0.9552151162790697,
+        "common_box_iou_top30": 0.9552151162790697,
+        "common_box_iou_top40": 0.9552151162790697,
+        "common_box_iou_q50": 0.9552151162790697,
+        "common_box_iou_q70": 0.9552151162790697,
+        "common_box_iou_q80": 0.9552151162790697,
+        "common_box_iou_q90": 0.9030101800730113,
+        "common_box_iou_q95": 0.9030101800730113,
+        "calibrated_box_iou": 0.9030101800730113
+      },
+      "gradient_finite": true,
+      "grid": [
+        18,
+        12
+      ],
+      "image_size": [
+        344,
+        500
+      ]
+    },
+    {
+      "sample_id": "6847401646:c2:p3:e259179",
+      "image_id": "6847401646",
+      "phrase": "his muscles",
+      "map_path": "/vepfs-mlp2/c20250405/400040/transfer/vla_attention/results/F0v2_geometry_heldout/geom16_kl_seed41_heldout/maps/6847401646_c2_p3_e259179.npy",
+      "metrics": {
+        "pointing": true,
+        "mass_in_box": 0.300997249958356,
+        "top20_box_iou": 0.3110796723752792,
+        "common_resolution": [
+          16,
+          16
+        ],
+        "common_soft_iou": 0.09429798759343733,
+        "common_mass_in_box": 0.2912540443786303,
+        "common_box_iou_top10": 0.3615968841285297,
+        "common_box_iou_top20": 0.31338396624472575,
+        "common_box_iou_top30": 0.2937974683544304,
+        "common_box_iou_top40": 0.2937974683544304,
+        "common_box_iou_q50": 0.2937974683544304,
+        "common_box_iou_q70": 0.2937974683544304,
+        "common_box_iou_q80": 0.31338396624472575,
+        "common_box_iou_q90": 0.3615968841285297,
+        "common_box_iou_q95": 0.3316356328157208,
+        "calibrated_box_iou": 0.3316356328157208
+      },
+      "gradient_finite": true,
+      "grid": [
+        14,
+        18
+      ],
+      "image_size": [
+        500,
+        395
+      ]
+    },
+    {
+      "sample_id": "3362592729:c1:p1:e112869",
+      "image_id": "3362592729",
+      "phrase": "each",
+      "map_path": "/vepfs-mlp2/c20250405/400040/transfer/vla_attention/results/F0v2_geometry_heldout/geom16_kl_seed41_heldout/maps/3362592729_c1_p1_e112869.npy",
+      "metrics": {
+        "pointing": false,
+        "mass_in_box": 0.2748849754116236,
+        "top20_box_iou": 0.17454375,
+        "common_resolution": [
+          16,
+          16
+        ],
+        "common_soft_iou": 0.037861108587924214,
+        "common_mass_in_box": 0.22155000292210042,
+        "common_box_iou_top10": 0.183588717847669,
+        "common_box_iou_top20": 0.17454375,
+        "common_box_iou_top30": 0.17454375,
+        "common_box_iou_top40": 0.17454375,
+        "common_box_iou_q50": 0.17454375,
+        "common_box_iou_q70": 0.17454375,
+        "common_box_iou_q80": 0.17454375,
+        "common_box_iou_q90": 0.183588717847669,
+        "common_box_iou_q95": 0.21105167892945143,
+        "calibrated_box_iou": 0.21105167892945143
+      },
+      "gradient_finite": true,
+      "grid": [
+        18,
+        11
+      ],
+      "image_size": [
+        320,
+        500
+      ]
+    },
+    {
+      "sample_id": "5428390334:c4:p2:e236354",
+      "image_id": "5428390334",
+      "phrase": "a microscope",
+      "map_path": "/vepfs-mlp2/c20250405/400040/transfer/vla_attention/results/F0v2_geometry_heldout/geom16_kl_seed41_heldout/maps/5428390334_c4_p2_e236354.npy",
+      "metrics": {
+        "pointing": false,
+        "mass_in_box": 0.1433676599044702,
+        "top20_box_iou": 0.10398203592814372,
+        "common_resolution": [
+          16,
+          16
+        ],
+        "common_soft_iou": 0.06155327411090888,
+        "common_mass_in_box": 0.1532203593501118,
+        "common_box_iou_top10": 0.10398203592814372,
+        "common_box_iou_top20": 0.10398203592814372,
+        "common_box_iou_top30": 0.10398203592814372,
+        "common_box_iou_top40": 0.10398203592814372,
+        "common_box_iou_q50": 0.10398203592814372,
+        "common_box_iou_q70": 0.10398203592814372,
+        "common_box_iou_q80": 0.10398203592814372,
+        "common_box_iou_q90": 0.10398203592814372,
+        "common_box_iou_q95": 0.12797789037309995,
+        "calibrated_box_iou": 0.12797789037309995
+      },
+      "gradient_finite": true,
+      "grid": [
+        12,
+        18
+      ],
+      "image_size": [
+        500,
+        334
+      ]
+    },
+    {
+      "sample_id": "345852737:c1:p2:e119721",
+      "image_id": "345852737",
+      "phrase": "Trader Joe 's",
+      "map_path": "/vepfs-mlp2/c20250405/400040/transfer/vla_attention/results/F0v2_geometry_heldout/geom16_kl_seed41_heldout/maps/345852737_c1_p2_e119721.npy",
+      "metrics": {
+        "pointing": true,
+        "mass_in_box": 0.6632409840367472,
+        "top20_box_iou": 0.49205250364608655,
+        "common_resolution": [
+          16,
+          16
+        ],
+        "common_soft_iou": 0.11409777563941761,
+        "common_mass_in_box": 0.6576671577763233,
+        "common_box_iou_top10": 0.49569733700642793,
+        "common_box_iou_top20": 0.49569733700642793,
+        "common_box_iou_top30": 0.49569733700642793,
+        "common_box_iou_top40": 0.49569733700642793,
+        "common_box_iou_q50": 0.4647162534435262,
+        "common_box_iou_q70": 0.49569733700642793,
+        "common_box_iou_q80": 0.49569733700642793,
+        "common_box_iou_q90": 0.49569733700642793,
+        "common_box_iou_q95": 0.5311042896497442,
+        "calibrated_box_iou": 0.5311042896497442
+      },
+      "gradient_finite": true,
+      "grid": [
+        18,
+        13
+      ],
+      "image_size": [
+        363,
+        500
+      ]
+    },
+    {
+      "sample_id": "3243866702:c0:p4:e103777",
+      "image_id": "3243866702",
+      "phrase": "a boy",
+      "map_path": "/vepfs-mlp2/c20250405/400040/transfer/vla_attention/results/F0v2_geometry_heldout/geom16_kl_seed41_heldout/maps/3243866702_c0_p4_e103777.npy",
+      "metrics": {
+        "pointing": false,
+        "mass_in_box": 0.2838949345071691,
+        "top20_box_iou": 0.22707507507507507,
+        "common_resolution": [
+          16,
+          16
+        ],
+        "common_soft_iou": 0.05939663128657191,
+        "common_mass_in_box": 0.26287893625804354,
+        "common_box_iou_top10": 0.22707507507507507,
+        "common_box_iou_top20": 0.22707507507507507,
+        "common_box_iou_top30": 0.22707507507507507,
+        "common_box_iou_top40": 0.22707507507507507,
+        "common_box_iou_q50": 0.22707507507507507,
+        "common_box_iou_q70": 0.22707507507507507,
+        "common_box_iou_q80": 0.22707507507507507,
+        "common_box_iou_q90": 0.22707507507507507,
+        "common_box_iou_q95": 0.18735432665805538,
+        "calibrated_box_iou": 0.18735432665805538
+      },
+      "gradient_finite": true,
+      "grid": [
+        12,
+        18
+      ],
+      "image_size": [
+        500,
+        333
+      ]
+    },
+    {
+      "sample_id": "3609952704:c1:p1:e131387",
+      "image_id": "3609952704",
+      "phrase": "a young kid",
+      "map_path": "/vepfs-mlp2/c20250405/400040/transfer/vla_attention/results/F0v2_geometry_heldout/geom16_kl_seed41_heldout/maps/3609952704_c1_p1_e131387.npy",
+      "metrics": {
+        "pointing": false,
+        "mass_in_box": 0.3302206144508091,
+        "top20_box_iou": 0.3031459074733096,
+        "common_resolution": [
+          16,
+          16
+        ],
+        "common_soft_iou": 0.09302194767780288,
+        "common_mass_in_box": 0.3231423416030079,
+        "common_box_iou_top10": 0.32335563463819694,
+        "common_box_iou_top20": 0.3031459074733096,
+        "common_box_iou_top30": 0.3031459074733096,
+        "common_box_iou_top40": 0.3031459074733096,
+        "common_box_iou_q50": 0.3031459074733096,
+        "common_box_iou_q70": 0.3031459074733096,
+        "common_box_iou_q80": 0.3031459074733096,
+        "common_box_iou_q90": 0.32335563463819694,
+        "common_box_iou_q95": 0.3263248669218679,
+        "calibrated_box_iou": 0.3263248669218679
+      },
+      "gradient_finite": true,
+      "grid": [
+        10,
+        18
+      ],
+      "image_size": [
+        500,
+        281
+      ]
+    },
+    {
+      "sample_id": "1053116826:c1:p1:e1358",
+      "image_id": "1053116826",
+      "phrase": "a girl",
+      "map_path": "/vepfs-mlp2/c20250405/400040/transfer/vla_attention/results/F0v2_geometry_heldout/geom16_kl_seed41_heldout/maps/1053116826_c1_p1_e1358.npy",
+      "metrics": {
+        "pointing": false,
+        "mass_in_box": 0.22487723508675117,
+        "top20_box_iou": 0.2290909090909091,
+        "common_resolution": [
+          16,
+          16
+        ],
+        "common_soft_iou": 0.07045733807921471,
+        "common_mass_in_box": 0.21939986324190705,
+        "common_box_iou_top10": 0.2290909090909091,
+        "common_box_iou_top20": 0.2290909090909091,
+        "common_box_iou_top30": 0.2290909090909091,
+        "common_box_iou_top40": 0.2290909090909091,
+        "common_box_iou_q50": 0.2290909090909091,
+        "common_box_iou_q70": 0.2290909090909091,
+        "common_box_iou_q80": 0.2290909090909091,
+        "common_box_iou_q90": 0.2290909090909091,
+        "common_box_iou_q95": 0.29641889858561543,
+        "calibrated_box_iou": 0.29641889858561543
+      },
+      "gradient_finite": true,
+      "grid": [
+        13,
+        18
+      ],
+      "image_size": [
+        500,
+        363
+      ]
+    },
+    {
+      "sample_id": "4712636240:c3:p3:e194021",
+      "image_id": "4712636240",
+      "phrase": "mountains",
+      "map_path": "/vepfs-mlp2/c20250405/400040/transfer/vla_attention/results/F0v2_geometry_heldout/geom16_kl_seed41_heldout/maps/4712636240_c3_p3_e194021.npy",
+      "metrics": {
+        "pointing": true,
+        "mass_in_box": 0.5980303364813153,
+        "top20_box_iou": 0.41873873873873874,
+        "common_resolution": [
+          16,
+          16
+        ],
+        "common_soft_iou": 0.09294711060154806,
+        "common_mass_in_box": 0.5896249016557351,
+        "common_box_iou_top10": 0.41873873873873874,
+        "common_box_iou_top20": 0.41873873873873874,
+        "common_box_iou_top30": 0.41873873873873874,
+        "common_box_iou_top40": 0.41873873873873874,
+        "common_box_iou_q50": 0.41873873873873874,
+        "common_box_iou_q70": 0.41873873873873874,
+        "common_box_iou_q80": 0.41873873873873874,
+        "common_box_iou_q90": 0.41873873873873874,
+        "common_box_iou_q95": 0.2939982235756884,
+        "calibrated_box_iou": 0.2939982235756884
+      },
+      "gradient_finite": true,
+      "grid": [
+        18,
+        12
+      ],
+      "image_size": [
+        333,
+        500
+      ]
+    },
+    {
+      "sample_id": "3635194562:c0:p0:e132991",
+      "image_id": "3635194562",
+      "phrase": "A child",
+      "map_path": "/vepfs-mlp2/c20250405/400040/transfer/vla_attention/results/F0v2_geometry_heldout/geom16_kl_seed41_heldout/maps/3635194562_c0_p0_e132991.npy",
+      "metrics": {
+        "pointing": false,
+        "mass_in_box": 0.34512335119416093,
+        "top20_box_iou": 0.36007807807807807,
+        "common_resolution": [
+          16,
+          16
+        ],
+        "common_soft_iou": 0.037553340191843136,
+        "common_mass_in_box": 0.33065054024969126,
+        "common_box_iou_top10": 0.3807595090416982,
+        "common_box_iou_top20": 0.3807595090416982,
+        "common_box_iou_top30": 0.36007807807807807,
+        "common_box_iou_top40": 0.36007807807807807,
+        "common_box_iou_q50": 0.36007807807807807,
+        "common_box_iou_q70": 0.36007807807807807,
+        "common_box_iou_q80": 0.3807595090416982,
+        "common_box_iou_q90": 0.3807595090416982,
+        "common_box_iou_q95": 0.3523561415143207,
+        "calibrated_box_iou": 0.3523561415143207
+      },
+      "gradient_finite": true,
+      "grid": [
+        12,
+        18
+      ],
+      "image_size": [
+        500,
+        333
+      ]
+    },
+    {
+      "sample_id": "4736841029:c1:p1:e197166",
+      "image_id": "4736841029",
+      "phrase": "a telescope",
+      "map_path": "/vepfs-mlp2/c20250405/400040/transfer/vla_attention/results/F0v2_geometry_heldout/geom16_kl_seed41_heldout/maps/4736841029_c1_p1_e197166.npy",
+      "metrics": {
+        "pointing": true,
+        "mass_in_box": 0.29835792455560295,
+        "top20_box_iou": 0.2906453333333333,
+        "common_resolution": [
+          16,
+          16
+        ],
+        "common_soft_iou": 0.08228141782596059,
+        "common_mass_in_box": 0.3344678864334199,
+        "common_box_iou_top10": 0.31002168888888887,
+        "common_box_iou_top20": 0.2906453333333333,
+        "common_box_iou_top30": 0.2906453333333333,
+        "common_box_iou_top40": 0.2906453333333333,
+        "common_box_iou_q50": 0.2906453333333333,
+        "common_box_iou_q70": 0.2906453333333333,
+        "common_box_iou_q80": 0.2906453333333333,
+        "common_box_iou_q90": 0.31002168888888887,
+        "common_box_iou_q95": 0.33068980148148147,
+        "calibrated_box_iou": 0.33068980148148147
+      },
+      "gradient_finite": true,
+      "grid": [
+        13,
+        18
+      ],
+      "image_size": [
+        500,
+        375
+      ]
+    },
+    {
+      "sample_id": "7738368186:c3:p1:e274362",
+      "image_id": "7738368186",
+      "phrase": "the UK flag",
+      "map_path": "/vepfs-mlp2/c20250405/400040/transfer/vla_attention/results/F0v2_geometry_heldout/geom16_kl_seed41_heldout/maps/7738368186_c3_p1_e274362.npy",
+      "metrics": {
+        "pointing": false,
+        "mass_in_box": 0.19662379397050245,
+        "top20_box_iou": 0.27,
+        "common_resolution": [
+          16,
+          16
+        ],
+        "common_soft_iou": 0.053030457500773544,
+        "common_mass_in_box": 0.19004539798735828,
+        "common_box_iou_top10": 0.3323076923076923,
+        "common_box_iou_top20": 0.27,
+        "common_box_iou_top30": 0.27,
+        "common_box_iou_top40": 0.27,
+        "common_box_iou_q50": 0.27,
+        "common_box_iou_q70": 0.27,
+        "common_box_iou_q80": 0.27,
+        "common_box_iou_q90": 0.3323076923076923,
+        "common_box_iou_q95": 0.3797802197802198,
+        "calibrated_box_iou": 0.3797802197802198
+      },
+      "gradient_finite": true,
+      "grid": [
+        12,
+        18
+      ],
+      "image_size": [
+        500,
+        333
+      ]
+    },
+    {
+      "sample_id": "3194533056:c3:p0:e100095",
+      "image_id": "3194533056",
+      "phrase": "People",
+      "map_path": "/vepfs-mlp2/c20250405/400040/transfer/vla_attention/results/F0v2_geometry_heldout/geom16_kl_seed41_heldout/maps/3194533056_c3_p0_e100095.npy",
+      "metrics": {
+        "pointing": true,
+        "mass_in_box": 0.5459853195425239,
+        "top20_box_iou": 0.18710828025477708,
+        "common_resolution": [
+          16,
+          16
+        ],
+        "common_soft_iou": 0.03540155340258232,
+        "common_mass_in_box": 0.6372989917819658,
+        "common_box_iou_top10": 0.19958216560509554,
+        "common_box_iou_top20": 0.18710828025477708,
+        "common_box_iou_top30": 0.18710828025477708,
+        "common_box_iou_top40": 0.18710828025477708,
+        "common_box_iou_q50": 0.18710828025477708,
+        "common_box_iou_q70": 0.18710828025477708,
+        "common_box_iou_q80": 0.18710828025477708,
+        "common_box_iou_q90": 0.19958216560509554,
+        "common_box_iou_q95": 0.20315984803138262,
+        "calibrated_box_iou": 0.20315984803138262
+      },
+      "gradient_finite": true,
+      "grid": [
+        11,
+        18
+      ],
+      "image_size": [
+        500,
+        314
+      ]
+    },
+    {
+      "sample_id": "3501457496:c0:p0:e123144",
+      "image_id": "3501457496",
+      "phrase": "A group",
+      "map_path": "/vepfs-mlp2/c20250405/400040/transfer/vla_attention/results/F0v2_geometry_heldout/geom16_kl_seed41_heldout/maps/3501457496_c0_p0_e123144.npy",
+      "metrics": {
+        "pointing": false,
+        "mass_in_box": 0.5284968753403518,
+        "top20_box_iou": 0.22921321321321322,
+        "common_resolution": [
+          16,
+          16
+        ],
+        "common_soft_iou": 0.062214574259573864,
+        "common_mass_in_box": 0.4704124414572867,
+        "common_box_iou_top10": 0.22921321321321322,
+        "common_box_iou_top20": 0.22921321321321322,
+        "common_box_iou_top30": 0.22921321321321322,
+        "common_box_iou_top40": 0.22921321321321322,
+        "common_box_iou_q50": 0.22921321321321322,
+        "common_box_iou_q70": 0.22921321321321322,
+        "common_box_iou_q80": 0.22921321321321322,
+        "common_box_iou_q90": 0.22921321321321322,
+        "common_box_iou_q95": 0.22921321321321322,
+        "calibrated_box_iou": 0.22921321321321322
+      },
+      "gradient_finite": true,
+      "grid": [
+        12,
+        18
+      ],
+      "image_size": [
+        500,
+        333
+      ]
+    },
+    {
+      "sample_id": "444051472:c0:p0:e168295",
+      "image_id": "444051472",
+      "phrase": "An elderly man",
+      "map_path": "/vepfs-mlp2/c20250405/400040/transfer/vla_attention/results/F0v2_geometry_heldout/geom16_kl_seed41_heldout/maps/444051472_c0_p0_e168295.npy",
+      "metrics": {
+        "pointing": false,
+        "mass_in_box": 0.1748989655978254,
+        "top20_box_iou": 0.271584,
+        "common_resolution": [
+          16,
+          16
+        ],
+        "common_soft_iou": 0.012619532305566701,
+        "common_mass_in_box": 0.17769709159831087,
+        "common_box_iou_top10": 0.2896896,
+        "common_box_iou_top20": 0.2896896,
+        "common_box_iou_top30": 0.271584,
+        "common_box_iou_top40": 0.271584,
+        "common_box_iou_q50": 0.271584,
+        "common_box_iou_q70": 0.271584,
+        "common_box_iou_q80": 0.2896896,
+        "common_box_iou_q90": 0.2896896,
+        "common_box_iou_q95": 0.2896896,
+        "calibrated_box_iou": 0.2896896
+      },
+      "gradient_finite": true,
+      "grid": [
+        18,
+        18
+      ],
+      "image_size": [
+        500,
+        500
+      ]
+    },
+    {
+      "sample_id": "7498713846:c0:p4:e270549",
+      "image_id": "7498713846",
+      "phrase": "a red shirt",
+      "map_path": "/vepfs-mlp2/c20250405/400040/transfer/vla_attention/results/F0v2_geometry_heldout/geom16_kl_seed41_heldout/maps/7498713846_c0_p4_e270549.npy",
+      "metrics": {
+        "pointing": false,
+        "mass_in_box": 0.29665190532068664,
+        "top20_box_iou": 0.1633855421686747,
+        "common_resolution": [
+          16,
+          16
+        ],
+        "common_soft_iou": 0.11081335922848622,
+        "common_mass_in_box": 0.30758267110814663,
+        "common_box_iou_top10": 0.15453416004007028,
+        "common_box_iou_top20": 0.14511563351311893,
+        "common_box_iou_top30": 0.1633855421686747,
+        "common_box_iou_top40": 0.1633855421686747,
+        "common_box_iou_q50": 0.1633855421686747,
+        "common_box_iou_q70": 0.1633855421686747,
+        "common_box_iou_q80": 0.14511563351311893,
+        "common_box_iou_q90": 0.15453416004007028,
+        "common_box_iou_q95": 0.1775861151755277,
+        "calibrated_box_iou": 0.1775861151755277
+      },
+      "gradient_finite": true,
+      "grid": [
+        12,
+        18
+      ],
+      "image_size": [
+        500,
+        332
+      ]
+    },
+    {
+      "sample_id": "4715269800:c1:p0:e194209",
+      "image_id": "4715269800",
+      "phrase": "An emergency worker",
+      "map_path": "/vepfs-mlp2/c20250405/400040/transfer/vla_attention/results/F0v2_geometry_heldout/geom16_kl_seed41_heldout/maps/4715269800_c1_p0_e194209.npy",
+      "metrics": {
+        "pointing": true,
+        "mass_in_box": 0.8025896875669787,
+        "top20_box_iou": 0.7571171171171172,
+        "common_resolution": [
+          16,
+          16
+        ],
+        "common_soft_iou": 0.11308751263616708,
+        "common_mass_in_box": 0.7823526540660359,
+        "common_box_iou_top10": 0.7571171171171172,
+        "common_box_iou_top20": 0.7571171171171172,
+        "common_box_iou_top30": 0.7571171171171172,
+        "common_box_iou_top40": 0.7571171171171172,
+        "common_box_iou_q50": 0.7571171171171172,
+        "common_box_iou_q70": 0.7571171171171172,
+        "common_box_iou_q80": 0.7571171171171172,
+        "common_box_iou_q90": 0.7571171171171172,
+        "common_box_iou_q95": 0.9318364518364518,
+        "calibrated_box_iou": 0.9318364518364518
+      },
+      "gradient_finite": true,
+      "grid": [
+        18,
+        12
+      ],
+      "image_size": [
+        333,
+        500
+      ]
+    },
+    {
+      "sample_id": "4316585644:c4:p0:e162824",
+      "image_id": "4316585644",
+      "phrase": "An adult",
+      "map_path": "/vepfs-mlp2/c20250405/400040/transfer/vla_attention/results/F0v2_geometry_heldout/geom16_kl_seed41_heldout/maps/4316585644_c4_p0_e162824.npy",
+      "metrics": {
+        "pointing": true,
+        "mass_in_box": 0.6414811880385969,
+        "top20_box_iou": 0.5962515772779367,
+        "common_resolution": [
+          16,
+          16
+        ],
+        "common_soft_iou": 0.07630379998933619,
+        "common_mass_in_box": 0.6562432324572519,
+        "common_box_iou_top10": 0.5929619299786828,
+        "common_box_iou_top20": 0.5929619299786828,
+        "common_box_iou_top30": 0.5929619299786828,
+        "common_box_iou_top40": 0.5929619299786828,
+        "common_box_iou_q50": 0.6198618618618619,
+        "common_box_iou_q70": 0.5929619299786828,
+        "common_box_iou_q80": 0.5929619299786828,
+        "common_box_iou_q90": 0.5929619299786828,
+        "common_box_iou_q95": 0.6037459568144069,
+        "calibrated_box_iou": 0.6037459568144069
+      },
+      "gradient_finite": true,
+      "grid": [
+        18,
+        12
+      ],
+      "image_size": [
+        333,
+        500
+      ]
+    },
+    {
+      "sample_id": "1285874746:c3:p1:e7300",
+      "image_id": "1285874746",
+      "phrase": "the crowd",
+      "map_path": "/vepfs-mlp2/c20250405/400040/transfer/vla_attention/results/F0v2_geometry_heldout/geom16_kl_seed41_heldout/maps/1285874746_c3_p1_e7300.npy",
+      "metrics": {
+        "pointing": true,
+        "mass_in_box": 0.7363787858844262,
+        "top20_box_iou": 0.2592192192192192,
+        "common_resolution": [
+          16,
+          16
+        ],
+        "common_soft_iou": 0.06683642067255327,
+        "common_mass_in_box": 0.7512460284983998,
+        "common_box_iou_top10": 0.2592192192192192,
+        "common_box_iou_top20": 0.2592192192192192,
+        "common_box_iou_top30": 0.2592192192192192,
+        "common_box_iou_top40": 0.2592192192192192,
+        "common_box_iou_q50": 0.2592192192192192,
+        "common_box_iou_q70": 0.2592192192192192,
+        "common_box_iou_q80": 0.2592192192192192,
+        "common_box_iou_q90": 0.2592192192192192,
+        "common_box_iou_q95": 0.2547514749349612,
+        "calibrated_box_iou": 0.2547514749349612
+      },
+      "gradient_finite": true,
+      "grid": [
+        12,
+        18
+      ],
+      "image_size": [
+        500,
+        333
+      ]
+    },
+    {
+      "sample_id": "3965771582:c0:p2:e149999",
+      "image_id": "3965771582",
+      "phrase": "work cloths",
+      "map_path": "/vepfs-mlp2/c20250405/400040/transfer/vla_attention/results/F0v2_geometry_heldout/geom16_kl_seed41_heldout/maps/3965771582_c0_p2_e149999.npy",
+      "metrics": {
+        "pointing": false,
+        "mass_in_box": 0.17229329770088953,
+        "top20_box_iou": 0.09749101796407185,
+        "common_resolution": [
+          16,
+          16
+        ],
+        "common_soft_iou": 0.057532584185621814,
+        "common_mass_in_box": 0.21984531128337373,
+        "common_box_iou_top10": 0.09749101796407185,
+        "common_box_iou_top20": 0.09749101796407185,
+        "common_box_iou_top30": 0.09749101796407185,
+        "common_box_iou_top40": 0.09749101796407185,
+        "common_box_iou_q50": 0.09749101796407185,
+        "common_box_iou_q70": 0.09749101796407185,
+        "common_box_iou_q80": 0.09749101796407185,
+        "common_box_iou_q90": 0.09749101796407185,
+        "common_box_iou_q95": 0.10894781864841745,
+        "calibrated_box_iou": 0.10894781864841745
+      },
+      "gradient_finite": true,
+      "grid": [
+        12,
+        18
+      ],
+      "image_size": [
+        500,
+        334
+      ]
+    },
+    {
+      "sample_id": "3307563498:c2:p1:e108267",
+      "image_id": "3307563498",
+      "phrase": "a chain fence",
+      "map_path": "/vepfs-mlp2/c20250405/400040/transfer/vla_attention/results/F0v2_geometry_heldout/geom16_kl_seed41_heldout/maps/3307563498_c2_p1_e108267.npy",
+      "metrics": {
+        "pointing": false,
+        "mass_in_box": 0.49342088191951916,
+        "top20_box_iou": 0.447552,
+        "common_resolution": [
+          16,
+          16
+        ],
+        "common_soft_iou": 0.09157065147111566,
+        "common_mass_in_box": 0.5161819940209944,
+        "common_box_iou_top10": 0.6509847272727273,
+        "common_box_iou_top20": 0.4773888,
+        "common_box_iou_top30": 0.447552,
+        "common_box_iou_top40": 0.447552,
+        "common_box_iou_q50": 0.447552,
+        "common_box_iou_q70": 0.447552,
+        "common_box_iou_q80": 0.4773888,
+        "common_box_iou_q90": 0.6509847272727273,
+        "common_box_iou_q95": 0.6509847272727273,
+        "calibrated_box_iou": 0.6509847272727273
+      },
+      "gradient_finite": true,
+      "grid": [
+        13,
+        18
+      ],
+      "image_size": [
+        500,
+        375
+      ]
+    },
+    {
+      "sample_id": "4606967207:c4:p2:e182118",
+      "image_id": "4606967207",
+      "phrase": "his cat",
+      "map_path": "/vepfs-mlp2/c20250405/400040/transfer/vla_attention/results/F0v2_geometry_heldout/geom16_kl_seed41_heldout/maps/4606967207_c4_p2_e182118.npy",
+      "metrics": {
+        "pointing": false,
+        "mass_in_box": 0.0316804880858399,
+        "top20_box_iou": 0.03376506024096385,
+        "common_resolution": [
+          16,
+          16
+        ],
+        "common_soft_iou": 0.0389984789141684,
+        "common_mass_in_box": 0.05280436384286835,
+        "common_box_iou_top10": 0.03858864027538726,
+        "common_box_iou_top20": 0.036016064257028114,
+        "common_box_iou_top30": 0.03376506024096385,
+        "common_box_iou_top40": 0.03376506024096385,
+        "common_box_iou_q50": 0.03376506024096385,
+        "common_box_iou_q70": 0.03376506024096385,
+        "common_box_iou_q80": 0.036016064257028114,
+        "common_box_iou_q90": 0.03858864027538726,
+        "common_box_iou_q95": 0.05832728385793143,
+        "calibrated_box_iou": 0.05832728385793143
+      },
+      "gradient_finite": true,
+      "grid": [
+        12,
+        18
+      ],
+      "image_size": [
+        500,
+        332
+      ]
+    },
+    {
+      "sample_id": "1777816180:c3:p2:e20296",
+      "image_id": "1777816180",
+      "phrase": "some rocks",
+      "map_path": "/vepfs-mlp2/c20250405/400040/transfer/vla_attention/results/F0v2_geometry_heldout/geom16_kl_seed41_heldout/maps/1777816180_c3_p2_e20296.npy",
+      "metrics": {
+        "pointing": true,
+        "mass_in_box": 0.6227975380661519,
+        "top20_box_iou": 0.16663063063063063,
+        "common_resolution": [
+          16,
+          16
+        ],
+        "common_soft_iou": 0.1746278515707764,
+        "common_mass_in_box": 0.6018950274559242,
+        "common_box_iou_top10": 0.33326126126126127,
+        "common_box_iou_top20": 0.16663063063063063,
+        "common_box_iou_top30": 0.16663063063063063,
+        "common_box_iou_top40": 0.16663063063063063,
+        "common_box_iou_q50": 0.16663063063063063,
+        "common_box_iou_q70": 0.16663063063063063,
+        "common_box_iou_q80": 0.16663063063063063,
+        "common_box_iou_q90": 0.33326126126126127,
+        "common_box_iou_q95": 0.3808700128700129,
+        "calibrated_box_iou": 0.3808700128700129
+      },
+      "gradient_finite": true,
+      "grid": [
+        18,
+        12
+      ],
+      "image_size": [
+        333,
+        500
+      ]
+    }
+  ]
+}

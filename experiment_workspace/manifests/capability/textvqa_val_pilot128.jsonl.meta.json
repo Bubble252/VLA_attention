@@ -1,0 +1,13 @@
+{
+  "benchmark": "TextVQA",
+  "split": "validation-pilot128",
+  "source_revision": "9c0699cd19768ac5ab97568f6b3cbac4c0062884",
+  "manifest": "/vepfs-mlp2/c20250405/400040/transfer/vla_attention/repo/VLA_attention/experiment_workspace/manifests/capability/textvqa_val_pilot128.jsonl",
+  "sha256": "e07f23d41f75705edea6e58e7630566ea2545a9c9c3809e97336e804b2807650",
+  "ordered_id_prompt_sha256": "49b8580db6444c53cc890eff98dab63c4ac4aa3c6e206b70a161582a7da2ca2d",
+  "n": 128,
+  "task_counts": {
+    "textvqa": 128
+  },
+  "official_id_count": 128
+}

@@ -13,15 +13,50 @@ import math
 import os
 import re
 import string
+import sys
 import time
 from collections import defaultdict
 from pathlib import Path
 
 
+_NUMBER_MAP = {"none": "0", "zero": "0", "one": "1", "two": "2", "three": "3",
+               "four": "4", "five": "5", "six": "6", "seven": "7", "eight": "8",
+               "nine": "9", "ten": "10"}
+_CONTRACTIONS = {"aint": "ain't", "arent": "aren't", "cant": "can't", "couldve": "could've",
+                 "couldnt": "couldn't", "didnt": "didn't", "doesnt": "doesn't", "dont": "don't",
+                 "hadnt": "hadn't", "hasnt": "hasn't", "havent": "haven't", "hed": "he'd",
+                 "hes": "he's", "id": "i'd", "ill": "i'll", "im": "i'm", "ive": "i've",
+                 "isnt": "isn't", "itd": "it'd", "itll": "it'll", "its": "it's", "lets": "let's",
+                 "mightnt": "mightn't", "mustnt": "mustn't", "shant": "shan't", "shed": "she'd",
+                 "shes": "she's", "shouldve": "should've", "shouldnt": "shouldn't", "thats": "that's",
+                 "thered": "there'd", "therere": "there're", "theres": "there's", "theyd": "they'd",
+                 "theyll": "they'll", "theyre": "they're", "theyve": "they've", "wasnt": "wasn't",
+                 "wed": "we'd", "were": "we're", "weve": "we've", "werent": "weren't",
+                 "whatll": "what'll", "whatre": "what're", "whats": "what's", "whatve": "what've",
+                 "whered": "where'd", "wheres": "where's", "whos": "who's", "whove": "who've",
+                 "wouldve": "would've", "wouldnt": "wouldn't", "youd": "you'd", "youll": "you'll",
+                 "youre": "you're", "youve": "you've"}
+
+
 def normalize_answer(value: str) -> str:
     text = value.lower().strip()
-    text = text.translate(str.maketrans("", "", string.punctuation))
+    # VQA evaluation normalization: handle commas/periods, punctuation, number
+    # words, articles, and common contractions. This is close to the official
+    # evaluator but remains independently implemented; final reporting should
+    # still run the benchmark-provided scorer.
+    text = re.sub(r"(?<=\d),(?=\d)", "", text)
+    if re.search(r"\d\.\d", text) is None:
+        text = text.replace(".", "")
+    for punct in string.punctuation:
+        if punct == "'":
+            continue
+        if punct in text and (" " + punct in text or punct + " " in text):
+            text = text.replace(punct, " ")
+        else:
+            text = text.replace(punct, "")
     text = re.sub(r"\b(a|an|the)\b", " ", text)
+    text = " ".join(_NUMBER_MAP.get(word, word) for word in text.split())
+    text = " ".join(_CONTRACTIONS.get(word, word) for word in text.split())
     return " ".join(text.split())
 
 
@@ -60,12 +95,19 @@ def binary_metrics(predictions: list[str], labels: list[str]) -> dict:
 
 def parse_choice(text: str, choices: list[str]) -> str:
     text = text.strip()
+    explicit = re.search(r"\b(?:answer|option|choice)\s*(?:is|:|=)?\s*\(?([A-Z])\)?(?:\b|[.):])", text, re.I)
+    if explicit and (not choices or ord(explicit.group(1).upper()) - ord("A") < len(choices)):
+        return explicit.group(1).upper()
+    leading = re.match(r"^\s*\(?([A-Z])\)?(?:[.):]|\s+-)\s*", text, re.I)
+    if leading and (not choices or ord(leading.group(1).upper()) - ord("A") < len(choices)):
+        return leading.group(1).upper()
     if not choices:
         match = re.search(r"\b([A-Z])\b", text.upper())
         return match.group(1) if match else ""
-    match = re.search(r"(?:^|\b)([A-Z])(?:\b|[.):])", text.upper())
-    if match and ord(match.group(1)) - ord("A") < len(choices):
-        return match.group(1)
+    if re.fullmatch(r"\s*\(?([A-Z])\)?\s*", text, re.I):
+        letter = re.fullmatch(r"\s*\(?([A-Z])\)?\s*", text, re.I).group(1).upper()
+        if ord(letter) - ord("A") < len(choices):
+            return letter
     pred = normalize_answer(text)
     for idx, choice in enumerate(choices):
         if normalize_answer(choice) == pred or normalize_answer(choice) in pred:
@@ -91,13 +133,19 @@ def score_records(records: list[dict], predictions: list[str], *, caption_scorer
                 output[task] = {"count": len(pairs), **{name: float(value) for name, value in scores.items()}}
         elif task in ("vqa", "textvqa"):
             values = [vqa_consensus(pred, row["answers"]) for row, pred in pairs]
-            metric = "vqa_consensus_approx" if task == "vqa" else "textvqa_consensus_approx"
+            metric = "vqa_consensus_pilot" if task == "vqa" else "textvqa_consensus_pilot"
             output[task] = {"count": len(values), metric: sum(values) / max(len(values), 1),
-                            "metric_note": "approximate min(matching references/3,1); replace with official evaluator for final reporting"}
+                            "metric_note": "leave-one-annotator-out consensus with generic answer normalization; run official benchmark evaluator for final reporting"}
         elif task in ("pope", "binary"):
             labels = [row["label"].lower() for row, _ in pairs]
             pred_labels = [binary_label(pred) for _, pred in pairs]
             output[task] = {"count": len(labels), **binary_metrics(pred_labels, labels)}
+            groups = defaultdict(lambda: [[], []])
+            for (row, _), prediction, label in zip(pairs, pred_labels, labels):
+                group = str(row.get("category", row.get("subset", "all")))
+                groups[group][0].append(prediction); groups[group][1].append(label)
+            if len(groups) > 1 or (groups and next(iter(groups)) != "all"):
+                output[task]["by_category"] = {name: binary_metrics(v[0], v[1]) for name, v in groups.items()}
         elif task in ("multiple_choice", "worldmedqa"):
             correct = 0
             by_language = defaultdict(lambda: [0, 0])
@@ -118,19 +166,30 @@ def score_records(records: list[dict], predictions: list[str], *, caption_scorer
             output[task] = {"count": len(scores), "accuracy": sum(scores) / max(len(scores), 1)}
         elif task == "mme_pair":
             pair_correct = defaultdict(list)
+            by_category = defaultdict(lambda: [0, 0])
             for row, pred in pairs:
-                pair_correct[str(row["pair_id"])].append(binary_label(pred) == row["label"].lower())
+                ok = binary_label(pred) == row["label"].lower()
+                pair_correct[str(row["pair_id"])].append(ok)
+                category = str(row.get("category", "unspecified"))
+                by_category[category][0] += int(ok); by_category[category][1] += 1
+            malformed = {key: len(values) for key, values in pair_correct.items() if len(values) != 2}
+            if malformed:
+                raise ValueError(f"MME requires complete 2-question pairs; malformed={list(malformed.items())[:5]}")
             output[task] = {"count": len(pairs), "pair_count": len(pair_correct),
-                            "pair_accuracy": sum(all(v) for v in pair_correct.values()) / max(len(pair_correct), 1)}
+                            "pair_accuracy": sum(all(v) for v in pair_correct.values()) / max(len(pair_correct), 1),
+                            "mme_score_sum": sum(v[0] for v in by_category.values()),
+                            "mme_score_by_category": {k: v[0] for k, v in by_category.items()},
+                            "accuracy_by_category": {k: v[0] / max(v[1], 1) for k, v in by_category.items()}}
         else:
             raise ValueError(f"unsupported task={task!r}")
     return output
 
 
-def load_model(model_path: Path, adapter: Path | None):
+def load_model(model_path: Path, adapter: Path | None, *, max_image_pixels: int):
     import torch
     from transformers import AutoProcessor, Qwen2_5_VLForConditionalGeneration
-    processor = AutoProcessor.from_pretrained(model_path, local_files_only=True, use_fast=False)
+    processor = AutoProcessor.from_pretrained(model_path, local_files_only=True, use_fast=False,
+                                              min_pixels=256 * 28 * 28, max_pixels=max_image_pixels)
     model = Qwen2_5_VLForConditionalGeneration.from_pretrained(
         model_path, torch_dtype=torch.bfloat16, local_files_only=True, attn_implementation="eager"
     ).cuda().eval()
@@ -149,11 +208,11 @@ def atomic_json_write(path: Path, payload: dict) -> None:
 
 def resume_identity(*, manifest_sha256: str, model_id: str, model: Path,
                     adapter: Path | None, max_new_tokens: int, model_revision: str,
-                    ids: list[str]) -> dict:
+                    max_image_pixels: int, ids: list[str]) -> dict:
     return {"manifest_sha256": manifest_sha256, "model_id": model_id,
             "model": str(model), "adapter": str(adapter) if adapter else None,
             "max_new_tokens": max_new_tokens, "model_revision": model_revision,
-            "ordered_ids": ids}
+            "max_image_pixels": max_image_pixels, "ordered_ids": ids}
 
 
 def generate(model, processor, dataset_root: Path, row: dict, *, max_new_tokens: int):
@@ -188,6 +247,7 @@ def main():
     p.add_argument("--resume", action="store_true", help="resume from <output>.partial.json after verifying inputs")
     p.add_argument("--checkpoint-every", type=int, default=10)
     p.add_argument("--model-revision", default="unspecified")
+    p.add_argument("--max-image-pixels", type=int, default=1280 * 28 * 28)
     a = p.parse_args()
     raw_manifest = a.manifest.read_bytes()
     records = [json.loads(x) for x in raw_manifest.decode().splitlines() if x.strip()]
@@ -208,7 +268,8 @@ def main():
         raise ValueError("manifest contains duplicate IDs; run the manifest validator")
     identity = resume_identity(manifest_sha256=hashlib.sha256(raw_manifest).hexdigest(),
                                model_id=a.model_id, model=a.model, adapter=a.adapter,
-                               max_new_tokens=a.max_new_tokens, model_revision=a.model_revision, ids=ids)
+                               max_new_tokens=a.max_new_tokens, model_revision=a.model_revision,
+                               max_image_pixels=a.max_image_pixels, ids=ids)
     partial_path = a.output.with_name(a.output.name + ".partial.json")
     predictions = []
     latencies = []
@@ -225,7 +286,7 @@ def main():
         raise FileExistsError(f"partial result exists; pass --resume or move it: {partial_path}")
     if a.output.exists():
         raise FileExistsError(f"refusing to overwrite completed result: {a.output}")
-    model, processor = load_model(a.model, a.adapter)
+    model, processor = load_model(a.model, a.adapter, max_image_pixels=a.max_image_pixels)
     import torch
     if torch.cuda.is_available():
         torch.cuda.reset_peak_memory_stats()
@@ -246,29 +307,43 @@ def main():
                                              "latency_seconds": latencies,
                                              "completed": len(predictions), "total": len(records)})
     scorer = None
+    scorer_notes = []
     if a.caption_metrics and any(r["task"] == "caption" for r in records):
         # Package's public API expects COCO objects; use its standard scorers directly.
+        scorer_path = os.environ.get("PYCOCOEVALCAP_PATH")
+        if scorer_path:
+            sys.path.append(scorer_path)
         from pycocoevalcap.bleu.bleu import Bleu
         from pycocoevalcap.cider.cider import Cider
-        from pycocoevalcap.meteor.meteor import Meteor
         from pycocoevalcap.rouge.rouge import Rouge
-        scorer = _CaptionScorer([("Bleu", Bleu(4)), ("METEOR", Meteor()), ("ROUGE_L", Rouge()), ("CIDEr", Cider())])
+        scorers = [("Bleu", Bleu(4)), ("ROUGE_L", Rouge()), ("CIDEr", Cider())]
+        try:
+            from pycocoevalcap.meteor.meteor import Meteor
+            scorers.append(("METEOR", Meteor()))
+        except (FileNotFoundError, OSError) as exc:
+            scorer_notes.append(f"METEOR unavailable: {exc}")
+        scorer = _CaptionScorer(scorers)
     metrics = score_records(records, predictions, caption_scorer=scorer)
     elapsed = time.perf_counter() - started
     latency_sorted = sorted(latencies)
     run_metadata = {"model_revision": a.model_revision, "manifest_sha256": hashlib.sha256(raw_manifest).hexdigest(),
                     "ordered_id_prompt_sha256": hashlib.sha256("\n".join(x["id"]+"\t"+x["prompt"] for x in records).encode()).hexdigest(),
                     "max_new_tokens": a.max_new_tokens, "do_sample": False,
+                    "max_image_pixels": a.max_image_pixels,
                     "latency_seconds": {"mean": sum(latencies) / len(latencies),
                                         "median": latency_sorted[len(latency_sorted)//2],
                                         "p95": latency_sorted[max(0, min(len(latency_sorted)-1, math.ceil(.95*len(latency_sorted))-1))],
                                         "throughput_examples_per_second": len(records) / max(sum(latencies), 1e-12)},
                     "elapsed_seconds": elapsed}
+    metadata_sidecar = a.manifest.with_suffix(a.manifest.suffix + ".meta.json")
+    if metadata_sidecar.exists():
+        run_metadata["dataset_metadata"] = json.loads(metadata_sidecar.read_text())
     if torch.cuda.is_available():
         run_metadata["cuda_peak_memory_bytes"] = {"allocated": int(torch.cuda.max_memory_allocated()),
                                                   "reserved": int(torch.cuda.max_memory_reserved())}
     payload = {"model_id": a.model_id, "model": str(a.model), "adapter": str(a.adapter) if a.adapter else None,
                "manifest": str(a.manifest), "run_metadata": run_metadata,
+               "scorer_notes": scorer_notes,
                "n": len(records), "metrics": metrics,
                "records": [{**row, "prediction": pred, "latency_seconds": latency}
                            for row, pred, latency in zip(records, predictions, latencies)]}

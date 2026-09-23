@@ -1,0 +1,120 @@
+{
+  "model_id": "V3_100_calibration_val",
+  "manifest": "/vepfs-mlp2/c20250405/400040/transfer/vla_attention/repo/VLA_attention/experiment_workspace/manifests/flickr30k_entities/p1_qwen25_calibration_20.jsonl",
+  "student_report": "/vepfs-mlp2/c20250405/400040/transfer/vla_attention/results/F0v2_geometry_calibration_V3_val/report.json",
+  "teacher_dir": "/vepfs-mlp2/c20250405/400040/transfer/vla_attention/teacher_maps/P1_calibration_sd1_5_nulltext_phrase_20_seed23",
+  "calibration_only": true,
+  "resolutions": [
+    {
+      "resolution": 16,
+      "summary": {
+        "student": {
+          "soft_iou": 0.07548340139255239,
+          "mass_in_box": 0.372273662661925,
+          "box_iou_top10": 0.32452648170818893,
+          "box_iou_top20": 0.3176989915444496,
+          "box_iou_top30": 0.3139096309119046,
+          "box_iou_top40": 0.3148755248902885,
+          "box_iou_q50": 0.3148755248902885,
+          "box_iou_q70": 0.3139096309119046,
+          "box_iou_q80": 0.3176989915444496,
+          "box_iou_q90": 0.32452648170818893,
+          "box_iou_q95": 0.33824943805549973
+        },
+        "teacher": {
+          "soft_iou": 0.2063188929607796,
+          "mass_in_box": 0.44228932783189023,
+          "box_iou_top10": 0.34840382894647903,
+          "box_iou_top20": 0.3503483603523889,
+          "box_iou_top30": 0.3208369819187838,
+          "box_iou_top40": 0.320767147726382,
+          "box_iou_q50": 0.31505549734207916,
+          "box_iou_q70": 0.3208369819187838,
+          "box_iou_q80": 0.3503483603523889,
+          "box_iou_q90": 0.34840382894647903,
+          "box_iou_q95": 0.34068025121573464
+        }
+      },
+      "n": 20
+    },
+    {
+      "resolution": 32,
+      "summary": {
+        "student": {
+          "soft_iou": 0.06041351662372435,
+          "mass_in_box": 0.36887751133536195,
+          "box_iou_top10": 0.3131053937276477,
+          "box_iou_top20": 0.31696425501700576,
+          "box_iou_top30": 0.3143995593817925,
+          "box_iou_top40": 0.3148755248902885,
+          "box_iou_q50": 0.3148755248902885,
+          "box_iou_q70": 0.3143995593817925,
+          "box_iou_q80": 0.31696425501700576,
+          "box_iou_q90": 0.3131053937276477,
+          "box_iou_q95": 0.3296147122872929
+        },
+        "teacher": {
+          "soft_iou": 0.21405079382815267,
+          "mass_in_box": 0.4424525758199455,
+          "box_iou_top10": 0.3658008539905002,
+          "box_iou_top20": 0.3546262023935029,
+          "box_iou_top30": 0.3225266607684129,
+          "box_iou_top40": 0.32019458324486816,
+          "box_iou_q50": 0.31601685700402377,
+          "box_iou_q70": 0.3225266607684129,
+          "box_iou_q80": 0.3546262023935029,
+          "box_iou_q90": 0.3658008539905002,
+          "box_iou_q95": 0.3393530430991113
+        }
+      },
+      "n": 20
+    },
+    {
+      "resolution": 64,
+      "summary": {
+        "student": {
+          "soft_iou": 0.05440220544044615,
+          "mass_in_box": 0.3650615707116557,
+          "box_iou_top10": 0.31077245954675425,
+          "box_iou_top20": 0.316397314113859,
+          "box_iou_top30": 0.31463924993120507,
+          "box_iou_top40": 0.3148755248902885,
+          "box_iou_q50": 0.3148755248902885,
+          "box_iou_q70": 0.31463924993120507,
+          "box_iou_q80": 0.316397314113859,
+          "box_iou_q90": 0.31077245954675425,
+          "box_iou_q95": 0.3189003149717638
+        },
+        "teacher": {
+          "soft_iou": 0.20924627289109302,
+          "mass_in_box": 0.4409919697648769,
+          "box_iou_top10": 0.3604912499558986,
+          "box_iou_top20": 0.3577621218613633,
+          "box_iou_top30": 0.32206512228573325,
+          "box_iou_top40": 0.3202777454509607,
+          "box_iou_q50": 0.31600691070396963,
+          "box_iou_q70": 0.32206512228573325,
+          "box_iou_q80": 0.3577621218613633,
+          "box_iou_q90": 0.3604912499558986,
+          "box_iou_q95": 0.33606270463261045
+        }
+      },
+      "n": 20
+    }
+  ],
+  "selected_resolution": 16,
+  "selected_threshold_quantile": 0.95,
+  "fractions": [
+    0.1,
+    0.2,
+    0.3,
+    0.4
+  ],
+  "thresholds": [
+    0.5,
+    0.7,
+    0.8,
+    0.9,
+    0.95
+  ]
+}

@@ -46,3 +46,20 @@ V1 and V2 were re-evaluated on the same 64 held-out rows with the frozen 16×16/
 ## Downstream capability evaluation status
 
 The Lavender-style benchmark protocol is defined in `paper_draft/05_experiments_and_expected_conclusions.md` and `doc/03_execution_plan.md`, but no capability benchmark has been run yet. The next stage remains pending until (a) the 16×16 training-grid sweep is complete, (b) V1/V2 matched baselines and paired intervals are captured, and (c) one candidate is selected without using test results for calibration. Then run the six-task paired V0–V4 pilot: COCO Captions, VQAv2, TextVQA, POPE, MME, and WorldMedQA-V. Report task-native metrics; do not collapse incomplete benchmark groups into one average.
+
+## 2026-09-23 calibrated-grid result
+
+The actual 16×16 retraining sweep and matched V1-by-seed baseline were completed after remote access recovered. Unlike the earlier `geom16_*`-named held-out readouts, these models were trained with `common_resolution=[16,16]`. All four modes ran 100 steps for seeds 17/29/41, with λ=.1, teacher temperature 1.25, same 256-pair training manifest (SHA256 `2a37c49e…`), and same 64-row image-disjoint held-out manifest (SHA256 `7b16778e…`). V1 seed 17 uses the existing 100-step V1 trained at seed 17; V1 seeds 29 and 41 were newly trained as matched baselines. Each method was evaluated at the frozen 16×16 grid / q=.95 support rule.
+
+| Loss | q95 box IoU | soft-IoU | top-10 IoU | top-20 IoU | mass-in-box | pointing |
+|---|---:|---:|---:|---:|---:|---:|
+| KL | 0.2754 ± 0.0297 | 0.0683 ± 0.0187 | 0.2805 ± 0.0111 | 0.2726 ± 0.0042 | 0.3247 ± 0.0067 | 0.3073 ± 0.0888 |
+| KL+rank | 0.2853 ± 0.0049 | **0.0879 ± 0.0016** | **0.2845 ± 0.0036** | 0.2719 ± 0.0044 | **0.3357 ± 0.0057** | **0.3854 ± 0.0477** |
+| KL+moment | 0.2789 ± 0.0034 | 0.0747 ± 0.0042 | 0.2799 ± 0.0015 | 0.2720 ± 0.0027 | 0.3199 ± 0.0070 | 0.2812 ± 0.0000 |
+| JS | **0.2913 ± 0.0132** | 0.0706 ± 0.0032 | 0.2754 ± 0.0003 | 0.2712 ± 0.0023 | 0.3242 ± 0.0043 | 0.3177 ± 0.0786 |
+
+Numbers are mean ± sample SD across three training seeds; full top-k/q curves, individual 64-row reports, training loss traces, and checksums are in `calibrated16_20260923/`. Paired bootstrap results compare each loss to same-seed V1 and resample the same 64 held-out IDs within each of the three fixed seeds (10,000 draws, RNG seed 20260923). These CIs reflect held-out sample uncertainty conditional on the selected seeds, not uncertainty over training seeds.
+
+KL+rank is the leading next candidate because it improves soft-IoU and top-10 IoU over matched V1 with paired 95% sample-bootstrap intervals above zero; mass-in-box and pointing also trend upward. Its primary q=.95 box-IoU difference is only +0.0018 with CI [−0.0144,+0.0174], so box-localization superiority is **not** established. JS has the highest mean q=.95 IoU but its paired interval crosses zero; KL+moment improves soft-IoU but decreases q=.95 IoU and pointing. The data support carrying KL+rank to the Lavender-style capability pilot as a candidate, not claiming a confirmed win. The 100-step budget and only three seeds remain an important limitation.
+
+The original 32×32-trained sweep remains separately archived in the parent README table and is not pooled with these results. The raw remote reports in `remote_artifacts_20260923/` are calibration evidence plus the original 32×32 held-out reports; the actual calibrated-grid training/evaluation artifacts are in `calibrated16_20260923/`.
