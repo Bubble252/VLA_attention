@@ -1,0 +1,48 @@
+# F0v2 geometry-aware semantic loss sweep
+
+## Scope and evidence
+
+Four semantic-map objectives were trained on the same F0v2 256-pair manifest for 100 steps, using seeds 17, 29, and 41, `lambda_sem=0.1`, teacher temperature `1.25`, rank quantile `0.25`, and one held-out image-disjoint set of 64 examples. The training/evaluation reports and checkpoints are on VEPFS; the aggregated remote summary was generated at `results/F0v2_geometry_heldout/summary.{json,md}`.
+
+The current local code supports fixed-grid map matching, KL, KL+rank, KL+moment, and JS. Unit tests passed on the 101 environment (`8 passed`). The 20-image independent validation calibration compared 16×16, 32×32, and 64×64 and provisionally selected 16×16 and threshold quantile 0.95. It measured student V3 soft-IoU of 0.0755/0.0604/0.0544 respectively, and top-20 box IoU of 0.3177/0.3170/0.3164. A portable audit copy is stored in [`calibration_v1.json`](calibration_v1.json); the source artifact is on VEPFS at `results/F0v2_geometry_calibration_V3_val/calibration.json`.
+
+## Important resolution caveat
+
+The 12 completed loss-sweep jobs were launched before the runner was changed to use the selected 16×16 grid. They trained with a common **32×32** grid. Their held-out maps were evaluated at both native top-k and calibrated **16×16** resolution. Therefore the four-way comparison is controlled among loss modes, but it is not yet the final “calibrated-grid training” comparison. A second sweep using the current `server/run_f0_geometry_loss_sweep.sh` default (`F0_GEOM_RESOLUTION=16`) is required before selecting a final loss.
+
+The validation split is only 20 images and the held-out threshold evaluation is sensitive to the chosen support quantile. Keep 16×16/q=.95 as a frozen provisional rule for the next run; do not retune it on held-out test. Report top-10/20/30/40 support IoU, soft-IoU, mass-in-box and pointing together. Do not elevate q=.95 IoU alone as the objective.
+
+## 32×32 training sweep: held-out results
+
+All values below are mean ± sample standard deviation across 3 training seeds on the same 64 held-out image-phrase records. “Calibrated IoU” means the 16×16/q=.95 readout; it is an evaluation readout of models trained at 32×32, not the final calibrated-grid training result.
+
+| Loss | Seeds | Calibrated IoU | Soft-IoU | Top-20 IoU | Mass-in-box | Pointing |
+|---|---|---:|---:|---:|---:|---:|
+| KL | 17, 29, 41 | 0.2838 ± 0.0064 | 0.0748 ± 0.0040 | 0.2709 ± 0.0015 | 0.3266 ± 0.0089 | 0.3438 ± 0.0563 |
+| KL + rank | 17, 29, 41 | 0.2758 ± 0.0051 | **0.0799 ± 0.0062** | 0.2732 ± 0.0009 | 0.3306 ± 0.0061 | 0.3385 ± 0.0861 |
+| KL + moment | 17, 29, 41 | **0.2893 ± 0.0073** | 0.0790 ± 0.0027 | **0.2748 ± 0.0011** | 0.3304 ± 0.0045 | 0.3333 ± 0.0180 |
+| JS | 17, 29, 41 | 0.2812 ± 0.0103 | 0.0711 ± 0.0053 | 0.2717 ± 0.0013 | 0.3208 ± 0.0096 | 0.3229 ± 0.0771 |
+
+## Interpretation and next gate
+
+- KL+moment is the best provisional candidate on calibrated IoU, top-20 IoU and seed consistency of mass-in-box, but its calibrated-IoU gain over KL is only 0.0055 and the four loss modes have not yet been compared against V1/V2 under the exact same calibrated readout.
+- KL+rank gives the strongest soft-IoU and mass-in-box means, but not the best calibrated q=.95 box IoU. This divergence confirms that one scalar metric cannot select the method.
+- JS is not better than KL on this run.
+- These are three-seed directional results, not statistical proof; the same 64 images are shared across seeds, and the table does not yet include paired bootstrap intervals.
+
+Required before selecting a final loss:
+
+1. Re-run the four loss modes at 16×16 training resolution, preserving all other settings and seeds.
+2. Evaluate V1 and V2 on the same 64 records, with the frozen 16×16/q=.95 protocol; compare each method to its matched baseline.
+3. Compute paired bootstrap intervals by sample for calibrated IoU, soft-IoU, top-k IoU, mass-in-box, and pointing.
+4. Only then begin Lavender-style downstream capability evaluation using paired V0–V4 checkpoints. Capability scores cannot substitute for missing spatial gains.
+
+No claim of IoU improvement or idea validation should be made from the provisional 32×32 sweep alone.
+
+## Matched V1/V2 baseline status
+
+V1 and V2 were re-evaluated on the same 64 held-out rows with the frozen 16×16/q=.95 rule, and reports exist on VEPFS at `results/F0v2_geometry_heldout/baseline_V1_gpu1/report.json` and `baseline_V2_gpu1/report.json`. The remote approval service began returning 502 before their summary fields could be captured into this workspace. Treat the baseline comparison as **not yet auditable here**; do not infer the result from partial console excerpts. Re-read the full JSON summaries and compute paired sample-level intervals before selecting a loss.
+
+## Downstream capability evaluation status
+
+The Lavender-style benchmark protocol is defined in `paper_draft/05_experiments_and_expected_conclusions.md` and `doc/03_execution_plan.md`, but no capability benchmark has been run yet. The next stage remains pending until (a) the 16×16 training-grid sweep is complete, (b) V1/V2 matched baselines and paired intervals are captured, and (c) one candidate is selected without using test results for calibration. Then run the six-task paired V0–V4 pilot: COCO Captions, VQAv2, TextVQA, POPE, MME, and WorldMedQA-V. Report task-native metrics; do not collapse incomplete benchmark groups into one average.

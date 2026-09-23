@@ -1,5 +1,15 @@
 # 训练前准备进度
 
+## 2026-09-23：geometry-loss sweep 续记
+
+- [x] 远端复核确认：101 GPU1 空闲；四种 map loss 各 3 seeds 的 12 个 100-step checkpoint/训练报告已完成，held-out 评估报告已在 VEPFS 生成；原训练实际使用共同 32×32 网格。
+- [x] 独立 val calibration：20 张 `p1_qwen25_calibration_20.jsonl`，对 V3 student 在 16/32/64 网格上比较 top-k 与 soft-IoU，暂定 16×16 / q=.95；不使用 test 选参数。摘要与分辨率 caveat 见 `experiments/F0v2-idea-validation/geometry_loss_sweep_results/`。
+- [x] 几何损失比较（三 seed，64 image-disjoint held-out）：KL、KL+rank、KL+moment、JS 已完成；16×16/q=.95 calibrated IoU 均值依次为 0.2838、0.2758、0.2893、0.2812；soft-IoU 均值依次为 0.0748、0.0799、0.0790、0.0711。首轮是 32×32 训练网格，不能作为最终选择。
+- [x] V1/V2 matched baseline 只读重评已在 GPU1 完成且 JSON 已落盘；在远端审批服务出现 502 之前只确认到文件存在及部分终端摘要，完整 summary 尚未写入本地，因此此处不记录数值结论。
+- [ ] 必须先完整读取 V1/V2 JSON 并计算 paired bootstrap；随后按冻结 16×16 重跑四个 loss × seeds 17/29/41，再评估 matched V1/V2。
+- [ ] Lavender-style 六项下游能力评测尚未开始；按计划在几何候选选择和 matched baseline 统计审计后运行 V0–V4 paired pilot：COCO Captions、VQAv2、TextVQA、POPE、MME、WorldMedQA-V。
+- [ ] 远端审批服务当前对部分 SSH 只读请求返回 502；未因审批超时而假设命令执行成功，也未重复启动任何训练/评测 job。
+
 本记录与 `doc/03_execution_plan.md` 的 P1 章节保持一致；这里保留实际运行环境和产物路径，避免把服务器状态混入论文叙事。
 
 ## 运行中检查点格式

@@ -1,0 +1,39 @@
+{
+  "schema": "vla-attention/p4-capability-eval/v1",
+  "status": "protocol_frozen_execution_pending",
+  "purpose": "Measure Lavender-style downstream VLM capability changes separately from region-map geometry.",
+  "student": {
+    "model": "Qwen2.5-VL-7B-Instruct",
+    "processor_use_fast": false,
+    "checkpoint_mapping": {
+      "V0": "base checkpoint, no adapter",
+      "V1": "caption SFT matched seed",
+      "V2": "V1 + DINO retention matched seed",
+      "V3": "selected semantic-attribution loss checkpoint",
+      "V4": "V2 + same selected semantic-attribution loss, only if matched experiment exists"
+    }
+  },
+  "evaluation_controls": {
+    "same_seed_pairing": true,
+    "same_prompt_and_chat_template": true,
+    "same_image_resolution_and_processor": true,
+    "same_decoding_parameters": true,
+    "same_evaluator_version": true,
+    "report_per_dataset_and_per_category": true,
+    "report_training_data_overlap_audit": true,
+    "do_not_average_missing_tasks": true,
+    "held_out_from_training_and_teacher_calibration": true
+  },
+  "pilot_benchmarks": [
+    {"name": "COCO Captions", "split": "official validation/test split with references", "metrics": ["CIDEr", "BLEU-4", "METEOR", "ROUGE-L"], "category": "caption"},
+    {"name": "VQAv2", "split": "validation", "metrics": ["official VQA accuracy"], "category": "general_vqa"},
+    {"name": "TextVQA", "split": "validation", "metrics": ["official TextVQA accuracy"], "category": "fine_grained_ocr"},
+    {"name": "POPE", "split": "official evaluation split", "metrics": ["accuracy", "F1"], "category": "hallucination"},
+    {"name": "MME", "split": "official evaluation split", "metrics": ["official perception and cognition scores"], "category": "broad_perception"},
+    {"name": "WorldMedQA-V", "split": "official held-out split", "metrics": ["accuracy overall", "accuracy by language", "accuracy by question type"], "category": "ood"}
+  ],
+  "comparisons": ["V3 - V1", "V4 - V2", "V1 - V0", "V2 - V1"],
+  "report_fields": ["absolute_score", "paired_absolute_delta", "relative_delta_percent", "bootstrap_ci95", "latency", "peak_memory", "prompt_hash", "dataset_revision", "evaluator_revision"],
+  "execution_gate": "Run after the 16x16 geometry-loss sweep and matched V1 baseline pass. First smoke each evaluator on a tiny fixed subset, then run the exact same subset for every checkpoint; only afterward scale to the full official split.",
+  "limitations": ["This is not a full reproduction of Lavender's 20-benchmark evaluation.", "Model pretraining overlap cannot generally be ruled out; audit and disclose fine-tuning data overlap.", "Capability scores do not substitute for phrase-region grounding metrics."]
+}

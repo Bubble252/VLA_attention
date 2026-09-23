@@ -12,11 +12,14 @@ readonly FILES=(
   scripts/run_qwen_v4_smoke.py
   scripts/calibrate_spatial_metrics.py
   scripts/summarize_geometry_sweep.py
+  scripts/paired_geometry_bootstrap.py
   scripts/eval_qwen_heldout.py
   scripts/eval_teacher_map_controls.py
   scripts/run_f0_heldout_all.sh
   server/run_f0_geometry_loss_sweep.sh
   server/eval_f0_geometry_loss_sweep.sh
+  server/eval_f0_geometry_calibrated_sweep.sh
+  server/run_f0_geometry_matched_v1.sh
   tests/test_semantic_map_losses.py
   tests/test_spatial_calibration.py
 )
@@ -31,8 +34,8 @@ ssh "$REMOTE_HOST" "mkdir -p '$REMOTE_ROOT/scripts' && echo REMOTE_READY"
 echo "[2/3] uploading ${#FILES[@]} validation files"
 ssh "$REMOTE_HOST" "mkdir -p '$REMOTE_ROOT/src/vla_attention' '$REMOTE_ROOT/server' '$REMOTE_ROOT/tests'"
 scp src/vla_attention/losses.py "$REMOTE_HOST:$REMOTE_ROOT/src/vla_attention/losses.py"
-scp scripts/run_qwen_v3_smoke.py scripts/run_qwen_v4_smoke.py scripts/calibrate_spatial_metrics.py scripts/summarize_geometry_sweep.py scripts/eval_qwen_heldout.py scripts/eval_teacher_map_controls.py scripts/run_f0_heldout_all.sh "$REMOTE_HOST:$REMOTE_ROOT/scripts/"
-scp server/run_f0_geometry_loss_sweep.sh server/eval_f0_geometry_loss_sweep.sh "$REMOTE_HOST:$REMOTE_ROOT/server/"
+scp scripts/run_qwen_v3_smoke.py scripts/run_qwen_v4_smoke.py scripts/calibrate_spatial_metrics.py scripts/summarize_geometry_sweep.py scripts/paired_geometry_bootstrap.py scripts/eval_qwen_heldout.py scripts/eval_teacher_map_controls.py scripts/run_f0_heldout_all.sh "$REMOTE_HOST:$REMOTE_ROOT/scripts/"
+scp server/run_f0_geometry_loss_sweep.sh server/eval_f0_geometry_loss_sweep.sh server/eval_f0_geometry_calibrated_sweep.sh server/run_f0_geometry_matched_v1.sh "$REMOTE_HOST:$REMOTE_ROOT/server/"
 scp tests/test_semantic_map_losses.py tests/test_spatial_calibration.py "$REMOTE_HOST:$REMOTE_ROOT/tests/"
 
 manifest="$(mktemp)"
@@ -41,4 +44,4 @@ sha256sum "${FILES[@]}" > "$manifest"
 scp "$manifest" "$REMOTE_HOST:$REMOTE_ROOT/scripts/.validation_scripts.sha256"
 
 echo "[3/3] verifying remote SHA256"
-ssh "$REMOTE_HOST" "cd '$REMOTE_ROOT' && sha256sum -c scripts/.validation_scripts.sha256 && chmod +x scripts/run_f0_heldout_all.sh server/run_f0_geometry_loss_sweep.sh server/eval_f0_geometry_loss_sweep.sh && echo UPLOAD_VERIFY_OK"
+ssh "$REMOTE_HOST" "cd '$REMOTE_ROOT' && sha256sum -c scripts/.validation_scripts.sha256 && chmod +x scripts/run_f0_heldout_all.sh server/run_f0_geometry_loss_sweep.sh server/eval_f0_geometry_loss_sweep.sh server/eval_f0_geometry_calibrated_sweep.sh server/run_f0_geometry_matched_v1.sh && echo UPLOAD_VERIFY_OK"

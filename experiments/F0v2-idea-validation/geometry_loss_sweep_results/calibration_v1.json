@@ -1,0 +1,18 @@
+{
+  "calibration_split": "p1_qwen25_calibration_20.jsonl",
+  "sample_count": 20,
+  "student_checkpoint": "F0v2_idea_validation_100/V3",
+  "teacher": "SD1.5 null-text phrase maps, seed 23",
+  "test_split_used_for_selection": false,
+  "candidate_common_resolutions": [16, 32, 64],
+  "selected_common_resolution": [16, 16],
+  "selected_support_rule": "per-map top 5% support (threshold quantile=0.95)",
+  "selection_metric": "validation top-quantile box IoU; report soft-IoU, mass-in-box, and top-k curves alongside",
+  "student_validation_metrics": {
+    "16": {"soft_iou": 0.0755, "mass_in_box": 0.3723, "top10_iou": 0.3245, "top20_iou": 0.3177, "top30_iou": 0.3139, "q95_iou": 0.3382},
+    "32": {"soft_iou": 0.0604, "mass_in_box": 0.3689, "top10_iou": 0.3131, "top20_iou": 0.3170, "top30_iou": 0.3144, "q95_iou": 0.3296},
+    "64": {"soft_iou": 0.0544, "mass_in_box": 0.3651, "top10_iou": 0.3108, "top20_iou": 0.3164, "top30_iou": 0.3146, "q95_iou": 0.3189}
+  },
+  "remote_artifact": "/vepfs-mlp2/c20250405/400040/transfer/vla_attention/results/F0v2_geometry_calibration_V3_val/calibration.json",
+  "caveat": "Only 20 validation images; this is a frozen provisional calibration for confirmation, not a population-level optimum. Never retune this rule on held-out test."
+}

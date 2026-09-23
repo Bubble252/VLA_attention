@@ -27,4 +27,8 @@
 
 当前状态：V1/V2 checkpoint 已保存；V3/V4 checkpoint 导出代码已提交（`339bbb3`），评估器和批量入口已提交（`cf7a7d4`、`9426f19`）。恢复 101 SSH 后先上传两个 runner，补跑 V3/V4 checkpoint，再执行 64 条 held-out 的 V0--V4 评估。
 
+几何损失比较与分辨率校准进度见 [`geometry_loss_sweep_results/README.md`](geometry_loss_sweep_results/README.md)。四种 loss×三个 seed 的首轮训练和 held-out 评估已完成，但该轮训练分辨率为 32×32；校准暂定 16×16，因此还需在 16×16 训练网格复验，并补齐 matched V1/V2 baseline 后才能确定候选。
+
 F0 500-step confirmation 已完成，但未达到进入 F1-10k 的双重标准：V3 没有全面超过 V1，V4 没有超过 V2。当前应把结果作为部分支持/负证据保存，先修正训练目标和做 lambda sweep。
+
+几何损失比较与分辨率校准进度见 [`geometry_loss_sweep_results/README.md`](geometry_loss_sweep_results/README.md)。四种 loss×三个 seed 的首轮训练和 held-out 评估已完成，但该轮训练分辨率为 32×32；校准暂定 16×16，因此还需在 16×16 训练网格复验，并补齐 matched V1/V2 baseline 后才能确定候选。
