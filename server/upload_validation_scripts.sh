@@ -15,6 +15,8 @@ readonly FILES=(
   scripts/eval_teacher_map_controls.py
   scripts/run_f0_heldout_all.sh
   server/run_f0_geometry_loss_sweep.sh
+  tests/test_semantic_map_losses.py
+  tests/test_spatial_calibration.py
 )
 
 for file in "${FILES[@]}"; do
@@ -25,10 +27,11 @@ echo "[1/3] checking SSH: $REMOTE_HOST"
 ssh "$REMOTE_HOST" "mkdir -p '$REMOTE_ROOT/scripts' && echo REMOTE_READY"
 
 echo "[2/3] uploading ${#FILES[@]} validation files"
-ssh "$REMOTE_HOST" "mkdir -p '$REMOTE_ROOT/src/vla_attention' '$REMOTE_ROOT/server'"
+ssh "$REMOTE_HOST" "mkdir -p '$REMOTE_ROOT/src/vla_attention' '$REMOTE_ROOT/server' '$REMOTE_ROOT/tests'"
 scp src/vla_attention/losses.py "$REMOTE_HOST:$REMOTE_ROOT/src/vla_attention/losses.py"
 scp scripts/run_qwen_v3_smoke.py scripts/run_qwen_v4_smoke.py scripts/calibrate_spatial_metrics.py scripts/eval_qwen_heldout.py scripts/eval_teacher_map_controls.py scripts/run_f0_heldout_all.sh "$REMOTE_HOST:$REMOTE_ROOT/scripts/"
 scp server/run_f0_geometry_loss_sweep.sh "$REMOTE_HOST:$REMOTE_ROOT/server/"
+scp tests/test_semantic_map_losses.py tests/test_spatial_calibration.py "$REMOTE_HOST:$REMOTE_ROOT/tests/"
 
 manifest="$(mktemp)"
 trap 'rm -f "$manifest"' EXIT
