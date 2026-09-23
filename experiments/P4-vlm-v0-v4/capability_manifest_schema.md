@@ -23,6 +23,8 @@ Supported task types and required fields:
 
 Before inference, freeze prompt text, task instruction, image resolution policy, processor revision, `max_new_tokens`, greedy decoding (`do_sample=false`), and answer extraction rules. Store these in the manifest metadata file or run config, and compute a prompt/config SHA256. Each V0–V4 run must cover identical IDs; missing predictions or failed samples invalidate paired comparisons until rerun.
 
+The runner writes an atomic `<output>.partial.json` every 10 completed items by default. To continue after an interruption, repeat the same command with `--resume`; it verifies the manifest hash, ordered IDs, model ID/path/revision, adapter, and generation length before reusing predictions. Change the output path for a different checkpoint/config. The completed report includes per-item latency, aggregate latency/throughput, and CUDA peak allocated/reserved memory when available. Do not use partial reports for benchmark claims.
+
 Validate each manifest before uploading/running:
 
 ```bash

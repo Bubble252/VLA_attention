@@ -7,9 +7,13 @@ for converting source data into the documented manifest fields.
 from __future__ import annotations
 
 import argparse
+import hashlib
 import json
+import math
+import os
 import re
 import string
+import time
 from collections import defaultdict
 from pathlib import Path
 
@@ -136,6 +140,22 @@ def load_model(model_path: Path, adapter: Path | None):
     return model, processor
 
 
+def atomic_json_write(path: Path, payload: dict) -> None:
+    path.parent.mkdir(parents=True, exist_ok=True)
+    temp = path.with_name(path.name + ".tmp")
+    temp.write_text(json.dumps(payload, indent=2, ensure_ascii=False) + "\n")
+    os.replace(str(temp), str(path))
+
+
+def resume_identity(*, manifest_sha256: str, model_id: str, model: Path,
+                    adapter: Path | None, max_new_tokens: int, model_revision: str,
+                    ids: list[str]) -> dict:
+    return {"manifest_sha256": manifest_sha256, "model_id": model_id,
+            "model": str(model), "adapter": str(adapter) if adapter else None,
+            "max_new_tokens": max_new_tokens, "model_revision": model_revision,
+            "ordered_ids": ids}
+
+
 def generate(model, processor, dataset_root: Path, row: dict, *, max_new_tokens: int):
     import torch
     from qwen_vl_utils import process_vision_info
@@ -165,23 +185,66 @@ def main():
     p.add_argument("--max-new-tokens", type=int, default=64)
     p.add_argument("--limit", type=int)
     p.add_argument("--caption-metrics", action="store_true")
+    p.add_argument("--resume", action="store_true", help="resume from <output>.partial.json after verifying inputs")
+    p.add_argument("--checkpoint-every", type=int, default=10)
+    p.add_argument("--model-revision", default="unspecified")
     a = p.parse_args()
-    records = [json.loads(x) for x in a.manifest.read_text().splitlines() if x.strip()]
+    raw_manifest = a.manifest.read_bytes()
+    records = [json.loads(x) for x in raw_manifest.decode().splitlines() if x.strip()]
     if a.limit is not None:
         records = records[:a.limit]
     if not records:
         raise ValueError("manifest contains no records after applying --limit")
+    if a.checkpoint_every <= 0:
+        raise ValueError("--checkpoint-every must be positive")
     for idx, row in enumerate(records):
         required = {"id", "task", "prompt"} - set(row)
         if required:
             raise ValueError(f"manifest row {idx} missing {sorted(required)}")
         if row.get("image") and not (a.dataset_root / row["image"]).is_file():
             raise FileNotFoundError(a.dataset_root / row["image"])
-    model, processor = load_model(a.model, a.adapter)
+    ids = [row["id"] for row in records]
+    if len(ids) != len(set(ids)):
+        raise ValueError("manifest contains duplicate IDs; run the manifest validator")
+    identity = resume_identity(manifest_sha256=hashlib.sha256(raw_manifest).hexdigest(),
+                               model_id=a.model_id, model=a.model, adapter=a.adapter,
+                               max_new_tokens=a.max_new_tokens, model_revision=a.model_revision, ids=ids)
+    partial_path = a.output.with_name(a.output.name + ".partial.json")
     predictions = []
-    for idx, row in enumerate(records):
-        predictions.append(generate(model, processor, a.dataset_root, row, max_new_tokens=a.max_new_tokens))
+    latencies = []
+    if a.resume and partial_path.exists():
+        partial = json.loads(partial_path.read_text())
+        if partial.get("identity") != identity:
+            raise ValueError("partial evaluation identity does not match this model/manifest/config")
+        predictions = list(partial.get("predictions", []))
+        latencies = list(partial.get("latency_seconds", []))
+        if len(predictions) != len(latencies) or len(predictions) > len(records):
+            raise ValueError("partial evaluation has inconsistent prediction/latency counts")
+        print(f"Resuming at {len(predictions)}/{len(records)}", flush=True)
+    elif partial_path.exists() and not a.resume:
+        raise FileExistsError(f"partial result exists; pass --resume or move it: {partial_path}")
+    if a.output.exists():
+        raise FileExistsError(f"refusing to overwrite completed result: {a.output}")
+    model, processor = load_model(a.model, a.adapter)
+    import torch
+    if torch.cuda.is_available():
+        torch.cuda.reset_peak_memory_stats()
+    started = time.perf_counter()
+    for idx in range(len(predictions), len(records)):
+        row = records[idx]
+        if torch.cuda.is_available():
+            torch.cuda.synchronize()
+        item_started = time.perf_counter()
+        prediction = generate(model, processor, a.dataset_root, row, max_new_tokens=a.max_new_tokens)
+        if torch.cuda.is_available():
+            torch.cuda.synchronize()
+        predictions.append(prediction)
+        latencies.append(time.perf_counter() - item_started)
         print(f"[{idx + 1}/{len(records)}] {row['id']}", flush=True)
+        if len(predictions) % a.checkpoint_every == 0 or len(predictions) == len(records):
+            atomic_json_write(partial_path, {"identity": identity, "predictions": predictions,
+                                             "latency_seconds": latencies,
+                                             "completed": len(predictions), "total": len(records)})
     scorer = None
     if a.caption_metrics and any(r["task"] == "caption" for r in records):
         # Package's public API expects COCO objects; use its standard scorers directly.
@@ -191,11 +254,26 @@ def main():
         from pycocoevalcap.rouge.rouge import Rouge
         scorer = _CaptionScorer([("Bleu", Bleu(4)), ("METEOR", Meteor()), ("ROUGE_L", Rouge()), ("CIDEr", Cider())])
     metrics = score_records(records, predictions, caption_scorer=scorer)
-    a.output.parent.mkdir(parents=True, exist_ok=True)
+    elapsed = time.perf_counter() - started
+    latency_sorted = sorted(latencies)
+    run_metadata = {"model_revision": a.model_revision, "manifest_sha256": hashlib.sha256(raw_manifest).hexdigest(),
+                    "ordered_id_prompt_sha256": hashlib.sha256("\n".join(x["id"]+"\t"+x["prompt"] for x in records).encode()).hexdigest(),
+                    "max_new_tokens": a.max_new_tokens, "do_sample": False,
+                    "latency_seconds": {"mean": sum(latencies) / len(latencies),
+                                        "median": latency_sorted[len(latency_sorted)//2],
+                                        "p95": latency_sorted[max(0, min(len(latency_sorted)-1, math.ceil(.95*len(latency_sorted))-1))],
+                                        "throughput_examples_per_second": len(records) / max(sum(latencies), 1e-12)},
+                    "elapsed_seconds": elapsed}
+    if torch.cuda.is_available():
+        run_metadata["cuda_peak_memory_bytes"] = {"allocated": int(torch.cuda.max_memory_allocated()),
+                                                  "reserved": int(torch.cuda.max_memory_reserved())}
     payload = {"model_id": a.model_id, "model": str(a.model), "adapter": str(a.adapter) if a.adapter else None,
-               "manifest": str(a.manifest), "n": len(records), "metrics": metrics,
-               "records": [{**row, "prediction": pred} for row, pred in zip(records, predictions)]}
-    a.output.write_text(json.dumps(payload, indent=2, ensure_ascii=False) + "\n")
+               "manifest": str(a.manifest), "run_metadata": run_metadata,
+               "n": len(records), "metrics": metrics,
+               "records": [{**row, "prediction": pred, "latency_seconds": latency}
+                           for row, pred, latency in zip(records, predictions, latencies)]}
+    atomic_json_write(a.output, payload)
+    partial_path.unlink(missing_ok=True)
     print(json.dumps({"model_id": a.model_id, "n": len(records), "metrics": metrics}, indent=2, ensure_ascii=False))
 
 

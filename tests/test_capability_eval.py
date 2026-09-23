@@ -1,7 +1,9 @@
 from scripts.eval_capability_suite import (
+    atomic_json_write,
     binary_metrics,
     binary_label,
     parse_choice,
+    resume_identity,
     score_records,
     vqa_consensus,
 )
@@ -40,3 +42,15 @@ def test_scoring_rejects_misaligned_predictions():
         assert "length mismatch" in str(error)
     else:
         raise AssertionError("expected mismatched records/predictions to fail")
+
+
+def test_partial_checkpoint_is_atomic_and_identity_tracks_prompt_inputs(tmp_path):
+    output = tmp_path / "partial.json"
+    atomic_json_write(output, {"predictions": ["a"]})
+    assert output.exists()
+    assert not (tmp_path / "partial.json.tmp").exists()
+    first = resume_identity(manifest_sha256="abc", model_id="qwen", model=tmp_path / "model",
+                            adapter=None, max_new_tokens=64, model_revision="rev1", ids=["one"])
+    changed = resume_identity(manifest_sha256="abc", model_id="qwen", model=tmp_path / "model",
+                              adapter=None, max_new_tokens=64, model_revision="rev2", ids=["one"])
+    assert first != changed
