@@ -1,6 +1,6 @@
 """Aggregate held-out geometry-sweep evaluations over seeds."""
 from __future__ import annotations
-import argparse, json
+import argparse, json, re
 from pathlib import Path
 import numpy as np
 
@@ -10,7 +10,9 @@ def main():
     rows=[]
     for path in sorted(a.input_dir.glob('geom16_*_seed*_heldout/report.json')):
         report=json.loads(path.read_text()); summary=report['summary']; name=path.parent.name
-        pieces=name.split('_'); mode=pieces[1]; seed=int(pieces[2].replace('seed',''))
+        match=re.fullmatch(r'geom16_(.+)_seed(\d+)_heldout', name)
+        if not match: raise ValueError(f'unexpected report directory: {name}')
+        mode, seed=match.group(1), int(match.group(2))
         rows.append({'mode':mode,'seed':seed,**{k:v for k,v in summary.items() if isinstance(v,(float,int))}})
     if not rows: raise SystemExit(f'no heldout reports under {a.input_dir}')
     metrics=[k for k,v in rows[0].items() if k not in ('mode','seed')]
