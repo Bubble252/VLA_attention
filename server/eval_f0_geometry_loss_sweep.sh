@@ -17,9 +17,9 @@ resolution=$("$PY" -c 'import json,sys; print(json.load(open(sys.argv[1]))["sele
 quantile=$("$PY" -c 'import json,sys; print(json.load(open(sys.argv[1]))["selected_threshold_quantile"])' "$CALIBRATION")
 for mode in kl kl_rank kl_moment js; do
   for seed in 17 29 41; do
-    tag="geom16_${mode}_seed${seed}"
-    checkpoint="$P/checkpoints/F0v2_geometry/${tag}_s100"
-    report="$OUT/${tag}_heldout"
+    tag="geom_${mode}_seed${seed}_s100"
+    checkpoint="$P/checkpoints/F0v2_geometry/${tag}"
+    report="$OUT/geom16_${mode}_seed${seed}_heldout"
     test -s "$checkpoint/adapter_model.safetensors" || { echo "MISSING_CHECKPOINT=$checkpoint" >&2; exit 3; }
     if test -s "$report/report.json"; then echo "REUSE_REPORT=$tag"; else
       CUDA_VISIBLE_DEVICES="$CUDA_VISIBLE_DEVICES" "$PY" scripts/eval_qwen_heldout.py --model "$MODEL" --dataset-root "$DATA" --manifest "$MANIFEST" --output "$report" --checkpoint "$checkpoint" --model-id "$tag" --seed 23 --common-resolution "$resolution" --selected-threshold-quantile "$quantile"
