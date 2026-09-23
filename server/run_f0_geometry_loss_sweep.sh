@@ -2,7 +2,7 @@
 set -euo pipefail
 
 # Controlled geometry-loss sweep for V3. Each mode uses the same data, cache,
-# lambda, temperature, common 32x32 grid and 100 steps; only loss mode/seed vary.
+# lambda, temperature, calibrated common grid and step budget; only loss mode/seed vary.
 readonly REMOTE_HOST="${REMOTE_HOST:-vla101}"
 readonly GPU="${CUDA_VISIBLE_DEVICES:-1}"
 readonly STEPS="${F0_GEOM_STEPS:-100}"
