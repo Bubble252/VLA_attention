@@ -1,5 +1,28 @@
 # 训练前准备进度
 
+## 2026-09-23：能力评测推进续记（当前状态，以本节覆盖下文旧的“未开始/运行中”记录）
+
+- [x] 16×16 几何损失 comparison 与三 seed paired held-out bootstrap 已落盘；结论以 `geometry_loss_sweep_results/calibrated16_20260923/summary_calibrated16.md` 为准：KL+rank 对 soft-IoU、top-10 IoU、mass-in-box 有正向信号，但 q=.95 box IoU 置信区间跨 0；只作为下游 pilot 候选，不宣称已胜出。
+- [x] 2026-09-23 capability manifests 均已从固定 HF revision 构建并校验；五个模型 V0/V1/V2/V3_KLrank/V4_KLrank × 六任务 runner 正在 101 GPU1 顺序执行，输出根 `results/P4_capability_pilot_20260923_v2`，Qwen `max_image_pixels=1003520` 固定，便于断点续跑。
+- [x] 远端 pilot 当前已完整生成 V0、V1、V2 各六个 `report.json`，合计 18 份；V3_KLrank 的 COCO Captions 已完成，V3 VQAv2 正在处理 128 条样本；V3 其余任务与 V4 六任务尚待执行。作业句柄为本地 shell session 92308，持续跟踪中。
+- [x] 几何训练候选 `V3_KLrank` / `V4_KLrank` 均使用 seed17、100-step checkpoint；下游评测是单 checkpoint pilot，不能将样本 bootstrap 解读为训练 seed 不确定性。
+- [x] 修复 MME 成对评测 manifest 覆盖问题：重新从服务器拉取 paired manifest 和 sidecar；manifest SHA256=`618989cdf66949f1b462df3ce3f91c6cc7d945ee6865109e84d28ad38f0360ab`，128 条 question rows、64 个 complete pairs、task=`mme_pair`，ordered ID/prompt SHA256=`83163890b0116611b49937ec38a214db3a2181ac510c32d102ff7a0229b5dd7e`。原 V0/V2 MME pilot 报告 schema 为 binary，V1 为 pair；三个都不得混比，主 pilot 完成后须用此 manifest 对 V0–V4 统一补跑 MME。
+- [x] 能力评测/manifest/builder 单测复跑通过：`python3 -m pytest -q tests/test_capability_eval.py tests/test_capability_manifest.py tests/test_hf_capability_manifest_builder.py`，16 passed。
+- [ ] 主 pilot 五模型任务全部结束后拉取并核验报告及 run metadata，检查所有任务的 manifest SHA、图像预算和样本数；随后对 V0–V4 统一跑 64-pair MME，并生成配对 bootstrap 和跨任务结果摘要。
+- [ ] 评测摘要及指标解释写入 `experiment_workspace/PROGRESS.md` 与 `doc/03_execution_plan.md`；检查并同步 Git 到服务器前先保留用户的 `server/00_connection.md`，不触碰该文件。
+
+## 2026-09-23：capability pilot 完成与审计
+
+- [x] 远端主 pilot 结束，`P4_CAPABILITY_PILOT_OK`：V0/V1/V2/V3_KLrank/V4_KLrank × COCO Captions 128、VQAv2 128、TextVQA 128、POPE 384、MME 128、WorldMedQA-V 256 均有报告；共同 `max_image_pixels=1,003,520`、greedy decoding、max-new-tokens=64。101 原始报告在 `results/P4_capability_pilot_20260923_v2/`，已拉取本地 `experiment_workspace/results/P4_capability_pilot_20260923_v2/`。
+- [x] 核验 V0–V4 五模型每个非 MME task 的 manifest SHA、ordered ID/prompt SHA、sample count 和图像预算相同；各模型共 30 份完整主 pilot 报告。
+- [x] MME 不一致问题已修复：主 pilot 初版 V0/V2 为 binary，丢弃这两份用于比较；用正确 pair schema 将 V0–V4 全部重跑完成，报告在 `results/P4_capability_pilot_mme_pairedfix_20260923/`，manifest SHA=`618989cdf66949f1b462df3e3f91c6cc7d945ee6865109e84d28ad38f0360ab`，128 rows / 64 complete pairs。paired MME 是唯一用于横向表格的结果。
+- [x] 10,000-resample paired bootstrap 已完成：V3 vs V1、V4 vs V1，且针对关键互补性检验 V4 vs V2；MME 按 64 pair 为 resampling unit。结果文件：`experiments/F0v2-idea-validation/geometry_loss_sweep_results/calibrated16_20260923/paired_capability_vs_v1.json`、`paired_capability_v4_vs_v2.json`。Intervals 条件于已选 checkpoint，不含训练 seed uncertainty。
+- [x] 能力试点摘要与限制写入 `experiments/F0v2-idea-validation/geometry_loss_sweep_results/calibrated16_20260923/capability_pilot_summary.md`；原始报告、详表在 `experiment_workspace/results/P4_capability_pilot_20260923_v2/`（该 results 路径被 `.gitignore` 排除，summary/bootstrap 核心证据另存 tracked 的 experiments 目录）。
+- [x] 初步结论：V3 COCO CIDEr `.891` 高于 V1 `.778`，POPE `.852` vs `.841`，MME pair accuracy `.734` vs `.703`；但 V3 VQAv2 consensus `.159` vs `.702`，TextVQA `.367` vs `.660`，WorldMedQA-V `.406` vs `.469`。V3 TextVQA raw output 可见长串重复标点；这提示可用性/生成稳定性风险，需审计训练/推理，不能宣称整体能力提升。
+- [x] V4 对比 V2：VQAv2 `+.030 [-.026,+.088]`，TextVQA `-.002 [-.053,+.051]`，POPE `0.000 [0,0]`，MME pair `+.016 [-.047,+.094]`，WorldMedQA-V `+.020 [-.027,+.063]`；未建立语义图约束在 DINO retention 上的下游能力增量。
+- [ ] 这些是小样本、单 checkpoint 的 preliminary pilot，不等于 Lavender 复现或正式 benchmark：VQA/TextVQA 评分不是官方 evaluator，WorldMedQA-V 仅 256 个分层 pilot，caption 没有 METEOR（缺 Java）。下一步先查 V3 VQA/TextVQA 重复生成和可能的训练退化，再跑至少 3-seed 与完整官方 evaluator；pilot 通过这些 gate 前不做论文强 claim。
+- [x] 更新 `doc/03_execution_plan.md` P4.1 状态与 pilot 结果；能力/manifest/builder tests：16 passed。
+
 ## 2026-09-23：geometry-loss sweep 续记
 
 - [x] 2026-09-23 matched V1 baseline seed29/41 已各训练 100 steps，远端 `MATCHED_V1_SEEDS_OK`；checkpoint 位于 `checkpoints/F0v2_geometry/matched_v1_seed{29,41}_s100`。

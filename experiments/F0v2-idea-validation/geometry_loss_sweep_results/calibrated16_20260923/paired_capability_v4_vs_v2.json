@@ -1,0 +1,81 @@
+{
+  "bootstrap_samples": 10000,
+  "seed": 20260923,
+  "comparisons": [
+    {
+      "baseline": "V2",
+      "candidate": "V4_KLrank",
+      "dataset": "vqa",
+      "comparison": {
+        "n": 128,
+        "baseline_score": 0.7046874999999999,
+        "candidate_score": 0.734375,
+        "delta": 0.0296875,
+        "ci95": [
+          -0.025781250000000006,
+          0.0875
+        ]
+      }
+    },
+    {
+      "baseline": "V2",
+      "candidate": "V4_KLrank",
+      "dataset": "textvqa",
+      "comparison": {
+        "n": 128,
+        "baseline_score": 0.6890625,
+        "candidate_score": 0.6875,
+        "delta": -0.0015625000000000014,
+        "ci95": [
+          -0.053125000000000006,
+          0.05078125
+        ]
+      }
+    },
+    {
+      "baseline": "V2",
+      "candidate": "V4_KLrank",
+      "dataset": "pope",
+      "comparison": {
+        "n": 384,
+        "baseline_score": 0.8463541666666666,
+        "candidate_score": 0.8463541666666666,
+        "delta": 0.0,
+        "ci95": [
+          0.0,
+          0.0
+        ]
+      }
+    },
+    {
+      "baseline": "V2",
+      "candidate": "V4_KLrank",
+      "dataset": "worldmedqa",
+      "comparison": {
+        "n": 256,
+        "baseline_score": 0.4609375,
+        "candidate_score": 0.48046875,
+        "delta": 0.01953125,
+        "ci95": [
+          -0.02734375,
+          0.06259765624999858
+        ]
+      }
+    },
+    {
+      "baseline": "V2",
+      "candidate": "V4_KLrank",
+      "dataset": "mme",
+      "comparison": {
+        "pair_count": 64,
+        "pair_accuracy_baseline": 0.703125,
+        "pair_accuracy_candidate": 0.71875,
+        "pair_accuracy_delta": 0.015625,
+        "ci95": [
+          -0.046875,
+          0.09375
+        ]
+      }
+    }
+  ]
+}

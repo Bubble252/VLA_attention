@@ -3,7 +3,7 @@ from __future__ import annotations
 
 import argparse
 import json
-import os
+import shutil
 import sys
 from collections import defaultdict
 from pathlib import Path
@@ -46,11 +46,12 @@ def make_caption_scorers(scorer_path: str | None):
     from pycocoevalcap.cider.cider import Cider
     from pycocoevalcap.rouge.rouge import Rouge
     scorers = [("Bleu", Bleu(4)), ("ROUGE_L", Rouge()), ("CIDEr", Cider())]
-    try:
-        from pycocoevalcap.meteor.meteor import Meteor
-        scorers.append(("METEOR", Meteor()))
-    except (FileNotFoundError, OSError):
-        pass
+    if shutil.which("java"):
+        try:
+            from pycocoevalcap.meteor.meteor import Meteor
+            scorers.append(("METEOR", Meteor()))
+        except (FileNotFoundError, OSError):
+            pass
     return scorers
 
 

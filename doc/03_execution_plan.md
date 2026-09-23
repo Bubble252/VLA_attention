@@ -248,6 +248,15 @@ F1-10k 方向性结果通过后，扩展加入 `OK-VQA、DocVQA、OCRBench、Inf
 
 首轮能力套件只在 `V0/V1/V3` 上先跑通，确认评测脚本与输出格式；随后补齐 `V2/V4`。正确教师、错词、错图和随机图优先在 `VQAv2、TextVQA、POPE` 小子集执行，以判断能力收益是否依赖正确语义图，而不是任意空间正则。
 
+**2026-09-23 pilot 实际进度与临时结论：**
+
+- [x] 已在同一固定 pilot ID 和解码/图像预算下完成 Qwen V0、V1、V2、V3-KL+rank、V4-KL+rank 的 COCO Captions、VQAv2、TextVQA、POPE、MME、WorldMedQA-V 六项试点；V3/V4 是 seed17、100-step 单 checkpoint，不能代表 seed 方差。
+- [x] 所有模型的 MME 已统一用 128 question rows / 64 complete pairs 的 `mme_pair` schema 补跑；首次 V0/V2 binary-schema 报告弃用，不混入比较。
+- [x] 已生成 V3-vs-V1、V4-vs-V1 及 V4-vs-V2 的 paired bootstrap；结果和解释见 `experiments/F0v2-idea-validation/geometry_loss_sweep_results/calibrated16_20260923/capability_pilot_summary.md` 与同目录 `paired_capability_*.json`。V4 相对 V2 的 VQAv2、TextVQA、POPE、MME、WorldMedQA-V 区间均未建立增益。
+- [x] Pilot 发现 V3 的 VQA/TextVQA 表现风险：V3 VQAv2 consensus 为 0.159（V1 0.702），TextVQA 为 0.367（V1 0.660）；TextVQA 原始输出有长串重复标点现象。不得把这归为几何监督成功；先审计解码输出、prompt/template、loss 训练动态和 adapter。
+- [ ] Pilot 尚非正式 Lavender benchmark 结论：VQAv2/TextVQA 使用内部 leave-one-annotator-out 近似评分；WorldMedQA-V 为 256 样本 pilot；COCO caption 缺 METEOR（101 未安装 Java）；需用官方 evaluator 和冻结完整 split 复核。
+- [ ] V3/V4 至少扩展 3 个 seed 的下游能力评估；完成正确/错词/错图/随机 teacher controls；按 V3>V1 与 V4>V2 分别报告配对置信区间及样本外一致性。
+
 **能力—几何联合判定：**
 
 | Flickr30k Entities 几何结果 | Lavender-style 能力结果 | 解释 |
@@ -262,7 +271,7 @@ WorldMedQA-V 必须保持完全未参与训练、teacher calibration 和阈值�
 **P4.1 完成条件：**
 
 - [ ] Flickr30k Entities 上完成 pointing、mass-in-box、IoU 和 intervention agreement；
-- [ ] 首轮六项能力套件在 V0--V4 上使用统一 evaluator 完成；
+- [x] 首轮六项能力 pilot 在 V0--V4 上使用统一推理/eval runner 完成（官方 full-split evaluator 复核仍未完成）；
 - [ ] 正确教师、错词、错图、随机图在至少三个能力 benchmark 小子集上完成；
 - [ ] 至少一个几何指标和一个下游能力类别在 3 个 seed 上保持方向一致；
 - [ ] 几何提升但能力下降时，停止将该配置推进到 VLA，并记录为过强约束失败。

@@ -1,0 +1,306 @@
+{
+  "bootstrap_samples": 10000,
+  "seed": 20260923,
+  "comparisons": [
+    {
+      "baseline": "V1",
+      "candidate": "V0",
+      "dataset": "vqa",
+      "comparison": {
+        "n": 128,
+        "baseline_score": 0.7015625,
+        "candidate_score": 0.2828125,
+        "delta": -0.41875,
+        "ci95": [
+          -0.5078125,
+          -0.33281249999999996
+        ]
+      }
+    },
+    {
+      "baseline": "V1",
+      "candidate": "V2",
+      "dataset": "vqa",
+      "comparison": {
+        "n": 128,
+        "baseline_score": 0.7015625,
+        "candidate_score": 0.7046874999999999,
+        "delta": 0.003125000000000001,
+        "ci95": [
+          -0.059375,
+          0.06484375
+        ]
+      }
+    },
+    {
+      "baseline": "V1",
+      "candidate": "V3_KLrank",
+      "dataset": "vqa",
+      "comparison": {
+        "n": 128,
+        "baseline_score": 0.7015625,
+        "candidate_score": 0.15859374999999998,
+        "delta": -0.54296875,
+        "ci95": [
+          -0.62501953125,
+          -0.4609375
+        ]
+      }
+    },
+    {
+      "baseline": "V1",
+      "candidate": "V4_KLrank",
+      "dataset": "vqa",
+      "comparison": {
+        "n": 128,
+        "baseline_score": 0.7015625,
+        "candidate_score": 0.734375,
+        "delta": 0.0328125,
+        "ci95": [
+          -0.02734375,
+          0.09296875000000002
+        ]
+      }
+    },
+    {
+      "baseline": "V1",
+      "candidate": "V0",
+      "dataset": "textvqa",
+      "comparison": {
+        "n": 128,
+        "baseline_score": 0.66015625,
+        "candidate_score": 0.31875,
+        "delta": -0.34140625,
+        "ci95": [
+          -0.42500000000000004,
+          -0.25859375
+        ]
+      }
+    },
+    {
+      "baseline": "V1",
+      "candidate": "V2",
+      "dataset": "textvqa",
+      "comparison": {
+        "n": 128,
+        "baseline_score": 0.66015625,
+        "candidate_score": 0.6890625,
+        "delta": 0.02890625,
+        "ci95": [
+          -0.007031249999999999,
+          0.0703125
+        ]
+      }
+    },
+    {
+      "baseline": "V1",
+      "candidate": "V3_KLrank",
+      "dataset": "textvqa",
+      "comparison": {
+        "n": 128,
+        "baseline_score": 0.66015625,
+        "candidate_score": 0.3671875,
+        "delta": -0.29296875,
+        "ci95": [
+          -0.38125,
+          -0.20390625
+        ]
+      }
+    },
+    {
+      "baseline": "V1",
+      "candidate": "V4_KLrank",
+      "dataset": "textvqa",
+      "comparison": {
+        "n": 128,
+        "baseline_score": 0.66015625,
+        "candidate_score": 0.6875,
+        "delta": 0.02734375,
+        "ci95": [
+          -0.03283203124999999,
+          0.08986328124999972
+        ]
+      }
+    },
+    {
+      "baseline": "V1",
+      "candidate": "V0",
+      "dataset": "pope",
+      "comparison": {
+        "n": 384,
+        "baseline_score": 0.8411458333333334,
+        "candidate_score": 0.8489583333333334,
+        "delta": 0.0078125,
+        "ci95": [
+          0.0,
+          0.018229166666666668
+        ]
+      }
+    },
+    {
+      "baseline": "V1",
+      "candidate": "V2",
+      "dataset": "pope",
+      "comparison": {
+        "n": 384,
+        "baseline_score": 0.8411458333333334,
+        "candidate_score": 0.8463541666666666,
+        "delta": 0.005208333333333333,
+        "ci95": [
+          -0.005208333333333333,
+          0.015625
+        ]
+      }
+    },
+    {
+      "baseline": "V1",
+      "candidate": "V3_KLrank",
+      "dataset": "pope",
+      "comparison": {
+        "n": 384,
+        "baseline_score": 0.8411458333333334,
+        "candidate_score": 0.8515625,
+        "delta": 0.010416666666666666,
+        "ci95": [
+          -0.0026041666666666665,
+          0.026041666666666668
+        ]
+      }
+    },
+    {
+      "baseline": "V1",
+      "candidate": "V4_KLrank",
+      "dataset": "pope",
+      "comparison": {
+        "n": 384,
+        "baseline_score": 0.8411458333333334,
+        "candidate_score": 0.8463541666666666,
+        "delta": 0.005208333333333333,
+        "ci95": [
+          -0.005208333333333333,
+          0.015625
+        ]
+      }
+    },
+    {
+      "baseline": "V1",
+      "candidate": "V0",
+      "dataset": "worldmedqa",
+      "comparison": {
+        "n": 256,
+        "baseline_score": 0.46875,
+        "candidate_score": 0.41796875,
+        "delta": -0.05078125,
+        "ci95": [
+          -0.09765625,
+          -0.00390625
+        ]
+      }
+    },
+    {
+      "baseline": "V1",
+      "candidate": "V2",
+      "dataset": "worldmedqa",
+      "comparison": {
+        "n": 256,
+        "baseline_score": 0.46875,
+        "candidate_score": 0.4609375,
+        "delta": -0.0078125,
+        "ci95": [
+          -0.0546875,
+          0.03515625
+        ]
+      }
+    },
+    {
+      "baseline": "V1",
+      "candidate": "V3_KLrank",
+      "dataset": "worldmedqa",
+      "comparison": {
+        "n": 256,
+        "baseline_score": 0.46875,
+        "candidate_score": 0.40625,
+        "delta": -0.0625,
+        "ci95": [
+          -0.12109375,
+          -0.00390625
+        ]
+      }
+    },
+    {
+      "baseline": "V1",
+      "candidate": "V4_KLrank",
+      "dataset": "worldmedqa",
+      "comparison": {
+        "n": 256,
+        "baseline_score": 0.46875,
+        "candidate_score": 0.48046875,
+        "delta": 0.01171875,
+        "ci95": [
+          -0.03515625,
+          0.0546875
+        ]
+      }
+    },
+    {
+      "baseline": "V1",
+      "candidate": "V0",
+      "dataset": "mme",
+      "comparison": {
+        "pair_count": 64,
+        "pair_accuracy_baseline": 0.703125,
+        "pair_accuracy_candidate": 0.703125,
+        "pair_accuracy_delta": 0.0,
+        "ci95": [
+          -0.0625,
+          0.0625
+        ]
+      }
+    },
+    {
+      "baseline": "V1",
+      "candidate": "V2",
+      "dataset": "mme",
+      "comparison": {
+        "pair_count": 64,
+        "pair_accuracy_baseline": 0.703125,
+        "pair_accuracy_candidate": 0.703125,
+        "pair_accuracy_delta": 0.0,
+        "ci95": [
+          -0.0625,
+          0.0625
+        ]
+      }
+    },
+    {
+      "baseline": "V1",
+      "candidate": "V3_KLrank",
+      "dataset": "mme",
+      "comparison": {
+        "pair_count": 64,
+        "pair_accuracy_baseline": 0.703125,
+        "pair_accuracy_candidate": 0.734375,
+        "pair_accuracy_delta": 0.03125,
+        "ci95": [
+          -0.03125,
+          0.09375
+        ]
+      }
+    },
+    {
+      "baseline": "V1",
+      "candidate": "V4_KLrank",
+      "dataset": "mme",
+      "comparison": {
+        "pair_count": 64,
+        "pair_accuracy_baseline": 0.703125,
+        "pair_accuracy_candidate": 0.71875,
+        "pair_accuracy_delta": 0.015625,
+        "ci95": [
+          -0.046875,
+          0.078125
+        ]
+      }
+    }
+  ]
+}
