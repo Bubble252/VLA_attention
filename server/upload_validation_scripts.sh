@@ -7,11 +7,14 @@ set -euo pipefail
 readonly REMOTE_HOST="${REMOTE_HOST:-vla101}"
 readonly REMOTE_ROOT="${REMOTE_ROOT:-/vepfs-mlp2/c20250405/400040/transfer/vla_attention/repo/VLA_attention}"
 readonly FILES=(
+  src/vla_attention/losses.py
   scripts/run_qwen_v3_smoke.py
   scripts/run_qwen_v4_smoke.py
+  scripts/calibrate_spatial_metrics.py
   scripts/eval_qwen_heldout.py
   scripts/eval_teacher_map_controls.py
   scripts/run_f0_heldout_all.sh
+  server/run_f0_geometry_loss_sweep.sh
 )
 
 for file in "${FILES[@]}"; do
@@ -22,7 +25,10 @@ echo "[1/3] checking SSH: $REMOTE_HOST"
 ssh "$REMOTE_HOST" "mkdir -p '$REMOTE_ROOT/scripts' && echo REMOTE_READY"
 
 echo "[2/3] uploading ${#FILES[@]} validation files"
-scp "${FILES[@]}" "$REMOTE_HOST:$REMOTE_ROOT/scripts/"
+ssh "$REMOTE_HOST" "mkdir -p '$REMOTE_ROOT/src/vla_attention' '$REMOTE_ROOT/server'"
+scp src/vla_attention/losses.py "$REMOTE_HOST:$REMOTE_ROOT/src/vla_attention/losses.py"
+scp scripts/run_qwen_v3_smoke.py scripts/run_qwen_v4_smoke.py scripts/calibrate_spatial_metrics.py scripts/eval_qwen_heldout.py scripts/eval_teacher_map_controls.py scripts/run_f0_heldout_all.sh "$REMOTE_HOST:$REMOTE_ROOT/scripts/"
+scp server/run_f0_geometry_loss_sweep.sh "$REMOTE_HOST:$REMOTE_ROOT/server/"
 
 manifest="$(mktemp)"
 trap 'rm -f "$manifest"' EXIT
@@ -30,4 +36,4 @@ sha256sum "${FILES[@]}" > "$manifest"
 scp "$manifest" "$REMOTE_HOST:$REMOTE_ROOT/scripts/.validation_scripts.sha256"
 
 echo "[3/3] verifying remote SHA256"
-ssh "$REMOTE_HOST" "cd '$REMOTE_ROOT' && sha256sum -c scripts/.validation_scripts.sha256 && chmod +x scripts/run_f0_heldout_all.sh && echo UPLOAD_VERIFY_OK"
+ssh "$REMOTE_HOST" "cd '$REMOTE_ROOT' && sha256sum -c scripts/.validation_scripts.sha256 && chmod +x scripts/run_f0_heldout_all.sh server/run_f0_geometry_loss_sweep.sh && echo UPLOAD_VERIFY_OK"
