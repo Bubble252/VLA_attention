@@ -2,6 +2,9 @@
 
 ## 2026-09-23：geometry-loss sweep 续记
 
+- [x] 2026-09-23 matched V1 baseline seed29/41 已各训练 100 steps，远端 `MATCHED_V1_SEEDS_OK`；checkpoint 位于 `checkpoints/F0v2_geometry/matched_v1_seed{29,41}_s100`。
+- [ ] 2026-09-23 101 访问恢复后的继续实验：GPU1 经 `nvidia-smi` 确认空闲（81 GiB free），F0v2 phrase teacher cache 256/256，训练 manifest SHA256=`2a37c49e…`、held-out SHA256=`7b16778e…`。正在运行严格 16×16 common-grid 的四种 semantic loss × seeds 17/29/41，每组 100 steps、λ=.1、T=1.25、rank q=.25；本地 shell session 57204，当前 KL seeds17/29 checkpoint 已保存，seed41 进程 PID 2634664 运行中。12 组完成前不将其称为完整比较结果。
+
 - [x] 远端复核确认：101 GPU1 空闲；四种 map loss 各 3 seeds 的 12 个 100-step checkpoint/训练报告已完成，held-out 评估报告已在 VEPFS 生成；原训练实际使用共同 32×32 网格。
 - [x] 独立 val calibration：20 张 `p1_qwen25_calibration_20.jsonl`，对 V3 student 在 16/32/64 网格上比较 top-k 与 soft-IoU，暂定 16×16 / q=.95；不使用 test 选参数。摘要与分辨率 caveat 见 `experiments/F0v2-idea-validation/geometry_loss_sweep_results/`。
 - [x] 几何损失比较（三 seed，64 image-disjoint held-out）：KL、KL+rank、KL+moment、JS 已完成；16×16/q=.95 calibrated IoU 均值依次为 0.2838、0.2758、0.2893、0.2812；soft-IoU 均值依次为 0.0748、0.0799、0.0790、0.0711。首轮是 32×32 训练网格，不能作为最终选择。
