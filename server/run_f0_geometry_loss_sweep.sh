@@ -7,9 +7,10 @@ readonly REMOTE_HOST="${REMOTE_HOST:-vla101}"
 readonly GPU="${CUDA_VISIBLE_DEVICES:-1}"
 readonly STEPS="${F0_GEOM_STEPS:-100}"
 readonly SEEDS="${F0_GEOM_SEEDS:-17,29,41}"
-echo "Using remote CUDA_VISIBLE_DEVICES=$GPU, steps=$STEPS, seeds=$SEEDS"
+readonly RESOLUTION="${F0_GEOM_RESOLUTION:-16}"
+echo "Using remote CUDA_VISIBLE_DEVICES=$GPU, steps=$STEPS, seeds=$SEEDS, grid=${RESOLUTION}x${RESOLUTION}"
 
-ssh "$REMOTE_HOST" "CUDA_VISIBLE_DEVICES='$GPU' F0_GEOM_STEPS='$STEPS' F0_GEOM_SEEDS='$SEEDS' bash -s" <<'REMOTE'
+ssh "$REMOTE_HOST" "CUDA_VISIBLE_DEVICES='$GPU' F0_GEOM_STEPS='$STEPS' F0_GEOM_SEEDS='$SEEDS' F0_GEOM_RESOLUTION='$RESOLUTION' bash -s" <<'REMOTE'
 set -euo pipefail
 P=/vepfs-mlp2/c20250405/400040/transfer/vla_attention
 R="$P/repo/VLA_attention"; PY="$P/envs/p1/bin/python"
@@ -21,11 +22,11 @@ for path in "$PY" "$MODEL" "$DATA" "$MANIFEST" "$CACHE" "$LORA"; do test -e "$pa
 IFS=',' read -r -a seeds <<< "$F0_GEOM_SEEDS"
 for mode in kl kl_rank kl_moment js; do
   for seed in "${seeds[@]}"; do
-    tag="geom_${mode}_seed${seed}_s${F0_GEOM_STEPS}"
+    tag="geom${F0_GEOM_RESOLUTION}_${mode}_seed${seed}_s${F0_GEOM_STEPS}"
     root="$P/checkpoints/F0v2_geometry/${tag}"; out="$P/results/F0v2_geometry/${tag}.json"
     test ! -e "$root" && test ! -e "$out" || { echo "ARTIFACT_EXISTS=$tag" >&2; exit 4; }
     mkdir -p "$P/jobs"
-    "$PY" scripts/run_qwen_v3_smoke.py --model "$MODEL" --dataset-root "$DATA" --manifest "$MANIFEST" --cache "$CACHE" --lora-config "$LORA" --output "$out" --checkpoint "$root" --max-steps "$F0_GEOM_STEPS" --seed "$seed" --lambda-sem .1 --teacher-temperature 1.25 --semantic-loss-mode "$mode" --common-resolution 32 --rank-quantile .25 --rank-margin .5 --rank-weight 1.0 --moment-weight 1.0 2>&1 | tee "$P/jobs/${tag}.log"
+    "$PY" scripts/run_qwen_v3_smoke.py --model "$MODEL" --dataset-root "$DATA" --manifest "$MANIFEST" --cache "$CACHE" --lora-config "$LORA" --output "$out" --checkpoint "$root" --max-steps "$F0_GEOM_STEPS" --seed "$seed" --lambda-sem .1 --teacher-temperature 1.25 --semantic-loss-mode "$mode" --common-resolution "$F0_GEOM_RESOLUTION" --rank-quantile .25 --rank-margin .5 --rank-weight 1.0 --moment-weight 1.0 2>&1 | tee "$P/jobs/${tag}.log"
     test -s "$root/adapter_model.safetensors"
   done
 done

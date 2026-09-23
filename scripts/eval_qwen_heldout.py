@@ -59,6 +59,48 @@ def box_iou_from_top_mass(grid, boxes, *, image_width: int, image_height: int, f
     return best
 
 
+def box_iou_from_quantile(grid, boxes, *, image_width: int, image_height: int, quantile: float) -> float:
+    import numpy as np
+    threshold = float(np.quantile(grid, quantile))
+    ys, xs = np.where(grid >= threshold)
+    if len(xs) == 0:
+        return box_iou_from_top_mass(grid, boxes, image_width=image_width, image_height=image_height)
+    pred = (float(xs.min()) * image_width / grid.shape[1], float(ys.min()) * image_height / grid.shape[0],
+            float(xs.max() + 1) * image_width / grid.shape[1], float(ys.max() + 1) * image_height / grid.shape[0])
+    best = 0.0
+    for box in boxes:
+        l, t, r, b = map(float, box)
+        il, it, ir, ib = max(pred[0], l), max(pred[1], t), min(pred[2], r), min(pred[3], b)
+        inter = max(0.0, ir-il) * max(0.0, ib-it)
+        union = (pred[2]-pred[0])*(pred[3]-pred[1]) + (r-l)*(b-t) - inter
+        best = max(best, inter / union if union > 0 else 0.0)
+    return best
+
+
+def soft_iou_from_map(grid, boxes, *, image_width: int, image_height: int) -> float:
+    import numpy as np
+    yy, xx = np.mgrid[0:grid.shape[0], 0:grid.shape[1]]
+    px = (xx + .5) * image_width / grid.shape[1]
+    py = (yy + .5) * image_height / grid.shape[0]
+    target = np.zeros_like(grid, dtype=bool)
+    for l, t, r, b in boxes:
+        target |= (px >= l) & (px <= r) & (py >= t) & (py <= b)
+    soft = (grid - grid.min()) / max(float(grid.max()-grid.min()), 1e-12)
+    return float(np.minimum(soft, target).sum() / max(np.maximum(soft, target).sum(), 1e-12))
+
+
+def resize_map(grid, height: int, width: int):
+    import numpy as np
+    arr = np.asarray(grid, dtype=np.float64)
+    sy = np.linspace(0, arr.shape[0] - 1, height); sx = np.linspace(0, arr.shape[1] - 1, width)
+    y0 = np.floor(sy).astype(int); y1 = np.minimum(y0 + 1, arr.shape[0] - 1)
+    x0 = np.floor(sx).astype(int); x1 = np.minimum(x0 + 1, arr.shape[1] - 1)
+    wy = sy - y0; wx = sx - x0
+    top = (1-wx)[None, :] * arr[y0[:, None], x0[None, :]] + wx[None, :] * arr[y0[:, None], x1[None, :]]
+    bottom = (1-wx)[None, :] * arr[y1[:, None], x0[None, :]] + wx[None, :] * arr[y1[:, None], x1[None, :]]
+    return (1-wy)[:, None] * top + wy[:, None] * bottom
+
+
 def main() -> int:
     import numpy as np
     import torch
@@ -75,6 +117,10 @@ def main() -> int:
     p.add_argument("--checkpoint", type=Path, default=None)
     p.add_argument("--model-id", required=True)
     p.add_argument("--seed", type=int, default=23)
+    p.add_argument("--common-resolution", type=int, default=16)
+    p.add_argument("--top-fractions", default="0.1,0.2,0.3,0.4")
+    p.add_argument("--threshold-quantiles", default="0.5,0.7,0.8,0.9,0.95")
+    p.add_argument("--selected-threshold-quantile", type=float, default=0.95)
     a = p.parse_args()
 
     torch.manual_seed(a.seed)
@@ -158,11 +204,26 @@ def main() -> int:
             with Image.open(image_path) as im:
                 iw, ih = im.size
             boxes = sample["boxes_xyxy"]
+            fractions = [float(x) for x in a.top_fractions.split(",")]
+            quantiles = [float(x) for x in a.threshold_quantiles.split(",")]
+            common = np.maximum(resize_map(grid, a.common_resolution, a.common_resolution), 0.0)
+            common = common / max(float(common.sum()), 1e-12)
             metrics = {
                 "pointing": bool(pointing_correct(grid, boxes, image_width=iw, image_height=ih)),
                 "mass_in_box": float(mass_in_boxes(grid, boxes, image_width=iw, image_height=ih)),
                 "top20_box_iou": float(box_iou_from_top_mass(grid, boxes, image_width=iw, image_height=ih)),
+                "common_resolution": [a.common_resolution, a.common_resolution],
+                "common_soft_iou": soft_iou_from_map(common, boxes, image_width=iw, image_height=ih),
+                "common_mass_in_box": float(mass_in_boxes(common, boxes, image_width=iw, image_height=ih)),
             }
+            for fraction in fractions:
+                key = int(round(fraction * 100))
+                metrics[f"common_box_iou_top{key}"] = box_iou_from_top_mass(common, boxes, image_width=iw, image_height=ih, fraction=fraction)
+            for quantile in quantiles:
+                key = int(round(quantile * 100))
+                metrics[f"common_box_iou_q{key}"] = box_iou_from_quantile(common, boxes, image_width=iw, image_height=ih, quantile=quantile)
+            selected_key = f"common_box_iou_q{int(round(a.selected_threshold_quantile*100))}"
+            metrics["calibrated_box_iou"] = metrics[selected_key]
             map_path = maps_dir / f"{sample['sample_id'].replace(':', '_')}.npy"
             np.save(map_path, grid.astype(np.float32))
             rows.append({"sample_id": sample["sample_id"], "image_id": sample.get("image_id"), "phrase": phrase,
@@ -178,6 +239,10 @@ def main() -> int:
         "mass_in_box": float(np.mean([r["metrics"]["mass_in_box"] for r in rows])),
         "top20_box_iou": float(np.mean([r["metrics"]["top20_box_iou"] for r in rows])),
     }
+    for key in rows[0]["metrics"]:
+        if key.startswith("common_") or key == "calibrated_box_iou":
+            if isinstance(rows[0]["metrics"][key], (float, int)):
+                summary[key] = float(np.mean([r["metrics"][key] for r in rows]))
     a.output.mkdir(parents=True, exist_ok=True)
     (a.output / "report.json").write_text(json.dumps({"summary": summary, "rows": rows}, indent=2) + "\n")
     print(json.dumps(summary, indent=2))
