@@ -1,6 +1,6 @@
 {
   "schema": "vla-attention/p4-capability-eval/v1",
-  "status": "protocol_frozen_execution_pending",
+  "status": "protocol_runner_and_manifest_validator_defined_execution_pending_data_manifests",
   "purpose": "Measure Lavender-style downstream VLM capability changes separately from region-map geometry.",
   "student": {
     "model": "Qwen2.5-VL-7B-Instruct",
@@ -25,15 +25,19 @@
     "held_out_from_training_and_teacher_calibration": true
   },
   "pilot_benchmarks": [
-    {"name": "COCO Captions", "split": "official validation/test split with references", "metrics": ["CIDEr", "BLEU-4", "METEOR", "ROUGE-L"], "category": "caption"},
-    {"name": "VQAv2", "split": "validation", "metrics": ["official VQA accuracy"], "category": "general_vqa"},
-    {"name": "TextVQA", "split": "validation", "metrics": ["official TextVQA accuracy"], "category": "fine_grained_ocr"},
-    {"name": "POPE", "split": "official evaluation split", "metrics": ["accuracy", "F1"], "category": "hallucination"},
-    {"name": "MME", "split": "official evaluation split", "metrics": ["official perception and cognition scores"], "category": "broad_perception"},
-    {"name": "WorldMedQA-V", "split": "official held-out split", "metrics": ["accuracy overall", "accuracy by language", "accuracy by question type"], "category": "ood"}
+    {"name": "COCO Captions", "split": "official validation split with references", "manifest": "experiment_workspace/manifests/capability/coco_captions_val.jsonl", "source_revision": "TO_FREEZE_BEFORE_RUN", "metrics": ["CIDEr", "BLEU-1", "BLEU-2", "BLEU-3", "BLEU-4", "METEOR", "ROUGE-L"], "category": "caption"},
+    {"name": "VQAv2", "split": "validation", "manifest": "experiment_workspace/manifests/capability/vqav2_val.jsonl", "source_revision": "TO_FREEZE_BEFORE_RUN", "metrics": ["official VQA consensus accuracy"], "category": "general_vqa"},
+    {"name": "TextVQA", "split": "validation", "manifest": "experiment_workspace/manifests/capability/textvqa_val.jsonl", "source_revision": "TO_FREEZE_BEFORE_RUN", "metrics": ["official TextVQA normalized accuracy"], "category": "fine_grained_ocr"},
+    {"name": "POPE", "split": "official evaluation split", "manifest": "experiment_workspace/manifests/capability/pope.jsonl", "source_revision": "TO_FREEZE_BEFORE_RUN", "metrics": ["accuracy", "precision", "recall", "F1", "results by adversarial/popular/random subset"], "category": "hallucination"},
+    {"name": "MME", "split": "official evaluation split", "manifest": "experiment_workspace/manifests/capability/mme.jsonl", "source_revision": "TO_FREEZE_BEFORE_RUN", "metrics": ["official paired perception and cognition scores"], "category": "broad_perception"},
+    {"name": "WorldMedQA-V", "split": "official held-out split", "manifest": "experiment_workspace/manifests/capability/worldmedqa_v.jsonl", "source_revision": "TO_FREEZE_BEFORE_RUN", "metrics": ["accuracy overall", "accuracy by language", "accuracy by question type"], "category": "ood"}
   ],
   "comparisons": ["V3 - V1", "V4 - V2", "V1 - V0", "V2 - V1"],
   "report_fields": ["absolute_score", "paired_absolute_delta", "relative_delta_percent", "bootstrap_ci95", "latency", "peak_memory", "prompt_hash", "dataset_revision", "evaluator_revision"],
-  "execution_gate": "Run after the 16x16 geometry-loss sweep and matched V1 baseline pass. First smoke each evaluator on a tiny fixed subset, then run the exact same subset for every checkpoint; only afterward scale to the full official split.",
-  "limitations": ["This is not a full reproduction of Lavender's 20-benchmark evaluation.", "Model pretraining overlap cannot generally be ruled out; audit and disclose fine-tuning data overlap.", "Capability scores do not substitute for phrase-region grounding metrics."]
+  "inference": {"do_sample": false, "processor_use_fast": false, "max_new_tokens": 64, "same_prompt_per_item_across_checkpoints": true},
+  "runner": "scripts/eval_capability_suite.py",
+  "manifest_validator": "scripts/validate_capability_manifest.py",
+  "manifest_schema": "experiments/P4-vlm-v0-v4/capability_manifest_schema.md",
+  "execution_gate": "Run after the calibrated 16x16 geometry-loss sweep, matched V1 baseline and paired-bootstrap audit. Smoke every evaluator on the same tiny fixed IDs for every checkpoint, then run the same full official split for every checkpoint.",
+  "limitations": ["This is not a full reproduction of Lavender's 20-benchmark evaluation.", "Runner uses the VQA leave-one-annotator-out consensus formula but generic answer normalization; final scores require official scorers.", "MME and task-specific answer normalization require official scoring adapters before final claims.", "Model pretraining overlap cannot generally be ruled out; audit and disclose fine-tuning data overlap.", "Capability scores do not substitute for phrase-region grounding metrics."]
 }

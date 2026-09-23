@@ -9,6 +9,8 @@
 - [ ] 必须先完整读取 V1/V2 JSON 并计算 paired bootstrap；随后按冻结 16×16 重跑四个 loss × seeds 17/29/41，再评估 matched V1/V2。
 - [ ] Lavender-style 六项下游能力评测尚未开始；按计划在几何候选选择和 matched baseline 统计审计后运行 V0–V4 paired pilot：COCO Captions、VQAv2、TextVQA、POPE、MME、WorldMedQA-V。
 - [ ] 远端审批服务当前对部分 SSH 只读请求返回 502；未因审批超时而假设命令执行成功，也未重复启动任何训练/评测 job。
+- [x] Lavender-style capability runner 已本地实现：`scripts/eval_capability_suite.py` 统一 Qwen V0–V4 greedy inference，保留逐样本预测并支持 caption/VQA/POPE/多选/MME-pair task schema；`scripts/validate_capability_manifest.py` 校验官方 ID、字段、图像存在性并生成 split/revision、manifest SHA256 与有序 ID/prompt SHA256 sidecar。VQA 共识改为 leave-one-annotator-out 公式，但答案规范化仍非官方实现。`tests/test_capability_eval.py` 与 `tests/test_capability_manifest.py` 本地 6 项测试全部通过；实现就绪不表示六项 benchmark 数据已准备或结果已运行。
+- [ ] 2026-09-23 远端只读连通性重试：`ssh vla101 'echo SSH_OK'` 的沙盒外审批被自动审批服务拒绝，返回 upstream `502 Bad Gateway`。未尝试其他通道；geometry loss 16×16 matched-grid 重跑与能力评测数据准备仍不能在本地记录为完成。
 
 本记录与 `doc/03_execution_plan.md` 的 P1 章节保持一致；这里保留实际运行环境和产物路径，避免把服务器状态混入论文叙事。
 
