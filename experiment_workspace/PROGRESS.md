@@ -508,6 +508,8 @@ PYTHONPATH=src python scripts/validate_p1_report.py \
 - [x] 修正启动环境为 `PYTHONPATH=$R:$R/src` 后重新启动同一 cache 路径：`PID=340521`，日志 `/vepfs-mlp2/c20250405/400040/transfer/vla_attention/jobs/F1_calibration_sd1_5_1000_seed23.log`，当前 job 运行中，首个 pipeline 已成功加载并进入处理。
 - [ ] calibration job 完成前不选择 teacher、不生成 10k train cache、不启动正式 V0–V4 长训练；每个 10/25/50/75/100% 节点回收文件数、失败清单和指标。
 - [x] 新增并上传受保护的 `server/run_f1_vlm_v0_v4.sh`：验证冻结 teacher config、10000 条 manifest、10000 个无失败 train cache 后，按 seed 17/29/41 顺序运行 V1→V2→V3→V4，拒绝覆盖已有 artifact；当前仅完成脚本语法和远端上传验证，未启动正式训练。
+- [x] 发现原 `run_sd_cache.py` 每个样本重新加载 45 GB SD pipeline，导致 calibration 速度不可接受；停止无效 PID `340521` 并新增 `scripts/run_sd_nulltext_batch.py`，单进程复用 pipeline、逐样本写 `progress.json`、保留已有有效 map、记录失败样本。
+- [x] batch driver 已上传 101，PID `353111` 正在同一 calibration cache 继续运行；当前 progress artifact 为 `24→27/1000`，失败 `0`。该 job 不训练学生模型。
 
 ## 2026-09-27：VLA 代码包上传验证完成，P1 依赖审计
 
