@@ -510,6 +510,8 @@ PYTHONPATH=src python scripts/validate_p1_report.py \
 - [x] 新增并上传受保护的 `server/run_f1_vlm_v0_v4.sh`：验证冻结 teacher config、10000 条 manifest、10000 个无失败 train cache 后，按 seed 17/29/41 顺序运行 V1→V2→V3→V4，拒绝覆盖已有 artifact；当前仅完成脚本语法和远端上传验证，未启动正式训练。
 - [x] 发现原 `run_sd_cache.py` 每个样本重新加载 45 GB SD pipeline，导致 calibration 速度不可接受；停止无效 PID `340521` 并新增 `scripts/run_sd_nulltext_batch.py`，单进程复用 pipeline、逐样本写 `progress.json`、保留已有有效 map、记录失败样本。
 - [x] batch driver 已上传 101，PID `353111` 正在同一 calibration cache 继续运行；当前 progress artifact 为 `24→27/1000`，失败 `0`。该 job 不训练学生模型。
+- [x] 进一步确认单卡速度仍约 30 秒/样本；停止单卡 PID `353111`，将固定 1000 行 manifest 按偶/奇行拆为两个各 500 行的 disjoint split，在 GPU0/GPU1 以 PID `357038/357039` 并行运行同一 batch driver。两部分当前均运行中、各完成 `5/500`、失败 `0`；完成后合并到正式 calibration cache 并验证全量 sample ID 覆盖与无重复。
+- [x] 新增 `experiments/P2-teacher-calibration/candidate_status_20260928.json`：明确 PixArt-alpha/ sigma/ Playground 权重虽存在，但当前没有经过真实图像 inversion、phrase-token map 和等价指标验收的 adapter；按 protocol 记录为 adapter-missing，若在正式 freeze 前仍无 adapter，则使用明确标注的 SD1.5 fallback，不声称四候选 best-single。
 
 ## 2026-09-27：VLA 代码包上传验证完成，P1 依赖审计
 

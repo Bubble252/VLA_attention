@@ -1,0 +1,24 @@
+{
+  "calibration_manifest": "experiment_workspace/manifests/flickr30k_entities/teacher_calibration_val_1000.jsonl",
+  "status": "running_sd_fallback_calibration",
+  "candidates": {
+    "sd1_5": {
+      "status": "running",
+      "reason": "formal FP32 null-text real-image phrase-map extractor exists and has passed single-image/10-image engineering checks",
+      "cache": "teacher_maps/F1_calibration_sd1_5_nulltext_phrase_1000_seed23"
+    },
+    "pixart_alpha_xl": {
+      "status": "adapter_missing",
+      "reason": "weights are present, but no validated real-image inversion and phrase-token cross-attention extractor equivalent to the SD runner is implemented"
+    },
+    "pixart_sigma_xl": {
+      "status": "adapter_missing",
+      "reason": "weights are present, but no validated real-image inversion and phrase-token cross-attention extractor equivalent to the SD runner is implemented"
+    },
+    "playground_v2_5": {
+      "status": "adapter_missing",
+      "reason": "weights are present, but no validated real-image inversion and phrase-token cross-attention extractor equivalent to the SD runner is implemented"
+    }
+  },
+  "fallback_rule": "If no non-SD candidate has a validated equivalent extractor before formal training freeze, SD1.5 is frozen as an explicitly reported fallback; no claim of best-single across four candidates is made."
+}
