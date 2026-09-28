@@ -636,3 +636,14 @@ PYTHONPATH=src python scripts/validate_p1_report.py \
 - [x] 隔离robosuite1.4.1默认OSC_POSE配置静态核验：输入[-1,1]经clip映射平移±0.05、旋转±0.5，control_delta=true。该事实不等于实际rollout controller已核验；正式P1仍需记录运行时config，不把normalized action直接命名为米/弧度。
 - [ ] 镜像恢复PID657946活跃，OpenVLA第1分片已约3.67/6.95GB；其余文件仍需下载/全hash检查。下载阻塞尚可推进，未满足goal blocked条件。
 - [ ] B0、真实P1、VLM正式训练未启动；缓存任务仅证明工程产出，不证明teacher质量或方法有效。原目标仍保持active。
+
+
+## 2026-09-28：CPU真实LIBERO环境与更严格cache验收通过
+
+- [x] 新goal文件已重读；上轮属进展。原cache队列与workers保持原样，无重启；一次SSH握手关闭后重查成功，没有把观测失败当job退出。
+- [x] 实际CPU OSMesa环境创建首次失败：robosuite1.4.1搭配自动安装的MuJoCo3.14.0，joint qpos索引断言。仅独立OFT环境降至mujoco2.3.7，pip check通过，安装脚本增加pin；共享VLM环境未改动。
+- [x] `probe_libero_cpu_environment.py`实测task0+init0 reset/set_init_state/两步dummy动作成功，两相机[256,256,3]、控制20Hz、action_dim7、CUDA未初始化。runtime OSC_POSE input±1映射output平移±0.05/旋转±0.5，control_delta=true；证据 `audits/cpu_environment_mujoco237.json`。这是环境接口成功，不是B0 learned rollout成功。
+- [x] cache validator加强：manifest SHA、CFG/grid、数值backend、seed/extractor SHA一致性、instruction hash、episode/timestep/camera/role来源、teacher revision；拒绝空manifest及同cache混recipe。6项CPU测试通过；16/16 semantic smoke在更严格校验下仍通过，报告 `audits/cache_v3/semantic_smoke_v3_strict_audit.json`。
+- [x] 校验器更新已上传，运行中的生产者未改动；后台队列结束时使用加强版进行逐cache验收。环境完整freeze保存 `audits/pip_freeze_renderer_verified.txt`。
+- [ ] 镜像恢复PID657946仍活跃，base第1权重片约5.80/6.95GB；LIBERO semantic全量目前18/10080、失败0，仍需等待并保留全量校验，不重复启动。其他新版Flickr shard仍活跃。
+- [ ] 尚缺完整模型权重、GPU真实P1/B0/恢复/官方policy rollout及原VLM全量目标；未标完成。

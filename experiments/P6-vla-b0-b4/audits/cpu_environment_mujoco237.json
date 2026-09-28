@@ -1,0 +1,73 @@
+{
+  "purpose": "environment/controller only; not B0 or learned rollout",
+  "mujoco_version": "2.3.7",
+  "ok": true,
+  "task": "pick_up_the_black_bowl_between_the_plate_and_the_ramekin_and_place_it_on_the_plate",
+  "camera_shapes": {
+    "agentview_image": [
+      256,
+      256,
+      3
+    ],
+    "robot0_eye_in_hand_image": [
+      256,
+      256,
+      3
+    ]
+  },
+  "control_freq": 20,
+  "action_dim": 7,
+  "reward": 0.0,
+  "done": false,
+  "controller_type": "OperationalSpaceController",
+  "control_delta": true,
+  "input_min": [
+    -1.0,
+    -1.0,
+    -1.0,
+    -1.0,
+    -1.0,
+    -1.0
+  ],
+  "input_max": [
+    1.0,
+    1.0,
+    1.0,
+    1.0,
+    1.0,
+    1.0
+  ],
+  "output_min": [
+    -0.05,
+    -0.05,
+    -0.05,
+    -0.5,
+    -0.5,
+    -0.5
+  ],
+  "output_max": [
+    0.05,
+    0.05,
+    0.05,
+    0.5,
+    0.5,
+    0.5
+  ],
+  "scaled_zero": [
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0
+  ],
+  "scaled_unit": [
+    0.05,
+    0.05,
+    0.05,
+    0.5,
+    0.5,
+    0.5
+  ],
+  "cuda_initialized": false
+}
