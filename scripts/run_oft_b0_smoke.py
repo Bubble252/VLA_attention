@@ -33,6 +33,7 @@ def main():
     p.add_argument('--steps',type=int,default=30)
     p.add_argument('--seed',type=int,default=17)
     p.add_argument('--restore',type=Path)
+    p.add_argument('--p1-report',type=Path)
     a=p.parse_args()
     if not 20<=a.steps<=50:raise ValueError('B0 smoke limited to 20–50 steps')
     if a.output.exists():raise FileExistsError(a.output)
@@ -44,12 +45,10 @@ def main():
     # The artifact alone is insufficient: reject any existing GPU compute job.
     running=subprocess.check_output(['nvidia-smi','--query-compute-apps=pid','--format=csv,noheader'],text=True).strip()
     if running:raise RuntimeError('GPU compute processes still present; do not start smoke')
-    lock=json.loads(a.source_lock.read_text())
-    source=next(e for e in lock['entries'] if e['role']=='training_initialization')
-    for item in source['files']:
-        f=a.model/item['path']
-        if not f.is_file():raise FileNotFoundError(f)
-        if item.get('sha256') and sha(f)!=item['sha256']:raise ValueError(f'Weight SHA mismatch: {f}')
+    from vla_attention.oft_preflight import verify_snapshot,require_p1
+    source=verify_snapshot(a.model,a.source_lock)
+    if a.p1_report is None:raise ValueError('A real passing P1 report is required')
+    require_p1(a.p1_report,source['revision'],sha(a.train_manifest),sha(a.statistics))
     train_ids={json.loads(x)['episode_id'] for x in a.train_manifest.read_text().splitlines()}
     eval_ids={json.loads(x)['episode_id'] for x in a.eval_manifest.read_text().splitlines()}
     if train_ids & eval_ids:raise ValueError('Train/eval episodes overlap')
@@ -89,7 +88,8 @@ def main():
     metadata={'model_revision':source['revision'],'train_manifest_sha256':sha(a.train_manifest),
               'eval_manifest_sha256':sha(a.eval_manifest),'statistics_sha256':sha(a.statistics),
               'seed':a.seed,'steps':a.steps,'action_loss':'L1','chunk':8,'attention':'official_fork_sdpa_bidirectional',
-              'augmentation':False,'purpose':'B0 engineering smoke, not official full recipe'}
+              'augmentation':False,'p1_report_sha256':sha(a.p1_report),
+              'purpose':'B0 engineering smoke, not official full recipe'}
     if json.loads(a.statistics.read_text())['provenance']['train_manifest_sha256'] != metadata['train_manifest_sha256']:
         raise ValueError('Normalization stats were not generated from this training split')
     a.output.mkdir(parents=True)
@@ -146,6 +146,7 @@ def main():
         norm=torch.nn.utils.clip_grad_norm_(params,1.,error_if_nonfinite=True)
         optimizer.step();scheduler.step()
         record={'step':step+1,'action_l1':float(out['loss'].detach()),'grad_norm':float(norm),
+                'finite_loss':bool(torch.isfinite(out['loss'])),'finite_gradients':bool(torch.isfinite(norm)),
                 'lr':scheduler.get_last_lr()[0],'seconds':time.time()-started,
                 'peak_memory_bytes':torch.cuda.max_memory_allocated(),
                 'episode_id':batch['episode_ids'][0],'timestep':batch['timesteps'][0]}

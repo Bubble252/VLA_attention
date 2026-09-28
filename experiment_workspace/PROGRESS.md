@@ -626,3 +626,13 @@ PYTHONPATH=src python scripts/validate_p1_report.py \
 - [ ] SAEB只准备输入，冻结VLM/标量/层未定；完整原VLM训练目标保留，9952仅先前10k交集，不能冒充完整train。
 
 - [x] 续记：LIBERO semantic smoke已16/16、失败0，逐条验收通过；报告 `audits/cache_v3/semantic_smoke_v3_audit.json`。后台队列已放行LIBERO全量10080语义图及Flickr新版四分片9952图；真实PID从 `vla_workspace/artifacts/semantic_train_task0_v3.pid` 与新Flickr根目录 `worker_pids.txt` 读取，禁止重复启动。正式VLM训练仍不启动。
+
+
+## 2026-09-28：真实P1检查入口及动作控制器静态核验
+
+- [x] 新goal原文已读取，上轮属实际进展。本轮验证cache队列及5个worker均存活、map持续增长且failure0；不重启。
+- [x] 新增 `run_oft_p1_interface.py`：加载已校验base snapshot+原生OFT头，检查8×7输出、原生L1、视觉梯度finite/nonzero、两相机真实patch_embed.grid_size/provenance、重复前向、归一化往返与head/proprio保存恢复。仅写好入口、py_compile通过，尚未执行7B GPU验证；不能当P1已完成。
+- [x] 新增 `oft_preflight.py`：同时校验权重SHA及processor/config等Git blob hash，B0要求真实passed P1且model/train/stats SHA相同。CPU测试2 passed覆盖配置篡改和P1缺项；与launch guard/range测试合计5 passed。
+- [x] 隔离robosuite1.4.1默认OSC_POSE配置静态核验：输入[-1,1]经clip映射平移±0.05、旋转±0.5，control_delta=true。该事实不等于实际rollout controller已核验；正式P1仍需记录运行时config，不把normalized action直接命名为米/弧度。
+- [ ] 镜像恢复PID657946活跃，OpenVLA第1分片已约3.67/6.95GB；其余文件仍需下载/全hash检查。下载阻塞尚可推进，未满足goal blocked条件。
+- [ ] B0、真实P1、VLM正式训练未启动；缓存任务仅证明工程产出，不证明teacher质量或方法有效。原目标仍保持active。
