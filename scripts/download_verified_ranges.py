@@ -76,12 +76,13 @@ def main():
     p.add_argument('--root',type=Path,required=True)
     p.add_argument('--repo',required=True)
     p.add_argument('--filename',required=True)
+    p.add_argument('--endpoint',default='https://huggingface.co')
     a=p.parse_args()
     e=next(x for x in json.loads(a.source_lock.read_text())['entries'] if x['repo']==a.repo)
     f=next(x for x in e['files'] if x['path']==a.filename)
     if not f.get('sha256') or not f.get('size'):raise ValueError('Range mode requires upstream size/SHA256')
     prefix='datasets/' if e['repo_type']=='dataset' else ''
-    url=f"https://huggingface.co/{prefix}{e['repo']}/resolve/{e['revision']}/{f['path']}"
+    url=f"{a.endpoint.rstrip('/')}/{prefix}{e['repo']}/resolve/{e['revision']}/{f['path']}"
     target=a.root/('data' if prefix else 'models')/a.repo.replace('/','--')/a.filename
     download(url,target,f['size'],f['sha256'])
 

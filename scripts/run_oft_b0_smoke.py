@@ -4,6 +4,7 @@ Requires an explicit resource-window artifact; never auto-launches alongside
 cache workers. No teacher, SAEB or auxiliary loss is used.
 """
 import argparse
+import os
 import hashlib
 import json
 import random
@@ -20,6 +21,7 @@ def sha(path):
 
 
 def main():
+    os.environ.setdefault('CUBLAS_WORKSPACE_CONFIG',':4096:8')
     p=argparse.ArgumentParser()
     p.add_argument('--model',type=Path,required=True)
     p.add_argument('--source-lock',type=Path,required=True)
@@ -60,6 +62,11 @@ def main():
     from prismatic.models.projectors import ProprioProjector
     from vla_attention.benchmarks.oft_rlds import EpisodeDataset
     from vla_attention.adapters.oft_forward import forward_l1
+    from vla_attention.resume_probe import optimizer_probe
+    torch.use_deterministic_algorithms(True)
+    torch.backends.cuda.matmul.allow_tf32=False
+    torch.backends.cudnn.allow_tf32=False
+    torch.backends.cudnn.benchmark=False
     random.seed(a.seed);np.random.seed(a.seed);torch.manual_seed(a.seed);torch.cuda.manual_seed_all(a.seed)
     # Native OFT classes use pinned external code, not mutable HF custom-code copying.
     config=OpenVLAConfig.from_pretrained(a.model,local_files_only=True)
@@ -119,6 +126,17 @@ def main():
         (a.output/'restore_report.json').write_text(json.dumps({'max_prediction_error':max_error,
                 'optimizer_state_entries':len(optimizer.state),'scheduler_state':scheduler.state_dict(),
                 'saved_step':state['step'],'restored':True,'eval_predictions':actual},indent=2)+'\n')
+        # Reset RNG after evaluation; match the uninterrupted continuation from
+        # the saved state, including optimizer/scheduler and data cursor.
+        torch.set_rng_state(state['torch_rng']);torch.cuda.set_rng_state_all(state['cuda_rng'])
+        random.setstate(state['python_rng']);np.random.set_state(state['numpy_rng'])
+        item=state['order'][state['step']%len(state['order'])]
+        batch=train.collate([train[item]])
+        probe=optimizer_probe([('policy',policy),('head',head),('proprio',proprio)],optimizer,scheduler,
+                              lambda:forward(batch)['loss'])
+        expected_probe=json.loads((a.restore/'continuation_reference.json').read_text())
+        if probe!=expected_probe:raise ValueError('Optimizer continuation differs after restore')
+        (a.output/'continuation_report.json').write_text(json.dumps({'passed':True,'probe':probe},indent=2)+'\n')
         return
     order=list(range(len(train)));random.Random(a.seed).shuffle(order)
     for m in [policy,head,proprio]:m.train()
@@ -143,6 +161,12 @@ def main():
     torch.save(state,a.output/'state.pt.tmp');(a.output/'state.pt.tmp').replace(a.output/'state.pt')
     (a.output/'offline_eval.json').write_text(json.dumps(measured,indent=2)+'\n')
     (a.output/'state.sha256').write_text(sha(a.output/'state.pt')+'\n')
+    # Diagnostic step is performed only after saving the exact smoke state.
+    # It is never saved as the trained checkpoint or included in training curves.
+    item=order[a.steps%len(order)];batch=train.collate([train[item]])
+    probe=optimizer_probe([('policy',policy),('head',head),('proprio',proprio)],optimizer,scheduler,
+                          lambda:forward(batch)['loss'])
+    (a.output/'continuation_reference.json').write_text(json.dumps(probe,indent=2)+'\n')
     print('B0_TRAIN_FINISHED_RESTORE_AND_ROLLOUT_PENDING',flush=True)
 
 

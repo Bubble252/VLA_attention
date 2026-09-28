@@ -588,6 +588,19 @@ PYTHONPATH=src python scripts/validate_p1_report.py \
 - [x] 新增 `download_verified_ranges.py`，对每段验证HTTP206/Content-Range/长度，确认后才追加并fsync，末尾核对完整SHA；测试2 passed涵盖中断续传、来源变化和hash错误。独立base shard3尝试PID624212已因TLS异常退出，保留已取得8MiB，不把失败或部分内容标成功。原下载PID600493仍活跃，已推进至C-RADIO元数据；大权重仍不完整。
 - [ ] 需要：稳定下载全部权重、GPU窗口真实P1/梯度/优化器恢复/rollout；修复VLM缓存抽取后等价验证和完整train范围仍是原goal必做。本轮仅完成CPU和脚本工作，未完成B0。
 
+## 2026-09-28：修正版 cache 队列、LIBERO semantic smoke 与权重恢复
+
+- [x] 读取新 goal defca5b1；按授权停止旧混合阶段 Flickr PID 并保留产物；旧目录不进入训练。
+- [x] 修正版两样本 parity：确定性 FP32/math-SDPA/TF32-off/CUBLAS 配置下 max error 均 `0.0`、attention tensors=100；报告远端 `results/cache_v3_gate/deterministic_parity.json`，未放宽阈值。
+- [x] LIBERO cache input 导出完成：27 train episodes、5040 双相机帧、10080 source/target records；不含 validation/offline_eval/rollout。
+- [x] C-RADIOv3-L smoke 和全量 feature cache 完成：5040/5040，shape `[256,1024]`、failure=0、逐条 SHA/finite/grid 审计通过，content digest `f03a23c...`。
+- [x] LIBERO semantic smoke 完成 16/16、failure=0、metadata/map SHA 审计通过；后台队列 PID `651953` 已放行全量 semantic cache 和新版本 Flickr cache，不启动学生训练。
+- [x] 新增 typed cache validator、atomic stage-aware SD writer、strict cache queue；新增三类 cache 与 Plus evaluation-only 边界。
+- [x] OFT CPU 环境、432 episodes inventory、Spatial task0 45 episodes split `27/9/9`、train-only stats、官方 L1/8x7/SDPA contracts、CPU native batch、官方 evaluator import 和 B0 guard 完成；不等于真实 P1/B0。
+- [x] 新增 B0 continuation probe：恢复 optimizer/scheduler/RNG 后要求下一步参数 digest 一致，缺 optimizer state 必须失败；新增官方 rollout wrapper，失败/环境异常不伪装成 success。
+- [ ] OpenVLA base/OFT weights 仍受 HF TLS 断连影响；普通 downloader 有多个 partial，已启动 mirror range recovery PID `657946`，按 upstream size/SHA 分块续传，完整 source-lock 校验前不加载模型。
+- [ ] 当前两张 GPU 由修正版 Flickr四分片（PID653277/653278/653279/653280）和LIBERO语义缓存（PID653275）使用；旧Flickr批次已停止。C-RADIO全量完成，LIBERO全量semantic仍在生成；B0须等GPU独占、相关cache gate及OpenVLA权重校验通过。
+
 
 ## 2026-09-28：用户授权修正VLM cache并优先生成VLA cache
 
