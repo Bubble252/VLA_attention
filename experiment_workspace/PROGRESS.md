@@ -666,3 +666,13 @@ PYTHONPATH=src python scripts/validate_p1_report.py \
 - [x] 本地相关测试 `21 passed, 1 skipped`（本机缺 PEFT）；101 独立 OFT 环境 CPU `7 passed`，其中真实 PEFT 0.11.1 BF16 LoRA save/load 后预测完全相等、AdamW 下一步参数 digest 相等。该小模型 CPU 证据不能替代 7B 新进程 GPU restore。
 - [x] 改动上传 101 后对应文件 SHA 一致；补充飞书定向同步入口 --vla-progress-only，仅同步 P6 协议、准备文档与 PROGRESS。同步是否成功以实际云端读回为准。
 - [ ] 真实 P1/B0/restore/rollout 尚待独占 GPU；新缓存继续运行，完整目标未完成。Git 仅提交本轮实现/测试/进度和同步入口，不包含权重/cache/环境。
+
+## 2026-09-28：最新远端状态与 GPU 自动衔接入口
+
+- [x] 21:50（上海时间）通过 `vla101` 只读复核：queue PID `651953`、semantic PID `653275`、Flickr workers `653277–653280` 和权重恢复 PID `657946` 均仍运行；未重启任何任务。
+- [x] 修正版 SD cache 最新计数：LIBERO semantic `89/10080`、failure `0`；Flickr 四 shard 分别 `89/2488`、`135/2488`、`89/2488`、`135/2488`，合计 `448/9952`、failure `0`。C-RADIOv3 retention 仍为 `5040/5040` 且 audit passed；parity 两条仍为 exact zero error、每条100 tensors。
+- [x] 两张 GPU 都有 cache compute processes，当前均不能作为 P1/B0 独占窗口；资源门禁继续拒绝混跑。
+- [x] OpenVLA training-initialization base 的17项 source-lock 哈希此前已全部通过。另一个 `moojink` LIBERO-spatial evaluation-only checkpoint 的大权重恢复仍进行中；它不是 B0 的干净训练初始化，不能混为同一模型用途。B0 仍以已校验 base snapshot 开始。
+- [x] 新增 `server/run_p6_b0_after_cache.sh`，已完成本地 `bash -n`/diff 检查并上传至101。它等待 cache 队列成功标记、核对 parity/semantic/retention/Flickr 全量 audit，通过后等待一张空闲物理 GPU，依次运行 P1、30-step B0、独立新进程 exact restore/optimizer continuation、两个固定 LIBERO init-state rollout；失败时按阶段停止并保留日志，不启动 B1–B4。
+- [x] 自动衔接脚本已在101启动，runner PID `728605`；日志 `vla_workspace/logs/p6_b0_after_cache.log` 当前为 `WAIT_CACHE_QUEUE`。脚本正在等待 `run_corrected_cache_queue.sh` 写出全量 cache 成功标记，尚未启动 P1/B0，也未占用额外 GPU。
+- [ ] VLM SD1.5 train cache、LIBERO full semantic cache、GPU P1/B0/restore/offline prediction/official rollout 均未完成。以上比例仅为运行快照，不代表训练结果。
