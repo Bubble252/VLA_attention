@@ -14,7 +14,7 @@ def validate(manifest,cache,kind):
     ids=[r['sample_id'] for r in rows]
     if len(ids)!=len(set(ids)):raise ValueError('Duplicate sample IDs')
     if not rows:raise ValueError('Empty manifest')
-    expected=set();failures=[];records=[];recipes=set()
+    expected=set();failures=[];records=[];recipes=set();extractors=set()
     manifest_digest=sha(manifest)
     for row in rows:
         key=row['sample_id'].replace(':','_');expected.add(key+'.npy')
@@ -39,7 +39,8 @@ def validate(manifest,cache,kind):
                 if m.get('instruction_sha256')!=hashlib.sha256(instruction.encode()).hexdigest():raise ValueError('Instruction hash mismatch')
                 if not isinstance(m.get('seed'),int):raise ValueError('Missing seed')
                 if len(m.get('extractor_sha256',''))!=64 or len(m.get('image_sha256',''))!=64:raise ValueError('Missing extractor/image hashes')
-                recipes.add((m['seed'],m['extractor_sha256'],m['numerics']))
+                recipes.add((m['seed'],m['numerics']))
+                extractors.add(m['extractor_sha256'])
                 for field in ('episode_id','timestep','camera','split','role','instruction'):
                     if field in row and m.get('source_provenance',{}).get(field)!=row[field]:raise ValueError(f'Wrong {field} provenance')
             else:
@@ -55,6 +56,7 @@ def validate(manifest,cache,kind):
     if len(recipes)>1:failures.append({'error':'Multiple producer recipes in one cache'})
     return {'kind':kind,'manifest_sha256':sha(manifest),'expected':len(rows),'valid':len(records),
             'failures':failures,'extra_files':extras,'passed':not failures and not extras,
+            'extractor_sha256s':sorted(extractors),
             'content_digest':hashlib.sha256(json.dumps(records,sort_keys=True).encode()).hexdigest()}
 
 

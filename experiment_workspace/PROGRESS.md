@@ -678,3 +678,15 @@ PYTHONPATH=src python scripts/validate_p1_report.py \
 - [x] 14:26–14:31（上海时间）复核计数：LIBERO semantic `103/10080`、Flickr 四片 `103/155/103/156`，合计 `517/9952`，failure 均为 `0`；所有 SD worker 和 runner 仍存活。
 - [x] 本轮修复已提交为 `13033f5 fix(vla): harden cache audit and P1 artifact path`；首次直连 push 遇 GitHub TLS 断开，随后经本机 `7897` 代理成功推送到 `origin/main`。101 上 validator 与 runner 的 SHA 已与本地一致。
 - [ ] VLM SD1.5 train cache、LIBERO full semantic cache、GPU P1/B0/restore/offline prediction/official rollout 均未完成。以上比例仅为运行快照，不代表训练结果。
+
+## 2026-09-28：修正 cache 队列的持久成功判定与 OpenVLA 基座验收
+
+- [x] 重新读取持久化 goal 与 `ml-training-recipes`；确认本阶段仍只允许完成 SD1.5 cache、LIBERO semantic/C-RADIO cache 和真实 OpenVLA/OFT B0 链路，不启动 B1–B4、ALN/SAEB、WAM/VAM、DROID、LIBERO-Plus 训练或真机。
+- [x] 修正 `server/run_p6_b0_after_cache.sh`：队列等待不再只依赖 stdout 日志字符串。队列退出后会重新验证 deterministic parity、LIBERO semantic audit、C-RADIO audit 和四个 Flickr shard audit；全部通过才写入 `vla_workspace/artifacts/cache_queue_success.json` 并继续 P1。这样前台 SSH 队列即使没有重定向 stdout，也不会把合规完成误判为失败。
+- [x] 修正 `server/run_corrected_cache_queue.sh`：直接追加到 `vla_workspace/logs/corrected_cache_queue.log`，并在四类 cache 全部审计通过后原子写入 success receipt；该 receipt 不代表训练结果，只代表 cache 生成和审计完成。曾尝试 `tee`，但它在 SSH/nohup 场景下不够稳，已改回普通文件追加。
+- [x] 修正 `server/rebalance_cache_queue.sh` 的 PID 枚举，避免 `ps|awk` 把脚本自身或父 shell 误杀；cache 文件仍保留、通过 worker row range 断点续跑。
+- [x] 本地 `py_compile`、三个 shell `bash -n`、`git diff --check` 通过；三个修正版脚本已上传 101，远端 SHA 分别与本地一致。
+- [x] 一次误执行 `rebalance_cache_queue.sh` 导致旧前台队列中断；所有 cache 文件和 progress 已保留，随后用修正版 `setsid nohup` 重新拉起唯一队列。当前 101 队列：queue PID `752941`，runner PID `752942`，8 个 SD worker 均为 queue 子进程；LIBERO semantic 4 分片合计 `145/10080`、失败 0；Flickr reconstruction v3 四分片合计 `600/9952`、失败 0。两张 GPU 仍各由四个 SD worker 占用，未混跑 B0。
+- [x] B0 自动等待器绑定 queue PID `752941`，当前持续记录 `WAIT_CACHE_QUEUE`，未加载 7B、未启动训练。
+- [x] OpenVLA B0 初始化基座 `openvla/openvla-7b@47a0ec7fc4ec123775a391911046cf33cf9ed83f` 已逐项检查预期大小和 SHA256；三个 safetensors 与 tokenizer.model 全部通过。证据：`vla_workspace/artifacts/openvla_base_source_audit.json`。目录中遗留 `.partial` 文件不参与模型加载，也不被 source audit 当作完成文件。
+- [ ] 仍待：semantic `10080/10080`、Flickr `9952/9952` 完成并生成全部 audit；随后等待独占 GPU，执行真实 7B P1、30-step B0、独立进程 restore/optimizer continuation、offline action prediction 和两个固定 init state 的官方 rollout。

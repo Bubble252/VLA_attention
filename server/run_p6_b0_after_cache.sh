@@ -7,8 +7,10 @@ P=/vepfs-mlp2/c20250405/400040/transfer/vla_attention
 R=$P/repo/VLA_attention
 W=$P/vla_workspace
 PY=$W/envs/oft/bin/python
-QUEUE_PID="${QUEUE_PID:-651953}"
+QUEUE_PID="${QUEUE_PID:-}"
+QUEUE_PID_FILE=$W/artifacts/corrected_cache_queue.pid
 QUEUE_LOG=$W/logs/corrected_cache_queue.log
+QUEUE_SUCCESS=$W/artifacts/cache_queue_success.json
 MODEL=$W/models/openvla--openvla-7b
 LOCK=$W/source_models_20260928.json
 DATA=$W/artifacts/rlds_inventory_v2_20260928
@@ -34,21 +36,8 @@ fail() {
 
 echo "P6_B0_DRIVER_STARTED $(date -Is) queue_pid=$QUEUE_PID"
 
-# The queue writes this marker only after every full cache audit succeeds.
-while ! grep -q 'CACHE_GENERATION_AND_AUDIT_COMPLETE_NO_TRAINING_LAUNCHED' "$QUEUE_LOG" 2>/dev/null; do
-  if ! kill -0 "$QUEUE_PID" 2>/dev/null; then
-    fail cache_queue "queue exited before its success marker; inspect $QUEUE_LOG"
-  fi
-  queue_cmd=$(tr '\0' ' ' <"/proc/$QUEUE_PID/cmdline" 2>/dev/null || true)
-  case "$queue_cmd" in
-    *run_corrected_cache_queue.sh*) ;;
-    *) fail cache_queue "queue PID no longer identifies the expected script" ;;
-  esac
-  echo "WAIT_CACHE_QUEUE $(date -Is)"
-  sleep 60
-done
-
-"$PY" - "$P" "$W" <<'PY'
+verify_cache_audits() {
+  "$PY" - "$P" "$W" <<'PY'
 import json
 import sys
 from pathlib import Path
@@ -72,6 +61,72 @@ assert audits[1].get("expected") == 5040 and audits[1].get("valid") == 5040
 assert sum(a.get("valid", 0) for a in audits[2:]) == 9952
 print("ALL_CACHE_AUDITS_PASSED")
 PY
+}
+
+write_cache_success() {
+  "$PY" - "$QUEUE_SUCCESS" "$QUEUE_PID" <<'PY'
+import json
+import sys
+import time
+from pathlib import Path
+
+path = Path(sys.argv[1])
+payload = {
+    "queue_pid": int(sys.argv[2]),
+    "completed_at_unix": time.time(),
+    "audits_verified_by": "run_p6_b0_after_cache.sh",
+    "marker": "CACHE_GENERATION_AND_AUDIT_COMPLETE_NO_TRAINING_LAUNCHED",
+}
+tmp = path.with_suffix(".json.tmp")
+tmp.write_text(json.dumps(payload, indent=2) + "\n")
+tmp.replace(path)
+PY
+}
+
+# Prefer a durable success artifact.  The log marker is retained for backward
+# compatibility with queue launches that redirect stdout; the process-exit
+# path also verifies every audit so a foreground queue with an unredirected
+# stdout pipe cannot be mistaken for a failure.
+while true; do
+  if [ -z "$QUEUE_PID" ] && [ -s "$QUEUE_PID_FILE" ]; then
+    QUEUE_PID=$(cat "$QUEUE_PID_FILE")
+  fi
+  [ -n "$QUEUE_PID" ] || fail cache_queue "queue PID is not known yet"
+  receipt_matches=false
+  if [ -s "$QUEUE_SUCCESS" ]; then
+    receipt_matches=$("$PY" - "$QUEUE_SUCCESS" "$QUEUE_PID" <<'PY'
+import json
+import sys
+from pathlib import Path
+receipt = json.loads(Path(sys.argv[1]).read_text())
+print("true" if receipt.get("queue_pid") == int(sys.argv[2])
+      and receipt.get("marker") == "CACHE_GENERATION_AND_AUDIT_COMPLETE_NO_TRAINING_LAUNCHED"
+      else "false")
+PY
+)
+  fi
+  if [ "$receipt_matches" = true ] || grep -q 'CACHE_GENERATION_AND_AUDIT_COMPLETE_NO_TRAINING_LAUNCHED' "$QUEUE_LOG" 2>/dev/null; then
+    verify_cache_audits || fail cache_queue "success marker exists but cache audit verification failed"
+    [ "$receipt_matches" = true ] || write_cache_success
+    break
+  fi
+  queue_state=$(ps -o stat= -p "$QUEUE_PID" 2>/dev/null | tr -d ' ' || true)
+  if ! kill -0 "$QUEUE_PID" 2>/dev/null || [[ "$queue_state" == Z* ]]; then
+    echo "CACHE_QUEUE_EXITED; verifying durable audit outputs"
+    verify_cache_audits || fail cache_queue "queue exited without a valid audited cache; inspect $QUEUE_LOG"
+    write_cache_success
+    break
+  fi
+  queue_cmd=$(tr '\0' ' ' <"/proc/$QUEUE_PID/cmdline" 2>/dev/null || true)
+  case "$queue_cmd" in
+    *run_corrected_cache_queue.sh*) ;;
+    *) fail cache_queue "queue PID no longer identifies the expected script" ;;
+  esac
+  echo "WAIT_CACHE_QUEUE $(date -Is)"
+  sleep 60
+done
+
+verify_cache_audits
 
 select_idle_gpu() {
   nvidia-smi --query-gpu=index,uuid --format=csv,noheader |

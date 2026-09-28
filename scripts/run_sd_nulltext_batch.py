@@ -34,6 +34,9 @@ def main() -> int:
     p.add_argument("--guidance-scale", type=float, default=7.5)
     p.add_argument("--resolution", type=int, default=16)
     p.add_argument("--seed", type=int, default=23)
+    p.add_argument("--row-start", type=int, default=0)
+    p.add_argument("--row-end", type=int)
+    p.add_argument("--worker-id")
     args = p.parse_args()
 
     def hash_file(path):
@@ -46,7 +49,13 @@ def main() -> int:
         temporary.replace(path)
 
     args.cache.mkdir(parents=True, exist_ok=True)
-    rows = [json.loads(line) for line in args.manifest.read_text().splitlines() if line.strip()]
+    all_rows = [json.loads(line) for line in args.manifest.read_text().splitlines() if line.strip()]
+    row_end = len(all_rows) if args.row_end is None else args.row_end
+    if not 0 <= args.row_start <= row_end <= len(all_rows):
+        raise ValueError("row range must be within the frozen manifest")
+    rows = all_rows[args.row_start:row_end]
+    if not rows:
+        raise ValueError("empty row range")
     for row in rows:
         if not all(row.get(k) for k in ('sample_id', 'image_path', 'caption', 'phrase')):
             raise ValueError('manifest missing sample/image/caption/phrase; refuse GPU load')
@@ -65,7 +74,9 @@ def main() -> int:
                     or meta.get('caption') != row['caption'] or meta.get('phrase') != row['phrase']):
                 raise ValueError(f'incompatible existing cache; use a new versioned directory: {existing}')
     failures: list[dict[str, object]] = []
-    progress = args.cache / "progress.json"
+    suffix = f"_{args.worker_id}" if args.worker_id else ""
+    progress = args.cache / f"progress{suffix}.json"
+    failures_path = args.cache / f"failures{suffix}.json"
 
     torch.manual_seed(args.seed)
     torch.use_deterministic_algorithms(True)
@@ -94,11 +105,13 @@ def main() -> int:
     def write_progress(done: int) -> None:
         atomic_json(progress, {
             "total": len(rows), "completed": done, "failed": len(failures),
+            "row_start": args.row_start, "row_end": row_end,
+            "worker_id": args.worker_id,
             "cache": str(args.cache), "seed": args.seed, "steps": args.steps,
             "inner_steps": args.inner_steps, "updated_at_unix": time.time(),
             "manifest_sha256": manifest_sha, "extractor_sha256": code_sha,
         })
-        atomic_json(args.cache/'failures.json',failures)
+        atomic_json(failures_path,failures)
 
     completed = 0
     write_progress(0)
@@ -200,8 +213,9 @@ def main() -> int:
                 store.maps.clear()
             pipe.unet.set_attn_processor(dict(original_processors))
             write_progress(completed)
-    (args.cache / "failures.json").write_text(json.dumps(failures, indent=2) + "\n")
-    print(json.dumps({"total": len(rows), "completed": completed, "failures": len(failures)}))
+    atomic_json(failures_path,failures)
+    print(json.dumps({"total": len(rows), "completed": completed,
+                      "failures": len(failures), "worker_id": args.worker_id}))
     return 0 if not failures else 2
 
 
