@@ -6,8 +6,6 @@ official source, redefine success, or silently swallow environment exceptions.
 import argparse
 import hashlib
 import json
-import subprocess
-import time
 from pathlib import Path
 
 
@@ -39,11 +37,8 @@ def main():
     p.add_argument('--gpu-window',type=Path,required=True)
     p.add_argument('--output',type=Path,required=True)
     a=p.parse_args()
-    gate=json.loads(a.gpu_window.read_text())
-    if not(gate.get('cache_audit_passed') and gate.get('exclusive_b0_window')) or not 0<=time.time()-gate.get('checked_at_unix',0)<300:
-        raise ValueError('Fresh cache/resource gate required')
-    if subprocess.check_output(['nvidia-smi','--query-compute-apps=pid','--format=csv,noheader'],text=True).strip():
-        raise RuntimeError('GPU already occupied')
+    from vla_attention.oft_preflight import require_gpu_window
+    require_gpu_window(a.gpu_window)
     if a.output.exists():raise FileExistsError(a.output)
     import torch
     import numpy as np

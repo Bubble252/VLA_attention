@@ -647,3 +647,12 @@ PYTHONPATH=src python scripts/validate_p1_report.py \
 - [x] 校验器更新已上传，运行中的生产者未改动；后台队列结束时使用加强版进行逐cache验收。环境完整freeze保存 `audits/pip_freeze_renderer_verified.txt`。
 - [ ] 镜像恢复PID657946仍活跃，base第1权重片约5.80/6.95GB；LIBERO semantic全量目前18/10080、失败0，仍需等待并保留全量校验，不重复启动。其他新版Flickr shard仍活跃。
 - [ ] 尚缺完整模型权重、GPU真实P1/B0/恢复/官方policy rollout及原VLM全量目标；未标完成。
+
+## 2026-09-28：明确 GPU 验收边界并修复 B0 资源门禁
+
+- [x] 重新读取当前 goal；确认目标并非只做 CPU 准备，最终必须有 GPU 真实 OFT P1、20–50 step B0、checkpoint restore、held-out action prediction 和官方 rollout 证据。
+- [x] 远端当前状态复核：LIBERO semantic `76/10080`、失败 `0`；Flickr 修正版四 shard 合计 `382/9952`、失败 `0`；C-RADIO retention 已 `5040/5040` 通过；两张 A100 仍被 cache worker 占用。
+- [x] OpenVLA base `openvla/openvla-7b@47a0ec7...` 的 source-lock 17 个文件完成逐项 SHA 校验；OFT 评测权重仍在镜像分段恢复，未宣布完整。
+- [x] 修正 GPU 资源门禁：B0/P1/rollout 现在要求一张明确的 `CUDA_VISIBLE_DEVICES`、对应 GPU UUID、新鲜（5 分钟内）资源报告和该 GPU 无 compute process；不再错误地阻塞于另一张 GPU 上的 cache。
+- [x] 修正 B0 held-out prediction 选择逻辑与 restore 检查：恢复评估按 episode manifest 选择固定 H=8 窗口，并要求逐元素预测完全一致；新增 7 项 GPU-window 单元测试，连同 P1/launch guard 共 `12 passed`，脚本 py_compile 和 `git diff --check` 通过。
+- [ ] 仍未启动真实 GPU P1/B0：必须等 cache 任务释放一张 GPU、OFT 权重完整校验、cache audit gate 和新鲜 GPU-window artifact 全部满足后再启动。

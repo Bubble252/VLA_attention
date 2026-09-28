@@ -5,8 +5,6 @@ Run in an exclusive GPU window after cache smokes. No eager fallback.
 import argparse
 import json
 import os
-import subprocess
-import time
 from pathlib import Path
 
 
@@ -17,14 +15,10 @@ def main():
         p.add_argument('--'+name,type=Path,required=True)
     a=p.parse_args()
     if a.output.exists():raise FileExistsError(a.output)
-    gate=json.loads(a.gpu_window.read_text())
-    if gate.get('cache_audit_passed') is not True or gate.get('exclusive_b0_window') is not True:
-        raise ValueError('Cache/resource gate not passed')
-    if not 0<=time.time()-gate.get('checked_at_unix',0)<300:raise ValueError('Stale resource check')
-    if subprocess.check_output(['nvidia-smi','--query-compute-apps=pid','--format=csv,noheader'],text=True).strip():
-        raise RuntimeError('GPU compute jobs present')
-    from vla_attention.oft_preflight import verify_snapshot,sha
+    from vla_attention.oft_preflight import verify_snapshot,sha,require_gpu_window
+    require_gpu_window(a.gpu_window)
     source=verify_snapshot(a.model,a.source_lock)
+    require_gpu_window(a.gpu_window)
     import numpy as np
     import torch
     from peft import get_peft_model,LoraConfig

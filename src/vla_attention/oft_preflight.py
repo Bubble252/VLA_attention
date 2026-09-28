@@ -1,7 +1,49 @@
 """Non-GPU provenance checks shared by real OFT interface and B0 runs."""
 import hashlib
 import json
+import os
+import subprocess
+import time
 from pathlib import Path
+
+
+def require_gpu_window(path):
+    """Require an audited, freshly checked and idle *selected* physical GPU.
+
+    nvidia-smi uses physical IDs independently of CUDA_VISIBLE_DEVICES. Bind
+    CUDA to the verified UUID so CUDA ordinal ordering cannot pick another GPU.
+    Call before importing torch/TensorFlow or creating any GPU context.
+    """
+    gate = json.loads(Path(path).read_text())
+    if gate.get('cache_audit_passed') is not True or gate.get('exclusive_b0_window') is not True:
+        raise ValueError('Resource/cache gate not passed')
+    if not 0 <= time.time() - gate.get('checked_at_unix', 0) < 300:
+        raise ValueError('Resource window must be checked within 5 minutes')
+    selected = os.environ.get('CUDA_VISIBLE_DEVICES', '').strip()
+    if not selected or ',' in selected:
+        raise ValueError('Explicit single CUDA_VISIBLE_DEVICES GPU required')
+    inventory = subprocess.check_output(
+        ['nvidia-smi', '--query-gpu=index,uuid', '--format=csv,noheader'], text=True)
+    devices = [tuple(field.strip() for field in line.split(','))
+               for line in inventory.splitlines() if line.strip()]
+    matches = [uuid for index, uuid in devices if selected in (index, uuid)]
+    if len(matches) != 1:
+        raise ValueError('Selected physical GPU not uniquely found')
+    uuid = matches[0]
+    if gate.get('gpu_uuid') != uuid:
+        raise ValueError('Resource window GPU UUID mismatch')
+    processes = subprocess.check_output(
+        ['nvidia-smi', '--query-compute-apps=gpu_uuid,pid', '--format=csv,noheader'], text=True)
+    for line in processes.splitlines():
+        if not line.strip():
+            continue
+        fields = [field.strip() for field in line.split(',')]
+        if len(fields) != 2 or not fields[0].startswith('GPU-') or not fields[1].isdigit():
+            raise RuntimeError('Cannot verify GPU compute-process inventory')
+        if fields[0] == uuid:
+            raise RuntimeError('Selected GPU compute processes still present')
+    os.environ['CUDA_VISIBLE_DEVICES'] = uuid
+    return gate
 
 
 def sha(path):

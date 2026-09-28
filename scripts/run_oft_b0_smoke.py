@@ -8,7 +8,6 @@ import os
 import hashlib
 import json
 import random
-import subprocess
 import time
 from pathlib import Path
 
@@ -37,16 +36,12 @@ def main():
     a=p.parse_args()
     if not 20<=a.steps<=50:raise ValueError('B0 smoke limited to 20–50 steps')
     if a.output.exists():raise FileExistsError(a.output)
-    gate=json.loads(a.gpu_window.read_text())
-    if gate.get('cache_audit_passed') is not True or gate.get('exclusive_b0_window') is not True:
-        raise ValueError('Resource/cache gate not passed')
-    if not 0<=time.time()-gate.get('checked_at_unix',0)<300:
-        raise ValueError('Resource window must be checked within 5 minutes')
-    # The artifact alone is insufficient: reject any existing GPU compute job.
-    running=subprocess.check_output(['nvidia-smi','--query-compute-apps=pid','--format=csv,noheader'],text=True).strip()
-    if running:raise RuntimeError('GPU compute processes still present; do not start smoke')
-    from vla_attention.oft_preflight import verify_snapshot,require_p1
+    from vla_attention.oft_preflight import verify_snapshot,require_p1,require_gpu_window
+    gate=require_gpu_window(a.gpu_window)
     source=verify_snapshot(a.model,a.source_lock)
+    # Hashing large weights can outlast the resource window. Refresh the
+    # gate externally and rerun if stale; never load based on an old check.
+    require_gpu_window(a.gpu_window)
     if a.p1_report is None:raise ValueError('A real passing P1 report is required')
     require_p1(a.p1_report,source['revision'],sha(a.train_manifest),sha(a.statistics))
     train_ids={json.loads(x)['episode_id'] for x in a.train_manifest.read_text().splitlines()}
@@ -121,11 +116,15 @@ def main():
         max_error=0.
         for now,before in zip(actual,expected):
             if now['episode_id']!=before['episode_id']:raise ValueError('Restore episode mismatch')
-            max_error=max(max_error,float(np.max(np.abs(np.array(now['prediction'])-np.array(before['prediction'])))))
-        if max_error>1e-3:raise ValueError(f'Restore prediction drift: {max_error}')
+            current=np.array(now['prediction']);saved=np.array(before['prediction'])
+            if current.shape!=saved.shape or not np.isfinite(current).all() or not np.isfinite(saved).all():
+                raise ValueError('Restore prediction shape/nonfinite mismatch')
+            max_error=max(max_error,float(np.max(np.abs(current-saved))))
+        if max_error!=0.:raise ValueError(f'Restore prediction drift: {max_error}')
         (a.output/'restore_report.json').write_text(json.dumps({'max_prediction_error':max_error,
                 'optimizer_state_entries':len(optimizer.state),'scheduler_state':scheduler.state_dict(),
-                'saved_step':state['step'],'restored':True,'eval_predictions':actual},indent=2)+'\n')
+                'saved_step':state['step'],'restored':True,'prediction_equality':'exact',
+                'eval_predictions':actual},indent=2)+'\n')
         # Reset RNG after evaluation; match the uninterrupted continuation from
         # the saved state, including optimizer/scheduler and data cursor.
         torch.set_rng_state(state['torch_rng']);torch.cuda.set_rng_state_all(state['cuda_rng'])
