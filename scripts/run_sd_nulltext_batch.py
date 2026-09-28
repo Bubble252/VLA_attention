@@ -35,6 +35,21 @@ def main() -> int:
 
     args.cache.mkdir(parents=True, exist_ok=True)
     rows = [json.loads(line) for line in args.manifest.read_text().splitlines() if line.strip()]
+    for row in rows:
+        if not all(row.get(k) for k in ('sample_id', 'image_path', 'caption', 'phrase')):
+            raise ValueError('manifest missing sample/image/caption/phrase; refuse GPU load')
+        key = row['sample_id'].replace(':', '_')
+        existing = args.cache / f'{key}.json'
+        if existing.exists():
+            meta = json.loads(existing.read_text())
+            if (meta.get('method') != 'ddim_nulltext_fp32_reconstruction_v3'
+                    or meta.get('seed') != args.seed
+                    or meta.get('inversion_steps') != args.steps
+                    or meta.get('inner_steps') != args.inner_steps
+                    or meta.get('guidance_scale') != args.guidance_scale
+                    or meta.get('attention_resolution') != args.resolution
+                    or meta.get('caption') != row['caption'] or meta.get('phrase') != row['phrase']):
+                raise ValueError(f'incompatible existing cache; use a new versioned directory: {existing}')
     failures: list[dict[str, object]] = []
     progress = args.cache / "progress.json"
 
@@ -48,7 +63,7 @@ def main() -> int:
     ).to("cuda")
     forward = DDIMScheduler.from_config(pipe.scheduler.config)
     inverse = DDIMInverseScheduler.from_config(pipe.scheduler.config)
-    store = install_cross_attention_capture(pipe.unet, conditional_cfg_half=True)
+    original_processors = dict(pipe.unet.attn_processors)
     empty = pipe.tokenizer(
         "", padding="max_length", max_length=pipe.tokenizer.model_max_length, return_tensors="pt"
     ).input_ids.cuda()
@@ -72,7 +87,6 @@ def main() -> int:
             continue
         try:
             torch.manual_seed(args.seed)
-            store.maps.clear()
             image = Image.open(args.dataset_root / row["image_path"]).convert("RGB").resize((512, 512))
             pixels = torch.from_numpy(np.asarray(image).copy()).permute(2, 0, 1).unsqueeze(0).float()
             pixels = pixels.div(127.5).sub(1).to("cuda", dtype=torch.float32)
@@ -93,6 +107,11 @@ def main() -> int:
                 steps=args.steps, guidance_scale=args.guidance_scale,
                 inner_steps=args.inner_steps, device="cuda",
             )
+            # Capture only the final, reconstruction-conditioned forward pass.
+            # Installing this before inversion would mix inversion and null-text
+            # optimization attention (1400 tensors) with the intended 20-step
+            # reconstruction capture (100 tensors at the current SD1.5 layout).
+            store = install_cross_attention_capture(pipe.unet, conditional_cfg_half=True)
             current = trajectory[-1]
             forward.set_timesteps(args.steps, device="cuda")
             with torch.no_grad():
@@ -112,10 +131,15 @@ def main() -> int:
                 raise ValueError(f"no attention tensors at resolution {args.resolution}")
             attention = torch.cat(tensors, dim=0).mean(dim=0)
             spatial = attention[:, phrase_positions].mean(dim=-1).reshape(args.resolution, args.resolution).numpy()
+            if not np.isfinite(spatial).all() or (spatial < 0).any() or spatial.sum() <= 0:
+                raise ValueError('invalid spatial attention map')
+            if not np.isfinite(optimized.reconstruction_losses).all():
+                raise ValueError('nonfinite null-text reconstruction loss')
             spatial /= max(float(spatial.sum()), 1e-12)
             np.save(map_path, spatial)
             metadata_path.write_text(json.dumps({
-                "method": "ddim_nulltext_fp32_v2", "formal_lavender_exact": True,
+                "method": "ddim_nulltext_fp32_reconstruction_v3", "formal_lavender_exact": False,
+                "capture_stage": "final_reconstruction_only", "gpu_parity_validation": "pending",
                 "sample_id": row["sample_id"], "caption": row["caption"], "phrase": row["phrase"],
                 "phrase_token_positions": phrase_positions, "inversion_steps": args.steps,
                 "inner_steps": args.inner_steps, "guidance_scale": args.guidance_scale,
@@ -128,7 +152,9 @@ def main() -> int:
         except Exception as exc:  # keep the cache job progressing and audit failures
             failures.append({"sample_id": row["sample_id"], "error": repr(exc)})
         finally:
-            store.maps.clear()
+            if "store" in locals():
+                store.maps.clear()
+            pipe.unet.set_attn_processor(dict(original_processors))
             write_progress(completed)
     (args.cache / "failures.json").write_text(json.dumps(failures, indent=2) + "\n")
     print(json.dumps({"total": len(rows), "completed": completed, "failures": len(failures)}))

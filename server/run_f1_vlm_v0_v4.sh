@@ -1,6 +1,11 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
+# 2026-09-28 audit: batch extraction captured inversion/optimization attention;
+# V2/V4 retention path and full-train coverage also require formal revalidation.
+echo 'F1_BLOCKED: cache extraction-stage audit and formal trainer validation pending' >&2
+exit 2
+
 # Guarded F1 VLM runner. It intentionally refuses to start until the
 # validation-selected teacher and the complete immutable train cache exist.
 readonly REMOTE_HOST="${REMOTE_HOST:-vla101}"

@@ -536,3 +536,19 @@ PYTHONPATH=src python scripts/validate_p1_report.py \
 - [x] 发现并停止上述无效 cache jobs：caption-only manifest 没有 `phrase` 字段，导致全部样本失败；没有生成有效 map，未污染正式结果。
 - [x] 新增 `scripts/build_aligned_caption_phrase_manifest.py`，将每条 caption-SFT 样本与 Flickr30k Entities 的确定性 phrase/box 对齐；9952 条有效样本、48 条无实体 phrase failure，failures 单独保存。V0–V4 将共享 9952 条有效 manifest。
 - [x] 上传修正版 frozen config/runner，并启动 aligned 9952 cache：PID `531386/531388/531390/531392`，四个各 2488 条 shard，正式训练仍未启动。
+- [x] 当前 cache 复核：四个 shard 均存活，各完成 `15/2488`，总计 `60/9952`（约 0.60%），每个 shard 的 map/metadata 数量一致，失败数均为 `0`；GPU0/GPU1 显存约 32.8GB、利用率约 99–100%。
+
+
+## 2026-09-28：VLA 非 GPU 准备启动及 cache 抽取阶段纠错
+
+- [x] 已读取新增 goal；原 VLM 全量目标保留，新增范围到 B0 smoke/restore/rollout。四个 VLM cache PID 命令行核验为本项目作业，未停止、重启或覆盖，未新增 GPU job。
+- [x] 官方来源静态审计完成：OFT commit e4287e94541f459edc4feabc4e181f537cd569a8，LIBERO 8f1084e3132a39270c3a13ebe37270a43ece2a01；原生 L1、8×7 chunk、8D proprio、双相机。已训练 LIBERO checkpoint 仅作外部评测/接口检查，不充当任务未见的初始化。
+- [x] 远端独立工作区 `vla_workspace`；五个源仓库已固定版本，锁见 `experiments/P6-vla-b0-b4/audits/source_lock.tsv`。静态分析列出训练 stats=all 和单步 deque 等陷阱，尚不等于运行成功。
+- [x] 官方 LIBERO-Spatial RLDS 的 16 个分片及 metadata 经上游 hash 核验下载；metadata 声明 432 episodes、仅 train split。CPU AST 枚举官方 130 tasks，BDDL 全存在；实际 episodes 读取/划分待依赖安装。
+- [ ] 隔离环境安装正在执行 PID 595650，日志 `vla_workspace/logs/preparation_retry4_20260928.log`。前三次失败为 clone 无checkout的假dirty、TLS、ensurepip缺失，分别修复；未修改现有 VLM 环境。
+- [ ] 模型/数据下载 PID 592359，日志 `vla_workspace/logs/download_retry_20260928.log`；已转至 OpenVLA 权重下载，C-RADIO/OFT checkpoint 未完成。顺序下载、限速15MiB/s；通过SSH回环端口17897转发本机7897，依赖当前连接存活，断线后需检查进程再恢复。
+- [x] cache只读阶段审计：1000/1000 calibration记录1400 tensors，脚本capture在inversion前启用，混入优化过程；原单图recipe重建阶段为100。此前“正式校准通过”判定撤回。审计JSON在 `experiments/P6-vla-b0-b4/audits/calibration_stage_audit_20260928.json`。
+- [x] F1启动器已fail-closed，配置标invalidated；本地batch修复为仅最终重建capture并每条恢复原processor，拒绝旧版本cache混用。未上传替换运行中driver，未新增GPU验证。5项CPU测试通过；数值等价性仍待GPU窗口。
+- [ ] 附加审计：wrong-word同图缺候选会错误回退wrong-image；此前同图负控结论需重做。V2/V4对冻结merger/input做retention可能只训练projector，正式policy retention梯度必须验证。F1封装仍调用smoke且只用10k子集，不能当完整train、逐step日志及可恢复正式trainer。
+- [x] 三类VLA cache和Plus边界写入 `cache_preparation.md`；当前只准备合同，未生成VLA cache，未运行SAEB/B1–B4。
+- [ ] 下一步：环境安装/下载完成验收 → CPU读取真实episodes和split → 真正B0接口；cache修复与正式VLM训练器并行完善，原目标未完成。

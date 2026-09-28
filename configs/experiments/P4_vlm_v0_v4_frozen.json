@@ -1,6 +1,7 @@
 {
   "schema": "vla-attention/vlm-v0-v4/frozen-v1",
-  "status": "frozen_sd15_fallback_single_candidate",
+  "status": "invalidated_pending_extraction_stage_reaudit",
+  "audit_note": "2026-09-28: batch cache records 1400 tensors including inversion/null optimization; reference reconstruction-only extraction records 100. Existing scores cannot certify the declared recipe. Do not train from this config.",
   "freeze_date": "2026-09-28",
   "student": {
     "repository": "Qwen/Qwen2.5-VL-7B-Instruct",
