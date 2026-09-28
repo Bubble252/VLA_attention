@@ -676,4 +676,5 @@ PYTHONPATH=src python scripts/validate_p1_report.py \
 - [x] 新增 `server/run_p6_b0_after_cache.sh`，已完成本地 `bash -n`/diff 检查并上传至101。它等待 cache 队列成功标记、核对 parity/semantic/retention/Flickr 全量 audit，通过后等待一张空闲物理 GPU，依次运行 P1、30-step B0、独立新进程 exact restore/optimizer continuation、两个固定 LIBERO init-state rollout；失败时按阶段停止并保留日志，不启动 B1–B4。
 - [x] 自动衔接脚本已在101启动，当前 runner PID `732896`；日志 `vla_workspace/logs/p6_b0_after_cache.log` 为 `WAIT_CACHE_QUEUE`。修正 runner 的 OFT Python 路径后，又将 P1 JSON 输出固定到远端 repo 的 `experiment_workspace/results/P6_vla_b0_b4/p1_interface/`，并把远端 cache validator 改为原子覆盖 audit 文件；两处均已 SHA/语法校验并平滑重启。尚未启动 P1/B0，也未占用额外 GPU。
 - [x] 14:26–14:31（上海时间）复核计数：LIBERO semantic `103/10080`、Flickr 四片 `103/155/103/156`，合计 `517/9952`，failure 均为 `0`；所有 SD worker 和 runner 仍存活。
+- [x] 本轮修复已提交为 `13033f5 fix(vla): harden cache audit and P1 artifact path`；首次直连 push 遇 GitHub TLS 断开，随后经本机 `7897` 代理成功推送到 `origin/main`。101 上 validator 与 runner 的 SHA 已与本地一致。
 - [ ] VLM SD1.5 train cache、LIBERO full semantic cache、GPU P1/B0/restore/offline prediction/official rollout 均未完成。以上比例仅为运行快照，不代表训练结果。
