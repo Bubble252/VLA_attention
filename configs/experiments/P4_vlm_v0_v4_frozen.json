@@ -1,0 +1,60 @@
+{
+  "schema": "vla-attention/vlm-v0-v4/frozen-v1",
+  "status": "frozen_sd15_fallback_single_candidate",
+  "freeze_date": "2026-09-28",
+  "student": {
+    "repository": "Qwen/Qwen2.5-VL-7B-Instruct",
+    "processor_use_fast": false,
+    "lora_config": "configs/qwen_lora_v1.json"
+  },
+  "data": {
+    "calibration_manifest": "experiment_workspace/manifests/flickr30k_entities/teacher_calibration_val_1000.jsonl",
+    "calibration_manifest_sha256": "4d425283f9b03a143cddd805dc7035ce3df59d1b06ac9565c30049f507e6e1b3",
+    "train_manifest": "experiment_workspace/manifests/flickr30k_entities/caption_sft_train_10k_seed17_aligned_phrase.jsonl",
+    "train_manifest_sha256": "d72e1aac45e6d641ab6f86885ef7ca1d97754fd8e463fb9269fa83cc559127db",
+    "excluded_alignment_failures": "experiment_workspace/manifests/flickr30k_entities/caption_sft_train_10k_seed17_aligned_phrase_failures.json",
+    "supervision": "image + fixed caption prompt -> original Flickr30k caption",
+    "entities_boxes": "calibration/test/controls only; not caption-SFT labels"
+  },
+  "teacher": {
+    "id": "stable-diffusion-v1-5",
+    "selection_status": "explicit_fallback",
+    "selection_note": "PixArt-alpha, PixArt-sigma and Playground-v2.5 weights exist but no validated equivalent real-image inversion/phrase-map adapters were available at freeze time; no four-candidate best-single claim.",
+    "repository": "runwayml/stable-diffusion-v1-5",
+    "revision": "451f4fe16113bff5a5d2269ed5ad43b0592e9a14",
+    "source_sha256": "5a7f600d579858fb2f6ce3485ea0a81c57832ec4c3dbcd91f713aee70be85205",
+    "method": "ddim_nulltext_fp32_v2",
+    "diffusion_steps": 20,
+    "null_text_inner_steps": 10,
+    "guidance_scale": 7.5,
+    "attention_resolution": [16, 16],
+    "seed": 23,
+    "normalization": "nonnegative mass normalization to sum 1",
+    "cache_manifest_sha256": "757811b802540a25e8b06b956d0ae2e5ed209cb1378b5b63f3f402f415c6498a",
+    "calibration_metrics": {
+      "n": 1000,
+      "correct": {"pointing": 0.552, "mass_in_box": 0.3581655307997927, "top20_box_iou": 0.3008146294718044},
+      "wrong_word_same_image": {"pointing": 0.296, "mass_in_box": 0.3066313842831661, "top20_box_iou": 0.2645327475529355},
+      "wrong_image": {"pointing": 0.296, "mass_in_box": 0.3066313842831661, "top20_box_iou": 0.2645327475529355},
+      "shifted": {"pointing": 0.329, "mass_in_box": 0.3236112697388032, "top20_box_iou": 0.29507372160575235},
+      "random": {"pointing": 0.304, "mass_in_box": 0.29537995946070245, "top20_box_iou": 0.27220741793338177}
+    }
+  },
+  "semantic_training": {
+    "loss_mode": "kl",
+    "lambda_sem": 0.1,
+    "teacher_temperature": 1.25,
+    "warmup_steps": 50,
+    "common_grid": [16, 16]
+  },
+  "formal_training": {
+    "groups": ["V0", "V1", "V2", "V3", "V4"],
+    "seeds": [17, 29, 41],
+    "epochs": 1,
+    "min_optimizer_steps": 10000,
+    "checkpoint_progress": [0.25, 0.5, 0.75, 1.0],
+    "early_stopping": false
+  },
+  "controls": ["correct_teacher", "wrong_word", "wrong_image", "area_matched_random", "raw_attention_proxy", "patch_occlusion"],
+  "pixart_playground_status": "not_calibrated; post-F1 adapter extension"
+}

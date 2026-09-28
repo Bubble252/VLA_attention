@@ -522,3 +522,17 @@ PYTHONPATH=src python scripts/validate_p1_report.py \
 - [ ] 远端默认 `/root/miniconda3` 环境只有 PyTorch，没有 transformers/peft/accelerate/libero/OpenVLA；因此不能在该环境直接进行真实 P1。`starvla_cu124` 环境有 PyTorch 2.6、Transformers 4.57.1、PEFT 0.18、Accelerate 1.13、Diffusers 0.38，但仍没有已安装的 `libero`/`openvla`/`prismatic` Python 包。
 - [ ] 远端 VEPFS 当前没有 OpenVLA checkpoint；已有 Qwen、DINO 和 diffusion teachers。`/root/code/LIBERO`、`/root/code/Starvla` 和其他项目包含 LIBERO 源码，但不能把 StarVLA/SpikingBrain checkpoint 当作 OpenVLA P1。
 - [ ] 因此 VLA 下一步是先在独立环境审计/安装官方 OpenVLA-OFT 与 LIBERO 依赖、确认合法 checkpoint 来源，再运行 P1；不能直接启动 B0 长训练。已有两张 A100 空闲只说明资源足够，不代表模型接口已经就绪。
+
+## 2026-09-28：VLM calibration 完成与 SD1.5 fallback freeze
+
+- [x] 四个 calibration shard `part4_0..part4_3` 均完成 `250/250`、失败 `0`；合并后正式 cache 包含 1000 个 map 和 metadata，sample ID 全覆盖、无重复。
+- [x] 合并 cache manifest SHA256=`757811b802540a25e8b06b956d0ae2e5ed209cb1378b5b63f3f402f415c6498a`；calibration manifest SHA256=`4d425283f9b03a143cddd805dc7035ce3df59d1b06ac9565c30049f507e6e1b3`。
+- [x] SD1.5 correct teacher metrics：pointing `0.5520`、mass-in-box `0.3581655`、top20 IoU `0.3008146`；wrong-word/wrong-image pointing `0.2960`、random pointing `0.3040`，teacher signal 通过 validation-only sanity gate。
+- [x] PixArt-alpha/sigma/Playground 权重虽存在，但没有通过等价真实图像 inversion + phrase-token map adapter 验收；冻结为显式 `stable-diffusion-v1-5` fallback，不声称四候选 best-single。
+- [x] 新增 `configs/experiments/P4_vlm_v0_v4_frozen.json`，冻结 teacher revision、FP32 null-text 20×10、CFG 7.5、16×16 grid、seed 23、normalization、KL、lambda `.10`、temperature `1.25`、warm-up 50、训练组和三 seed。
+- [ ] 下一步生成完整 10k train teacher cache；cache 完成前不启动正式 V0–V4 长训练。
+- [x] 结合 Lavender 原文核对 teacher 选择：Lavender 实际使用 SD v1.4，没有 PixArt/Playground 的同协议比较；因此当前以已通过真实图像 phrase-map calibration 的 SD1.5 作为方法连续性最强、可审计的 fallback，不宣称四候选 best-single。
+- [x] 已将 10000 条固定 train manifest 拆为四个各 2500 条 disjoint shard，并启动 batch cache jobs：PID `525047/525049/525051/525053`，分别绑定 GPU0/1，输出目录为 `F1_train_sd1_5_nulltext_phrase_10k_seed17_part4_*`；正式 V0–V4 尚未启动。
+- [x] 发现并停止上述无效 cache jobs：caption-only manifest 没有 `phrase` 字段，导致全部样本失败；没有生成有效 map，未污染正式结果。
+- [x] 新增 `scripts/build_aligned_caption_phrase_manifest.py`，将每条 caption-SFT 样本与 Flickr30k Entities 的确定性 phrase/box 对齐；9952 条有效样本、48 条无实体 phrase failure，failures 单独保存。V0–V4 将共享 9952 条有效 manifest。
+- [x] 上传修正版 frozen config/runner，并启动 aligned 9952 cache：PID `531386/531388/531390/531392`，四个各 2488 条 shard，正式训练仍未启动。

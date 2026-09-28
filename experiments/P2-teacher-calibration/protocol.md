@@ -1,6 +1,6 @@
 # P2：扩散语义教师校准 protocol
 
-**状态**：P1 已通过；候选模型已下载；尚未选择 best-single。  
+**状态**：P1 已通过；SD1.5 已完成 1000 图 validation calibration；当前冻结为显式 fallback；PixArt/Playground 等价 adapter 后置。  
 **目的**：从固定四个 `T_sem` 候选中选择一个对真实图像上的 phrase-region map 最可靠的教师；不是比较图像生成质量。
 
 ## 输入与固定性
@@ -16,6 +16,19 @@
 每个候选仅在相同 1000 个 phrase-image pair 上报告：pointing accuracy、mass-in-box、box IoU、无效 map 比例、跨 seed map cosine。选择 best-single 的规则必须在运行前明确，例如按 primary pointing、再按 invalid-rate、再按 seed-stability 的字典序。
 
 无论单个模型是否生成漂亮图像，都不能作为 `T_sem` 选择依据。任何只在 text-to-image 随机初始 latent 上得到的 attention，不能标为“真实图像教师图”；它最多是 hook smoke。
+
+### 结合 Lavender 的 teacher 选择结论（2026-09-28）
+
+Lavender 原文实际使用 Stable Diffusion v1.4 的真实图像短 inversion attention map，并明确将扩散模型的词—区域 cross-attention 作为外部空间 teacher；论文没有对 PixArt-alpha、PixArt-sigma 或 Playground-v2.5 做同协议 teacher ranking。因此当前不能声称这些更新模型比 SD 更好。
+
+本项目当前冻结 `SD1.5` 的理由是：
+
+1. 与 Lavender 的 teacher 机制和训练数据形式最接近，方法连续性最好；
+2. 已完成 FP32 null-text、真实图像、完整 caption、phrase token span 和 16×16 map 的工程验收；
+3. 在 1000 个 validation image-phrase pairs 上，correct map 的 pointing/mass/IoU 明显高于 wrong-word、wrong-image 和 random controls；
+4. SD1.5 的 revision、抽取步骤、CFG、normalization 和 cache SHA 已经可审计。
+
+这不是“四候选中 SD1.5 经过严格排名后最优”的结论，而是**在其他候选缺少等价真实图像 phrase-map adapter 时，按 Lavender 证据链采用的明确 fallback**。PixArt/Playground 只有在完成相同 inversion/phrase-map/box-control protocol 后，才能作为 teacher swap；不能只比较生成图质量、FID 或文本对齐分数。
 
 ## 验收和后续
 

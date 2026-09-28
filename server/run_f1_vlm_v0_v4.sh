@@ -18,7 +18,7 @@ P=/vepfs-mlp2/c20250405/400040/transfer/vla_attention
 R="$P/repo/VLA_attention"; PY="$P/envs/p1/bin/python"
 MODEL="$P/models/Qwen2.5-VL-7B-Instruct"; DINO="$P/models/DINOv2-ViT-L-14"
 DATA="$P/data/flickr30k_entities"
-MANIFEST="$R/experiment_workspace/manifests/flickr30k_entities/caption_sft_train_10k_seed17.jsonl"
+MANIFEST="$R/experiment_workspace/manifests/flickr30k_entities/caption_sft_train_10k_seed17_aligned_phrase.jsonl"
 CACHE="$P/teacher_maps/F1_train_sd1_5_nulltext_phrase_10k_seed17"
 FROZEN="$R/configs/experiments/P4_vlm_v0_v4_frozen.json"
 LORA="$R/configs/qwen_lora_v1.json"
@@ -35,7 +35,7 @@ PY
 )" -gt 0
 expected=$(wc -l < "$MANIFEST")
 actual=$(find "$CACHE" -maxdepth 1 -type f -name '*.npy' | wc -l)
-test "$expected" -eq 10000 || { echo "UNEXPECTED_MANIFEST_ROWS=$expected" >&2; exit 3; }
+test "$expected" -gt 0 || { echo "EMPTY_TRAIN_MANIFEST" >&2; exit 3; }
 test "$actual" -eq "$expected" || { echo "INCOMPLETE_TRAIN_CACHE=$actual/$expected" >&2; exit 3; }
 test -f "$CACHE/failures.json"
 test "$(python - <<PY
