@@ -51,7 +51,7 @@ fi
 import pathlib,sys
 root=pathlib.Path(sys.argv[1])
 constraints=root/'artifacts/constraints.txt'
-constraints.write_text('numpy==1.26.4\nhuggingface-hub<1\n')
+constraints.write_text('numpy==1.26.4\nhuggingface-hub<1\ntransformers==4.40.1\nwandb==0.17.0\naccelerate==0.30.1\nprotobuf==3.20.3\ntensorflow-metadata==1.15.0\n')
 source=(root/'repos/openvla-oft/pyproject.toml').read_text()
 import re
 deps=re.search(r'dependencies = \[(.*?)\n\]',source,re.S).group(1)

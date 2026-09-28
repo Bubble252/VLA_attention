@@ -552,3 +552,17 @@ PYTHONPATH=src python scripts/validate_p1_report.py \
 - [ ] 附加审计：wrong-word同图缺候选会错误回退wrong-image；此前同图负控结论需重做。V2/V4对冻结merger/input做retention可能只训练projector，正式policy retention梯度必须验证。F1封装仍调用smoke且只用10k子集，不能当完整train、逐step日志及可恢复正式trainer。
 - [x] 三类VLA cache和Plus边界写入 `cache_preparation.md`；当前只准备合同，未生成VLA cache，未运行SAEB/B1–B4。
 - [ ] 下一步：环境安装/下载完成验收 → CPU读取真实episodes和split → 真正B0接口；cache修复与正式VLM训练器并行完善，原目标未完成。
+
+
+## 2026-09-28：VLA 真实数据清单、CPU batch 与原生 forward 接入
+
+- [x] 新goal原文重读；上轮为实际进展，本轮继续，不停止现有4个cache job，也未执行任何GPU任务。
+- [x] VLA隔离环境 `vla_workspace/envs/oft` 安装完成；torch2.2.0+cu121、专用transformers4.40.1、peft0.11.1、TF2.15.0。发现tensorflow-metadata新版本与protobuf冲突，固定metadata1.15.0/protobuf3.20.3后CPU预处理成功；`pip check`无损坏依赖。完整freeze见 `audits/pip_freeze_cpu_verified.txt`。LIBERO需显式PYTHONPATH指向固定repo，配置独立LIBERO_CONFIG_PATH，未修改共享环境。
+- [x] 官方RLDS 16分片逐episode读取全部432条，检查动作/状态finite、边界标识、双相机步数、首末JPEG解码；所有帧内容hash、序列化payload hash均保留。未发现重复轨迹。`inventory_libero_rlds.py`产物在远端 `artifacts/rlds_inventory_20260928`，本地元数据镜像 `experiments/P6-vla-b0-b4/audits/rlds/`。
+- [x] Spatial task0实际45个episodes，按固定hash顺序/seed17分成train27/validation9/offline_eval9。train-only action/proprio q01/q99与stats SHA已记录；不虚构原计划100–200条，不复制episode。该split用于工程验证，正式数据规模仍需审计。
+- [x] `prepare_oft_cpu_batch.py`使用真实train episode、官方RLDSBatchTransform和processor生成输入：pixel_values[1,12,224,224]，proprio[1,8]，actions[1,8,7]，56 action slots；CUDA未初始化。TF与第三方tfrecord protobuf重复注册已通过改用TF自带Example reader修复。预处理为无增强CPU gate，不声称训练增强或rollout已校验。
+- [x] `oft_forward.py`接入官方掩码/隐藏状态切片/连续头L1定义；使用真实官方action head和轻量策略fixture在独立环境CPU测试2 passed，覆盖chunk完整性、policy梯度及截断拒绝。不是7B forward，也不是P1通过。
+- [x] 官方benchmark在CPU枚举spatial task0，真实init states共50、92维，hash inventory已保存。demo与init-state lineage还未确认，不声称rollout与demos物理初始状态无重叠。
+- [x] 数据划分CPU测试2 passed；stage-audit测试2 passed。无GPU smoke/restore/rollout结果。
+- [ ] 权重下载仍不完整：TLS/EOF频繁，HTTP1+断点重试进程PID600493存活；已下载metadata但多个大safetensors仍.partial。不能按目录存在标权重完成，后续按source lock逐项哈希验收。下载通道是SSH反向端口17897，断开后需恢复。
+- [ ] 后续：完成权重→真实B0训练/全状态恢复入口和official rollout wrapper→GPU窗口P1/B0。当前VLM cache已标阶段混入待修复，F1阻断继续有效；原VLM全量目标未完成，不以9952子集代替完整train。

@@ -1,0 +1,41 @@
+{
+  "episode_id": "a6edba7f75caf2b7b7053bbf8a5aac3eca01d271b548b9ed227edf2ed2b6c192",
+  "task": "pick_up_the_black_bowl_between_the_plate_and_the_ramekin_and_place_it_on_the_plate",
+  "source_shard": "/vepfs-mlp2/c20250405/400040/transfer/vla_attention/vla_workspace/data/openvla--modified_libero_rlds/libero_spatial_no_noops/1.0.0/libero_spatial-train.tfrecord-00011-of-00016",
+  "record_index": 20,
+  "manifest_sha256": "695681afb03012bd18c34d09c9a4fbf15ca489605d4463cbf891cd7213bca921",
+  "statistics_sha256": "9905b786cf32f138a4b25d88d2df5e60a20319d825ddf7e5ed4070e4a64b4afb",
+  "shapes": {
+    "pixel_values": [
+      1,
+      12,
+      224,
+      224
+    ],
+    "proprio": [
+      1,
+      8
+    ],
+    "input_ids": [
+      1,
+      92
+    ],
+    "attention_mask": [
+      1,
+      92
+    ],
+    "labels": [
+      1,
+      92
+    ],
+    "actions": [
+      1,
+      8,
+      7
+    ]
+  },
+  "action_slots": 56,
+  "cuda_initialized": false,
+  "preprocessing": "RLDS JPEG decode, Lanczos3 resize224, processor normalization, no augmentation for CPU gate",
+  "next_gate": "not a forward/backward/restore/rollout test"
+}

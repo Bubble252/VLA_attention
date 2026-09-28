@@ -1,0 +1,216 @@
+{
+  "suite": "libero_spatial",
+  "task_order_index": 0,
+  "task_id": 0,
+  "task_name": "pick_up_the_black_bowl_between_the_plate_and_the_ramekin_and_place_it_on_the_plate",
+  "states": [
+    {
+      "init_state_index": 0,
+      "init_state_sha256": "4e3eaf7a315bc3bafb6db4837c8eef0e5f8aea717782a2a3ea33139392d966ed"
+    },
+    {
+      "init_state_index": 1,
+      "init_state_sha256": "6c2936dc25a97728b811f9db579687d011cbd231d5472e985775a67ca9892cf8"
+    },
+    {
+      "init_state_index": 2,
+      "init_state_sha256": "a5d4b6d871eb48c276a3fc8499e1429ec1c59df278466aa82de44a93260087a0"
+    },
+    {
+      "init_state_index": 3,
+      "init_state_sha256": "c12064bdc97da3ba4ca3675548ba9c76ed096ea772bbec9ca9422628c41b1588"
+    },
+    {
+      "init_state_index": 4,
+      "init_state_sha256": "63dbd6b627e35e377a62f3e791055bc9051a74cab6fef9eadce7892671160536"
+    },
+    {
+      "init_state_index": 5,
+      "init_state_sha256": "c9c2f8022034e9a0705daab34a7f5bf9947ac939dfc5cf5a0ab493a377028a02"
+    },
+    {
+      "init_state_index": 6,
+      "init_state_sha256": "784dba596f01025199c62c3e262748c68f1f3b6ff92df2fd36aab8b5263bc0ce"
+    },
+    {
+      "init_state_index": 7,
+      "init_state_sha256": "d297dd693cb3e13a607d16f211730e28c50b463f597f066ef2a424a8a036186c"
+    },
+    {
+      "init_state_index": 8,
+      "init_state_sha256": "3f628d77bb395ff9ff2b248e18e5dea19d9b1103ed48b55df4eafa29188bd9f0"
+    },
+    {
+      "init_state_index": 9,
+      "init_state_sha256": "6ccefe4bd69954c98ddc32f1acdcff81b5a66ed4304391089bbc027172b66d64"
+    },
+    {
+      "init_state_index": 10,
+      "init_state_sha256": "f6ce6f7f25326bedc23933bb436b5f6eb4810cef61184635c75395e557e1808f"
+    },
+    {
+      "init_state_index": 11,
+      "init_state_sha256": "f9b377d4c4ca5e3bef55b3eff2599229c22f2d944cd5df22c9a8b68882d9dc11"
+    },
+    {
+      "init_state_index": 12,
+      "init_state_sha256": "504db0289ad1061538940e63d39bcfc82bf536dbf5f9083a1692a0e3a2852d79"
+    },
+    {
+      "init_state_index": 13,
+      "init_state_sha256": "2fd168faf38ffee7943a97f4f9589b8e4ed4acb89670c3004a6541dcc4925bc6"
+    },
+    {
+      "init_state_index": 14,
+      "init_state_sha256": "a695298e9ef752b05e4d30c817ab1e2061a6136d65242dac7a2cce63f858b9fd"
+    },
+    {
+      "init_state_index": 15,
+      "init_state_sha256": "51f7d2ae92042fec16a54dd5cd6823eac63f9c096a04bae00a5ec737d8db2cd8"
+    },
+    {
+      "init_state_index": 16,
+      "init_state_sha256": "db2c9ab25c6b23526efa6be860e4bd8330fab9a84131628f2dea6fe4062f993d"
+    },
+    {
+      "init_state_index": 17,
+      "init_state_sha256": "cf9d2825f843308d0880ee0d5e3099a43ae2395e616351f6bae4c046dd50198a"
+    },
+    {
+      "init_state_index": 18,
+      "init_state_sha256": "1f130e9178c4924cf8d24e175c2f0573a5e089299ddf6984b71265abf65bd4e0"
+    },
+    {
+      "init_state_index": 19,
+      "init_state_sha256": "18f349fb4d8b52566befcd2a80723d533717d8dd5dada90ecd7721d512b65e32"
+    },
+    {
+      "init_state_index": 20,
+      "init_state_sha256": "79a03d1a76b0b6beb5e3ac797dc63dcd4f8deda96cc70100fd352bf02b8b62b1"
+    },
+    {
+      "init_state_index": 21,
+      "init_state_sha256": "05b91b73c5da09660bb91c279b9ed5a13be98f07fdf979ecda0ec92640d9e331"
+    },
+    {
+      "init_state_index": 22,
+      "init_state_sha256": "e7a1daaec3d35b65f3dbc4b7b981500c8247a321d3c1fea60f245589d7fcc345"
+    },
+    {
+      "init_state_index": 23,
+      "init_state_sha256": "79cdb8ea384ce01c24d656b80a89d1dff625fc8259e77b68d4e206df1c397939"
+    },
+    {
+      "init_state_index": 24,
+      "init_state_sha256": "58fff4a2c49c751e36ac3b459a980c981c8eee95ff4bf8b51fa3f778d8caf6c5"
+    },
+    {
+      "init_state_index": 25,
+      "init_state_sha256": "270c59a4982faf1124a068e1ede6ed6a2e2c4b782d6662152853c8b37308a777"
+    },
+    {
+      "init_state_index": 26,
+      "init_state_sha256": "abcb7b355a728397586ea87e3ff7a8922f27d1ce87137cbb7fad7519c1c8da0b"
+    },
+    {
+      "init_state_index": 27,
+      "init_state_sha256": "87a5c5b1f34db4f44115b14420e64b69ce42fb10bdff86f6fa7d3082cea7030a"
+    },
+    {
+      "init_state_index": 28,
+      "init_state_sha256": "9af4a846b8a8625eabd163110d717eb1cf99be156cae4a8ea5f8eb55b6a7b7ae"
+    },
+    {
+      "init_state_index": 29,
+      "init_state_sha256": "aee904d9b1ab6993ed2d44907c9c93aa6d66f37bc12863a849e8f1608c824304"
+    },
+    {
+      "init_state_index": 30,
+      "init_state_sha256": "60373ae3ea0f921f6e0e7ad9b70c93086584c0e40e2c729d198ac04e6f4741d1"
+    },
+    {
+      "init_state_index": 31,
+      "init_state_sha256": "dca9d9879195a74cffd26499d9ff1d6f566adaf1dbc1b9abe412d55d8e9c1782"
+    },
+    {
+      "init_state_index": 32,
+      "init_state_sha256": "a13fabf87ee32c1993174729953b7a47b46aadc29474f109224017888d72fa80"
+    },
+    {
+      "init_state_index": 33,
+      "init_state_sha256": "7462d09856ec150e6403873bd1497a818d36d6d9175cf9c41697d986fd971fdf"
+    },
+    {
+      "init_state_index": 34,
+      "init_state_sha256": "0fab22e4ac5a4f8f3e5380a56d03d7f2d26c9ed14d4ddd15c3c401ac2756f22b"
+    },
+    {
+      "init_state_index": 35,
+      "init_state_sha256": "da423a72804324ba67dd5ae2aa9cb7e5142796aba92c25c0276ecac12d40f41d"
+    },
+    {
+      "init_state_index": 36,
+      "init_state_sha256": "fe0d28c5f781190e1a52e36fa525ac2eeac39b7ccb9b5baf618c9215bc3e68ed"
+    },
+    {
+      "init_state_index": 37,
+      "init_state_sha256": "8592d46aef5af2e7a2b3b3eefa2116104f427465cf06e6408a4f0b61392ea283"
+    },
+    {
+      "init_state_index": 38,
+      "init_state_sha256": "b9b135d04e69e25d777b4b97c5adc768214d09d4c7752f86468896170603f859"
+    },
+    {
+      "init_state_index": 39,
+      "init_state_sha256": "efff0c45548163d49a2f35590a4a24d26115f4dd8a76ba412dc8e60ba738ce7a"
+    },
+    {
+      "init_state_index": 40,
+      "init_state_sha256": "bc6923b7fe71c729548dee2786142701ea693c2393518b193fe72736fe21e3ad"
+    },
+    {
+      "init_state_index": 41,
+      "init_state_sha256": "cbb7e020f73c995a89981cf99c92ca59344493183d4ffe6ee75840444eeff19f"
+    },
+    {
+      "init_state_index": 42,
+      "init_state_sha256": "82a2bae1656cc86cddc631b84746c5baa9eac8d87f1168ed5b813ccbbb7b8605"
+    },
+    {
+      "init_state_index": 43,
+      "init_state_sha256": "73edd1cd3c0667f1be358d67fcdfc4b560825472796bf6aee53a762ba26a4c66"
+    },
+    {
+      "init_state_index": 44,
+      "init_state_sha256": "e5e5740072f7787db30d3b6108e23c17b2ae6e372c2bd441579d8674e4cc2b2a"
+    },
+    {
+      "init_state_index": 45,
+      "init_state_sha256": "aeed457c3aaa84628169ec809ab31fea7d3baed43d4e0e68970d01485d8b4987"
+    },
+    {
+      "init_state_index": 46,
+      "init_state_sha256": "54b3e75ce4b8126c50bc354ae6c534c6e9c2f6180a86a8cc97100a598c8082f1"
+    },
+    {
+      "init_state_index": 47,
+      "init_state_sha256": "4f5e968e3f8a21ea074562fb9ce67e13dc39cfba572b37e5cc18e15d8f939a1f"
+    },
+    {
+      "init_state_index": 48,
+      "init_state_sha256": "14331e45a001f601d1a68e2824d6d749ce477bcb0c29f127b12d5ac08087d57d"
+    },
+    {
+      "init_state_index": 49,
+      "init_state_sha256": "80d1403d4b3f6adeff4ed42fe0f4a5dc70b570e6d59ae52aa7f0afd3d91944be"
+    }
+  ],
+  "state_dim": 92,
+  "cuda_initialized": false,
+  "status": "inventory_only",
+  "split_claim": "Demo-to-init-state linkage not verified; not declared disjoint from demos",
+  "smoke_indices": [
+    0,
+    1
+  ]
+}
