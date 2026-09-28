@@ -654,5 +654,5 @@ PYTHONPATH=src python scripts/validate_p1_report.py \
 - [x] 远端当前状态复核：LIBERO semantic `76/10080`、失败 `0`；Flickr 修正版四 shard 合计 `382/9952`、失败 `0`；C-RADIO retention 已 `5040/5040` 通过；两张 A100 仍被 cache worker 占用。
 - [x] OpenVLA base `openvla/openvla-7b@47a0ec7...` 的 source-lock 17 个文件完成逐项 SHA 校验；OFT 评测权重仍在镜像分段恢复，未宣布完整。
 - [x] 修正 GPU 资源门禁：B0/P1/rollout 现在要求一张明确的 `CUDA_VISIBLE_DEVICES`、对应 GPU UUID、新鲜（5 分钟内）资源报告和该 GPU 无 compute process；不再错误地阻塞于另一张 GPU 上的 cache。
-- [x] 修正 B0 held-out prediction 选择逻辑与 restore 检查：恢复评估按 episode manifest 选择固定 H=8 窗口，并要求逐元素预测完全一致；新增 7 项 GPU-window 单元测试，连同 P1/launch guard 共 `12 passed`，脚本 py_compile 和 `git diff --check` 通过。
+- [x] 复核 B0 held-out prediction 选择逻辑：已有实现按 manifest 行索引为每个 episode 选择首个 H=8 窗口，本轮保留，未发现需修复的问题。实际修正的是 restore 检查：从允许 `1e-3` 误差收紧为逐元素预测完全一致，并拒绝 shape 不同和非有限值；GPU-window 共 9 个测试用例，连同 P1/launch guard 共 `12 passed`，脚本 py_compile 和 `git diff --check` 通过。
 - [ ] 仍未启动真实 GPU P1/B0：必须等 cache 任务释放一张 GPU、OFT 权重完整校验、cache audit gate 和新鲜 GPU-window artifact 全部满足后再启动。
