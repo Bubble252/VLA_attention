@@ -1,0 +1,10 @@
+{
+  "kind": "semantic",
+  "manifest_sha256": "160324d237884046d0087245bfe0e3273ba68aa232eb78f7c2618a35eeabfa8b",
+  "expected": 16,
+  "valid": 16,
+  "failures": [],
+  "extra_files": [],
+  "passed": true,
+  "content_digest": "abe409f7a698cb1415b0570ec273f2e09f3fff39b516d43009d6d6b928ba4638"
+}

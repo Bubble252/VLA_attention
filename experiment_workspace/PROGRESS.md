@@ -611,3 +611,5 @@ PYTHONPATH=src python scripts/validate_p1_report.py \
 - [x] 后台队列PID651953已部署 `server/run_corrected_cache_queue.sh`：等待明确smoke PID结束→验证16张语义图与retention gate→生成LIBERO全量semantic并重建4个disjoint Flickr shards（新版本目录），最后逐cache验收，不启动B0/学生训练。日志 `vla_workspace/logs/corrected_cache_queue.log`。脚本持有flock；下一次须核验原PID/产物而非重启。
 - [x] 六项CPU检查通过，脚本py_compile/bash-n/diff-check通过。生产与校验脚本在新cache目录运行，旧mixed-stage数据从未用于长训练。
 - [ ] SAEB只准备输入，冻结VLM/标量/层未定；完整原VLM训练目标保留，9952仅先前10k交集，不能冒充完整train。
+
+- [x] 续记：LIBERO semantic smoke已16/16、失败0，逐条验收通过；报告 `audits/cache_v3/semantic_smoke_v3_audit.json`。后台队列已放行LIBERO全量10080语义图及Flickr新版四分片9952图；真实PID从 `vla_workspace/artifacts/semantic_train_task0_v3.pid` 与新Flickr根目录 `worker_pids.txt` 读取，禁止重复启动。正式VLM训练仍不启动。
