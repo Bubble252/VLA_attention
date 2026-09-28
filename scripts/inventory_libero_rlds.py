@@ -103,7 +103,8 @@ def main():
     stats={}
     for name, values in [('action',train_actions),('proprio',train_states)]:
         stats[name]={k:v.tolist() for k,v in {'q01':np.quantile(values,.01,axis=0),
-                     'q99':np.quantile(values,.99,axis=0),'mean':values.mean(0),'std':values.std(0)}.items()}
+                     'q99':np.quantile(values,.99,axis=0),'mean':values.mean(0),'std':values.std(0),
+                     'min':values.min(0),'max':values.max(0)}.items()}
     stats['action']['mask']=[True]*6+[False]
     stats['provenance']={'train_manifest_sha256':hashes['train.jsonl'],'raw_gripper_transform':'1-clip(raw,0,1)',
                          'scope':'selected task train episodes only; not official all-suite statistics'}

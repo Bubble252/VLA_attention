@@ -566,3 +566,14 @@ PYTHONPATH=src python scripts/validate_p1_report.py \
 - [x] 数据划分CPU测试2 passed；stage-audit测试2 passed。无GPU smoke/restore/rollout结果。
 - [ ] 权重下载仍不完整：TLS/EOF频繁，HTTP1+断点重试进程PID600493存活；已下载metadata但多个大safetensors仍.partial。不能按目录存在标权重完成，后续按source lock逐项哈希验收。下载通道是SSH反向端口17897，断开后需恢复。
 - [ ] 后续：完成权重→真实B0训练/全状态恢复入口和official rollout wrapper→GPU窗口P1/B0。当前VLM cache已标阶段混入待修复，F1阻断继续有效；原VLM全量目标未完成，不以9952子集代替完整train。
+
+
+## 2026-09-28：真实 OFT episode dataset 与 B0 训练/恢复入口
+
+- [x] 重读新增goal；上轮是进展。本轮核验四个VLM cache的实际命令行均活跃，未停止/重启/覆盖，未新增GPU作业。
+- [x] `oft_rlds.py`直接读取固定episode清单、校验payload SHA、保留全部H=8窗口，使用官方RLDSBatchTransform/ActionTokenizer/collator。CPU验证train27轨迹→2520 chunks，offline_eval9轨迹→769 chunks；首末批次[2,12,224,224]/[2,8]/[2,8,7]成功。报告 `audits/oft_dataset_cpu_20260928.json`。
+- [x] 发现并补齐官方bounds_q99对常量维度置零要求；train-only stats新增min/max，保留旧版，v2结果在 `artifacts/rlds_inventory_v2_20260928`。远端CPU测试2 passed，其中一项与官方TensorFlow normalization逐值比较。
+- [x] 新增 `run_oft_b0_smoke.py`：读取真实train/eval分离轨迹，原生L1+LoRA/all-linear+action head/proprio，20–50 optimizer updates，每步JSONL；保存adapter、head、proprio、optimizer、scheduler、随机数状态和离线预测，提供新进程restore比较入口。固定模型hash/manifest/stats，显式no augmentation作为smoke差异。尚未运行真实7B模型，未声称P1或恢复成功。
+- [x] 启动器要求新鲜独占GPU窗口和cache验收通过，并在加载权重前查询GPU计算进程；本地拒绝启动测试及episode划分测试共3 passed。当前cache混阶段审计未通过，因此不会意外启动B0。
+- [ ] 新进程恢复目前验证加载和预测一致性，进一步优化器续步等价、真实动作归因P1和官方rollout仍需完成。训练脚本存在不等于B0 gate通过。
+- [ ] 权重下载PID600493命令核验活跃；部分OFT action head/权重片已哈希验证，大文件仍有TLS/EOF失败和.partial。需完成全部source lock验收，不能宣布checkpoint就绪。VLA独立环境CPU准备已可用，GPU仍待窗口。

@@ -1,0 +1,84 @@
+{
+  "train": {
+    "episodes": 27,
+    "valid_chunks": 2520,
+    "first_last_episode_ids": [
+      "a6edba7f75caf2b7b7053bbf8a5aac3eca01d271b548b9ed227edf2ed2b6c192",
+      "1b83230d4426da00ef20da1ee7971e8dfa0fdcfb46a75775eb07b88a26df575f"
+    ],
+    "timesteps": [
+      0,
+      82
+    ],
+    "shapes": {
+      "pixel_values": [
+        2,
+        12,
+        224,
+        224
+      ],
+      "proprio": [
+        2,
+        8
+      ],
+      "input_ids": [
+        2,
+        92
+      ],
+      "attention_mask": [
+        2,
+        92
+      ],
+      "labels": [
+        2,
+        92
+      ],
+      "actions": [
+        2,
+        8,
+        7
+      ]
+    }
+  },
+  "offline_eval": {
+    "episodes": 9,
+    "valid_chunks": 769,
+    "first_last_episode_ids": [
+      "ede081f65a9e086287d829cc19fda9b264702a7739156e55c16eb73753306fe8",
+      "ff9a2b0f8c9bf41134996fd37b54bc79d8bc448a6d8de19863bec49d947e1c1c"
+    ],
+    "timesteps": [
+      0,
+      84
+    ],
+    "shapes": {
+      "pixel_values": [
+        2,
+        12,
+        224,
+        224
+      ],
+      "proprio": [
+        2,
+        8
+      ],
+      "input_ids": [
+        2,
+        92
+      ],
+      "attention_mask": [
+        2,
+        92
+      ],
+      "labels": [
+        2,
+        92
+      ],
+      "actions": [
+        2,
+        8,
+        7
+      ]
+    }
+  }
+}
