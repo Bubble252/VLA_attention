@@ -13,7 +13,8 @@ MODEL=$W/models/openvla--openvla-7b
 LOCK=$W/source_models_20260928.json
 DATA=$W/artifacts/rlds_inventory_v2_20260928
 OUT=$P/results/P6_vla_b0_b4
-P1=$OUT/p1_interface/p1_interface.json
+P1_ROOT=$R/experiment_workspace/results/P6_vla_b0_b4
+P1=$P1_ROOT/p1_interface/p1_interface.json
 TRAIN=$OUT/B0_smoke_seed17
 RESTORE=$OUT/B0_restore_seed17
 ROLLOUT=$OUT/B0_rollout_seed17
@@ -127,7 +128,7 @@ CUDA_VISIBLE_DEVICES=$GPU_INDEX "$PY" "$R/scripts/run_oft_p1_interface.py" \
   --model "$MODEL" --source-lock "$LOCK" \
   --train-manifest "$DATA/train.jsonl" \
   --statistics "$DATA/train_statistics.json" \
-  --gpu-window "$GATE" --output "$(dirname "$P1")"
+  --gpu-window "$GATE" --output "$P1_ROOT/p1_interface"
 test -s "$P1" || fail p1 "report missing"
 grep -q '"status": "passed"' "$P1" || fail p1 "report did not pass"
 

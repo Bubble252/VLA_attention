@@ -64,7 +64,9 @@ def main():
     p.add_argument('--output',type=Path,required=True);a=p.parse_args()
     result=validate(a.manifest,a.cache,a.kind)
     a.output.parent.mkdir(parents=True,exist_ok=True)
-    with a.output.open('x') as f:json.dump(result,f,indent=2)
+    temporary = a.output.with_suffix(a.output.suffix + '.tmp')
+    temporary.write_text(json.dumps(result, indent=2) + '\n')
+    temporary.replace(a.output)
     print(json.dumps(result));return 0 if result['passed'] else 2
 
 
