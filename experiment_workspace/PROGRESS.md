@@ -577,3 +577,13 @@ PYTHONPATH=src python scripts/validate_p1_report.py \
 - [x] 启动器要求新鲜独占GPU窗口和cache验收通过，并在加载权重前查询GPU计算进程；本地拒绝启动测试及episode划分测试共3 passed。当前cache混阶段审计未通过，因此不会意外启动B0。
 - [ ] 新进程恢复目前验证加载和预测一致性，进一步优化器续步等价、真实动作归因P1和官方rollout仍需完成。训练脚本存在不等于B0 gate通过。
 - [ ] 权重下载PID600493命令核验活跃；部分OFT action head/权重片已哈希验证，大文件仍有TLS/EOF失败和.partial。需完成全部source lock验收，不能宣布checkpoint就绪。VLA独立环境CPU准备已可用，GPU仍待窗口。
+
+
+## 2026-09-28：OFT 双向注意力验证、官方 rollout 接口与分段下载
+
+- [x] 原goal文件重读；上轮属实质进展，四个cache worker仍活跃且未改动，没有新增GPU作业。
+- [x] 发现OFT fork的eager仍为因果注意力，SDPA分支才移除三角mask并保留padding mask。B0改为官方fork SDPA；小型Llama CPU测试2 passed：未来token可影响早期token、padding不泄漏；eager作为反证保持因果。没有把eager错误地视为官方OFT等价路径。
+- [x] 新增 `eval_oft_b0_rollout.py`，加载自有adapter/head和train-only stats，调用官方 `run_episode`，保留8步chunk和环境done成功判据；逐步action/reward/done日志，官方吞异常时将episode标为incomplete。smoke训练无随机crop所以此包装器center_crop=False，明确与官方已增强权重评测不同。尚未执行真实rollout。
+- [x] 官方evaluator CPU导入成功，CUDA未初始化；证据 `audits/official_evaluator_import.json`。日志保真及错误传播测试2 passed，launch guard测试1 passed。
+- [x] 新增 `download_verified_ranges.py`，对每段验证HTTP206/Content-Range/长度，确认后才追加并fsync，末尾核对完整SHA；测试2 passed涵盖中断续传、来源变化和hash错误。独立base shard3尝试PID624212已因TLS异常退出，保留已取得8MiB，不把失败或部分内容标成功。原下载PID600493仍活跃，已推进至C-RADIO元数据；大权重仍不完整。
+- [ ] 需要：稳定下载全部权重、GPU窗口真实P1/梯度/优化器恢复/rollout；修复VLM缓存抽取后等价验证和完整train范围仍是原goal必做。本轮仅完成CPU和脚本工作，未完成B0。

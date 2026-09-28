@@ -64,7 +64,7 @@ def main():
     # Native OFT classes use pinned external code, not mutable HF custom-code copying.
     config=OpenVLAConfig.from_pretrained(a.model,local_files_only=True)
     base=OpenVLAForActionPrediction.from_pretrained(a.model,config=config,local_files_only=True,
-              torch_dtype=torch.bfloat16,low_cpu_mem_usage=True,attn_implementation='eager').cuda()
+              torch_dtype=torch.bfloat16,low_cpu_mem_usage=True,attn_implementation='sdpa').cuda()
     base.vision_backbone.set_num_images_in_input(2)
     patch_count=base.vision_backbone.get_num_patches()*2
     if a.restore:
@@ -81,7 +81,7 @@ def main():
     evaluation=EpisodeDataset(a.eval_manifest,a.statistics,a.model)
     metadata={'model_revision':source['revision'],'train_manifest_sha256':sha(a.train_manifest),
               'eval_manifest_sha256':sha(a.eval_manifest),'statistics_sha256':sha(a.statistics),
-              'seed':a.seed,'steps':a.steps,'action_loss':'L1','chunk':8,'attention':'eager',
+              'seed':a.seed,'steps':a.steps,'action_loss':'L1','chunk':8,'attention':'official_fork_sdpa_bidirectional',
               'augmentation':False,'purpose':'B0 engineering smoke, not official full recipe'}
     if json.loads(a.statistics.read_text())['provenance']['train_manifest_sha256'] != metadata['train_manifest_sha256']:
         raise ValueError('Normalization stats were not generated from this training split')
