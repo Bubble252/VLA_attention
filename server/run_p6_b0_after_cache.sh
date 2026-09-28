@@ -6,7 +6,7 @@ set -euo pipefail
 P=/vepfs-mlp2/c20250405/400040/transfer/vla_attention
 R=$P/repo/VLA_attention
 W=$P/vla_workspace
-PY=$P/envs/oft/bin/python
+PY=$W/envs/oft/bin/python
 QUEUE_PID="${QUEUE_PID:-651953}"
 QUEUE_LOG=$W/logs/corrected_cache_queue.log
 MODEL=$W/models/openvla--openvla-7b
