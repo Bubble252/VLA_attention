@@ -9,10 +9,13 @@ from __future__ import annotations
 import argparse
 import json
 import os
+import hashlib
+import time
 from pathlib import Path
 
 
 def main() -> int:
+    os.environ.setdefault('CUBLAS_WORKSPACE_CONFIG', ':4096:8')
     import numpy as np
     import torch
     from diffusers import DDIMInverseScheduler, DDIMScheduler, StableDiffusionPipeline
@@ -33,6 +36,15 @@ def main() -> int:
     p.add_argument("--seed", type=int, default=23)
     args = p.parse_args()
 
+    def hash_file(path):
+        return hashlib.sha256(Path(path).read_bytes()).hexdigest()
+    manifest_sha = hash_file(args.manifest)
+    code_sha = hash_file(__file__)
+    def atomic_json(path, payload):
+        temporary = path.with_suffix(path.suffix + '.tmp')
+        temporary.write_text(json.dumps(payload, indent=2, allow_nan=False) + '\n')
+        temporary.replace(path)
+
     args.cache.mkdir(parents=True, exist_ok=True)
     rows = [json.loads(line) for line in args.manifest.read_text().splitlines() if line.strip()]
     for row in rows:
@@ -48,12 +60,21 @@ def main() -> int:
                     or meta.get('inner_steps') != args.inner_steps
                     or meta.get('guidance_scale') != args.guidance_scale
                     or meta.get('attention_resolution') != args.resolution
+                    or meta.get('phrase_occurrence','first') != row.get('phrase_occurrence','first')
+                    or meta.get('numerics') != 'fp32,deterministic_algorithms,math_sdpa,tf32_off,cublas4096:8'
                     or meta.get('caption') != row['caption'] or meta.get('phrase') != row['phrase']):
                 raise ValueError(f'incompatible existing cache; use a new versioned directory: {existing}')
     failures: list[dict[str, object]] = []
     progress = args.cache / "progress.json"
 
     torch.manual_seed(args.seed)
+    torch.use_deterministic_algorithms(True)
+    torch.backends.cuda.matmul.allow_tf32=False
+    torch.backends.cudnn.allow_tf32=False
+    torch.backends.cudnn.benchmark=False
+    torch.backends.cuda.enable_flash_sdp(False)
+    torch.backends.cuda.enable_mem_efficient_sdp(False)
+    torch.backends.cuda.enable_math_sdp(True)
     pipe = StableDiffusionPipeline.from_pretrained(
         args.model,
         torch_dtype=torch.float32,
@@ -61,6 +82,8 @@ def main() -> int:
         safety_checker=None,
         requires_safety_checker=False,
     ).to("cuda")
+    for module in (pipe.unet, pipe.vae, pipe.text_encoder):
+        module.eval().requires_grad_(False)
     forward = DDIMScheduler.from_config(pipe.scheduler.config)
     inverse = DDIMInverseScheduler.from_config(pipe.scheduler.config)
     original_processors = dict(pipe.unet.attn_processors)
@@ -69,11 +92,13 @@ def main() -> int:
     ).input_ids.cuda()
 
     def write_progress(done: int) -> None:
-        progress.write_text(json.dumps({
+        atomic_json(progress, {
             "total": len(rows), "completed": done, "failed": len(failures),
             "cache": str(args.cache), "seed": args.seed, "steps": args.steps,
-            "inner_steps": args.inner_steps,
-        }, indent=2) + "\n")
+            "inner_steps": args.inner_steps, "updated_at_unix": time.time(),
+            "manifest_sha256": manifest_sha, "extractor_sha256": code_sha,
+        })
+        atomic_json(args.cache/'failures.json',failures)
 
     completed = 0
     write_progress(0)
@@ -98,6 +123,11 @@ def main() -> int:
             )
             phrase_ids = pipe.tokenizer(row["phrase"], add_special_tokens=False)["input_ids"]
             phrase_positions = find_subsequence(tokens.input_ids[0].tolist(), phrase_ids)
+            if row.get('phrase_occurrence')=='last':
+                sequence=tokens.input_ids[0].tolist()
+                matches=[list(range(i,i+len(phrase_ids))) for i in range(len(sequence)-len(phrase_ids)+1)
+                         if sequence[i:i+len(phrase_ids)]==phrase_ids]
+                phrase_positions=matches[-1]
             with torch.no_grad():
                 conditional = pipe.text_encoder(tokens.input_ids.cuda())[0]
                 unconditional = pipe.text_encoder(empty)[0]
@@ -129,6 +159,8 @@ def main() -> int:
             tensors = store.maps.get(args.resolution, [])
             if not tensors:
                 raise ValueError(f"no attention tensors at resolution {args.resolution}")
+            if args.resolution==16 and len(tensors)!=args.steps*5:
+                raise ValueError('SD1.5 capture count differs from audited reconstruction-only layout')
             attention = torch.cat(tensors, dim=0).mean(dim=0)
             spatial = attention[:, phrase_positions].mean(dim=-1).reshape(args.resolution, args.resolution).numpy()
             if not np.isfinite(spatial).all() or (spatial < 0).any() or spatial.sum() <= 0:
@@ -136,21 +168,33 @@ def main() -> int:
             if not np.isfinite(optimized.reconstruction_losses).all():
                 raise ValueError('nonfinite null-text reconstruction loss')
             spatial /= max(float(spatial.sum()), 1e-12)
-            np.save(map_path, spatial)
-            metadata_path.write_text(json.dumps({
+            temporary_map=map_path.with_suffix('.npy.tmp')
+            with temporary_map.open('wb') as f: np.save(f, spatial)
+            temporary_map.replace(map_path)
+            atomic_json(metadata_path, {
                 "method": "ddim_nulltext_fp32_reconstruction_v3", "formal_lavender_exact": False,
                 "capture_stage": "final_reconstruction_only", "gpu_parity_validation": "pending",
                 "sample_id": row["sample_id"], "caption": row["caption"], "phrase": row["phrase"],
                 "phrase_token_positions": phrase_positions, "inversion_steps": args.steps,
+                "phrase_occurrence": row.get('phrase_occurrence','first'),
                 "inner_steps": args.inner_steps, "guidance_scale": args.guidance_scale,
                 "attention_resolution": args.resolution, "seed": args.seed,
                 "attention_tensors": len(tensors),
                 "mean_reconstruction_mse": sum(optimized.reconstruction_losses) / len(optimized.reconstruction_losses),
                 "map_path": str(map_path),
-            }, indent=2) + "\n")
+                "map_sha256": hash_file(map_path), "image_sha256":hash_file(args.dataset_root/row['image_path']),
+                "instruction_sha256":hashlib.sha256(row.get('instruction',row['caption']).encode()).hexdigest(),
+                "manifest_sha256":manifest_sha, "extractor_sha256":code_sha,
+                "teacher_frozen":True,"image_transform":"RGB->PIL resize(512,512),stretch,no_crop",
+                "numerics":"fp32,deterministic_algorithms,math_sdpa,tf32_off,cublas4096:8",
+                "source_provenance":{k:row[k] for k in ('episode_id','timestep','camera','split','role','instruction') if k in row},
+            })
             completed += 1
         except Exception as exc:  # keep the cache job progressing and audit failures
             failures.append({"sample_id": row["sample_id"], "error": repr(exc)})
+            print(json.dumps(failures[-1]),flush=True)
+            if len(failures)>=3 and completed==0:
+                raise RuntimeError('First three samples failed; stop before wasting full batch') from exc
         finally:
             if "store" in locals():
                 store.maps.clear()

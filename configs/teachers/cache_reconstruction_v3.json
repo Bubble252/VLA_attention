@@ -1,0 +1,39 @@
+{
+  "status": "two_sample_parity_passed_dataset_quality_pending",
+  "teacher": "runwayml/stable-diffusion-v1-5",
+  "revision": "451f4fe16113bff5a5d2269ed5ad43b0592e9a14",
+  "method": "ddim_nulltext_fp32_reconstruction_v3",
+  "capture_stage": "final_reconstruction_only",
+  "inversion_steps": 20,
+  "inner_steps": 10,
+  "guidance_scale": 7.5,
+  "attention_resolution": 16,
+  "expected_attention_tensors": 100,
+  "teacher_frozen": true,
+  "numerics": "fp32,deterministic_algorithms,math_sdpa,tf32_off,cublas4096:8",
+  "normalization": "nonnegative spatial mass sum one",
+  "parity": {
+    "reference": "original single-image recipe with identical deterministic backend; extraction algorithm unchanged",
+    "tolerance_rtol": 0.0001,
+    "tolerance_atol": 0.000001,
+    "measured_max_abs_errors": [0.0, 0.0],
+    "report": "experiments/P6-vla-b0-b4/audits/cache_v3/deterministic_parity.json"
+  },
+  "libero": {
+    "task": "pick_up_the_black_bowl_between_the_plate_and_the_ramekin_and_place_it_on_the_plate",
+    "episodes": 27,
+    "split": "train",
+    "frames": 5040,
+    "semantic_maps": 10080,
+    "source_phrase": "the black bowl",
+    "source_occurrence": "first",
+    "target_phrase": "the plate",
+    "target_occurrence": "last",
+    "saeb": "input contract only; no frozen VLM checkpoint selected"
+  },
+  "limitations": [
+    "Old mixed-stage calibration scores are invalid for this recipe; quality must be recalibrated.",
+    "Parity and finite cache are engineering gates, not grounding or action effectiveness evidence.",
+    "9952 Flickr samples are the existing 10k pilot intersection, not the full official train set."
+  ]
+}

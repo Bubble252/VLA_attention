@@ -1,0 +1,10 @@
+{
+  "kind": "retention",
+  "manifest_sha256": "b01fb7082921b91de0847d8283c53b5e183b453dafc4e370e7b13e5a2bf4adf9",
+  "expected": 5040,
+  "valid": 5040,
+  "failures": [],
+  "extra_files": [],
+  "passed": true,
+  "content_digest": "f03a23c066accce4b1a40ada00817b55359c64378e38a811e8f961e1d951e0e0"
+}

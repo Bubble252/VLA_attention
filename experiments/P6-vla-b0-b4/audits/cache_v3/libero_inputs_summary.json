@@ -1,0 +1,9 @@
+{
+  "episodes": 27,
+  "frames": 5040,
+  "semantic_maps": 10080,
+  "train_manifest_sha256": "695681afb03012bd18c34d09c9a4fbf15ca489605d4463cbf891cd7213bca921",
+  "all_valid_h8_frames": true,
+  "camera_count": 2,
+  "phrase_mapping": "task-specific source/target; last target mention, no box supervision"
+}

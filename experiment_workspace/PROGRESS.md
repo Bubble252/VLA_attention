@@ -587,3 +587,27 @@ PYTHONPATH=src python scripts/validate_p1_report.py \
 - [x] 官方evaluator CPU导入成功，CUDA未初始化；证据 `audits/official_evaluator_import.json`。日志保真及错误传播测试2 passed，launch guard测试1 passed。
 - [x] 新增 `download_verified_ranges.py`，对每段验证HTTP206/Content-Range/长度，确认后才追加并fsync，末尾核对完整SHA；测试2 passed涵盖中断续传、来源变化和hash错误。独立base shard3尝试PID624212已因TLS异常退出，保留已取得8MiB，不把失败或部分内容标成功。原下载PID600493仍活跃，已推进至C-RADIO元数据；大权重仍不完整。
 - [ ] 需要：稳定下载全部权重、GPU窗口真实P1/梯度/优化器恢复/rollout；修复VLM缓存抽取后等价验证和完整train范围仍是原goal必做。本轮仅完成CPU和脚本工作，未完成B0。
+
+
+## 2026-09-28：用户授权修正VLM cache并优先生成VLA cache
+
+- 新指令覆盖先前不停止cache的安排：暂停已确认混阶段的旧Flickr批次，保留产物；验证修正版后优先LIBERO训练cache，不运行B0长训练。
+- [ ] 按实际cmdline确认旧PID并保存停止前状态；新任务全部新目录、版本/hash隔离。
+- [ ] SD修复需两条真实样本与单图20×10参考数值对照、重建100 tensors、参数冻结、重复性校验；通过前不生成LIBERO长任务。
+- [ ] 从真实27条train episodes导出双相机帧和source/target phrase，保留原始指令与预处理hash；val/test不混入。
+- [ ] C-RADIO权重校验并生成相同训练观测的patch features；SAEB需明确冻结VLM checkpoint并做机器人观测校准，未满足时只准备输入清单。
+- Git：仅提交脚本/小报告/协议，commit记录修复与生成入口，push到origin main；不提交cache。
+
+
+## 2026-09-28：SD parity修复通过，LIBERO retention全量完成
+
+- [x] 读取最新goal defca5b1；停止旧四PID前已核验命令并存progress，SIGTERM后无残留，旧产物保留且标invalidated_capture_stage；停止证据 `audits/cache_v3/old_flickr_cache_stop_20260928.json`。
+- [x] SD batch改为重建前安装hook、每条结束恢复processor、冻结teacher、原子map/JSON、实时failures、首次连续失败停止。先前两条parity失败（1.3e-4/2.4e-4）；冻结梯度开关单独诊断仍有误差。固定FP32/math SDPA、关闭TF32、deterministic algorithms/CUBLAS后，单图参考与batch两条最大误差均0；维持atol1e-6/rtol1e-4，不放宽阈值。每条100 tensors、MSE有限。
+- [x] 原single-image参考只固定数值backend，算法未替换；两条parity报告已回收。不是Lavender exact，也未重新完成1000图校准；F1训练阻断仍有效。
+- [x] LIBERO task0真实27条train episodes导出所有H8有效timestep，双相机共5040帧；每帧source/target两图=10080条semantic输入，target取instruction最后一次the plate，source为the black bowl。未导出val/test用于训练，图像/manifest SHA绑定。
+- [x] C-RADIOv3-L完整snapshot哈希通过；HF4.40动态加载遗漏递归模块，改为直接import哈希验证的本地HF package，未改上游源码。真实8帧smoke成功且repeatability通过；256输入输出256×1024 patch features，raw RGB/255、bilinear256、模型内部conditioner，无外部mean/std。
+- [x] GPU1 PID647893完成5040/5040 retention缓存；逐条metadata/tensor finite/shape/hash/ID审计有效5040、失败0、额外文件0。artifact `audits/cache_v3/radio_train_v1_audit.json`，内容digest f03a23c066accce4b1a40ada00817b55359c64378e38a811e8f961e1d951e0e0。
+- [ ] LIBERO SD smoke PID648822，16条覆盖2episode×2timestep×2camera×2phrase，当前13/16无失败；等待实际结束后验收，不直接视为完成。
+- [x] 后台队列PID651953已部署 `server/run_corrected_cache_queue.sh`：等待明确smoke PID结束→验证16张语义图与retention gate→生成LIBERO全量semantic并重建4个disjoint Flickr shards（新版本目录），最后逐cache验收，不启动B0/学生训练。日志 `vla_workspace/logs/corrected_cache_queue.log`。脚本持有flock；下一次须核验原PID/产物而非重启。
+- [x] 六项CPU检查通过，脚本py_compile/bash-n/diff-check通过。生产与校验脚本在新cache目录运行，旧mixed-stage数据从未用于长训练。
+- [ ] SAEB只准备输入，冻结VLM/标量/层未定；完整原VLM训练目标保留，9952仅先前10k交集，不能冒充完整train。

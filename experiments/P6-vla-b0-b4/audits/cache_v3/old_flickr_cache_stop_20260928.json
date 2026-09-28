@@ -1,0 +1,122 @@
+[
+  {
+    "pid": 531386,
+    "args": [
+      "/vepfs-mlp2/c20250405/400040/transfer/vla_attention/envs/p1/bin/python",
+      "/vepfs-mlp2/c20250405/400040/transfer/vla_attention/repo/VLA_attention/scripts/run_sd_nulltext_batch.py",
+      "--model",
+      "/vepfs-mlp2/c20250405/400040/transfer/vla_attention/models/teachers/stable-diffusion-v1-5",
+      "--dataset-root",
+      "/vepfs-mlp2/c20250405/400040/transfer/vla_attention/data/flickr30k_entities",
+      "--manifest",
+      "/vepfs-mlp2/c20250405/400040/transfer/vla_attention/tmp/f1_train_cache_splits4_aligned/part0.jsonl",
+      "--cache",
+      "/vepfs-mlp2/c20250405/400040/transfer/vla_attention/teacher_maps/F1_train_sd1_5_nulltext_phrase_10k_seed17_part4_0",
+      "--steps",
+      "20",
+      "--inner-steps",
+      "10",
+      "--seed",
+      "17"
+    ],
+    "progress": {
+      "total": 2488,
+      "completed": 341,
+      "failed": 0,
+      "cache": "/vepfs-mlp2/c20250405/400040/transfer/vla_attention/teacher_maps/F1_train_sd1_5_nulltext_phrase_10k_seed17_part4_0",
+      "seed": 17,
+      "steps": 20,
+      "inner_steps": 10
+    }
+  },
+  {
+    "pid": 531388,
+    "args": [
+      "/vepfs-mlp2/c20250405/400040/transfer/vla_attention/envs/p1/bin/python",
+      "/vepfs-mlp2/c20250405/400040/transfer/vla_attention/repo/VLA_attention/scripts/run_sd_nulltext_batch.py",
+      "--model",
+      "/vepfs-mlp2/c20250405/400040/transfer/vla_attention/models/teachers/stable-diffusion-v1-5",
+      "--dataset-root",
+      "/vepfs-mlp2/c20250405/400040/transfer/vla_attention/data/flickr30k_entities",
+      "--manifest",
+      "/vepfs-mlp2/c20250405/400040/transfer/vla_attention/tmp/f1_train_cache_splits4_aligned/part1.jsonl",
+      "--cache",
+      "/vepfs-mlp2/c20250405/400040/transfer/vla_attention/teacher_maps/F1_train_sd1_5_nulltext_phrase_10k_seed17_part4_1",
+      "--steps",
+      "20",
+      "--inner-steps",
+      "10",
+      "--seed",
+      "17"
+    ],
+    "progress": {
+      "total": 2488,
+      "completed": 341,
+      "failed": 0,
+      "cache": "/vepfs-mlp2/c20250405/400040/transfer/vla_attention/teacher_maps/F1_train_sd1_5_nulltext_phrase_10k_seed17_part4_1",
+      "seed": 17,
+      "steps": 20,
+      "inner_steps": 10
+    }
+  },
+  {
+    "pid": 531390,
+    "args": [
+      "/vepfs-mlp2/c20250405/400040/transfer/vla_attention/envs/p1/bin/python",
+      "/vepfs-mlp2/c20250405/400040/transfer/vla_attention/repo/VLA_attention/scripts/run_sd_nulltext_batch.py",
+      "--model",
+      "/vepfs-mlp2/c20250405/400040/transfer/vla_attention/models/teachers/stable-diffusion-v1-5",
+      "--dataset-root",
+      "/vepfs-mlp2/c20250405/400040/transfer/vla_attention/data/flickr30k_entities",
+      "--manifest",
+      "/vepfs-mlp2/c20250405/400040/transfer/vla_attention/tmp/f1_train_cache_splits4_aligned/part2.jsonl",
+      "--cache",
+      "/vepfs-mlp2/c20250405/400040/transfer/vla_attention/teacher_maps/F1_train_sd1_5_nulltext_phrase_10k_seed17_part4_2",
+      "--steps",
+      "20",
+      "--inner-steps",
+      "10",
+      "--seed",
+      "17"
+    ],
+    "progress": {
+      "total": 2488,
+      "completed": 338,
+      "failed": 0,
+      "cache": "/vepfs-mlp2/c20250405/400040/transfer/vla_attention/teacher_maps/F1_train_sd1_5_nulltext_phrase_10k_seed17_part4_2",
+      "seed": 17,
+      "steps": 20,
+      "inner_steps": 10
+    }
+  },
+  {
+    "pid": 531392,
+    "args": [
+      "/vepfs-mlp2/c20250405/400040/transfer/vla_attention/envs/p1/bin/python",
+      "/vepfs-mlp2/c20250405/400040/transfer/vla_attention/repo/VLA_attention/scripts/run_sd_nulltext_batch.py",
+      "--model",
+      "/vepfs-mlp2/c20250405/400040/transfer/vla_attention/models/teachers/stable-diffusion-v1-5",
+      "--dataset-root",
+      "/vepfs-mlp2/c20250405/400040/transfer/vla_attention/data/flickr30k_entities",
+      "--manifest",
+      "/vepfs-mlp2/c20250405/400040/transfer/vla_attention/tmp/f1_train_cache_splits4_aligned/part3.jsonl",
+      "--cache",
+      "/vepfs-mlp2/c20250405/400040/transfer/vla_attention/teacher_maps/F1_train_sd1_5_nulltext_phrase_10k_seed17_part4_3",
+      "--steps",
+      "20",
+      "--inner-steps",
+      "10",
+      "--seed",
+      "17"
+    ],
+    "progress": {
+      "total": 2488,
+      "completed": 341,
+      "failed": 0,
+      "cache": "/vepfs-mlp2/c20250405/400040/transfer/vla_attention/teacher_maps/F1_train_sd1_5_nulltext_phrase_10k_seed17_part4_3",
+      "seed": 17,
+      "steps": 20,
+      "inner_steps": 10
+    }
+  }
+]

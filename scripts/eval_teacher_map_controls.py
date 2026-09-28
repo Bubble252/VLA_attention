@@ -63,15 +63,30 @@ def main():
     for index, row in enumerate(rows):
         by_image.setdefault(row.get("image_id"), []).append(index)
     wrong_word = []
+    wrong_word_rows = []
     for index, row in enumerate(rows):
-        peers = [j for j in by_image.get(row.get("image_id"), []) if j != index]
-        wrong_word.append(maps[peers[0] if peers else (index + 1) % len(maps)])
+        peers = [j for j in by_image.get(row.get("image_id"), []) if j != index
+                 and rows[j].get('phrase','').casefold()!=row.get('phrase','').casefold()]
+        if peers:
+            wrong_word.append(maps[peers[0]])
+            wrong_word_rows.append(row)
     rng = np.random.default_rng(a.seed)
-    controls = {"correct": maps, "wrong_word_same_image": wrong_word, "wrong_image": maps[1:] + maps[:1], "shifted": [np.roll(x, 3, axis=1) for x in maps],
+    controls = {"correct": maps, "shifted": [np.roll(x, 3, axis=1) for x in maps],
                 "random": [rng.random(x.shape) for x in maps]}
     summary = {name: mean([score(grid, row) for grid, row in zip(values, rows)]) for name, values in controls.items()}
+    wrong_image_pairs=[]
+    for i,row in enumerate(rows):
+        peer=next((j for j in list(range(i+1,len(rows)))+list(range(i))
+                   if rows[j].get('image_id')!=row.get('image_id')),None)
+        if peer is not None:wrong_image_pairs.append(score(maps[peer],row))
+    summary['wrong_image']=mean(wrong_image_pairs) if wrong_image_pairs else None
+    summary['wrong_word_same_image']=mean([score(grid,row) for grid,row in zip(wrong_word,wrong_word_rows)]) if wrong_word_rows else None
+    summary['correct_on_wrong_word_subset']=mean([score(maps[next(i for i,r in enumerate(rows) if r['sample_id']==row['sample_id'])],row) for row in wrong_word_rows]) if wrong_word_rows else None
     a.output.parent.mkdir(parents=True, exist_ok=True)
-    a.output.write_text(json.dumps({"n": len(rows), "seed": a.seed, "summary": summary}, indent=2) + "\n")
+    with a.output.open('x') as f:
+        json.dump({"n":len(rows),"seed":a.seed,"summary":summary,
+                   "control_counts":{"wrong_word_same_image":len(wrong_word_rows),"wrong_image":len(wrong_image_pairs)},
+                   "wrong_word_status":"available_subset" if wrong_word_rows else "unavailable_no_same_image_different_phrase"},f,indent=2)
     print(json.dumps(summary, indent=2))
 
 
