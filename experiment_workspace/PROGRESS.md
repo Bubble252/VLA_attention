@@ -656,3 +656,13 @@ PYTHONPATH=src python scripts/validate_p1_report.py \
 - [x] 修正 GPU 资源门禁：B0/P1/rollout 现在要求一张明确的 `CUDA_VISIBLE_DEVICES`、对应 GPU UUID、新鲜（5 分钟内）资源报告和该 GPU 无 compute process；不再错误地阻塞于另一张 GPU 上的 cache。
 - [x] 复核 B0 held-out prediction 选择逻辑：已有实现按 manifest 行索引为每个 episode 选择首个 H=8 窗口，本轮保留，未发现需修复的问题。实际修正的是 restore 检查：从允许 `1e-3` 误差收紧为逐元素预测完全一致，并拒绝 shape 不同和非有限值；GPU-window 共 9 个测试用例，连同 P1/launch guard 共 `12 passed`，脚本 py_compile 和 `git diff --check` 通过。
 - [ ] 仍未启动真实 GPU P1/B0：必须等 cache 任务释放一张 GPU、OFT 权重完整校验、cache audit gate 和新鲜 GPU-window artifact 全部满足后再启动。
+
+## 2026-09-28：B0 完整 checkpoint 与 rollout 证据链
+
+- [x] 重新读取 goal，上一轮为实际进展。本轮确认原 cache/下载 PID 仍活跃，LIBERO semantic `80/10080`、失败 `0`；无重启、无新 GPU 任务。
+- [x] 审计官方 OFT forward/predict_action 与 run_episode：保持官方 8×7 L1、双相机、proprio、SDPA；官方 environment seed=0，记录 policy seed=17，避免配置默认 seed=7 与实际策略种子混淆。当前数据 proprio 无常量维度，train normalization 与官方 evaluator 在 q01 端点比较一致；该检查范围不是全数据归一化验证。
+- [x] 原 B0 恢复只校验 state.pt，补充 checkpoint_manifest.json：校验 LoRA 权重和配置、state、offline 预测、config、continuation reference；缺失或被修改的组件拒绝恢复。head/proprio/optimizer/scheduler/RNG 位于已校验的 state.pt。
+- [x] rollout 现在要求 --source-lock 和 --restore-report-dir；重新校验 base revision、完整 checkpoint、相同 checkpoint 的 exact prediction restore 与 optimizer continuation。记录 evaluator Git SHA/源码 SHA、policy/env seed、init inventory SHA、stats SHA。reset/set_init_state 等外层异常也写 incomplete，不当有效失败率。
+- [x] 本地相关测试 `21 passed, 1 skipped`（本机缺 PEFT）；101 独立 OFT 环境 CPU `7 passed`，其中真实 PEFT 0.11.1 BF16 LoRA save/load 后预测完全相等、AdamW 下一步参数 digest 相等。该小模型 CPU 证据不能替代 7B 新进程 GPU restore。
+- [x] 改动上传 101 后对应文件 SHA 一致；补充飞书定向同步入口 --vla-progress-only，仅同步 P6 协议、准备文档与 PROGRESS。同步是否成功以实际云端读回为准。
+- [ ] 真实 P1/B0/restore/rollout 尚待独占 GPU；新缓存继续运行，完整目标未完成。Git 仅提交本轮实现/测试/进度和同步入口，不包含权重/cache/环境。

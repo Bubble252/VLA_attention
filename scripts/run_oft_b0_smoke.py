@@ -47,6 +47,8 @@ def main():
     train_ids={json.loads(x)['episode_id'] for x in a.train_manifest.read_text().splitlines()}
     eval_ids={json.loads(x)['episode_id'] for x in a.eval_manifest.read_text().splitlines()}
     if train_ids & eval_ids:raise ValueError('Train/eval episodes overlap')
+    from vla_attention.oft_checkpoint import verify_checkpoint,seal_checkpoint
+    restored_digest=verify_checkpoint(a.restore) if a.restore else None
     import numpy as np
     import torch
     from peft import LoraConfig,get_peft_model,PeftModel
@@ -124,6 +126,7 @@ def main():
         (a.output/'restore_report.json').write_text(json.dumps({'max_prediction_error':max_error,
                 'optimizer_state_entries':len(optimizer.state),'scheduler_state':scheduler.state_dict(),
                 'saved_step':state['step'],'restored':True,'prediction_equality':'exact',
+                'checkpoint_manifest_sha256':restored_digest,
                 'eval_predictions':actual},indent=2)+'\n')
         # Reset RNG after evaluation; match the uninterrupted continuation from
         # the saved state, including optimizer/scheduler and data cursor.
@@ -135,7 +138,8 @@ def main():
                               lambda:forward(batch)['loss'])
         expected_probe=json.loads((a.restore/'continuation_reference.json').read_text())
         if probe!=expected_probe:raise ValueError('Optimizer continuation differs after restore')
-        (a.output/'continuation_report.json').write_text(json.dumps({'passed':True,'probe':probe},indent=2)+'\n')
+        (a.output/'continuation_report.json').write_text(json.dumps({'passed':True,'probe':probe,
+                'checkpoint_manifest_sha256':restored_digest},indent=2)+'\n')
         return
     order=list(range(len(train)));random.Random(a.seed).shuffle(order)
     for m in [policy,head,proprio]:m.train()
@@ -167,6 +171,7 @@ def main():
     probe=optimizer_probe([('policy',policy),('head',head),('proprio',proprio)],optimizer,scheduler,
                           lambda:forward(batch)['loss'])
     (a.output/'continuation_reference.json').write_text(json.dumps(probe,indent=2)+'\n')
+    seal_checkpoint(a.output)
     print('B0_TRAIN_FINISHED_RESTORE_AND_ROLLOUT_PENDING',flush=True)
 
 

@@ -20,6 +20,7 @@ parser = argparse.ArgumentParser()
 parser.add_argument('--nearest-only', action='store_true', help='Sync only new three-method analysis and its two updated entry documents')
 parser.add_argument('--blindvla-only', action='store_true', help='Sync BlindVLA code audit and its updated study/plan documents')
 parser.add_argument('--teachers-only', action='store_true', help='Sync the multi-diffusion teacher registry and affected plans')
+parser.add_argument('--vla-progress-only', action='store_true', help='Sync VLA protocol, preparation and current experiment progress')
 args = parser.parse_args()
 TOOL = ROOT.parent / 'doc-sync-main'
 sys.path.insert(0, str(TOOL / 'src'))
@@ -115,6 +116,12 @@ if args.teachers_only:
         (ROOT / 'paper_draft/05_experiments_and_expected_conclusions.md', 'RGgnwMcVUi4xd5klGX9cAThinBc', '05_experiments_and_expected_conclusions'),
     ]
 manifest = json.loads(manifest_path.read_text()) if manifest_path.exists() else {}
+if args.vla_progress_only:
+    targets = [
+        (ROOT / 'experiments/P6-vla-b0-b4/protocol.md', 'KodSw9aQXiCNygkmN9bcOWU3nrd', 'P6-VLA实验协议'),
+        (ROOT / 'experiments/P6-vla-b0-b4/non_gpu_preparation.md', 'KodSw9aQXiCNygkmN9bcOWU3nrd', 'P6-VLA准备与GPU验收'),
+        (ROOT / 'experiment_workspace/PROGRESS.md', 'KodSw9aQXiCNygkmN9bcOWU3nrd', 'VLM-VLA实验进度'),
+    ]
 for local, folder, title in targets:
     source = local.read_text()
     expected = text_blocks(MarkdownToFeishu().parse(source))
@@ -155,7 +162,7 @@ for local, folder, title in targets:
 # and no need to expose the machine-readable/full-source files in Feishu.
 latest = json.loads(cfg_path.read_text())
 tasks = latest.setdefault('tasks', [])
-for local, folder, title in [t for t in targets if t[0].parent == review]:
+for local, folder, title in [t for t in targets if t[0].parent == review or args.vla_progress_only]:
     tasks[:] = [t for t in tasks if t.get('local') != str(local)]
     tasks.append({'note': title, 'local': str(local),
                   'cloud': manifest[str(local.relative_to(ROOT))]['document'],

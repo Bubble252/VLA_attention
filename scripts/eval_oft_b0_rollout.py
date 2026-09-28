@@ -6,6 +6,7 @@ official source, redefine success, or silently swallow environment exceptions.
 import argparse
 import hashlib
 import json
+import subprocess
 from pathlib import Path
 
 
@@ -31,15 +32,21 @@ class LoggedEnv:
 def main():
     p=argparse.ArgumentParser()
     p.add_argument('--model',type=Path,required=True)
+    p.add_argument('--source-lock',type=Path,required=True)
     p.add_argument('--checkpoint',type=Path,required=True)
+    p.add_argument('--restore-report-dir',type=Path,required=True)
     p.add_argument('--statistics',type=Path,required=True)
     p.add_argument('--init-inventory',type=Path,required=True)
     p.add_argument('--gpu-window',type=Path,required=True)
     p.add_argument('--output',type=Path,required=True)
     a=p.parse_args()
-    from vla_attention.oft_preflight import require_gpu_window
+    from vla_attention.oft_preflight import require_gpu_window,verify_snapshot
+    from vla_attention.oft_checkpoint import require_restored_checkpoint
     require_gpu_window(a.gpu_window)
     if a.output.exists():raise FileExistsError(a.output)
+    source=verify_snapshot(a.model,a.source_lock)
+    checkpoint_digest=require_restored_checkpoint(a.checkpoint,a.restore_report_dir)
+    require_gpu_window(a.gpu_window)
     import torch
     import numpy as np
     import tensorflow as tf
@@ -52,6 +59,7 @@ def main():
     from prismatic.models.action_heads import L1RegressionActionHead
     from prismatic.models.projectors import ProprioProjector
     from libero.libero import benchmark
+    from experiments.robot.libero import run_libero_eval as evaluator
     from experiments.robot.libero.run_libero_eval import GenerateConfig,run_episode
     from experiments.robot.libero.libero_utils import get_libero_env
     # Only our locally saved, hash-verified state is deserialized.
@@ -59,6 +67,8 @@ def main():
     if sha(a.checkpoint/'state.pt')!=(a.checkpoint/'state.sha256').read_text().strip():
         raise ValueError('Checkpoint hash mismatch')
     state=torch.load(a.checkpoint/'state.pt',map_location='cpu')
+    if state['metadata']['model_revision']!=source['revision']:
+        raise ValueError('Rollout base model differs from B0 training')
     if sha(a.statistics)!=state['metadata']['statistics_sha256']:
         raise ValueError('Rollout normalization differs from B0 training')
     torch.manual_seed(state['metadata']['seed']);np.random.seed(state['metadata']['seed'])
@@ -81,9 +91,20 @@ def main():
     initial=suite.get_task_init_states(inventory['task_id'])
     config=GenerateConfig(pretrained_checkpoint=str(a.model),task_suite_name=inventory['suite'],
                           unnorm_key='project_train',num_open_loop_steps=8,center_crop=False,
-                          use_proprio=True,num_images_in_input=2,use_wandb=False)
+                          use_proprio=True,num_images_in_input=2,use_wandb=False,
+                          seed=state['metadata']['seed'])
     # B0 smoke had no random crop: disable optional evaluation center crop.
     a.output.mkdir(parents=True)
+    evaluator_path=Path(evaluator.__file__).resolve()
+    evaluator_revision=subprocess.check_output(['git','-C',str(evaluator_path.parent),
+                                               'rev-parse','HEAD'],text=True).strip()
+    (a.output/'config.json').write_text(json.dumps({
+        'checkpoint_manifest_sha256':checkpoint_digest,'model_revision':source['revision'],
+        'statistics_sha256':sha(a.statistics),'init_inventory_sha256':sha(a.init_inventory),
+        'evaluator_git_sha':evaluator_revision,'evaluator_file_sha256':sha(evaluator_path),
+        'policy_seed':config.seed,'environment_seed':0,
+        'center_crop':False,'num_open_loop_steps':8,
+        'purpose':'two initial states engineering smoke, not benchmark score'},indent=2)+'\n')
     results=[]
     for i in inventory['smoke_indices']:
         expected=next(x['init_state_sha256'] for x in inventory['states'] if x['init_state_index']==i)
@@ -104,6 +125,11 @@ def main():
                 text=(a.output/f'episode_{i}.txt').read_text()
                 result['evaluation_complete']='Episode error:' not in text and wrapped.error is None
                 results.append(result)
+        except Exception as exc:
+            results.append({'init_state_index':i,'init_state_sha256':expected,'success':None,
+                            'evaluation_complete':False,'error':repr(exc)})
+            (a.output/'summary.json').write_text(json.dumps(results,indent=2)+'\n')
+            raise
         finally:env.close()
     (a.output/'summary.json').write_text(json.dumps(results,indent=2)+'\n')
     if not all(r['evaluation_complete'] for r in results):raise RuntimeError('Rollout incomplete; inspect episode logs')
