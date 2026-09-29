@@ -50,3 +50,19 @@ experiment_workspace/results/cache_safety_snapshots/20260929T155338Z/
 ```
 
 正式 semantic cache 仍以原 worker 的输出为准；pilot 通过前，任何“去重后全量完成”的说法均无效。
+
+### Pilot runner 与 reference 选择
+
+当前 pilot 所需的小型工具已经独立于生产脚本：
+
+- `scripts/prepare_semantic_shared_pilot.py`：按共享 teacher 计算键分组，并可要求 source/target 两个 row-wise reference 都已存在；
+- `scripts/run_sd_nulltext_shared_pair_pilot.py`：只允许写入包含 `pilot` 的新目录，拒绝正式 semantic/Flickr 路径；
+- `scripts/compare_semantic_shared_pilot.py`：CPU 侧比较 shared map 与已有 row-wise map，默认 `atol=1e-6`、`rtol=1e-4`。
+
+当前 ready pilot 目录为：
+
+```text
+vla_workspace/experiment_workspace/results/cache_safety_snapshots/20260929T155338Z/semantic_shared_pilot_v4_pair_parity_seed17_ready/
+```
+
+它只选择已有完整 reference 的 2 个二元组。runner 尚未加载 SD 或运行 GPU；必须等现有正式 worker 释放独占 GPU 后才可执行。执行前仍要重新检查 PID、GPU 空闲状态和 ready manifest SHA。

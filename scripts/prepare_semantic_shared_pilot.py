@@ -60,6 +60,11 @@ def main() -> int:
     parser.add_argument("--manifest", type=Path, required=True)
     parser.add_argument("--output-dir", type=Path, required=True)
     parser.add_argument("--pairs", type=int, default=2)
+    parser.add_argument(
+        "--reference-cache",
+        type=Path,
+        help="Only select pairs whose row-wise .npy and .json reference files already exist.",
+    )
     args = parser.parse_args()
 
     rows = [
@@ -79,9 +84,19 @@ def main() -> int:
         groups[shared_key(row)].append(row)
 
     candidates: list[tuple[tuple[Any, ...], list[dict[str, Any]]]] = []
+    reference_filtered = 0
     for key, members in groups.items():
         roles = {str(member.get("role")) for member in members}
         if len(members) == 2 and roles == {"source", "target"}:
+            if args.reference_cache is not None:
+                complete = all(
+                    (args.reference_cache / f"{member['sample_id']}.npy").is_file()
+                    and (args.reference_cache / f"{member['sample_id']}.json").is_file()
+                    for member in members
+                )
+                if not complete:
+                    reference_filtered += 1
+                    continue
             candidates.append((key, members))
     candidates.sort(key=lambda item: str(item[1][0].get("sample_id")))
     if len(candidates) < args.pairs:
@@ -129,6 +144,8 @@ def main() -> int:
         "row_count": len(rows),
         "shared_group_count": len(groups),
         "valid_source_target_pair_count": len(candidates),
+        "reference_cache": str(args.reference_cache) if args.reference_cache else None,
+        "reference_filtered_pair_count": reference_filtered,
         "selected_pair_count": len(selected),
         "key_excludes": ["phrase", "phrase_occurrence", "role", "sample_id", "token_span"],
         "member_metadata_retained": [
