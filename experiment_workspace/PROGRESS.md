@@ -718,3 +718,12 @@ PYTHONPATH=src python scripts/validate_p1_report.py \
 - [x] deterministic parity、semantic smoke strict audit、C-RADIOv3 full audit、OpenVLA base SHA audit 均存在；full semantic/Flickr audits 和 `cache_queue_success.json` 仍缺失，因此 B0 等待器继续等待。
 - [x] 两张 GPU 均由 cache worker 使用，约 `49.4 GiB/GPU`、利用率约 `99%`。
 - [ ] 按当前吞吐估算，semantic 剩余约 `128 小时`、Flickr 剩余约 `119 小时`，即约 `5–5.5 天`；这是动态估算，不是完成承诺。
+
+## 2026-09-29：cache 耗时原因与加速边界审计
+
+- [x] 只读检查 `run_sd_nulltext_batch.py` 确认：每条记录包含 VAE encode、条件/无条件 text encode、20-step DDIM inversion、20×10-step null-text optimization，以及最后 20-step reconstruction；当前 SD1.5 16×16 capture 每条还要保留 100 个 attention tensors。因此它不是一次普通模型前向，每条记录约 240 次 UNet 时间步计算，单 worker 约数分钟是预期行为。
+- [x] LIBERO semantic manifest 的 `10080` 条记录来自 `5040` 个观测 × `source/target` 两个 phrase。远端 manifest 审计显示恰好 `5040` 个二元重复组：同一 image/caption/camera/episode/timestep 只改变 phrase/role。当前通用脚本对二元组重复执行完整 inversion 与 null-text optimization。
+- [x] Flickr 四个 manifest 分片没有 image/caption 重复组，因此不能直接获得同样的去重收益。
+- [x] 当前每张 GPU 运行 4 个 worker、每个约 `12.35 GiB`，GPU 利用率约 `99–100%`；继续增加并发预计只会争用显存/调度，不能作为已验证加速方案。
+- [x] 为保持已通过 parity 的正式配方，不能直接把 inversion/inner steps 改小、切换 fp16/flash attention 或放宽 deterministic backend；这些都会产生新的 teacher revision，不能混入当前正式 cache。
+- [ ] 合规的潜在加速方案是“semantic 二元组共享一次 inversion/optimization/final attention tensors，再分别按 source/target token span 导出两张 map”，理论上可把 semantic 计算量接近减半；但必须先做独立 2 组 parity（逐 map 数值、metadata、失败恢复）再替换正式 worker。当前未贸然打断队列。
