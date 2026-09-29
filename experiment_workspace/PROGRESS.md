@@ -749,3 +749,9 @@ PYTHONPATH=src python scripts/validate_p1_report.py \
   `git add experiment_workspace/PROGRESS.md experiments/P6-vla-b0-b4/cache_preparation.md experiment_workspace/results/cache_safety_snapshots/20260929T155338Z`
   `git commit -m "audit: snapshot cache state before semantic dedup pilot"`
   `git push origin main`
+
+### 2026-09-29 16:00 UTC / 2026-09-30 00:00 Asia/Shanghai 续检
+
+- [x] 重新确认 queue `752941`、B0 waiter `752942` 和 8 个 SD worker 均存活；两张 A100 仍约 `49.4 GiB/GPU`、利用率 `99–100%`，未启动 pilot/P1/B0。
+- [x] 当前 worker progress：LIBERO semantic `1758/10080`、Flickr SD1.5 `2211/9952`，失败均为 `0`；相较安全快照仍有增长，因此没有把连接/读取异常误判为任务终止。
+- [x] 当前可执行的 pilot 仍仅是 CPU 侧 manifest；GPU parity 必须等现有 worker 释放独占 GPU，且只能写版本化新目录。
