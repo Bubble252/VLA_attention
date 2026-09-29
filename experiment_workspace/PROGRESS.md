@@ -690,3 +690,12 @@ PYTHONPATH=src python scripts/validate_p1_report.py \
 - [x] B0 自动等待器绑定 queue PID `752941`，当前持续记录 `WAIT_CACHE_QUEUE`，未加载 7B、未启动训练。
 - [x] OpenVLA B0 初始化基座 `openvla/openvla-7b@47a0ec7fc4ec123775a391911046cf33cf9ed83f` 已逐项检查预期大小和 SHA256；三个 safetensors 与 tokenizer.model 全部通过。证据：`vla_workspace/artifacts/openvla_base_source_audit.json`。目录中遗留 `.partial` 文件不参与模型加载，也不被 source audit 当作完成文件。
 - [ ] 仍待：semantic `10080/10080`、Flickr `9952/9952` 完成并生成全部 audit；随后等待独占 GPU，执行真实 7B P1、30-step B0、独立进程 restore/optimizer continuation、offline action prediction 和两个固定 init state 的官方 rollout。
+
+## 2026-09-29：101 cache 运行快照
+
+- [x] 只读核验 `vla101`：cache queue PID `752941`、B0 等待器 PID `752942`、8 个 SD worker 均存活；没有启动第二套队列，也没有启动 P1/B0。
+- [x] LIBERO semantic cache 当前 `906/10080`（约 `8.99%`），失败 `0`；四个分片均持续更新。
+- [x] Flickr SD1.5 reconstruction v3 当前 `1360/9952`（约 `13.67%`），失败 `0`；四个分片均持续更新。
+- [x] deterministic parity、LIBERO semantic smoke strict audit、C-RADIOv3 `5040/5040` audit 和 OpenVLA base SHA audit 仍在位；full semantic/Flickr audit 和 `cache_queue_success.json` 尚未生成，因此 B0 等待器继续安全等待。
+- [x] 两张 GPU 仍由 8 个 SD worker 占用（约 `49.4 GiB/GPU`，利用率约 `99–100%`）；OpenVLA 7B 未加载，B0 尚未消耗 GPU。
+- [ ] 若按最近约 11 小时的约 `65–70 records/hour` 粗略外推，剩余 cache 仍可能需要约 `5–6 天`；该估算会随 worker 吞吐变化，不作为完成时间承诺。
