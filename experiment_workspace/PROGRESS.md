@@ -727,3 +727,20 @@ PYTHONPATH=src python scripts/validate_p1_report.py \
 - [x] 当前每张 GPU 运行 4 个 worker、每个约 `12.35 GiB`，GPU 利用率约 `99–100%`；继续增加并发预计只会争用显存/调度，不能作为已验证加速方案。
 - [x] 为保持已通过 parity 的正式配方，不能直接把 inversion/inner steps 改小、切换 fp16/flash attention 或放宽 deterministic backend；这些都会产生新的 teacher revision，不能混入当前正式 cache。
 - [ ] 合规的潜在加速方案是“semantic 二元组共享一次 inversion/optimization/final attention tensors，再分别按 source/target token span 导出两张 map”，理论上可把 semantic 计算量接近减半；但必须先做独立 2 组 parity（逐 map 数值、metadata、失败恢复）再替换正式 worker。当前未贸然打断队列。
+
+## 2026-09-29：semantic cache 安全增量审计与去重 pilot 前置
+
+- [x] 按安全增量规范完成远端只读快照，快照时间为 `20260929T155338Z`（UTC），远端路径：
+  `vla_workspace/experiment_workspace/results/cache_safety_snapshots/20260929T155338Z/`。
+  快照包含当前 PID/command、GPU 状态、semantic/Flickr progress、failure 清单、manifest SHA256、文件名清单和 cache 数量统计；未停止任何进程，未删除、移动或覆盖任何已有 map/metadata。
+- [x] 当前 queue `752941`、B0 waiter `752942`、8 个 SD worker 均仍存活；两张 A100 各约使用 `49.4 GiB/80 GiB`，GPU 利用率约 `100%`。因此本轮不启动额外 GPU pilot，也不打断现有 worker。
+- [x] 快照时的进度为：LIBERO semantic 分片进度以 `progress_semantic_part*.json` 为准（aggregate `progress.json` 不是可靠的多 worker 汇总）；Flickr 四片分别 `521/2488`、`580/2488`、`521/2488`、`580/2488`，合计 `2202/9952`，失败均为 `0`。快照前后 worker 仍在更新，未见停滞证据。
+- [x] 对 semantic manifest 做 CPU 侧共享计算键审计：`10080` 行恰好组成 `5040` 个二元重复组，每组共享 image/caption/camera/episode/timestep/teacher/数值配置，仅 role/phrase/sample_id 不同；没有把 Flickr manifest 的无重复结构错误套用到 LIBERO。审计证据：
+  `experiment_workspace/results/cache_safety_snapshots/20260929T155338Z/semantic_manifest_audit.json`。
+- [x] 去重策略仍保持数学定义不变：同一次 full-caption inversion/null-text/final reconstruction capture 之后，按 source/target 的独立 token span 导出两张 map；phrase occurrence、token span、role、sample_id 和 provenance 继续分别写入 metadata。不得因去重改变 FP32、20 steps、inner_steps=10、CFG=7.5、16×16、100 tensors 或 extractor revision。
+- [ ] 尚未执行 GPU pilot/parity：原因是两张 GPU 被正式 cache worker 占满，且安全规范要求 parity 前不得停止现有 worker。下一次有独占 GPU 后，只能在版本化新目录执行 2 个 source/target pair pilot；旧正式目录仍保持 immutable。
+- [ ] parity 未通过前不得切换正式 semantic queue；parity 通过后也只生成切换/回滚方案，不自动删除旧 cache，不自动修改 Flickr、LIBERO C-RADIO 或 B0 waiter。
+- Git：本轮只允许提交 snapshot 索引、审计报告、文档和小型脚本；禁止提交 cache、checkpoint、数据和环境。建议 commit：
+  `git add experiment_workspace/PROGRESS.md experiments/P6-vla-b0-b4/cache_preparation.md experiment_workspace/results/cache_safety_snapshots/20260929T155338Z`
+  `git commit -m "audit: snapshot cache state before semantic dedup pilot"`
+  `git push origin main`
