@@ -698,4 +698,4 @@ PYTHONPATH=src python scripts/validate_p1_report.py \
 - [x] Flickr SD1.5 reconstruction v3 当前 `1360/9952`（约 `13.67%`），失败 `0`；四个分片均持续更新。
 - [x] deterministic parity、LIBERO semantic smoke strict audit、C-RADIOv3 `5040/5040` audit 和 OpenVLA base SHA audit 仍在位；full semantic/Flickr audit 和 `cache_queue_success.json` 尚未生成，因此 B0 等待器继续安全等待。
 - [x] 两张 GPU 仍由 8 个 SD worker 占用（约 `49.4 GiB/GPU`，利用率约 `99–100%`）；OpenVLA 7B 未加载，B0 尚未消耗 GPU。
-- [ ] 若按最近约 11 小时的约 `65–70 records/hour` 粗略外推，剩余 cache 仍可能需要约 `5–6 天`；该估算会随 worker 吞吐变化，不作为完成时间承诺。
+- [ ] 根据上一快照 `2026-09-28 23:49 UTC` 到本快照 `2026-09-29 03:07 UTC` 的实际增量，semantic 与 Flickr 各约 `225 records/hour`；按当前速率估算，semantic 剩余约 `41 小时`、Flickr 剩余约 `38 小时`。这是运行速率估算，不是完成时间承诺，worker 重启或异常会改变它。
