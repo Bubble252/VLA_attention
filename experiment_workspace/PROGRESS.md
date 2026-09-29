@@ -767,3 +767,10 @@ PYTHONPATH=src python scripts/validate_p1_report.py \
 - [x] 重新确认 queue `752941`、B0 waiter `752942` 和 8 个 SD worker 均存活；两张 A100 仍约 `49.4 GiB/GPU`、利用率 `99–100%`，未启动 pilot/P1/B0。
 - [x] 当前 worker progress：LIBERO semantic `1758/10080`、Flickr SD1.5 `2211/9952`，失败均为 `0`；相较安全快照仍有增长，因此没有把连接/读取异常误判为任务终止。
 - [x] 当前可执行的 pilot 仍仅是 CPU 侧 manifest；GPU parity 必须等现有 worker 释放独占 GPU，且只能写版本化新目录。
+
+### 2026-09-29：是否暂停 101 正式 cache 的决策
+
+- [x] 最新只读复核：queue `752941`、B0 waiter `752942`、semantic/Flickr workers 和 shared-pilot waiter `1170653` 均存活；两张 A100 仍约 `49.4 GiB`、利用率 `99–100%`。semantic aggregate 约 `1784/10080`、Flickr 约 `2237/9952`，失败均为 `0`，进度仍在增长。
+- [x] 决策：当前不暂停正式 cache。原因是现有 row-wise queue 没有错误或停滞证据；只停止单个 worker 会让 queue 的 `wait` 返回失败，无法产生正式 success receipt；为了获得独占 GPU，通常还需停止同一 GPU 上的多个 semantic/Flickr worker，短期会损失约一半吞吐，但 full grouped production runner、全量审计和 rollback 还未完成，暂停的收益尚未被验证。
+- [x] 继续保留 shared-pilot waiter；它只等待自然释放的独占 GPU，不抢占正式任务。优先完成 CPU-only grouped runner/审计；只有 pilot parity 通过且有可回滚的全量 grouped runner 后，才重新评估是否做受控 shard handoff。
+- [ ] 只有出现以下任一条件才考虑主动暂停：progress 文件超过两个连续观测周期不更新；failure/OOM/NaN 出现；或 grouped 全量 runner、manifest、audit 和恢复命令已经通过 CPU gate。任何暂停前必须新建 snapshot，并整体停止 queue/相关 worker，禁止只杀单个子进程。
