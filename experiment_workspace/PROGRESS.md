@@ -738,6 +738,11 @@ PYTHONPATH=src python scripts/validate_p1_report.py \
 - [x] 对 semantic manifest 做 CPU 侧共享计算键审计：`10080` 行恰好组成 `5040` 个二元重复组，每组共享 image/caption/camera/episode/timestep/teacher/数值配置，仅 role/phrase/sample_id 不同；没有把 Flickr manifest 的无重复结构错误套用到 LIBERO。审计证据：
   `experiment_workspace/results/cache_safety_snapshots/20260929T155338Z/semantic_manifest_audit.json`。
 - [x] 去重策略仍保持数学定义不变：同一次 full-caption inversion/null-text/final reconstruction capture 之后，按 source/target 的独立 token span 导出两张 map；phrase occurrence、token span、role、sample_id 和 provenance 继续分别写入 metadata。不得因去重改变 FP32、20 steps、inner_steps=10、CFG=7.5、16×16、100 tensors 或 extractor revision。
+- [x] 在不占 GPU 的情况下生成了 2 个 source/target pair 的隔离 pilot manifest，输出目录为：
+  `vla_workspace/experiment_workspace/results/cache_safety_snapshots/20260929T155338Z/semantic_shared_pilot_v4_pair_parity_seed17/`。
+  该 manifest 只描述待运行的 pilot，不包含任何 map，也没有写入正式 cache；远端 extractor SHA 为
+  `133aa87877e58f3403ffad68505405107dc42346575a682b29e449f7758fd501`。
+- [x] 对 Flickr 四个 aligned manifest 做了 CPU 侧重复审计：`9952` 行、`9952` 个 `(image, caption)` 组，重复组为 `0`。因此当前只考虑 LIBERO semantic 的二元组共享，不对 Flickr 强行去重。
 - [ ] 尚未执行 GPU pilot/parity：原因是两张 GPU 被正式 cache worker 占满，且安全规范要求 parity 前不得停止现有 worker。下一次有独占 GPU 后，只能在版本化新目录执行 2 个 source/target pair pilot；旧正式目录仍保持 immutable。
 - [ ] parity 未通过前不得切换正式 semantic queue；parity 通过后也只生成切换/回滚方案，不自动删除旧 cache，不自动修改 Flickr、LIBERO C-RADIO 或 B0 waiter。
 - Git：本轮只允许提交 snapshot 索引、审计报告、文档和小型脚本；禁止提交 cache、checkpoint、数据和环境。建议 commit：
