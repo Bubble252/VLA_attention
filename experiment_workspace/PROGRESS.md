@@ -750,6 +750,10 @@ PYTHONPATH=src python scripts/validate_p1_report.py \
   `compare_semantic_shared_pilot.py`。runner 有三重保护：输出路径必须含 `pilot`、拒绝
   `semantic_train_task0_v3`/Flickr formal root、manifest 必须为 `pilot_shared_groups.jsonl`；本轮只做了
   `py_compile`、`--help` 和 SHA 校验，没有启动模型。
+- [x] 新增并启动 `server/run_semantic_shared_pilot_when_idle.sh`，远端 launcher PID 为 `1170653`。
+  waiter 只轮询真实 `nvidia-smi` compute-app 空闲状态，不停止、不重启、不修改任何正式 worker；空闲 GPU
+  出现后才在 ready pilot 目录运行 2 组 shared pilot，再调用 CPU parity comparator。当前日志已确认处于
+  `SHARED_PILOT_WAIT_IDLE_GPU`。
 - [x] 对 Flickr 四个 aligned manifest 做了 CPU 侧重复审计：`9952` 行、`9952` 个 `(image, caption)` 组，重复组为 `0`。因此当前只考虑 LIBERO semantic 的二元组共享，不对 Flickr 强行去重。
 - [ ] 尚未执行 GPU pilot/parity：原因是两张 GPU 被正式 cache worker 占满，且安全规范要求 parity 前不得停止现有 worker。下一次有独占 GPU 后，只能在版本化新目录执行 2 个 source/target pair pilot；旧正式目录仍保持 immutable。
 - [ ] parity 未通过前不得切换正式 semantic queue；parity 通过后也只生成切换/回滚方案，不自动删除旧 cache，不自动修改 Flickr、LIBERO C-RADIO 或 B0 waiter。

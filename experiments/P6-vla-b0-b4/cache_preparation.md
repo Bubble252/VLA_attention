@@ -66,3 +66,8 @@ vla_workspace/experiment_workspace/results/cache_safety_snapshots/20260929T15533
 ```
 
 它只选择已有完整 reference 的 2 个二元组。runner 尚未加载 SD 或运行 GPU；必须等现有正式 worker 释放独占 GPU 后才可执行。执行前仍要重新检查 PID、GPU 空闲状态和 ready manifest SHA。
+
+为避免人工轮询遗漏，已部署 `server/run_semantic_shared_pilot_when_idle.sh`。它只在正式 SD worker
+释放真实 compute GPU 后启动 pilot；GPU 全忙时只等待，不会抢占或停止任何生产进程。pilot 完成后只生成
+`semantic_pair_parity.json`，不会自动切换正式 semantic queue，也不会删除旧 cache。远端节点重启后需要重新核验
+`launcher.pid`、waiter 日志和 pilot 输出。
