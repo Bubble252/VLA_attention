@@ -721,7 +721,7 @@ PYTHONPATH=src python scripts/validate_p1_report.py \
 
 ## 2026-09-29：cache 耗时原因与加速边界审计
 
-- [x] 只读检查 `run_sd_nulltext_batch.py` 确认：每条记录包含 VAE encode、条件/无条件 text encode、20-step DDIM inversion、20×10-step null-text optimization，以及最后 20-step reconstruction；当前 SD1.5 16×16 capture 每条还要保留 100 个 attention tensors。因此它不是一次普通模型前向，每条记录约 240 次 UNet 时间步计算，单 worker 约数分钟是预期行为。
+- [x] 只读检查 `run_sd_nulltext_batch.py` 确认：每条记录包含 VAE encode、条件/无条件 text encode、20-step DDIM inversion、20×10-step null-text optimization，以及最后 20-step reconstruction；按代码计数为约 `20 + 20×(1+10+1) + 20 = 280` 次 UNet 调用，其中 200 次带梯度优化，当前 SD1.5 16×16 capture 每条还要保留 100 个 attention tensors。因此它不是一次普通模型前向，单 worker 约数分钟是预期行为。
 - [x] LIBERO semantic manifest 的 `10080` 条记录来自 `5040` 个观测 × `source/target` 两个 phrase。远端 manifest 审计显示恰好 `5040` 个二元重复组：同一 image/caption/camera/episode/timestep 只改变 phrase/role。当前通用脚本对二元组重复执行完整 inversion 与 null-text optimization。
 - [x] Flickr 四个 manifest 分片没有 image/caption 重复组，因此不能直接获得同样的去重收益。
 - [x] 当前每张 GPU 运行 4 个 worker、每个约 `12.35 GiB`，GPU 利用率约 `99–100%`；继续增加并发预计只会争用显存/调度，不能作为已验证加速方案。
