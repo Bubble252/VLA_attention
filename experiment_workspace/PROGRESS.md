@@ -709,3 +709,12 @@ PYTHONPATH=src python scripts/validate_p1_report.py \
 - [ ] 以已观测约 `66 records/hour` 粗略估计，剩余 semantic 约 `139 小时`、Flickr 约 `130 小时`；cache 队列按最慢的 semantic 估算，约还需 `5–6 天`。该估算不包含异常、节点回收或吞吐变化。
 - [ ] cache 完成后，自动步骤是：全量 audit（分钟级）→ 独占 GPU 的真实 P1 → 30-step B0 smoke → 新进程 restore/offline prediction → 两个官方 rollout。这个链路是工程 gate，不是完整 B1–B4 VLA 训练。
 - [ ] 当前 goal 明确禁止启动 B1–B4、ALN/SAEB、DROID、LIBERO-Plus 训练和真机；因此“完整 VLA 研究训练”没有在当前队列中排期，需等 B0 gate 报告后另行冻结。
+
+## 2026-09-29：101 cache 最新只读快照
+
+- [x] 14:09 UTC（上海时间 22:09）核验：queue PID `752941`、B0 等待器 PID `752942` 和 8 个 SD worker 仍存活；未启动第二套队列、P1 或 B0。
+- [x] LIBERO semantic cache：`1635/10080`（`16.22%`），失败 `0`；Flickr SD1.5 reconstruction v3：`2088/9952`（`20.98%`），失败 `0`。
+- [x] 相比 03:17 UTC 快照，约 10.86 小时新增 semantic `717`、Flickr `716`，实测吞吐约 `66 records/hour`；worker progress 文件最近均有更新，未见停滞证据。
+- [x] deterministic parity、semantic smoke strict audit、C-RADIOv3 full audit、OpenVLA base SHA audit 均存在；full semantic/Flickr audits 和 `cache_queue_success.json` 仍缺失，因此 B0 等待器继续等待。
+- [x] 两张 GPU 均由 cache worker 使用，约 `49.4 GiB/GPU`、利用率约 `99%`。
+- [ ] 按当前吞吐估算，semantic 剩余约 `128 小时`、Flickr 剩余约 `119 小时`，即约 `5–5.5 天`；这是动态估算，不是完成承诺。
