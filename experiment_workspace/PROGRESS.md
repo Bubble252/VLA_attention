@@ -1028,3 +1028,10 @@ PYTHONPATH=src python scripts/validate_p1_report.py \
 - [x] 核对 B0 offline、B0 restore、B1、B2、B3、B4 的远端真实结果路径，见 `experiment_workspace/vla_result_index_20261006.md`。
 - [x] 确认 B1 当前结果使用 C-RADIO manifest `2c472004...`；B2–B4 使用 semantic manifest `d7660c9c...`。
 - [ ] 这些结果仍是 preflight/interface smoke；没有正式 LIBERO 成功率、OOD 或方法优越性结论。
+
+## 2026-10-06：VLA 本地合同回归复核
+
+- [x] 命令：`PYTHONPATH=. pytest -q tests/test_vla_local_pipeline.py tests/test_validate_vla_config.py tests/test_plugin_contract.py`。
+- [x] 结果：`18 passed, 4 skipped`；测试覆盖本地 episode manifest、VLA 配置校验和插件合同。
+- [x] 首次未设置 `PYTHONPATH` 的收集失败属于环境路径问题，未修改代码；设置仓库根目录后测试通过。
+- [ ] 该测试只验证本地代码合同，不替代 101 上的正式训练或 LIBERO rollout。
