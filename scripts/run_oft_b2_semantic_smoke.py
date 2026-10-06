@@ -30,7 +30,9 @@ def main():
     by_key={(r['episode_id'],int(r['timestep']),r['camera'],r['role']):r for r in sem_rows}
     if len(by_key)!=len(sem_rows): raise ValueError('duplicate semantic cache keys')
     for r in sem_rows[:2]:
-        if r.get('attention_resolution')!=16 or r.get('seed')!=17 or r.get('teacher_frozen') is not True: raise ValueError('unexpected semantic cache contract')
+        side=a.semantic_root / r['output_file'].replace('.npy','.json')
+        meta=json.loads(side.read_text())
+        if meta.get('attention_resolution')!=16 or meta.get('seed')!=17 or meta.get('teacher_frozen') is not True: raise ValueError('unexpected semantic cache contract')
     train_ids={json.loads(x)['episode_id'] for x in a.train_manifest.read_text().splitlines() if x.strip()}; eval_ids={json.loads(x)['episode_id'] for x in a.eval_manifest.read_text().splitlines() if x.strip()}
     if train_ids & eval_ids: raise ValueError('train/eval overlap')
     import numpy as np, torch
