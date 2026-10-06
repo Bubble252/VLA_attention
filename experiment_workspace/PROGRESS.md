@@ -837,3 +837,13 @@ PYTHONPATH=src python scripts/validate_p1_report.py \
 - [ ] 重要边界：本轮 `A_act` 来自当前 chunk action loss，具备输出条件性；language support 采用 source/target map 的并集代理，尚非按 LIBERO 弱阶段标签构建的逐时刻 source→mixed→target phase support。因此只能称为动态 attribution 接口 smoke，不能声称完整 phase transition 已验证。
 - [ ] B3 脚本已提交为 `03b4f9e`，远端已上传且编译通过；GitHub push 遇 TLS handshake failure，需恢复网络后推送 commit。
 - [ ] 下一步准备 B4 组合 smoke（B1 retention + B2 semantic + B3 containment）；仍是 20-step engineering gate，不进入长训练。
+
+## 2026-10-06：B4 combined interface smoke
+
+- [x] 新增并上传 `scripts/run_oft_b4_combo_smoke.py`，组合 C-RADIO retention、SD semantic attribution 和 action-conditioned containment；不修改任何 cache/B0/B1/B2/B3 结果。
+- [x] 使用 GPU 0、seed=17、20 steps、lambda_retention=0.05、lambda_semantic=0.10、lambda_containment=0.02 运行通过。
+- [x] 结果目录：`/vepfs-mlp2/c20250405/400040/transfer/vla_attention/results/P6_vla_b0_b4/B4_combined_interface_seed17`；日志：`vla_workspace/logs/b4_combined_interface_seed17.log`。
+- [x] 20/20 steps action/retention/semantic/containment/total loss 与梯度均 finite；A_act 和 semantic support 均为 `[1,512]`；C-RADIO projector shape 为 `2176→1024`；teacher frozen。
+- [ ] B4 与 B3 一样使用 source/target semantic map 并集作为 support proxy，尚未使用正式 LIBERO phase label；因此只是组合接口 smoke，不是最终方法或性能结果。
+- [x] B0、B1、B2、B3、B4 的独立工程 smoke 现在均有通过证据；没有启动任何长训练。
+- [ ] 下一步：冻结 B0–B4 正式配置和 control matrix（wrong-map、random-map、raw-attention proxy、retention-only、semantic-only），然后再进入正式小规模/全量训练；继续记录每个 run 的 config/manifest/Git SHA。
