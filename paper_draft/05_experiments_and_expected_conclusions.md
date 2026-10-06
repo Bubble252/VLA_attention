@@ -18,11 +18,12 @@ B1  DB-style intermediate patch feature alignment
 B2  fixed best-single diffusion T_sem → A_lang
 B3  B1 + B2
 B4  B3 + D0 soft action-evidence leakage constraint
+B5  B3 + D0-CF counterfactual action-evidence support (candidate; only after offline gate)
 ```
 
-所有组固定 backbone/checkpoint、训练 episodes、train/val/test split、LoRA、action head、action chunk、图像增强、优化步数和随机种子；教师额外前向、离线 map 生成和二阶梯度成本单独报告。B1 的代码实现参照 BlindVLA，若未完整修复其 projector/optimizer/恢复链路，只写 `DB-style inspired baseline`。
+所有组固定 backbone/checkpoint、训练 episodes、train/val/test split、LoRA、action head、action chunk、图像增强、优化步数和随机种子；教师额外前向、离线 map 生成和二阶梯度成本单独报告。B1 的代码实现参照 BlindVLA，若未完整修复其 projector/optimizer/恢复链路，只写 `DB-style inspired baseline`。B5 不是首轮必需组：只有冻结 B0 产生的动作条件 patch-occlusion 图在不同 mask 算子下稳定、且能区分正确动作与错动作/背景控制时，才进入训练比较。
 
-判定顺序：先以 P4 的 VLM grounding 决定是否把 best-single `T_sem` 接入 VLA；再以动作输出归因、目标/背景干预和 ID/OOD 动作指标判断 B4 是否超过 B3。若 B4 只令图更集中、却不改善干预一致性或 OOD，则不能作为主贡献。若 B1 已经覆盖 B3/B4 的收益，论文主张退回 representation retention；若 B2/B3 有收益而 B1 无收益，才说明词级空间教师值得保留。
+判定顺序：先以 P4 的 VLM grounding 决定是否把 best-single `T_sem` 接入 VLA；再以动作输出归因、目标/背景干预和 ID/OOD 动作指标判断 B4 是否超过 B3。若 B4 只令图更集中、却不改善干预一致性或 OOD，则不能作为主贡献。B5 检验动作条件反事实证据能否有依据地扩展语言实体区域，覆盖夹爪、接触边缘或目标开口等非名词线索；它必须通过正确动作、错动作、随机 patch、背景 patch、mask 算子控制，并在动作相关指标上优于 B4。若该 gate 失败，patch occlusion 只保留为评测干预，不当作训练教师。若 B1 已经覆盖 B3/B4 的收益，论文主张退回 representation retention；若 B2/B3 有收益而 B1 无收益，才说明词级空间教师值得保留。
 
 ## 5.1 实验总表
 
@@ -125,6 +126,28 @@ VLM 主表的 V1--V4 使用图像 caption SFT，而不把 Entities box 或 refer
 
 完整 Lavender / BlindVLA 源码比较安排在 F1 后：当前阶段只采用其已审计且可迁移的机制。Lavender exact 需要显式 cross-attention VLM，BlindVLA exact 需要 OpenVLA/OFT policy/action benchmark；把任一源码强行直接迁移到 Qwen caption F0 会混淆学生图定义或任务层级，不能作为公平结论。
 
+### 5.0 最终冻结协议：主次指标、选择时点和结论层级
+
+正式主矩阵固定为：
+
+```text
+V0 = 原始 Qwen checkpoint，仅评测
+V1 = 完整 Flickr30k caption SFT
+V2 = V1 + 冻结 DINOv2 ViT-L/14 retention
+V3 = V1 + 单一 best-single T_sem → A_lang
+V4 = V2 + 同一 T_sem → A_lang
+```
+
+V3/V1 和 V4/V2 是唯一主比较。正确教师、错词、错图、随机图和 raw-attention proxy 是机制对照；DVD-style feature distillation、完整 BlindVLA policy、teacher ensemble 和其他 loss family 放在独立消融/附录。VLM 主矩阵不使用动作标签、`A_act` 或 VLA success。
+
+正式训练预算冻结为完整有效 train manifest 的 1 epoch、seed 17/29/41、无 test-based early stopping。选择 1 epoch 的工程理由是固定一次完整数据遍历和相同更新预算，而不是声称它是最优 epoch 数；若所有组在 epoch 末共同 underfit，只执行预先登记的全组 2-epoch sensitivity run。teacher 在正式训练前用约 1000 张独立 validation calibration 图选择，候选为 SD1.5、PixArt-α、PixArt-Σ、Playground-v2.5，按 pointing、mass/soft-IoU、无效词率和跨 seed 稳定性排序，只选一个 best-single。test、RefCOCOg、OOD 和下游能力分数不得参与 teacher 或阈值选择。
+
+主指标是 Flickr30k Entities phrase pointing；mass-in-box、soft-IoU、calibrated IoU、top-k IoU、entropy、增强一致性、patch intervention agreement、官方 caption/VQA/OCR/幻觉 benchmark、RefCOCOg 和 visual OOD 全部记录。正式 benchmark 使用官方 split、官方输入格式和官方 evaluator。成功分四级：主指标显著且达到预设实用增量；主指标不劣但收敛/总成本改善；几何增益有限但正确 teacher、干预和 OOD 机制证据成立；能力 benchmark 在不损伤 grounding 的情况下有稳定提升。任何意外指标提升保留并解释，但不能替换主判定。
+
+这也给出 VLM→VLA 的论文叙事：VLM 证明语言条件空间归因是可迁移的监督接口；VLA 将同一接口接到 action-loss gradient×activation，检验 `A_act` 是否落在 `A_lang` 目标区域并随阶段转移。LIBERO 负责机制和闭环，LIBERO-Plus/LIBERO-PRO 负责可控 OOD，DROID 负责真实离线泛化，SimplerEnv 负责视觉/语义保留诊断，RoboTwin 后置。首轮不增加额外 benchmark。
+
+跨模型声明只在 Qwen 与一个通过 P1 的非 Qwen 骨干（优先 LLaVA-OneVision，否则 Prismatic）都完成 V1/V3 同协议复现后成立；只有 Qwen 时，论文只能声称 Qwen 实例验证。
+
 ## 5.1.1 OOD 假设与分维度报告
 
 论文不声称解决所有 OOD。D0 的可检验假设仅针对语言无关视觉捷径与语言空间重新 grounding：背景/光照/干扰物变化时保持动作稳定，目标对象/属性/位置/语言变化时相应改变动作。
@@ -168,6 +191,32 @@ Don't Blind 现为本阶段重点参照。加入 **原始 checkpoint（仅评估
 - 只做 latent/aggregation 或只做 phase/pose proxy 的替代解释；
 - action expert 蒸馏负控；
 - wrong phase、wrong horizon、wrong action、random teacher。
+
+### 借鉴机制的最小可执行消融
+
+这些机制不能一次性叠加；每个机制先作为独立对照或诊断，再决定是否进入后续阶段。
+
+| 机制 | 首次出现 | 实现 | 要回答的问题 | 是否进入主方法 |
+|---|---|---|---|---|
+| BlindVLA retention drift | B1/G1 | 记录层级 feature drift、collapse、sink mass、VL-Think 保留；后期可做 drift-weighted `L_ret` | 语义/动作增益是否只是视觉表征保持 | 否，B1 是强 baseline |
+| LIT paired budget | G1 | 共享初始化、数据、action head、训练步数和 evaluator | 比较是否公平 | 是评测规则，不是 loss |
+| LIT task-preserving visual intervention | G1/G2 | distractor、blur、lighting/background/camera 改变，instruction/state 不变 | 无关视觉变化是否改变动作 | 否，机制评测 |
+| LIT goal-changing intervention | G1/G2 | 保持图像和 state，只改变目标语言 | 模型是否响应真正的目标变化 | 否，机制评测 |
+| Next Forcing multi-layer attribution | layer ablation | 固定早/中/后层聚合 `A_lang/A_act` | 单层选择是否导致归因不稳定 | 否，稳定性消融 |
+| `E-LIT-prior` | G1 通过后 | image-free action prior 后接视觉训练 | 收益来自 action prior 还是空间归因 | 否，独立 baseline |
+| `R_future` | G2 通过后 | short/mid/long future attribution，wrong-future 负控 | 当前动作归因是否具有未来一致性 | 后期 WAM/VAM 扩展 |
+
+禁止首轮同时使用 retention、semantic、phase、future 和 pose 五类损失。否则即使 success 上升，也不能判断提升来自哪条机制链路。
+
+### 推荐的主方法版本
+
+```text
+Ours-1: action objective + T_sem -> A_lang + L_sem + D0 A_act containment
+Ours-2: Ours-1 + BlindVLA-style L_ret
+Ours-3: Ours-2 + R_future consistency
+```
+
+Ours-1 是主方法候选；Ours-2 只用于证明语义归因在视觉表征保持之上仍有增量；Ours-3 只在 WAM/VAM 后期扩展。完整 LIT latent bottleneck、完整 Next Forcing MCP、EEF 高斯动作 teacher 和多 teacher ensemble 不进入首轮主方法。
 
 ## 5.3 指标
 
@@ -215,3 +264,7 @@ Don't Blind 现为本阶段重点参照。加入 **原始 checkpoint（仅评估
 | SpikingBrain / 后置扩展 | 待测 | 待测 | 后置 | 后置 | 后置 | 待测 |
 
 所有“预期”在实际结果前都保持为假设，不能写成已验证结论。
+
+### VLA 当前工程证据边界（2026-10-06）
+
+缓存与 B0 的工程链路已经打通：三类 teacher cache 通过审计，OpenVLA/OFT P1、30-step action smoke、独立 checkpoint restore 和官方 LIBERO episode loop 均可运行。B0 未充分训练 checkpoint 的两个 rollout 为 0/2，不能作为方法性能结论。当前证据只支持“训练与评测接口可复现、归因与 teacher cache 可以接入”，尚不支持“语义归因改善 VLA 成功率”。严格 same-image phrase-role swap、面积匹配随机图、正式 matched B0–B4 训练和三 seed 统计仍是机制与性能结论的前置条件。

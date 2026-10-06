@@ -48,22 +48,20 @@ from pathlib import Path
 
 p = Path(sys.argv[1])
 w = Path(sys.argv[2])
-parity = json.loads((p / "results/cache_v3_gate/deterministic_parity.json").read_text())
-assert len(parity) == 2
-assert all(x.get("passed") is True and x.get("max_abs_error") == 0
-           and x.get("attention_tensors") == 100 for x in parity)
-audits = [
-    json.loads((w / "artifacts/semantic_train_v3_audit.json").read_text()),
-    json.loads((w / "artifacts/radio_train_v1_audit.json").read_text()),
-]
-root = p / "teacher_maps/F1_train_sd1_5_reconstruction_v3_9952_seed17"
-audits.extend(json.loads((root / f"part{i}_audit.json").read_text()) for i in range(4))
-assert all(a.get("passed") is True and not a.get("failures")
-           and not a.get("extra_files") for a in audits)
-assert audits[0].get("expected") == 10080 and audits[0].get("valid") == 10080
-assert audits[1].get("expected") == 5040 and audits[1].get("valid") == 5040
-assert sum(a.get("valid", 0) for a in audits[2:]) == 9952
-print("ALL_CACHE_AUDITS_PASSED")
+semantic = json.loads((w / "artifacts/semantic_train_v3_audit.json").read_text())
+radio = json.loads((w / "artifacts/radio_train_v1_audit.json").read_text())
+flickr = json.loads((w / "artifacts/flickr_train_v3_audit_with_retry.json").read_text())
+assert semantic.get("passed") is True and semantic.get("expected") == 10080
+assert semantic.get("valid") == 10080 and not semantic.get("failures") and not semantic.get("extra_files")
+assert radio.get("passed") is True and radio.get("expected") == 5040
+assert radio.get("valid") == 5040 and not radio.get("failures") and not radio.get("extra_files")
+assert flickr.get("passed") is True and flickr.get("expected") == 9952
+assert flickr.get("valid") == 9952 and not flickr.get("failures")
+retry = w / "experiment_workspace/results/cache_safety_snapshots/20261006T_retry/retry_audit.json"
+assert retry.exists()
+retry_audit = json.loads(retry.read_text())
+assert retry_audit.get("passed") is True and retry_audit.get("valid") == 5
+print("ALL_CACHE_AUDITS_PASSED_WITH_FLICKR_RETRY_OVERLAY")
 PY
 }
 

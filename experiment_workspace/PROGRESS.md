@@ -869,3 +869,19 @@ PYTHONPATH=src python scripts/validate_p1_report.py \
 - [x] 本地/远端 `scripts/run_oft_controls_smoke.py` 已扩展 `role_swapped_same_image` 和 `area_matched_random` 选项，文件 SHA256=`d5ea548afa9bdac3d70ae53af763a52cd03b5c0f635f3fd69cb4b7cffa729bb7`；因远端旧执行器仍调用旧参数集合，本轮未把修正版控制冒充为已完成结果。
 - [ ] 正式训练前必须在新结果目录完成修正版 `role_swapped_same_image` 和 `area_matched_random`，并采用相同 sampled observations 的 paired 20–50 step smoke；随后至少在固定 validation 控制集上报告 paired teacher-map metrics。
 - [ ] 在修正版 controls 完成前，配置中的 `same_image_wrong_word` 和 `area_matched_random` 仍是预注册目标，不是已通过证据；B0–B4 只能进入更大规模训练准备，不能宣称 VLA 机制 gate 已通过。
+
+## 2026-10-06：修复 cache audit gate 并完成独立 B0 driver
+
+- [x] 2026-10-06 20:03（Asia/Shanghai）SSH `vla101` 恢复；hostname=`di-20260613120619-84fwm`。只读核验确认无 cache worker、B0 或 control 进程残留，GPU 0 可用。
+- [x] 三类 cache 当前权威审计：LIBERO semantic `10080/10080`、Flickr SD1.5 overlay `9952/9952`（原始分片仍保留 5 个失败，5 条 retry overlay 独立保存）、C-RADIO `5040/5040`；所有正式 audit `passed=true`、failure/extra 文件为 0。manifest SHA：semantic=`d7660c9c8286483ebeeafee2d8ff2100dce99ddc9151b35f4beb03c3e3fb87fe`，radio=`b01fb7082921b91de0847d8283c53b5e183b453dafc4e370e7b13e5a2bf4adf9`，Flickr 按四个 part manifest 分列保存，retry audit `valid=5`。
+- [x] 定位 B0 旧 gate 错误：driver 仍强制读取已不存在/不适用的 `results/cache_v3_gate/deterministic_parity.json` 和原始 Flickr `part*_audit.json`，导致已通过 overlay 审计的 cache 被错误阻塞。
+- [x] 最小修复 `server/run_p6_b0_after_cache.sh` 的 `verify_cache_audits()`：改为读取 semantic/radio audit、`flickr_train_v3_audit_with_retry.json` 和 5 条 retry audit；不修改 cache 内容、teacher、lambda 或实验定义。脚本 SHA=`93e7799542923936391fc5b3e5860c23b337b3da5589439c7c18b20a6fa351a2`，bash -n 与远端独立 Python gate 均通过。
+- [x] 发现原 driver 的 P1 输出目录已存在；为避免覆盖，直接在远端生成版本化副本 `server/run_p6_b0_after_cache_driver_20261006.sh`，输出改为 `P6_vla_b0_b4_driver_20261006`，副本 SHA=`21c5fec5a6f057995d7628edbd932740cbef511f793f7fe53a16664ac1160bce`。
+- [x] 独立 driver 于 2026-10-06 20:10–20:16（Asia/Shanghai）完成 `cache audit → P1 → B0 30-step → fresh-process restore → official LIBERO episode loop`；远端日志为 `vla_workspace/logs/p6_b0_after_cache.log`，结果均在版本化新目录，没有覆盖历史结果。
+- [x] P1 report：OpenVLA revision=`47a0ec7fc4ec123775a391911046cf33cf9ed83f`，action `[1,8,7]`，双相机 `16×16` patch grid，normalization round-trip error `5.96e-08`，repeatability max error `0`，gradient finite/nonzero。
+- [x] B0 30-step action smoke：每步 loss/gradient finite，峰值显存 `21618780160` bytes（约 20.2 GiB）；checkpoint manifest SHA=`5556b7f318f2e8eb38c8d3366a44809faae0a022a312b0da618f1f35da052e74`。
+- [x] fresh-process restore：prediction `max_prediction_error=0`；optimizer continuation 的 loss/grad norm 在 `1e-4` 内，LR/scheduler exact，`continuation_report.passed=true`。
+- [x] 官方 LIBERO episode loop engineering rollout 完成 2 个固定初始状态、每个 230 steps、`environment_error=null`；成功率 `0/2`。这是未充分训练 B0 smoke 的工程结果，不是 benchmark 性能，也不能据此否定 B0 或后续方法。
+- [x] 该独立 driver 未启动 B1–B4 或任何长时间训练，符合当前 goal 的顺序要求。
+- [ ] 仍未完成：严格 `role_swapped_same_image` 与 `area_matched_random` control smoke；现有旧 control 结果只能标记为 cross-episode phrase/random proxy，不能作为正式机制 gate。
+- [ ] 仍未完成：B0–B4 正式训练前的 effective batch、gradient accumulation、正式 rollout manifest/evaluator revision 和三 seed controls 冻结；当前只能进入下一阶段准备，不能宣称 VLA 方法有效。
