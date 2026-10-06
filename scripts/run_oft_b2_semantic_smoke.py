@@ -30,7 +30,7 @@ def main():
     by_key={(r['episode_id'],int(r['timestep']),r['camera'],r['role']):r for r in sem_rows}
     if len(by_key)!=len(sem_rows): raise ValueError('duplicate semantic cache keys')
     for r in sem_rows[:2]:
-        side=a.semantic_root / r['output_file'].replace('.npy','.json')
+        side=a.semantic_root / (r['sample_id'] + '.json')
         meta=json.loads(side.read_text())
         if meta.get('attention_resolution')!=16 or meta.get('seed')!=17 or meta.get('teacher_frozen') is not True: raise ValueError('unexpected semantic cache contract')
     train_ids={json.loads(x)['episode_id'] for x in a.train_manifest.read_text().splitlines() if x.strip()}; eval_ids={json.loads(x)['episode_id'] for x in a.eval_manifest.read_text().splitlines() if x.strip()}
@@ -58,7 +58,7 @@ def main():
             for role in ('source','target'):
                 r=by_key.get((ep,ts,cam,role))
                 if r is None: raise KeyError(f'missing semantic map {ep}/{ts}/{cam}/{role}')
-                q=np.load(a.semantic_root/r['output_file'],allow_pickle=False)
+                q=np.load(a.semantic_root/(r['sample_id'] + '.npy'),allow_pickle=False)
                 if q.shape!=(16,16) or not np.isfinite(q).all() or (q<0).any(): raise ValueError('invalid semantic map')
                 rows.append(torch.from_numpy(q).float().reshape(-1))
             maps.append(torch.stack(rows).mean(0))
