@@ -1054,3 +1054,10 @@ PYTHONPATH=src python scripts/validate_p1_report.py \
 - [x] 在 demo provenance/disjointness 未验证前，允许继续 B0 held-out、B1–B4 paired offline、checkpoint restore、teacher/control 一致性和统计分析。
 - [x] 明确禁止启动长时间正式 rollout，禁止把 2-episode engineering smoke 写成成功率，禁止重新生成或覆盖已有 cache。
 - [ ] 正式 rollout 解锁仍需要可核验 LIBERO demo 来源、episode 对应关系及 train/eval/rollout disjointness 审计。
+
+## 2026-10-06：正式配置模板与已运行 smoke 的边界复核
+
+- [x] 101 上 `configs/vla/p6_b0_b4.json` 和五个 smoke 脚本均存在，入口文件可访问。
+- [x] 实际运行使用了已冻结的 OpenVLA/OFT P1 结果、7D delta EEF、双相机 16×16 patch grid、chunk=8 的 native action 设定，并已有 B0/B1–B4 smoke 证据。
+- [ ] 旧模板仍保留 `TO_FREEZE` 占位符（checkpoint revision、LIBERO version/task、processor revision、camera preprocessing、teacher revision、正式 optimizer/evaluator 参数等）；不能把模板存在误认为正式配置已冻结。
+- [ ] 在 demo provenance/disjointness 未补齐前，不启动 10k-step 正式训练或正式 rollout；只继续已审计的 offline/interface 验证。
