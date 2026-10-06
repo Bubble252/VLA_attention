@@ -20,6 +20,8 @@ P1=$P1_ROOT/p1_interface/p1_interface.json
 TRAIN=$OUT/B0_smoke_seed17
 RESTORE=$OUT/B0_restore_seed17
 ROLLOUT=$OUT/B0_rollout_seed17
+# A previously validated restore may live in a retry directory after a driver fix.
+RESTORE_FOR_ROLLOUT=$RESTORE
 GATE=$W/artifacts/gpu_window_b0.json
 DRIVER_LOG=$W/logs/p6_b0_after_cache.log
 
@@ -28,6 +30,8 @@ exec > >(tee -a "$DRIVER_LOG") 2>&1
 export PYTHONPATH="$R/src:$W/repos/openvla-oft:$W/repos/libero"
 export LIBERO_CONFIG_PATH="$W/libero_config"
 export OMP_NUM_THREADS=2
+# Keep MuJoCo EGL selection numeric when CUDA_VISIBLE_DEVICES is a single index.
+export MUJOCO_EGL_DEVICE_ID="${MUJOCO_EGL_DEVICE_ID:-0}"
 
 fail() {
   printf 'P6_B0_DRIVER_FAILED stage=%s reason=%s\n' "$1" "$2"
@@ -214,7 +218,7 @@ wait_for_idle_gpu
 write_gpu_gate "$GPU_INDEX" "$GPU_UUID"
 CUDA_VISIBLE_DEVICES=$GPU_INDEX "$PY" "$R/scripts/eval_oft_b0_rollout.py" \
   --model "$MODEL" --source-lock "$LOCK" \
-  --checkpoint "$TRAIN" --restore-report-dir "$RESTORE" \
+  --checkpoint "$TRAIN" --restore-report-dir "$RESTORE_FOR_ROLLOUT" \
   --statistics "$DATA/train_statistics.json" \
   --init-inventory "$W/artifacts/rollout_init_inventory_20260928.json" \
   --gpu-window "$GATE" --output "$ROLLOUT"

@@ -792,3 +792,6 @@ PYTHONPATH=src python scripts/validate_p1_report.py \
 - [x] 2026-10-06 18:40（上海时间）重新运行独立官方 LIBERO rollout，设置 `CUDA_VISIBLE_DEVICES=0` 与 `MUJOCO_EGL_DEVICE_ID=0`；`B0_rollout_retry8/summary.json` 两个固定初始状态均完整 `230` steps、`environment_error=null`，成功 `0/2`。
 - [x] 该 `0/2` 只用于确认 OpenVLA/OFT checkpoint、action decode、EGL、官方 episode loop 和日志链路可运行；B0 是 30-step 未充分训练工程 smoke，因此不报告为 benchmark 性能，也不据此否定方法。
 - [ ] 统一 `run_p6_b0_after_cache.sh` 仍保留旧 strict-digest 日志，尚未重跑整条 driver；需要把 `MUJOCO_EGL_DEVICE_ID` 显式写入 rollout 环境，并让 driver 使用 `B0_restore_seed17_retry3` 的容差 continuation evidence。B1-B4 暂不启动。
+
+- [x] 修订并上传 `server/run_p6_b0_after_cache.sh`：统一 driver 现在显式导出数值 `MUJOCO_EGL_DEVICE_ID`，避免单卡 CUDA UUID 被 robosuite EGL 解析器误读；保留 cache gate、P1、B0、restore、rollout 的顺序，不改变实验定义。
+- [x] driver 脚本远端 `bash -n` 通过，SHA256=`01939496b68eb2df410d29d0346be0862c1c7d174fc4f3cd767411d423724e2f`。未重新启动 driver，避免覆盖已存在 B0 结果。
