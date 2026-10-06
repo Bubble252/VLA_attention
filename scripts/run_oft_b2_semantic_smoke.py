@@ -64,8 +64,19 @@ def main():
             maps.append(torch.stack(rows).mean(0))
         return torch.cat(maps).cuda()
     for step in range(a.steps):
-        batch=train.collate([train[order[step%len(order)]]]); out=forward_l1(policy,head,proprio,batch,device='cuda',visual_token_count=patch_count); features=out['visual_and_proprio_features'][:,:patch_count]
-        grad=torch.autograd.grad(out['loss'],features,retain_graph=True)[0]; student=(grad.float()*features.float()).sum(-1).abs().reshape(1,2,256)
+        batch=train.collate([train[order[step%len(order)]]]); captured=[]
+        def capture(_m,_i,o):
+            if isinstance(o, tuple): o=o[0]
+            if torch.is_tensor(o):
+                o.retain_grad(); captured[:] = [o]
+            return o
+        hook=policy.base_model.model.vision_backbone.register_forward_hook(capture)
+        out=forward_l1(policy,head,proprio,batch,device='cuda',visual_token_count=patch_count)
+        out['loss'].backward(retain_graph=True)
+        hook.remove()
+        if not captured or captured[0].grad is None: raise RuntimeError('visual backbone gradient unavailable')
+        features=captured[0][:,:patch_count]; grad=captured[0].grad[:,:patch_count]
+        student=(grad.float()*features.float()).sum(-1).abs().reshape(1,2,256)
         teacher=load_maps(batch).reshape(1,512); loss_sem=semantic_map_kl(student.reshape(1,512),teacher,teacher_temperature=a.temperature); loss=out['loss']+a.lambda_sem*loss_sem
         if not torch.isfinite(loss): raise FloatingPointError('nonfinite B2 loss')
         params=[x for m in [policy,head,proprio] for x in m.parameters() if x.requires_grad]; optimizer=torch.optim.AdamW(params,lr=5e-4) if optimizer is None else optimizer; optimizer.zero_grad(set_to_none=True); loss.backward(); norm=torch.nn.utils.clip_grad_norm_(params,1.,error_if_nonfinite=True); optimizer.step()
