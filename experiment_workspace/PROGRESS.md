@@ -1069,3 +1069,10 @@ PYTHONPATH=src python scripts/validate_p1_report.py \
 - [x] formal rollout entry audit 已确认 train/eval episode disjointness、rollout init 唯一性和官方 evaluator 源码 SHA。
 - [ ] formal rollout entry audit 仍为 `not_ready_provenance_pending`，唯一未满足项是 `rollout_demo_disjointness=unverified`；不能用已有 smoke 替代。
 - [ ] 远端旧 `p6_b0_b4.json` 仍有 `TO_FREEZE` 占位符；正式训练配置必须在 provenance 解锁后再由实际 P1/manifest/evaluator 证据填充。
+
+## 2026-10-06：B0–B4 smoke 可比性审计
+
+- [x] B1–B4 的 train/eval/statistics manifest SHA 和 seed 17 一致；B0 held-out 结果单独作为 baseline preflight。
+- [x] B1–B4 的 teacher/loss 组件、step 数和 smoke 目的已整理到 `experiment_workspace/vla_smoke_comparability_audit_20261006.md`。
+- [ ] 不能比较当前 B1–B4 smoke 的 action loss 均值来推断优劣：B0 为 50-step offline preflight，B1–B4 为 20-step interface smoke，采样轨迹也不同。
+- [ ] 正式比较仍需统一初始化、step budget、episode 顺序和 held-out evaluator；rollout provenance 未解锁前只能做 offline-only 对照。
