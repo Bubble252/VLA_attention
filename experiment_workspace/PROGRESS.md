@@ -885,3 +885,12 @@ PYTHONPATH=src python scripts/validate_p1_report.py \
 - [x] 该独立 driver 未启动 B1–B4 或任何长时间训练，符合当前 goal 的顺序要求。
 - [ ] 仍未完成：严格 `role_swapped_same_image` 与 `area_matched_random` control smoke；现有旧 control 结果只能标记为 cross-episode phrase/random proxy，不能作为正式机制 gate。
 - [ ] 仍未完成：B0–B4 正式训练前的 effective batch、gradient accumulation、正式 rollout manifest/evaluator revision 和三 seed controls 冻结；当前只能进入下一阶段准备，不能宣称 VLA 方法有效。
+
+## 2026-10-06：严格 teacher controls 完成
+
+- [x] 远端建立并通过 preflight 的 control GPU window：`vla_workspace/artifacts/gpu_window_controls_20261006.json`；hostname=`di-20260613120619-84fwm`，GPU 0 UUID=`GPU-7a7fc403-d1d4-e22e-737b-2bcca37bf583`，cache audit evidence 为 semantic 10080/10080、Flickr overlay 9952/9952、C-RADIO 5040/5040。
+- [x] 修正 `scripts/run_oft_controls_smoke.py`，支持 `role_swapped_same_image` 与 `area_matched_random`；本地/远端 SHA256=`df5dc7e47c65e25a6b45b7125eb3358858cab8c09bd1aa70ed2ecfd9ef76bff0`；远端 `py_compile` 通过。
+- [x] 严格 `role_swapped_same_image` control 完成 20/20 steps，结果：`results/P6_vla_b0_b4/control_role_swapped_same_image_seed17_final/report.json`，所有 loss/gradient/attribution finite，teacher frozen，semantic manifest SHA=`d7660c9c8286483ebeeafee2d8ff2100dce99ddc9151b35f4beb03c3e3fb87fe`。
+- [x] 严格 `area_matched_random` control 完成 20/20 steps，结果：`results/P6_vla_b0_b4/control_area_matched_random_seed17_final/report.json`，所有 loss/gradient/attribution finite，teacher frozen，semantic manifest SHA 与正确 control 一致。
+- [x] 两个修正版 control 均使用 OpenVLA revision=`47a0ec7fc4ec123775a391911046cf33cf9ed83f`、seed=17、lambda_sem=0.10、temperature=1.0、相同 train/eval manifest；没有重新生成或覆盖任何 cache，也没有覆盖旧 control 结果。
+- [ ] 这些结果证明严格 control 的接口和数据配对可运行，不代表正确 teacher 已在 20-step smoke 上获得统计显著优势；正式机制 gate 仍需固定 validation 集上的 paired attribution metrics 和正式训练后的能力指标。

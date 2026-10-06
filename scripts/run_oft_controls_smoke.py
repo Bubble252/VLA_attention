@@ -18,7 +18,7 @@ def main():
     for name in ['model','source-lock','train-manifest','eval-manifest','statistics','gpu-window','semantic-root','semantic-manifest','p1-report','output']:
         p.add_argument('--'+name,type=Path,required=True)
     p.add_argument('--steps',type=int,default=20); p.add_argument('--seed',type=int,default=17)
-    p.add_argument('--lambda-sem',type=float,default=0.10); p.add_argument('--temperature',type=float,default=1.0); p.add_argument('--control',choices=['correct','wrong_word','wrong_image','random'],default='correct')
+    p.add_argument('--lambda-sem',type=float,default=0.10); p.add_argument('--temperature',type=float,default=1.0); p.add_argument('--control',choices=['correct','wrong_word','wrong_image','random','role_swapped_same_image','area_matched_random'],default='correct')
     a=p.parse_args()
     if not 20<=a.steps<=30: raise ValueError('B2 smoke must use 20-30 steps')
     if a.output.exists(): raise FileExistsError(a.output)
@@ -65,6 +65,22 @@ def main():
         out=np.concatenate(maps)
         if a.control=='random':
             rng=np.random.default_rng(17 + int(batch['timesteps'][0])); out=rng.random(out.shape).astype('float32')
+        elif a.control=='area_matched_random':
+            rng=np.random.default_rng(17000 + int(batch['timesteps'][0])); matched=[]
+            for target in maps:
+                k=max(1, int(np.count_nonzero(target >= np.quantile(target, 0.8))))
+                vals=np.zeros(256, dtype='float32'); idx=rng.choice(256, size=k, replace=False)
+                vals[idx]=rng.random(k).astype('float32'); matched.append(vals)
+            out=np.concatenate(matched)
+        elif a.control=='role_swapped_same_image':
+            swapped=[]
+            for cam in ('image','wrist_image'):
+                r=by_key.get((ep,ts,cam,'target'))
+                if r is None: raise KeyError(f'missing same-image target map {ep}/{ts}/{cam}')
+                q=np.load(a.semantic_root/(r['sample_id']+'.npy'),allow_pickle=False).astype('float32')
+                if q.shape!=(16,16) or not np.isfinite(q).all() or (q<0).any(): raise ValueError('invalid same-image swapped map')
+                swapped.append(q.reshape(-1))
+            out=np.concatenate(swapped)
         elif a.control in ('wrong_word','wrong_image'):
             candidates=[x for x in sem_rows if x['camera']=='image' and x['role']=='source' and x['episode_id']!=ep]
             if not candidates: raise RuntimeError('no negative control candidate')

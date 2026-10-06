@@ -268,3 +268,7 @@ Ours-1 是主方法候选；Ours-2 只用于证明语义归因在视觉表征保
 ### VLA 当前工程证据边界（2026-10-06）
 
 缓存与 B0 的工程链路已经打通：三类 teacher cache 通过审计，OpenVLA/OFT P1、30-step action smoke、独立 checkpoint restore 和官方 LIBERO episode loop 均可运行。B0 未充分训练 checkpoint 的两个 rollout 为 0/2，不能作为方法性能结论。当前证据只支持“训练与评测接口可复现、归因与 teacher cache 可以接入”，尚不支持“语义归因改善 VLA 成功率”。严格 same-image phrase-role swap、面积匹配随机图、正式 matched B0–B4 训练和三 seed 统计仍是机制与性能结论的前置条件。
+
+### 严格 teacher control 的新增证据
+
+在 OpenVLA/OFT 上，same-image phrase-role swap 与面积匹配随机图均能通过 20-step finite interface smoke；两者使用相同模型 revision、manifest、seed、semantic cache 和损失权重。该结果排除了“控制定义或数据接口无法运行”的工程问题，但不等价于正确 teacher 在正式训练或 paired validation 指标上已经显著优于负控。正式论文结论仍必须来自固定验证集、独立测试集和多 seed 的统计比较。

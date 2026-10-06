@@ -1033,3 +1033,10 @@ SSH_OK 只读探针
 - [x] 两个未充分训练 B0 rollout episode 完整运行 230 steps、无环境错误，但成功 0/2；仅作为工程链路证据，不作为性能结论。
 - [ ] 严格 same-image role-swapped phrase 和 area-matched random controls 尚未完成；旧 cross-episode phrase/random 结果不能替代它们。
 - [ ] B0–B4 正式长训练仍需冻结 effective batch、gradient accumulation、正式 rollout manifest/evaluator revision 和三 seed controls；在这些字段冻结前不启动 10k-step 长训练。
+
+### 2026-10-06 严格 teacher controls 实际状态
+
+- [x] 建立并审计独立 control GPU window，满足 cache audit、exclusive GPU、fresh timestamp 和 UUID 校验。
+- [x] `run_oft_controls_smoke.py` 已支持同一 episode/timestep/camera 的 source-target role swap，以及保持 top-20% 支持面积的随机位置 control。
+- [x] `role_swapped_same_image` 与 `area_matched_random` 均完成 20-step finite interface smoke；结果写入独立版本化目录，未覆盖旧结果、B0 或任何 cache。
+- [ ] control smoke 不是性能或机制显著性结论；正式 gate 仍要在固定 validation/control 集上做 paired metrics，并与 correct teacher、cross-episode phrase、wrong-image 一起报告。
