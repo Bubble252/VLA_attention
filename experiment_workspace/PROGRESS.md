@@ -973,3 +973,11 @@ PYTHONPATH=src python scripts/validate_p1_report.py \
 - [ ] 正式 LIBERO rollout 仍未启动：现有 2-episode 记录明确是 engineering smoke，且 demo provenance/disjointness 未验证。
 - [ ] 当前不应把任何 smoke 结果写成正式成功率或 OOD 泛化结论。
 - 下一步仅有两条合法路径：补齐可访问的 demo provenance 后再做正式 rollout；或明确将本阶段限定为 offline-only 方法验证。
+
+
+## 2026-10-06：formal rollout entry audit
+
+- [x] 生成 `formal_rollout_entry_audit_20261006.json`，汇总 train/validation/offline_eval/rollout inventory 和官方 evaluator 的存在性、SHA256 与版本。
+- [x] 已验证：train/eval episode disjointness、rollout init state 唯一性、官方 evaluator source revision/file SHA。
+- [ ] 未验证：rollout init state 与训练 demo 的物理 provenance/disjointness；官方 evaluator runtime benchmark 也尚未作为正式性能运行。
+- 入口规则：在 provenance 验证前禁止启动正式 rollout，现有 rollout 只能作为 engineering smoke。

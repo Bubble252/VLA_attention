@@ -1080,3 +1080,8 @@ cache gate、B0 offline/restore 和 B1–B4 interface smoke 已完成统一审�
 ### 2026-10-06 当前 goal 状态复核
 
 工程链路已完成并审计，正式 rollout 的 demo provenance 仍缺失。后续不得重复生成 cache，也不得把已有 smoke 当作正式 benchmark。
+
+
+### 2026-10-06 formal rollout entry audit
+
+已汇总所有正式 rollout 入口文件的 SHA256。train/eval split 和 init state 唯一性已验证，但 demo provenance 仍缺失，因此入口状态保持 `not_ready_provenance_pending`。

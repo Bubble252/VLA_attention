@@ -1,0 +1,48 @@
+{
+  "kind": "formal_rollout_entry_audit",
+  "created_at": "2026-10-06T13:55:27.169329+00:00",
+  "hostname": "di-20260613120619-84fwm",
+  "status": "not_ready_provenance_pending",
+  "artifacts": {
+    "train_manifest": {
+      "path": "/vepfs-mlp2/c20250405/400040/transfer/vla_attention/vla_workspace/artifacts/rlds_inventory_v2_20260928/train.jsonl",
+      "exists": true,
+      "sha256": "695681afb03012bd18c34d09c9a4fbf15ca489605d4463cbf891cd7213bca921",
+      "size": 28615
+    },
+    "validation_manifest": {
+      "path": "/vepfs-mlp2/c20250405/400040/transfer/vla_attention/vla_workspace/artifacts/rlds_inventory_v2_20260928/validation.jsonl",
+      "exists": true,
+      "sha256": "d4ce5edc0b08dbedf64a5e9c5f669cd8f84a23624f575e865344bc780710d687",
+      "size": 9544
+    },
+    "offline_eval_manifest": {
+      "path": "/vepfs-mlp2/c20250405/400040/transfer/vla_attention/vla_workspace/artifacts/rlds_inventory_v2_20260928/offline_eval.jsonl",
+      "exists": true,
+      "sha256": "c93ae5afeb919de8fb148bfa1f935173d04f3ac0502b85e3b6916afb15e9dd0b",
+      "size": 9532
+    },
+    "rollout_inventory": {
+      "path": "/vepfs-mlp2/c20250405/400040/transfer/vla_attention/vla_workspace/artifacts/rollout_init_inventory_20260928.json",
+      "exists": true,
+      "sha256": "c4dae51e9b48616af4f2a38463821a851a91c31b8dce63f1bcc75bde08c03a7f",
+      "size": 7242
+    },
+    "evaluator": {
+      "path": "/vepfs-mlp2/c20250405/400040/transfer/vla_attention/vla_workspace/repos/openvla-oft/experiments/robot/libero/run_libero_eval.py",
+      "exists": true,
+      "sha256": "701a20b6ca2942aa36e0e7d567b25647268b936a23af79c5893534f10bec7802",
+      "size": 18952
+    }
+  },
+  "requirements": {
+    "train_eval_episode_disjointness": "verified",
+    "rollout_init_unique": "verified",
+    "rollout_demo_disjointness": "unverified",
+    "official_evaluator_source": "verified",
+    "official_evaluator_runtime_benchmark": "not_run"
+  },
+  "action": "do_not_start_formal_rollout_until rollout_demo_disjointness is verified",
+  "evaluator_git_sha": "8f1084e3132a39270c3a13ebe37270a43ece2a01",
+  "evaluator_file_sha256": "701a20b6ca2942aa36e0e7d567b25647268b936a23af79c5893534f10bec7802"
+}
