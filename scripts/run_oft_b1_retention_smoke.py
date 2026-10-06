@@ -10,7 +10,7 @@ from pathlib import Path
 def sha(path):
     h=hashlib.sha256()
     with Path(path).open('rb') as f:
-        for b in iter(lambda:f.read(8*1024*1024),b): h.update(b)
+        for chunk in iter(lambda:f.read(8*1024*1024), b''): h.update(chunk)
     return h.hexdigest()
 
 def main():
@@ -46,7 +46,7 @@ def main():
     from prismatic.models.projectors import ProprioProjector
     from vla_attention.benchmarks.oft_rlds import EpisodeDataset
     from vla_attention.adapters.oft_forward import forward_l1
-    from vla_attention.losses.retention import cosine_feature_retention
+    from vla_attention.losses import cosine_feature_retention
     torch.use_deterministic_algorithms(True); torch.backends.cuda.matmul.allow_tf32=False; torch.backends.cudnn.allow_tf32=False; torch.backends.cudnn.benchmark=False
     random.seed(a.seed); np.random.seed(a.seed); torch.manual_seed(a.seed); torch.cuda.manual_seed_all(a.seed)
     config=OpenVLAConfig.from_pretrained(a.model,local_files_only=True)
