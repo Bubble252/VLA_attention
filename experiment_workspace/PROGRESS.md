@@ -928,3 +928,12 @@ PYTHONPATH=src python scripts/validate_p1_report.py \
 - [x] 生成审计：`vla_workspace/artifacts/vla_b0_offline_preflight_audit_20261006.json`。
 - [x] 本次运行没有 rollout，没有覆盖旧结果，也没有修改任何 cache。
 - [ ] 仍未完成 checkpoint restore preflight、正式 B1–B4 新结果和 rollout provenance；因此不能宣称正式 VLA benchmark 已完成。
+
+
+## 2026-10-06：B0 checkpoint restore preflight 通过
+
+- [x] 使用独立 50-step B0 checkpoint 完成 restore preflight。
+- [x] `prediction_equality=exact`，`max_prediction_error=0.0`。
+- [x] continuation report 通过：loss/grad norm 在绝对误差 `1e-4` 内，学习率和 scheduler 完全一致。
+- [x] 远程审计：`vla_workspace/artifacts/vla_b0_restore_preflight_audit_20261006.json`。
+- [ ] rollout provenance 仍未证明；本次 restore 没有启动 rollout。

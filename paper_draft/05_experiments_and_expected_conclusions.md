@@ -287,3 +287,8 @@ rollout inventory 的唯一性不能替代 demo provenance。当前只证明 spl
 ### B0 offline preflight 证据
 
 50-step B0 offline preflight 在固定 manifest、OpenVLA/OFT checkpoint 和 7D delta EEF action schema 下通过，所有训练 loss、gradient 和 held-out prediction 均为 finite。该结果仅支持“训练接口和离线评测链路可运行”，不支持性能提升或 rollout 泛化结论。
+
+
+### B0 restore 证据
+
+独立 checkpoint restore 达到 exact prediction equality，continuation 的 loss/gradient、学习率和 scheduler 均可复现。这证明训练状态可恢复，但仍不代表方法在 LIBERO rollout 上取得性能提升。

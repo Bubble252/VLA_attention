@@ -1055,3 +1055,8 @@ SSH_OK 只读探针
 ### 2026-10-06 B0 offline preflight
 
 独立 50-step B0 offline preflight 已通过，训练和 held-out prediction 均为 finite，结果与审计文件位于 101 的 `P6_vla_b0_b4_preflight_20261006`。该结果只证明正式训练链路可运行，不替代 checkpoint restore、B1–B4 和官方 rollout benchmark。
+
+
+### 2026-10-06 B0 restore preflight
+
+独立 B0 checkpoint restore 已通过，预测恢复为 exact zero drift，optimizer continuation 也通过。该证据完成了 B0 的离线恢复链路，但不替代正式 rollout provenance。

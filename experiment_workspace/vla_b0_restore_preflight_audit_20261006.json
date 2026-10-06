@@ -1,0 +1,21 @@
+{
+  "kind": "vla_b0_restore_preflight_audit",
+  "created_at": "2026-10-06T13:38:41.431354+00:00",
+  "hostname": "di-20260613120619-84fwm",
+  "status": "passed",
+  "restore_output": "/vepfs-mlp2/c20250405/400040/transfer/vla_attention/results/P6_vla_b0_b4_preflight_20261006/B0_restore_50_seed17",
+  "restore_report": {
+    "restored": true,
+    "prediction_equality": "exact",
+    "max_prediction_error": 0.0,
+    "saved_step": 50
+  },
+  "continuation_report": {
+    "passed": true,
+    "comparison": "loss/grad_norm abs_tol=1e-4; lr and scheduler exact"
+  },
+  "source_checkpoint": "/vepfs-mlp2/c20250405/400040/transfer/vla_attention/results/P6_vla_b0_b4_preflight_20261006/B0_offline_50_seed17",
+  "rollout": "not run by design",
+  "cache_untouched": true,
+  "next_step": "run or verify independent B1-B4 interface smokes; formal rollout remains provenance-gated"
+}
