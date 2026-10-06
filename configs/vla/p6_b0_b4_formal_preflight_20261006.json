@@ -1,0 +1,238 @@
+{
+  "experiment_id": "P6-VLA-B0-B4-formal-preflight-20261006",
+  "status": "formal_preflight_manifest_provenance_pending",
+  "plugin_api_version": "v1",
+  "plugins": {
+    "model_adapter": "openvla_oft",
+    "benchmark_adapter": "libero",
+    "optimizer": "adamw",
+    "scheduler": "cosine",
+    "teachers": {
+      "semantic": "sd15_null_text",
+      "retention": "c_radio_v3_l",
+      "future": null,
+      "action": null
+    }
+  },
+  "backbone": {
+    "id": "openvla-oft",
+    "checkpoint_revision": "47a0ec7fc4ec123775a391911046cf33cf9ed83f",
+    "external_code_commit": "e4287e94541f459edc4feabc4e181f537cd569a8",
+    "adapter": "openvla_oft"
+  },
+  "benchmark": {
+    "id": "libero",
+    "version": "rlds_inventory_v2_20260928",
+    "task_id": "task0",
+    "task_family": "pick_place",
+    "train_episode_manifest": "artifacts/rlds_inventory_v2_20260928/train.jsonl",
+    "eval_episode_manifest": "artifacts/rlds_inventory_v2_20260928/offline_eval.jsonl",
+    "rollout_episode_manifest": "artifacts/rollout_init_inventory_20260928.json",
+    "manifest_unit": "episode",
+    "split_disjoint_key": "episode_id",
+    "same_manifest_for": [
+      "B0",
+      "B1",
+      "B2",
+      "B3",
+      "B4"
+    ],
+    "rollout_used_for_selection": false,
+    "rollout_provenance_audit": "artifacts/vla_formal_preflight_audit_20261006.json",
+    "rollout_demo_disjointness": "unverified_inventory_only"
+  },
+  "observation": {
+    "modalities": [
+      "rgb",
+      "language",
+      "native_proprioception"
+    ],
+    "processor_revision": "openvla_oft_processor_from_checkpoint_47a0ec7",
+    "camera_views": [
+      "third_person",
+      "wrist"
+    ],
+    "camera_order": "third_person,wrist",
+    "camera_preprocessing": "official_openvla_oft_libero_preprocessing_pending_hash_audit"
+  },
+  "action": {
+    "native_schema": "openvla_oft_libero_7d_delta_eef",
+    "reported_schema": "delta_eef_7d",
+    "dimensions": 7,
+    "order": [
+      "dx",
+      "dy",
+      "dz",
+      "droll",
+      "dpitch",
+      "dyaw",
+      "dgrip"
+    ],
+    "chunk_horizon": 8,
+    "smoke_chunk_horizon": 1,
+    "formal_chunk_horizon": 8,
+    "translation_unit": "meters_after_official_libero_normalization",
+    "rotation_representation": "axis_angle",
+    "rotation_unit": "radians",
+    "gripper_convention": "official_openvla_oft_libero_convention",
+    "clipping": "official_action_head_only",
+    "normalization": "checkpoint_or_dataset_statistics_only"
+  },
+  "teacher": {
+    "semantic_map": "T_sem_FROM_FROZEN_VLM_PROTOCOL",
+    "revision": "stable-diffusion-v1-5",
+    "grid": "16x16",
+    "temperature": "inherit_frozen_vlm_protocol",
+    "cache_manifest_sha256": "d7660c9c8286483ebeeaf2d8ff2100dce99ddc9151b35f4beb03c3e3fb87fe"
+  },
+  "attribution": {
+    "retention_layer": "C-RADIO-v3-L projector interface from B1 smoke",
+    "action_relevant_layer": "OpenVLA visual token hidden state used by B2/B3 smoke",
+    "provenance_required": true,
+    "native_grid_source": "processor_or_forward_metadata_only",
+    "common_eval_grid": [
+      16,
+      16
+    ],
+    "coordinate_bridge": "normalized_coordinate_area_pooling",
+    "language_target": "phrase_score_gradient_times_activation",
+    "action_target": "action_loss_gradient_times_activation",
+    "action_scalar": "mean_squared_error_on_fixed_native_action_target",
+    "grid_bridge": "normalized_coordinate_bridge",
+    "normalization": "per-map finite nonnegative sum normalization",
+    "raw_attention_proxy": "diagnostic_only"
+  },
+  "matrix": {
+    "B0": {
+      "action_loss": true,
+      "retention": false,
+      "semantic": false,
+      "action_containment": false
+    },
+    "B1": {
+      "action_loss": true,
+      "retention": true,
+      "semantic": false,
+      "action_containment": false
+    },
+    "B2": {
+      "action_loss": true,
+      "retention": false,
+      "semantic": true,
+      "action_containment": false
+    },
+    "B3": {
+      "action_loss": true,
+      "retention": true,
+      "semantic": true,
+      "action_containment": false
+    },
+    "B4": {
+      "action_loss": true,
+      "retention": true,
+      "semantic": true,
+      "action_containment": true
+    }
+  },
+  "training": {
+    "optimizer": {
+      "id": "adamw",
+      "scheduler": "cosine",
+      "kwargs": {
+        "lr": 0.0005,
+        "weight_decay": 0.01
+      },
+      "scheduler_kwargs": {
+        "T_max": 10080
+      }
+    },
+    "seeds": [
+      17,
+      29,
+      41
+    ],
+    "epochs": 4,
+    "effective_batch_size": 1,
+    "gradient_accumulation_steps": 1,
+    "min_optimizer_steps": 10000,
+    "max_steps": "max(ceil(train_transition_records/effective_batch_size)*epochs, min_optimizer_steps)",
+    "dataset_passes": 4,
+    "drop_last": false,
+    "early_stopping": false,
+    "checkpoint_fractions": [
+      0.25,
+      0.5,
+      0.75,
+      1.0
+    ],
+    "natural_steps_per_epoch": 2520,
+    "formal_optimizer_steps": 10080,
+    "sampler": "deterministic_manifest_order_repeat_4_passes",
+    "checkpoint_steps": [
+      2520,
+      5040,
+      7560,
+      10080
+    ]
+  },
+  "losses": {
+    "lambda_sem": "INHERIT_FROZEN_VLM_TUNING",
+    "lambda_retention": 0.05,
+    "lambda_containment": 0.02,
+    "retention_warmup_optimizer_steps": 500,
+    "containment_warmup_optimizer_steps": 1000,
+    "containment_mask": "stop_gradient_soft_language_support",
+    "loss_scale_check_after_smoke": true,
+    "gradient_clip_scope": "optimizer_parameters_only"
+  },
+  "evaluation": {
+    "offline_first": true,
+    "official_libero_evaluator": "openvla-oft LIBERO evaluator commit 8f1084e3132a39270c3a13ebe37270a43ece2a01",
+    "success_source": "official_libero_evaluator_only",
+    "save_step_actions": true,
+    "save_failure_reason": true,
+    "save_state_summary": true,
+    "trials_per_task": 10,
+    "max_horizon": 230,
+    "action_repeat": 1,
+    "metrics": [
+      "success_rate",
+      "mean_completion_steps",
+      "failure_type",
+      "offline_action_mse",
+      "offline_action_mae",
+      "action_attribution_pointing",
+      "action_attribution_mass_in_region",
+      "action_attribution_soft_iou",
+      "patch_occlusion_delta_action_rank_correlation",
+      "throughput",
+      "steps_to_fixed_success"
+    ],
+    "controls": [
+      "correct_teacher",
+      "wrong_word",
+      "wrong_image",
+      "area_matched_random",
+      "object_only_diagnostic",
+      "object_plus_eef_diagnostic",
+      "raw_attention_proxy_diagnostic"
+    ],
+    "bootstrap_unit": "episode_cluster",
+    "official_evaluator_git_sha": "8f1084e3132a39270c3a13ebe37270a43ece2a01",
+    "official_evaluator_file_sha256": "701a20b6ca2942aa36e0e7d567b25647268b936a23af79c5893534f10bec7802"
+  },
+  "artifacts": {
+    "root": "experiment_workspace/results/P6_vla_b0_b4",
+    "required": [
+      "config.json",
+      "manifest_sha256.txt",
+      "git_sha.txt",
+      "train_metrics.jsonl",
+      "progress_summary.json",
+      "checkpoint_restore.json",
+      "failure_episodes.jsonl",
+      "official_evaluator_version.txt"
+    ],
+    "large_files_in_git": false
+  }
+}
