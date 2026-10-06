@@ -819,3 +819,12 @@ PYTHONPATH=src python scripts/validate_p1_report.py \
 - [x] B1 report 通过：学生 patch `[1,512,4096]`、teacher `[1,512,1024]`、projector `[4096,1024]`；20/20 steps action/retention/total loss finite，梯度 finite，teacher frozen 且无 teacher gradient，modules save/restore probe finite。
 - [x] B1 使用的 C-RADIO manifest SHA256=`2c47200466c63e43c187b6abad68b533ec07ffd3f9ad722c77537672179478ac`；OpenVLA revision=`47a0ec7fc4ec123775a391911046cf33cf9ed83f`；train/eval/statistics SHA 与 P1 一致。
 - [ ] 该结果是 retention 接口工程 smoke，不是 B1 benchmark 或 BlindVLA 性能结论；下一步先冻结 B1 配置并准备 B2 semantic attribution interface smoke，仍不得启动长训练或批量 B2–B4。
+
+## 2026-10-06：B2 semantic attribution interface smoke
+
+- [x] 新增 `scripts/run_oft_b2_semantic_smoke.py`，使用真实 OpenVLA/OFT action-loss gradient×activation 生成两路 `16×16` 学生归因图，并读取冻结 SD1.5 null-text semantic cache；不重新生成 semantic cache。
+- [x] 经过三次最小修复后通过：sidecar 字段验证、semantic sample path、视觉 backbone gradient hook；没有使用 `allow_unused=True` 掩盖无梯度问题。
+- [x] 远端结果目录：`/vepfs-mlp2/c20250405/400040/transfer/vla_attention/results/P6_vla_b0_b4/B2_semantic_interface_seed17`；日志：`vla_workspace/logs/b2_semantic_interface_seed17.log`。
+- [x] B2 20/20 steps 通过：action loss、semantic loss、total loss、梯度均 finite；学生图 `[1,2,256]`、teacher 图 `[1,512]`（两路拼接后等价 `[1,2,256]`）；teacher frozen；semantic manifest SHA=`d7660c9c8286483ebeeafee2d8ff2100dce99ddc9151b35f4beb03c3e3fb87fe`。
+- [x] 当前 B2 仍是接口工程 smoke，不是性能结论；semantic loss 使用 lambda=0.10、temperature=1.0，正式值仍需按 VLM 冻结协议确认。
+- [ ] 下一步实现并运行独立 B3 dynamic action-conditioned attribution smoke：复用 B1 retention、B2 semantic，增加 action-conditioned `A_act`/language support containment；不启动 B4 或长训练。
