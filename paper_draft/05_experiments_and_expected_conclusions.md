@@ -302,3 +302,8 @@ B1–B4 的 20-step smoke 证明接口可运行，但 B1 使用了不同版本�
 ### C-RADIO teacher provenance 修正
 
 正式记录以直接计算的 `cache_manifest.jsonl` SHA 为准。此次只修复 audit metadata 并重跑接口 smoke，不把旧 manifest SHA 混入正式比较。
+
+
+### VLA smoke 统一结论边界
+
+统一审计确认 B0–B4 链路和控制组可运行，但这些结果不支持正式 benchmark 或 rollout 泛化结论。论文中必须把 rollout provenance 未验证作为当前限制，直到获得可追溯的 demo-to-init-state 证据。

@@ -1070,3 +1070,8 @@ SSH_OK 只读探针
 ### 2026-10-06 C-RADIO 审计修正
 
 直接计算确认当前 radio cache manifest SHA 为 `2c47200466c63e43c187b6abad68b533ec07ffd3f9ad722c77537672179478ac`，此前 audit 中的 SHA 是错误元数据。已仅修正审计文件并重新执行 B1 interface smoke；cache 内容未修改。
+
+
+### 2026-10-06 VLA smoke completion audit
+
+cache gate、B0 offline/restore 和 B1–B4 interface smoke 已完成统一审计。当前所有结果仍属于工程接口证据；正式 rollout 需要额外的 demo provenance/disjointness 证明。
