@@ -1061,3 +1061,11 @@ PYTHONPATH=src python scripts/validate_p1_report.py \
 - [x] 实际运行使用了已冻结的 OpenVLA/OFT P1 结果、7D delta EEF、双相机 16×16 patch grid、chunk=8 的 native action 设定，并已有 B0/B1–B4 smoke 证据。
 - [ ] 旧模板仍保留 `TO_FREEZE` 占位符（checkpoint revision、LIBERO version/task、processor revision、camera preprocessing、teacher revision、正式 optimizer/evaluator 参数等）；不能把模板存在误认为正式配置已冻结。
 - [ ] 在 demo provenance/disjointness 未补齐前，不启动 10k-step 正式训练或正式 rollout；只继续已审计的 offline/interface 验证。
+
+## 2026-10-06：正式配置冻结清单复核
+
+- [x] B0 offline preflight 审计记录了 train/eval manifest SHA、statistics SHA、checkpoint/state SHA、9 个 held-out episode、finite 检查和峰值显存。
+- [x] B0 restore preflight 已记录 exact prediction equality、`max_prediction_error=0.0` 及 optimizer/scheduler continuation 通过。
+- [x] formal rollout entry audit 已确认 train/eval episode disjointness、rollout init 唯一性和官方 evaluator 源码 SHA。
+- [ ] formal rollout entry audit 仍为 `not_ready_provenance_pending`，唯一未满足项是 `rollout_demo_disjointness=unverified`；不能用已有 smoke 替代。
+- [ ] 远端旧 `p6_b0_b4.json` 仍有 `TO_FREEZE` 占位符；正式训练配置必须在 provenance 解锁后再由实际 P1/manifest/evaluator 证据填充。
