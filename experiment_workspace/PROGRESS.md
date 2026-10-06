@@ -943,7 +943,7 @@ PYTHONPATH=src python scripts/validate_p1_report.py \
 
 - [x] B1、B2、B3、B4 以及 strict role-swapped / area-matched-random controls 均报告 `passed`，每个 20 steps，teacher frozen。
 - [x] B2/B3/B4 和控制组使用 semantic manifest SHA `d7660c9c8286483ebeeaf2d8ff2100dce99ddc9151b35f4beb03c3e3fb87fe`。
-- [ ] B1 使用的 C-RADIO manifest SHA `2c472004...` 与当前 cache audit 的 `b01fb708...` 不一致；B1 必须用当前冻结 cache 重新跑后，才能进入正式比较。
+- [x] B1 初始报告曾引用 `2c472004...`，而旧 cache audit 元数据误写为 `b01fb708...`；该 audit 元数据已修正，实际 cache manifest 与 B1 当前重跑均为 `2c47200466c63e43c187b6abad68b533ec07ffd3f9ad722c77537672179478ac`。
 - [ ] 所有这些仍是 interface smoke，不是 benchmark 性能结果；rollout provenance 仍未验证。
 - 汇总审计：`vla_workspace/artifacts/vla_b1_b4_interface_smoke_audit_20261006.json`。
 
