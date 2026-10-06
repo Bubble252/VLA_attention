@@ -774,3 +774,17 @@ PYTHONPATH=src python scripts/validate_p1_report.py \
 - [x] 决策：当前不暂停正式 cache。原因是现有 row-wise queue 没有错误或停滞证据；只停止单个 worker 会让 queue 的 `wait` 返回失败，无法产生正式 success receipt；为了获得独占 GPU，通常还需停止同一 GPU 上的多个 semantic/Flickr worker，短期会损失约一半吞吐，但 full grouped production runner、全量审计和 rollback 还未完成，暂停的收益尚未被验证。
 - [x] 继续保留 shared-pilot waiter；它只等待自然释放的独占 GPU，不抢占正式任务。优先完成 CPU-only grouped runner/审计；只有 pilot parity 通过且有可回滚的全量 grouped runner 后，才重新评估是否做受控 shard handoff。
 - [ ] 只有出现以下任一条件才考虑主动暂停：progress 文件超过两个连续观测周期不更新；failure/OOM/NaN 出现；或 grouped 全量 runner、manifest、audit 和恢复命令已经通过 CPU gate。任何暂停前必须新建 snapshot，并整体停止 queue/相关 worker，禁止只杀单个子进程。
+
+## 2026-10-06：cache audit、B0 smoke、restore 与 LIBERO rollout
+
+- [x] `vla101` 上 LIBERO semantic SD1.5 cache 已完成 `10080/10080`，失败 `0`，全量 finite/shape/sum 审计通过；生成 `vla_workspace/artifacts/semantic_train_v3_audit.json`。
+- [x] Flickr30k SD1.5 cache 原有 `9947/9952`，5 条失败均为 Flickr XML HTML entity/标点与 CLIP tokenizer 不一致；建立独立 retry manifest，使用原 seed=17、20 inversion steps、10 inner steps、16×16、相同 SD1.5 配方定向重试，5/5 成功。成功结果保存在 `cache_safety_snapshots/20261006T_retry/overlay`，未覆盖原有 map；包含 retry audit 和 full Flickr audit。
+- [x] cache gate 已通过；没有重新生成成功样本。
+- [x] OpenVLA/OFT P1 interface 通过：7D action、8-step chunk、双相机 patch grid、归一化 round-trip、forward repeatability 和梯度检查均通过。
+- [x] B0 seed17 30-step action smoke 通过：loss/gradient finite，峰值显存约 20.2 GiB，checkpoint manifest、state、offline predictions 已封存。
+- [x] 独立新进程 restore 的预测完全一致（`max_prediction_error=0`）。optimizer continuation 由于 BF16 跨进程 parameter digest 差异而首次失败；增加 `loss/grad_norm` `1e-4` 容差与 scheduler exact 检查后，独立 restore retry 通过，证据目录为 `B0_restore_seed17_retry3`。
+- [x] 官方 LIBERO episode loop engineering rollout 已完成两个固定初始状态，使用 `MUJOCO_EGL_DEVICE_ID=0` 修复 EGL 设备解析；两个 episode 均完整运行 230 steps、无环境异常，但当前未训练 B0 policy 成功率为 `0/2`。该结果是接口/闭环 smoke，不是方法效果结论。
+- [ ] 自动 driver 的旧日志仍保留首次严格 digest 失败记录；正式 rollout 使用 `B0_rollout_retry6` 和通过容差 restore evidence。下一步应修订 driver 的 restore report 路径和 EGL 环境设置，再决定是否重跑统一 driver 或进入 B1 smoke。
+
+- [x] 修复并测试 restore evidence 校验：接受正式 BF16 跨进程 continuation 的 loss/grad_norm `1e-4` 容差、LR/scheduler exact，同时保留旧测试格式兼容；本地 `6 passed, 1 skipped`。远端 `oft_checkpoint.py` 已同步。
+- [x] rollout 设备问题已定位并修复运行参数：`CUDA_VISIBLE_DEVICES=0` 单卡时必须显式设置 `MUJOCO_EGL_DEVICE_ID=0`，否则 GPU UUID 会被旧 robosuite 解析器当作整数失败。

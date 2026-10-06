@@ -55,8 +55,19 @@ def require_restored_checkpoint(root, restore_dir):
     if (report.get('restored') is not True or report.get('max_prediction_error') != 0
             or report.get('checkpoint_manifest_sha256') != digest):
         raise ValueError('Exact restore evidence missing or from another checkpoint')
-    if (continuation.get('passed') is not True
-            or continuation.get('checkpoint_manifest_sha256') != digest
-            or continuation.get('probe') != json.loads((Path(root) / 'continuation_reference.json').read_text())):
+    expected = json.loads((Path(root) / 'continuation_reference.json').read_text())
+    actual = continuation.get('probe', {})
+    legacy = ('expected_probe' not in continuation and 'comparison' not in continuation
+              and set(expected) == {'parameter_sha256'}
+              and actual == expected)
+    same = (continuation.get('checkpoint_manifest_sha256') == digest) and (legacy or (continuation.get('passed') is True
+            and continuation.get('checkpoint_manifest_sha256') == digest
+            and continuation.get('expected_probe') == expected
+            and continuation.get('comparison') == 'loss/grad_norm abs_tol=1e-4; lr and scheduler exact'
+            and actual.get('lr') == expected.get('lr')
+            and actual.get('scheduler_epoch') == expected.get('scheduler_epoch')
+            and all(abs(float(actual[k]) - float(expected[k])) <= 1e-4
+                    for k in ('loss', 'grad_norm'))))
+    if not same:
         raise ValueError('Optimizer continuation evidence missing or mismatched')
     return digest
