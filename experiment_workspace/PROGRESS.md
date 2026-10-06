@@ -809,3 +809,13 @@ PYTHONPATH=src python scripts/validate_p1_report.py \
 - [ ] B1 首个运行只做独立的 20–30 step interface smoke，输出目录必须为新的 `B1_retention_interface_seed17`，不覆盖 B0、cache 或 restore 目录；检查 action loss、retention loss、teacher 无梯度、student/projector 梯度 finite、两路 patch 数/坐标一致和 checkpoint restore。
 - [ ] B1 smoke 通过后，才允许冻结 B1 三 seed 的正式配置；B2/B3/B4 仍必须逐项 smoke，不能因 B1 通过而批量启动。
 - [ ] 当前尚未启动 B1 GPU 作业。
+
+## 2026-10-06：B1 C-RADIO retention interface smoke
+
+- [x] 新增真实 OpenVLA/OFT B1 runner：`scripts/run_oft_b1_retention_smoke.py`。该 runner 复用原生 OFT action forward，读取冻结 C-RADIOv3-L cache，并用显式 `4096→1024` trainable projector 对齐两路 `16×16` patch；不修改 B0 或任何 cache。
+- [x] 远端脚本已上传并通过 `oft` 环境 `py_compile`；远端 SHA256=`44e3a5ee52f9756711f3f45cc67845e91ebdb26e50811b8d4348284e79db091a`。
+- [x] 使用 GPU 0、独立资源窗口 `vla_workspace/artifacts/gpu_window_b1.json`、seed=17、lambda_retention=0.05、20 steps 运行完成。
+- [x] 结果目录：`/vepfs-mlp2/c20250405/400040/transfer/vla_attention/results/P6_vla_b0_b4/B1_retention_interface_seed17`；日志：`vla_workspace/logs/b1_retention_interface_seed17.log`。
+- [x] B1 report 通过：学生 patch `[1,512,4096]`、teacher `[1,512,1024]`、projector `[4096,1024]`；20/20 steps action/retention/total loss finite，梯度 finite，teacher frozen 且无 teacher gradient，modules save/restore probe finite。
+- [x] B1 使用的 C-RADIO manifest SHA256=`2c47200466c63e43c187b6abad68b533ec07ffd3f9ad722c77537672179478ac`；OpenVLA revision=`47a0ec7fc4ec123775a391911046cf33cf9ed83f`；train/eval/statistics SHA 与 P1 一致。
+- [ ] 该结果是 retention 接口工程 smoke，不是 B1 benchmark 或 BlindVLA 性能结论；下一步先冻结 B1 配置并准备 B2 semantic attribution interface smoke，仍不得启动长训练或批量 B2–B4。
