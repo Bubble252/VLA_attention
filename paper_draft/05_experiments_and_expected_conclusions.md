@@ -297,3 +297,8 @@ rollout inventory 的唯一性不能替代 demo provenance。当前只证明 spl
 ### B1–B4 接口证据边界
 
 B1–B4 的 20-step smoke 证明接口可运行，但 B1 使用了不同版本的 C-RADIO manifest，不能直接与当前冻结 cache 作为同一正式实验比较；B2–B4 的 semantic manifest 已一致。
+
+
+### C-RADIO teacher provenance 修正
+
+正式记录以直接计算的 `cache_manifest.jsonl` SHA 为准。此次只修复 audit metadata 并重跑接口 smoke，不把旧 manifest SHA 混入正式比较。

@@ -946,3 +946,11 @@ PYTHONPATH=src python scripts/validate_p1_report.py \
 - [ ] B1 使用的 C-RADIO manifest SHA `2c472004...` 与当前 cache audit 的 `b01fb708...` 不一致；B1 必须用当前冻结 cache 重新跑后，才能进入正式比较。
 - [ ] 所有这些仍是 interface smoke，不是 benchmark 性能结果；rollout provenance 仍未验证。
 - 汇总审计：`vla_workspace/artifacts/vla_b1_b4_interface_smoke_audit_20261006.json`。
+
+
+## 2026-10-06：C-RADIO manifest 审计修正与 B1 重跑
+
+- [x] 发现并核验 radio cache 的审计元数据错误：`radio_train_v1_audit.json` 原记录 `b01fb708...`，但实际 `teacher_cache/radio_train_task0_v1/cache_manifest.jsonl` SHA 为 `2c47200466c63e43c187b6abad68b533ec07ffd3f9ad722c77537672179478ac`。
+- [x] 只修正 audit metadata，未修改、删除或重新生成任何 radio cache 文件；实际数量仍为 `5040/5040`，失败数为 0。
+- [x] 使用当前 radio cache 独立重跑 B1 20-step interface smoke，teacher frozen、feature shape `[256,1024]`、student shape `[2,256,4096]`，全部 finite。
+- [ ] B1 仍是 interface smoke，不是正式性能结果；rollout provenance 仍未验证。

@@ -1065,3 +1065,8 @@ SSH_OK 只读探针
 ### 2026-10-06 B1–B4 interface smoke 审计
 
 已有 B1–B4 接口 smoke 全部通过，但 B1 引用的 C-RADIO manifest 与当前冻结 cache manifest 不一致，因此 B1 不能直接作为正式结果复用，需基于当前 cache 重跑。B2–B4 及严格控制组的 semantic manifest 一致。
+
+
+### 2026-10-06 C-RADIO 审计修正
+
+直接计算确认当前 radio cache manifest SHA 为 `2c47200466c63e43c187b6abad68b533ec07ffd3f9ad722c77537672179478ac`，此前 audit 中的 SHA 是错误元数据。已仅修正审计文件并重新执行 B1 interface smoke；cache 内容未修改。
