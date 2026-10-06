@@ -981,3 +981,11 @@ PYTHONPATH=src python scripts/validate_p1_report.py \
 - [x] 已验证：train/eval episode disjointness、rollout init state 唯一性、官方 evaluator source revision/file SHA。
 - [ ] 未验证：rollout init state 与训练 demo 的物理 provenance/disjointness；官方 evaluator runtime benchmark 也尚未作为正式性能运行。
 - 入口规则：在 provenance 验证前禁止启动正式 rollout，现有 rollout 只能作为 engineering smoke。
+
+
+## 2026-10-06：本地 VLA 合同回归
+
+- [x] 本地 VLA pipeline、配置、插件合同测试通过：`22 passed`。
+- [x] `configs/vla/p6_b0_b4_formal_preflight_20261006.json` JSON 校验通过，`git diff --check` 通过。
+- [x] 101 当前 SSH 正常、GPU 空闲、无活动 cache/训练进程。
+- [ ] 远程正式 rollout 仍受 demo provenance/disjointness 阻塞；本轮没有启动任何新 GPU 训练或 rollout。
