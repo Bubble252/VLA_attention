@@ -277,3 +277,8 @@ Ours-1 是主方法候选；Ours-2 只用于证明语义归因在视觉表征保
 ### VLA 前置状态（2026-10-06）
 
 缓存审计和 B0–B4 工程接口链已经打通，但当前不把 smoke 或两条 rollout engineering 记录当作正式 LIBERO 性能结果。正式结果前必须完成 rollout demonstration provenance 与训练集的严格隔离审计；因此当前阶段的结论边界是“实现可运行、教师和归因接口可接入、控制组可执行”，而不是“方法已经提升成功率”。
+
+
+### Rollout 结论边界
+
+rollout inventory 的唯一性不能替代 demo provenance。当前只证明 split episode ID 互斥和 rollout init state 去重，尚未证明 rollout 初始状态不来自训练 demo；因此 rollout 结果只能作为工程可运行性证据。

@@ -1045,3 +1045,8 @@ SSH_OK 只读探针
 ### 2026-10-06 实际执行状态：VLA 前置配置
 
 正式前置配置已在 101 生成并通过 JSON 校验，配置文件为 `configs/vla/p6_b0_b4_formal_preflight_20261006.json`，远程 SHA256 为 `45f761f0455f33bac88fc1191275eeb73e1a153e9af4a892e69067347d00f8b5`。缓存审计、B0 工程 smoke、B1–B4 interface smoke 和严格控制组均已有独立证据。当前唯一未冻结的关键证据是 rollout demo 与训练 manifest 的 provenance/disjointness；在该项完成前，B0–B4 只能继续做 offline/preflight 验证，不能把 rollout 结果写成正式性能结论。
+
+
+### 2026-10-06 rollout provenance 审计结果
+
+远程审计文件为 `vla_workspace/artifacts/rollout_provenance_audit_20261006.json`。当前 split episode ID 已互斥，rollout init state 也已去重，但 inventory 没有将初始状态链接到 demo，且 manifest 的原始 HDF5 路径在服务器不可访问。因此正式 rollout provenance 仍未证明；在补证据前只运行 offline/preflight，不宣称 LIBERO rollout 性能。

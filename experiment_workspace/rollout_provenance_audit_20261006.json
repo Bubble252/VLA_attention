@@ -1,0 +1,23 @@
+{
+  "kind": "rollout_provenance_audit",
+  "created_at": "2026-10-06T13:26:31.601990+00:00",
+  "hostname": "di-20260613120619-84fwm",
+  "status": "blocked_unverified",
+  "train_manifest": "/vepfs-mlp2/c20250405/400040/transfer/vla_attention/vla_workspace/artifacts/rlds_inventory_v2_20260928/train.jsonl",
+  "train_manifest_sha256": "695681afb03012bd18c34d09c9a4fbf15ca489605d4463cbf891cd7213bca921",
+  "rollout_inventory": "/vepfs-mlp2/c20250405/400040/transfer/vla_attention/vla_workspace/artifacts/rollout_init_inventory_20260928.json",
+  "rollout_inventory_sha256": "c4dae51e9b48616af4f2a38463821a851a91c31b8dce63f1bcc75bde08c03a7f",
+  "train_episode_count": 27,
+  "rollout_init_state_count": 50,
+  "rollout_init_state_unique": true,
+  "episode_id_overlap": [],
+  "rollout_demo_disjointness": "unverified",
+  "reason": [
+    "rollout inventory status is inventory_only",
+    "rollout inventory split_claim says demo-to-init-state linkage is not verified",
+    "train manifest original HDF5 path is not accessible on vla101",
+    "rollout states contain only init_state_sha256 and no source episode/demo identity"
+  ],
+  "action": "do not claim formal rollout benchmark; continue offline/preflight only",
+  "git_sha": "Command 'cd /vepfs-mlp2/c20250405/400040/transfer/vla_attention/repo/VLA_attention && git rev-parse HEAD 2>/dev/null' returned non-zero exit status 128."
+}
