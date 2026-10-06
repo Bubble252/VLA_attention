@@ -1075,3 +1075,8 @@ SSH_OK 只读探针
 ### 2026-10-06 VLA smoke completion audit
 
 cache gate、B0 offline/restore 和 B1–B4 interface smoke 已完成统一审计。当前所有结果仍属于工程接口证据；正式 rollout 需要额外的 demo provenance/disjointness 证明。
+
+
+### 2026-10-06 当前 goal 状态复核
+
+工程链路已完成并审计，正式 rollout 的 demo provenance 仍缺失。后续不得重复生成 cache，也不得把已有 smoke 当作正式 benchmark。

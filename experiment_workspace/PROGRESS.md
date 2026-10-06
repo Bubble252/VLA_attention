@@ -963,3 +963,13 @@ PYTHONPATH=src python scripts/validate_p1_report.py \
 - [x] 当前 C-RADIO manifest SHA 已统一为 `2c47200466c63e43c187b6abad68b533ec07ffd3f9ad722c77537672179478ac`。
 - [ ] 结论边界：没有正式 benchmark 性能结论，没有正式 rollout 泛化结论；rollout demo disjointness 仍未验证。
 - 下一步：获取可验证 demo provenance，或明确将下一阶段限定为 offline-only 研究。
+
+
+## 2026-10-06：当前 goal 状态复核
+
+- [x] 101 连接正常，GPU 空闲，无 cache 或训练进程运行。
+- [x] 已有 cache → audit gate → B0 smoke 链路已打通；semantic/Flickr/C-RADIO cache 未重新生成。
+- [x] B0 offline 50-step、checkpoint restore、B1–B4 interface smoke 和 controls 均有独立审计。
+- [ ] 正式 LIBERO rollout 仍未启动：现有 2-episode 记录明确是 engineering smoke，且 demo provenance/disjointness 未验证。
+- [ ] 当前不应把任何 smoke 结果写成正式成功率或 OOD 泛化结论。
+- 下一步仅有两条合法路径：补齐可访问的 demo provenance 后再做正式 rollout；或明确将本阶段限定为 offline-only 方法验证。
