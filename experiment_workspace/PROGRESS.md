@@ -860,3 +860,12 @@ PYTHONPATH=src python scripts/validate_p1_report.py \
 - [x] 新冻结配置 `configs/vla/p6_b0_b4_frozen_seed17_smoke.json` 已通过 `scripts/validate_vla_config.py`，矩阵严格为 B0–B4，报告动作 schema 为 delta_eef_7d，seeds 为 17/29/41，offline-first 和 episode-cluster bootstrap 已冻结。
 - [x] 修复验证器兼容带版本后缀的冻结 experiment_id，并将缺省 `drop_last` 按 false 验证；提交 `9235e9a` 已推送。
 - [ ] 正式长训练仍未启动。仍需在 vla101 上冻结并审计 effective batch、gradient accumulation、正式 rollout manifest/evaluator 版本，并运行 controls smoke 后才可进入 10k-step 训练。
+
+## 2026-10-06：VLA teacher controls smoke 完成与证据边界
+
+- [x] 远端已完成四个 20-step teacher-map control interface smoke：`control_correct_seed17`、`control_wrong_word_seed17`、`control_wrong_image_seed17`、`control_random_seed17`；四组 action/semantic/total loss、梯度和 attribution tensor 均 finite，结果均在远端 `results/P6_vla_b0_b4/` 的独立目录，未覆盖 B0–B4 或 cache。
+- [x] 这四组结果证明 control runner、teacher cache 读取、action-loss gradient×activation、OpenVLA/OFT forward/backward 和结果落盘链路可运行；不构成 wrong-word、wrong-image 或随机图优于/劣于正确教师的科学结论，因为 20-step smoke 没有做 paired statistical comparison。
+- [x] 证据边界已修正：旧脚本中的 `wrong_word` 实际使用跨 episode 的 source map，应该称为 cross-episode phrase negative；`random` 是未做面积匹配的随机图；不能把它们写成严格的 same-image wrong-word 或 area-matched random controls。
+- [x] 本地/远端 `scripts/run_oft_controls_smoke.py` 已扩展 `role_swapped_same_image` 和 `area_matched_random` 选项，文件 SHA256=`d5ea548afa9bdac3d70ae53af763a52cd03b5c0f635f3fd69cb4b7cffa729bb7`；因远端旧执行器仍调用旧参数集合，本轮未把修正版控制冒充为已完成结果。
+- [ ] 正式训练前必须在新结果目录完成修正版 `role_swapped_same_image` 和 `area_matched_random`，并采用相同 sampled observations 的 paired 20–50 step smoke；随后至少在固定 validation 控制集上报告 paired teacher-map metrics。
+- [ ] 在修正版 controls 完成前，配置中的 `same_image_wrong_word` 和 `area_matched_random` 仍是预注册目标，不是已通过证据；B0–B4 只能进入更大规模训练准备，不能宣称 VLA 机制 gate 已通过。
