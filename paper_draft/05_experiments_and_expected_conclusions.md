@@ -272,3 +272,8 @@ Ours-1 是主方法候选；Ours-2 只用于证明语义归因在视觉表征保
 ### 严格 teacher control 的新增证据
 
 在 OpenVLA/OFT 上，same-image phrase-role swap 与面积匹配随机图均能通过 20-step finite interface smoke；两者使用相同模型 revision、manifest、seed、semantic cache 和损失权重。该结果排除了“控制定义或数据接口无法运行”的工程问题，但不等价于正确 teacher 在正式训练或 paired validation 指标上已经显著优于负控。正式论文结论仍必须来自固定验证集、独立测试集和多 seed 的统计比较。
+
+
+### VLA 前置状态（2026-10-06）
+
+缓存审计和 B0–B4 工程接口链已经打通，但当前不把 smoke 或两条 rollout engineering 记录当作正式 LIBERO 性能结果。正式结果前必须完成 rollout demonstration provenance 与训练集的严格隔离审计；因此当前阶段的结论边界是“实现可运行、教师和归因接口可接入、控制组可执行”，而不是“方法已经提升成功率”。

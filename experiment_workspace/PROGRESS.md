@@ -906,3 +906,15 @@ PYTHONPATH=src python scripts/validate_p1_report.py \
 - [x] 生成远端 `artifacts/vla_formal_preflight_audit_20261006.json`，记录 manifest SHA、split overlap、50 个唯一 rollout init-state hash、OpenVLA evaluator SHA。
 - [ ] 正式 rollout manifest 仍未完全冻结：现有 init inventory 标记为 `inventory_only`，demo-to-init-state disjointness 未验证；不得把该字段写成已验证 true。
 - [ ] 正式配置仍需写入 effective batch=1、accumulation=1、10080 fixed optimizer updates、四 pass deterministic sampler，以及 rollout manifest 的 provenance caveat；完成后才可启动正式 B0 小规模训练。
+
+
+## 2026-10-06：正式 VLA 前置配置复核
+
+- [x] 101 SSH 可用：`di-20260613120619-84fwm`。
+- [x] 现有 cache 审计状态保持不变：LIBERO semantic `10080/10080`，Flickr SD1.5 `9952/9952`（5 条失败样本由独立 retry overlay 补齐，原始 cache 未覆盖），C-RADIO `5040/5040`。
+- [x] B0 已完成 P1、30-step action smoke、checkpoint restore、continuation 检查和独立 LIBERO rollout engineering smoke；结果目录：`/vepfs-mlp2/c20250405/400040/transfer/vla_attention/results/P6_vla_b0_b4_driver_20261006/`。
+- [x] B1/B2/B3/B4 interface smoke 与 strict same-image role-swapped、area-matched-random controls 已完成；这些结果仍只作为工程接口证据，不作为正式性能结论。
+- [x] 生成并校验远程正式前置配置：`configs/vla/p6_b0_b4_formal_preflight_20261006.json`；远程 SHA256：`45f761f0455f33bac88fc1191275eeb73e1a153e9af4a892e69067347d00f8b5`。
+- [x] 配置冻结了 OpenVLA/OFT revision、7D delta EEF、chunk=8、seed=17/29/41、4 passes、10080 optimizer steps、checkpoint steps `[2520,5040,7560,10080]`、`lambda_retention=0.05`、`lambda_containment=0.02` 和官方 evaluator commit。
+- [ ] 仍未完成：rollout demo 与 train split 的 provenance/disjointness 证明；当前配置明确写为 `unverified_inventory_only`，因此尚不能启动正式 rollout benchmark 或宣称正式 VLA 性能。
+- 下一步：补齐 rollout provenance 审计；然后运行独立的正式 preflight/B0 offline 小规模验证，再决定是否提交 10k-step B0–B4 训练。

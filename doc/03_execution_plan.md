@@ -1040,3 +1040,8 @@ SSH_OK 只读探针
 - [x] `run_oft_controls_smoke.py` 已支持同一 episode/timestep/camera 的 source-target role swap，以及保持 top-20% 支持面积的随机位置 control。
 - [x] `role_swapped_same_image` 与 `area_matched_random` 均完成 20-step finite interface smoke；结果写入独立版本化目录，未覆盖旧结果、B0 或任何 cache。
 - [ ] control smoke 不是性能或机制显著性结论；正式 gate 仍要在固定 validation/control 集上做 paired metrics，并与 correct teacher、cross-episode phrase、wrong-image 一起报告。
+
+
+### 2026-10-06 实际执行状态：VLA 前置配置
+
+正式前置配置已在 101 生成并通过 JSON 校验，配置文件为 `configs/vla/p6_b0_b4_formal_preflight_20261006.json`，远程 SHA256 为 `45f761f0455f33bac88fc1191275eeb73e1a153e9af4a892e69067347d00f8b5`。缓存审计、B0 工程 smoke、B1–B4 interface smoke 和严格控制组均已有独立证据。当前唯一未冻结的关键证据是 rollout demo 与训练 manifest 的 provenance/disjointness；在该项完成前，B0–B4 只能继续做 offline/preflight 验证，不能把 rollout 结果写成正式性能结论。
