@@ -847,3 +847,10 @@ PYTHONPATH=src python scripts/validate_p1_report.py \
 - [ ] B4 与 B3 一样使用 source/target semantic map 并集作为 support proxy，尚未使用正式 LIBERO phase label；因此只是组合接口 smoke，不是最终方法或性能结果。
 - [x] B0、B1、B2、B3、B4 的独立工程 smoke 现在均有通过证据；没有启动任何长训练。
 - [ ] 下一步：冻结 B0–B4 正式配置和 control matrix（wrong-map、random-map、raw-attention proxy、retention-only、semantic-only），然后再进入正式小规模/全量训练；继续记录每个 run 的 config/manifest/Git SHA。
+
+## 2026-10-06：B0–B4 smoke 后正式训练前冻结配置
+
+- [x] 新增独立冻结配置：`configs/vla/p6_b0_b4_frozen_seed17_smoke.json`；不修改仍保留占位符的旧模板 `p6_b0_b4.json`。
+- [x] 写入已由真实 P1/smoke 证实的 OpenVLA revision、双相机、8×7 action chunk、SD semantic manifest SHA、C-RADIO manifest SHA、lambda 和 attribution 定义。
+- [x] 预注册 controls：correct teacher、wrong-word、wrong-image、area-matched random、raw-attention proxy、retention-only、semantic-only、phase-shuffled support。
+- [ ] 正式训练仍未启动：effective batch、gradient accumulation、官方 evaluator commit、正式 rollout episode manifest 和三 seed controls 结果需要先冻结；当前配置状态明确为 `smoke_frozen_formal_training_pending_controls`。
