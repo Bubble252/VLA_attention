@@ -1035,3 +1035,10 @@ PYTHONPATH=src python scripts/validate_p1_report.py \
 - [x] 结果：`18 passed, 4 skipped`；测试覆盖本地 episode manifest、VLA 配置校验和插件合同。
 - [x] 首次未设置 `PYTHONPATH` 的收集失败属于环境路径问题，未修改代码；设置仓库根目录后测试通过。
 - [ ] 该测试只验证本地代码合同，不替代 101 上的正式训练或 LIBERO rollout。
+
+## 2026-10-06：cache progress 与 overlay 状态边界复核
+
+- [x] 深度完整性审计确认 semantic：`10080` 个 `(16,16)` `.npy`，finite/load/duplicate metadata 异常均为 0；C-RADIO：`5040` 个 `(256,1024)` `.npy`，finite/load/duplicate metadata 异常均为 0。
+- [x] Flickr 原始四个 part 的 `progress.json` 保留历史失败计数 `1/1/1/2`，原始目录共有 `9947` 个 `.npy`，全部 `(16,16)` 且 finite 正常。
+- [x] Flickr 的最终有效数量来自独立 retry overlay：5/5 定向重试成功，综合 audit `9952/9952`、`failures=[]`；不能把原始 part `progress.json` 直接当作 overlay 合并后的最终进度。
+- [ ] 深度审计报告中的 `duplicate_metadata_ids=3` 属于原始 Flickr 目录的历史失败/元数据文件残留统计；综合 retry audit 没有失败样本，正式 manifest 必须继续显式引用 overlay。
