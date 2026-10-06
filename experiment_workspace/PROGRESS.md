@@ -997,3 +997,12 @@ PYTHONPATH=src python scripts/validate_p1_report.py \
 - [x] train manifest 的 `original_file_path` 仍指向外部路径 `/iris/u/moojink/prismatic-dev/LIBERO/..._demo.hdf5`，该路径不在当前 101 工作区。
 - [x] 未修改任何 cache 或 manifest；未启动新的 GPU 任务。
 - [ ] 因此 rollout demo provenance 仍无法验证，正式 rollout 入口继续保持关闭。
+
+
+## 2026-10-06：cache 深度完整性审计
+
+- [x] semantic：10080 个 `.npy`，全部 `(16,16)`，finite 检查 0 个异常，元数据无重复。
+- [x] C-RADIO：5040 个 `.npy`，全部 `(256,1024)`，finite 检查 0 个异常，元数据无重复。
+- [x] Flickr：原始 cache 9947 个 `.npy`，全部 `(16,16)`、finite 正常；5 个失败样本由独立 retry overlay 补齐，有效总数 `9952`。
+- [x] 早期审计中的 `load_bad` 来自把 `failures.json` 列表当作字典读取，v2 审计已修正；没有发现 `.npy` 损坏或 NaN。
+- [x] 远程审计：`vla_workspace/artifacts/deep_cache_integrity_audit_v2_20261006.json`。

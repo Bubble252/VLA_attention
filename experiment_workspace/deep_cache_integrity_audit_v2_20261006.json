@@ -1,0 +1,182 @@
+{
+  "kind": "deep_cache_integrity_audit_v2_20261006",
+  "created_at": "2026-10-06T14:10:09.848654+00:00",
+  "hostname": "di-20260613120619-84fwm",
+  "caches": [
+    {
+      "name": "semantic",
+      "root": "/vepfs-mlp2/c20250405/400040/transfer/vla_attention/vla_workspace/teacher_cache/semantic_train_task0_v3",
+      "exists": true,
+      "file_count": 20170,
+      "npy_count": 10080,
+      "metadata_json_count": 10085,
+      "shape_counts": {
+        "(16, 16)": 10080
+      },
+      "finite_bad_count": 0,
+      "load_bad_count": 0,
+      "duplicate_metadata_ids": 0,
+      "failure_json_files": 5,
+      "audit_file": "/vepfs-mlp2/c20250405/400040/transfer/vla_attention/vla_workspace/artifacts/semantic_train_v3_audit.json",
+      "audit": {
+        "kind": "semantic_train_task0_v3",
+        "manifest": "/vepfs-mlp2/c20250405/400040/transfer/vla_attention/vla_workspace/cache_inputs/libero_spatial_task0_v1/semantic.jsonl",
+        "manifest_sha256": "d7660c9c8286483ebeeafee2d8ff2100dce99ddc9151b35f4beb03c3e3fb87fe",
+        "expected": 10080,
+        "valid": 10080,
+        "failures": [],
+        "extra_files": [],
+        "passed": true,
+        "teacher_revision": "stable-diffusion-v1-5",
+        "seed": 17,
+        "steps": 20,
+        "inner_steps": 10,
+        "resolution": 16,
+        "created_at": 1791281217.4224768
+      }
+    },
+    {
+      "name": "radio",
+      "root": "/vepfs-mlp2/c20250405/400040/transfer/vla_attention/vla_workspace/teacher_cache/radio_train_task0_v1",
+      "exists": true,
+      "file_count": 10084,
+      "npy_count": 5040,
+      "metadata_json_count": 5041,
+      "shape_counts": {
+        "(256, 1024)": 5040
+      },
+      "finite_bad_count": 0,
+      "load_bad_count": 0,
+      "duplicate_metadata_ids": 0,
+      "failure_json_files": 1,
+      "audit_file": "/vepfs-mlp2/c20250405/400040/transfer/vla_attention/vla_workspace/artifacts/radio_train_v1_audit.json",
+      "audit": {
+        "kind": "retention",
+        "manifest_sha256": "2c47200466c63e43c187b6abad68b533ec07ffd3f9ad722c77537672179478ac",
+        "expected": 5040,
+        "valid": 5040,
+        "failures": [],
+        "extra_files": [],
+        "passed": true,
+        "content_digest": "f03a23c066accce4b1a40ada00817b55359c64378e38a811e8f961e1d951e0e0",
+        "audit_repaired_at": "2026-10-06T13:46:11.582164+00:00",
+        "audit_repair_reason": "metadata correction: cache_manifest.jsonl SHA verified directly; cache files unchanged",
+        "previous_manifest_sha256": "b01fb7082921b91de0847d8283c53b5e183b453dafc4e370e7b13e5a2bf4adf9",
+        "manifest_path": "/vepfs-mlp2/c20250405/400040/transfer/vla_attention/vla_workspace/teacher_cache/radio_train_task0_v1/cache_manifest.jsonl",
+        "cache_root": "/vepfs-mlp2/c20250405/400040/transfer/vla_attention/vla_workspace/teacher_cache/radio_train_task0_v1"
+      }
+    },
+    {
+      "name": "flickr",
+      "root": "/vepfs-mlp2/c20250405/400040/transfer/vla_attention/teacher_maps/F1_train_sd1_5_reconstruction_v3_9952_seed17",
+      "exists": true,
+      "file_count": 19907,
+      "npy_count": 9947,
+      "metadata_json_count": 9955,
+      "shape_counts": {
+        "(16, 16)": 9947
+      },
+      "finite_bad_count": 0,
+      "load_bad_count": 0,
+      "duplicate_metadata_ids": 3,
+      "failure_json_files": 4,
+      "audit_file": "/vepfs-mlp2/c20250405/400040/transfer/vla_attention/vla_workspace/artifacts/flickr_train_v3_audit_with_retry.json",
+      "audit": {
+        "kind": "flickr_sd1_5_reconstruction_v3_with_retry_overlay",
+        "expected": 9952,
+        "valid": 9952,
+        "failures": [],
+        "parts": [
+          {
+            "part": 0,
+            "manifest": "/vepfs-mlp2/c20250405/400040/transfer/vla_attention/tmp/f1_train_cache_splits4_aligned/part0.jsonl",
+            "manifest_sha256": "08200cf2bb7b9a0cdc6a84d32c4141167b71ef41cdd768c78594f9cea2759d76",
+            "expected": 2488,
+            "valid": 2488,
+            "failures": []
+          },
+          {
+            "part": 1,
+            "manifest": "/vepfs-mlp2/c20250405/400040/transfer/vla_attention/tmp/f1_train_cache_splits4_aligned/part1.jsonl",
+            "manifest_sha256": "c9e966463bbc0ce268022da412dbcc796d9815a60363c36d034186f1a78049b9",
+            "expected": 2488,
+            "valid": 2488,
+            "failures": []
+          },
+          {
+            "part": 2,
+            "manifest": "/vepfs-mlp2/c20250405/400040/transfer/vla_attention/tmp/f1_train_cache_splits4_aligned/part2.jsonl",
+            "manifest_sha256": "0f9ca3ac75a396d6b7e15722e608de88b8b49979ec452b88fbd8abb5363085af",
+            "expected": 2488,
+            "valid": 2488,
+            "failures": []
+          },
+          {
+            "part": 3,
+            "manifest": "/vepfs-mlp2/c20250405/400040/transfer/vla_attention/tmp/f1_train_cache_splits4_aligned/part3.jsonl",
+            "manifest_sha256": "a476f031a7e815676e5f252420ef1e8f0810c7e417186c33d2a1dd143421d8f6",
+            "expected": 2488,
+            "valid": 2488,
+            "failures": []
+          }
+        ],
+        "retry_audit": "/vepfs-mlp2/c20250405/400040/transfer/vla_attention/vla_workspace/experiment_workspace/results/cache_safety_snapshots/20261006T_retry/retry_audit.json",
+        "overlay_not_merged_into_original": true,
+        "teacher_revision": "stable-diffusion-v1-5",
+        "seed": 17,
+        "steps": 20,
+        "inner_steps": 10,
+        "resolution": 16,
+        "created_at": 1791281182.6935294,
+        "passed": true
+      },
+      "retry_audit": {
+        "kind": "flickr_retry",
+        "expected": 5,
+        "valid": 5,
+        "failures": [],
+        "passed": true,
+        "items": [
+          {
+            "part": 0,
+            "sample_id": "4766439161:caption:3",
+            "map_sha256": "a17ae59669f9472510c8e4355d5d08be3c7a8e073e0d1bcfa6495d33ce5eb105",
+            "metadata_sha256": "00571cb70e3f67c0ea13f697a97d0f56c44a4590a0e252427ab1168e106b0d09",
+            "manifest_sha256": "01379bea528c39e2f42cc73ab2ff17b80edefff91d986400a8595e400935ffff"
+          },
+          {
+            "part": 1,
+            "sample_id": "363503748:caption:3",
+            "map_sha256": "8cc11b77e7880e3895dd88faea804ecfadddec1bdf6cb6d0f04b523f76e977a7",
+            "metadata_sha256": "855ed7989c42df7c0fd3e2f327906c15d8750b264bed1d7cb73c0f88ffee0018",
+            "manifest_sha256": "e10bd989a7747674cfc01aa58b4113143bac4f63477b33cb0731716857eeb3ad"
+          },
+          {
+            "part": 2,
+            "sample_id": "6337783711:caption:4",
+            "map_sha256": "defc1a30de48fdc005ed6e816a38e21e0fd5f425f997b3f787fa5048f1d0a9e9",
+            "metadata_sha256": "d958bc3fa7fca8c5f1c5ae92041e29937f3240bd610d2788f11cf7b9b2eb35b0",
+            "manifest_sha256": "55d634db1ba111045a726c33fc4db327286d962e34e5e051775f69728bcb013f"
+          },
+          {
+            "part": 3,
+            "sample_id": "3732420759:caption:2",
+            "map_sha256": "aac470756a673f2f6af50512f120b21191c1ea35b813d3d39dc279e6a66d1790",
+            "metadata_sha256": "23596fc12d86212a2d2a49c9f655b6179a6cad5003b093243ace5af13c693230",
+            "manifest_sha256": "e69fa5ce5e2ccb07dc78f255ea5bf7c1446946353d325805ed511213a2b94337"
+          },
+          {
+            "part": 3,
+            "sample_id": "2355098740:caption:3",
+            "map_sha256": "3e28660a228bee37b1e5b99cbc0dfa4e981178200e247cdbb0cc7a28a35717e2",
+            "metadata_sha256": "4ddc27a6d87718b795e45757eb09759637521bc55758b8f782a6c0c7629c2ca0",
+            "manifest_sha256": "e69fa5ce5e2ccb07dc78f255ea5bf7c1446946353d325805ed511213a2b94337"
+          }
+        ],
+        "created_at": 1791281147.1547835
+      },
+      "retry_overlay_expected": 5,
+      "effective_valid_with_overlay": 9952
+    }
+  ]
+}

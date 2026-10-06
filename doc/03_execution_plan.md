@@ -1090,3 +1090,8 @@ cache gate、B0 offline/restore 和 B1–B4 interface smoke 已完成统一审�
 ### 2026-10-06 LIBERO provenance 可用性复核
 
 服务器当前没有可访问的原始 HDF5 demo，训练 manifest 的 source path 指向外部环境。因此不能从现有文件证明 rollout init state 与训练 demo 的物理 disjointness；正式 rollout 仍需补充数据源或 provenance 索引。
+
+
+### 2026-10-06 cache 深度完整性审计
+
+对三个 cache 的全部 `.npy` 做了只读 shape/finite 检查。semantic、C-RADIO 均完整；Flickr 原目录 9947 条加 retry overlay 5 条达到 9952。`failures.json` 是列表型审计元数据，不属于损坏 cache。
