@@ -828,3 +828,12 @@ PYTHONPATH=src python scripts/validate_p1_report.py \
 - [x] B2 20/20 steps 通过：action loss、semantic loss、total loss、梯度均 finite；学生图 `[1,2,256]`、teacher 图 `[1,512]`（两路拼接后等价 `[1,2,256]`）；teacher frozen；semantic manifest SHA=`d7660c9c8286483ebeeafee2d8ff2100dce99ddc9151b35f4beb03c3e3fb87fe`。
 - [x] 当前 B2 仍是接口工程 smoke，不是性能结论；semantic loss 使用 lambda=0.10、temperature=1.0，正式值仍需按 VLM 冻结协议确认。
 - [ ] 下一步实现并运行独立 B3 dynamic action-conditioned attribution smoke：复用 B1 retention、B2 semantic，增加 action-conditioned `A_act`/language support containment；不启动 B4 或长训练。
+
+## 2026-10-06：B3 dynamic action-attribution interface smoke
+
+- [x] 新增 `scripts/run_oft_b3_dynamic_smoke.py`，以真实 OpenVLA action-loss gradient×activation 得到 `A_act`，拼接两路 16×16 patch，并联合计算 SD semantic alignment 与 containment。
+- [x] 20/20 steps 通过，action/semantic/containment/total loss 与梯度均 finite；结果目录：`/vepfs-mlp2/c20250405/400040/transfer/vla_attention/results/P6_vla_b0_b4/B3_dynamic_action_interface_seed17`；日志：`vla_workspace/logs/b3_dynamic_action_interface_seed17.log`。
+- [x] lambda_sem=0.10、lambda_contain=0.02；semantic manifest SHA=`d7660c9c8286483ebeeafee2d8ff2100dce99ddc9151b35f4beb03c3e3fb87fe`；OpenVLA revision 与 train/eval/statistics SHA 与 P1 一致。
+- [ ] 重要边界：本轮 `A_act` 来自当前 chunk action loss，具备输出条件性；language support 采用 source/target map 的并集代理，尚非按 LIBERO 弱阶段标签构建的逐时刻 source→mixed→target phase support。因此只能称为动态 attribution 接口 smoke，不能声称完整 phase transition 已验证。
+- [ ] B3 脚本已提交为 `03b4f9e`，远端已上传且编译通过；GitHub push 遇 TLS handshake failure，需恢复网络后推送 commit。
+- [ ] 下一步准备 B4 组合 smoke（B1 retention + B2 semantic + B3 containment）；仍是 20-step engineering gate，不进入长训练。
