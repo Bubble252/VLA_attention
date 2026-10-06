@@ -795,3 +795,8 @@ PYTHONPATH=src python scripts/validate_p1_report.py \
 
 - [x] 修订并上传 `server/run_p6_b0_after_cache.sh`：统一 driver 现在显式导出数值 `MUJOCO_EGL_DEVICE_ID`，避免单卡 CUDA UUID 被 robosuite EGL 解析器误读；保留 cache gate、P1、B0、restore、rollout 的顺序，不改变实验定义。
 - [x] driver 脚本远端 `bash -n` 通过，SHA256=`01939496b68eb2df410d29d0346be0862c1c7d174fc4f3cd767411d423724e2f`。未重新启动 driver，避免覆盖已存在 B0 结果。
+
+- [x] 2026-10-06 18:45（上海时间）在独立目录 `B0_restore_seed17_driverfix` 复跑 restore；预测 exact restore 仍为 `max_prediction_error=0`，loss/grad_norm 与 uninterrupted reference 一致，LR/scheduler exact，continuation report `passed=true`。
+- [x] B0 driver 修复已提交并推送：commit `7e23096`，远端 driver SHA 已校验；当前不再需要人工介入 cache gate 或 EGL 环境设置。
+- [x] B0 工程验证边界已冻结：cache→audit→P1→30-step B0→独立 restore→官方 episode loop 均可运行；两个未充分训练 rollout 为 `0/2`，仅作工程 smoke。
+- [ ] B1 retention smoke 尚未启动；开始前仍需单独创建 B1 结果目录和明确 B1 的视觉 retention 输入/梯度检查，不得复用 B0 checkpoint 作为 B1 结果。
