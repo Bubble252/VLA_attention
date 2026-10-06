@@ -1077,6 +1077,10 @@ SSH_OK 只读探针
 cache gate、B0 offline/restore 和 B1–B4 interface smoke 已完成统一审计。当前所有结果仍属于工程接口证据；正式 rollout 需要额外的 demo provenance/disjointness 证明。
 
 
+### 2026-10-06 cache/audit/B0 链路复核
+
+101 当前无后台 cache 或训练进程，三类 cache 保持完整通过：LIBERO semantic `10080/10080`、Flickr SD1.5 `9952/9952`、C-RADIO `5040/5040`。B0 offline/restore 与 B1–B4 interface smoke 均已有独立证据。当前唯一实质性边界是 LIBERO rollout 的 demo provenance/disjointness 尚未验证，因此后续只能先做 offline-only 方法验证；正式 rollout 需要可核验的 demo 来源和 episode 对应关系。
+
 ### 2026-10-06 当前 goal 状态复核
 
 工程链路已完成并审计，正式 rollout 的 demo provenance 仍缺失。后续不得重复生成 cache，也不得把已有 smoke 当作正式 benchmark。

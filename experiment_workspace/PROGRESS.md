@@ -1006,3 +1006,12 @@ PYTHONPATH=src python scripts/validate_p1_report.py \
 - [x] Flickr：原始 cache 9947 个 `.npy`，全部 `(16,16)`、finite 正常；5 个失败样本由独立 retry overlay 补齐，有效总数 `9952`。
 - [x] 早期审计中的 `load_bad` 来自把 `failures.json` 列表当作字典读取，v2 审计已修正；没有发现 `.npy` 损坏或 NaN。
 - [x] 远程审计：`vla_workspace/artifacts/deep_cache_integrity_audit_v2_20261006.json`。
+
+## 2026-10-06：goal 复核（cache/audit/B0 链路）
+
+- [x] 101 当前连接正常：hostname=`di-20260613120619-84fwm`；两张 GPU 均空闲；没有 cache、B0–B4 或长训练进程运行。
+- [x] 三个现有 cache 未被重新生成或覆盖：LIBERO semantic `10080/10080`，Flickr SD1.5 有效总数 `9952/9952`（5 条失败由独立 retry overlay 补齐），C-RADIO `5040/5040`。
+- [x] 当前权威 C-RADIO manifest SHA=`2c47200466c63e43c187b6abad68b533ec07ffd3f9ad722c77537672179478ac`；B1 当前重跑使用同一 SHA。
+- [x] B0 offline/restore、B1–B4 interface smoke 已有独立结果；这些结果只证明接口、有限步训练和恢复链路可运行。
+- [ ] 正式 LIBERO rollout 的 demo provenance/disjointness 仍未验证；因此不能把现有 2-episode engineering smoke 写成正式成功率或 OOD 结论。
+- 下一步：在不改 cache 的前提下继续 offline-only 方法验证；若要正式 rollout，需要先提供可核验的 LIBERO demo 来源与 episode 对应关系。
