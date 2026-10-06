@@ -788,3 +788,7 @@ PYTHONPATH=src python scripts/validate_p1_report.py \
 
 - [x] 修复并测试 restore evidence 校验：接受正式 BF16 跨进程 continuation 的 loss/grad_norm `1e-4` 容差、LR/scheduler exact，同时保留旧测试格式兼容；本地 `6 passed, 1 skipped`。远端 `oft_checkpoint.py` 已同步。
 - [x] rollout 设备问题已定位并修复运行参数：`CUDA_VISIBLE_DEVICES=0` 单卡时必须显式设置 `MUJOCO_EGL_DEVICE_ID=0`，否则 GPU UUID 会被旧 robosuite 解析器当作整数失败。
+
+- [x] 2026-10-06 18:40（上海时间）重新运行独立官方 LIBERO rollout，设置 `CUDA_VISIBLE_DEVICES=0` 与 `MUJOCO_EGL_DEVICE_ID=0`；`B0_rollout_retry8/summary.json` 两个固定初始状态均完整 `230` steps、`environment_error=null`，成功 `0/2`。
+- [x] 该 `0/2` 只用于确认 OpenVLA/OFT checkpoint、action decode、EGL、官方 episode loop 和日志链路可运行；B0 是 30-step 未充分训练工程 smoke，因此不报告为 benchmark 性能，也不据此否定方法。
+- [ ] 统一 `run_p6_b0_after_cache.sh` 仍保留旧 strict-digest 日志，尚未重跑整条 driver；需要把 `MUJOCO_EGL_DEVICE_ID` 显式写入 rollout 环境，并让 driver 使用 `B0_restore_seed17_retry3` 的容差 continuation evidence。B1-B4 暂不启动。
