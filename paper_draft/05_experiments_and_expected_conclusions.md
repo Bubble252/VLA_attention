@@ -282,3 +282,8 @@ Ours-1 是主方法候选；Ours-2 只用于证明语义归因在视觉表征保
 ### Rollout 结论边界
 
 rollout inventory 的唯一性不能替代 demo provenance。当前只证明 split episode ID 互斥和 rollout init state 去重，尚未证明 rollout 初始状态不来自训练 demo；因此 rollout 结果只能作为工程可运行性证据。
+
+
+### B0 offline preflight 证据
+
+50-step B0 offline preflight 在固定 manifest、OpenVLA/OFT checkpoint 和 7D delta EEF action schema 下通过，所有训练 loss、gradient 和 held-out prediction 均为 finite。该结果仅支持“训练接口和离线评测链路可运行”，不支持性能提升或 rollout 泛化结论。

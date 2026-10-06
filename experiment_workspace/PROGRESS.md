@@ -918,3 +918,13 @@ PYTHONPATH=src python scripts/validate_p1_report.py \
 - [x] 配置冻结了 OpenVLA/OFT revision、7D delta EEF、chunk=8、seed=17/29/41、4 passes、10080 optimizer steps、checkpoint steps `[2520,5040,7560,10080]`、`lambda_retention=0.05`、`lambda_containment=0.02` 和官方 evaluator commit。
 - [ ] 仍未完成：rollout demo 与 train split 的 provenance/disjointness 证明；当前配置明确写为 `unverified_inventory_only`，因此尚不能启动正式 rollout benchmark 或宣称正式 VLA 性能。
 - 下一步：补齐 rollout provenance 审计；然后运行独立的正式 preflight/B0 offline 小规模验证，再决定是否提交 10k-step B0–B4 训练。
+
+
+## 2026-10-06：B0 offline preflight 通过
+
+- [x] 在 101 上使用独立目录 `results/P6_vla_b0_b4_preflight_20261006/B0_offline_50_seed17` 完成 50-step B0 offline preflight。
+- [x] 训练 50 steps，loss/gradient 全部 finite；held-out offline prediction 9 episodes，全部 finite；峰值显存 `21618780160` bytes（约 20.2 GiB）。
+- [x] train manifest SHA：`695681afb03012bd18c34d09c9a4fbf15ca489605d4463cbf891cd7213bca921`；offline eval SHA：`c93ae5afeb919de8fb148bfa1f935173d04f3ac0502b85e3b6916afb15e9dd0b`。
+- [x] 生成审计：`vla_workspace/artifacts/vla_b0_offline_preflight_audit_20261006.json`。
+- [x] 本次运行没有 rollout，没有覆盖旧结果，也没有修改任何 cache。
+- [ ] 仍未完成 checkpoint restore preflight、正式 B1–B4 新结果和 rollout provenance；因此不能宣称正式 VLA benchmark 已完成。

@@ -1050,3 +1050,8 @@ SSH_OK 只读探针
 ### 2026-10-06 rollout provenance 审计结果
 
 远程审计文件为 `vla_workspace/artifacts/rollout_provenance_audit_20261006.json`。当前 split episode ID 已互斥，rollout init state 也已去重，但 inventory 没有将初始状态链接到 demo，且 manifest 的原始 HDF5 路径在服务器不可访问。因此正式 rollout provenance 仍未证明；在补证据前只运行 offline/preflight，不宣称 LIBERO rollout 性能。
+
+
+### 2026-10-06 B0 offline preflight
+
+独立 50-step B0 offline preflight 已通过，训练和 held-out prediction 均为 finite，结果与审计文件位于 101 的 `P6_vla_b0_b4_preflight_20261006`。该结果只证明正式训练链路可运行，不替代 checkpoint restore、B1–B4 和官方 rollout benchmark。
