@@ -1022,3 +1022,9 @@ PYTHONPATH=src python scripts/validate_p1_report.py \
 - [x] 五条样本均按原 teacher/seed/steps/inner_steps/resolution 定向重试成功，`expected=5`、`valid=5`、`failures=[]`。
 - [x] retry 结果保存在独立 overlay，未覆盖原始 Flickr cache；正式 manifest 必须显式记录 overlay 来源。
 - [x] B0 原始 driver 日志包含 `P6_B0_GPU_GATE_COMPLETE`，30-step action smoke、restore 和工程 rollout 已完成；后续结果不可解释为正式 benchmark 性能。
+
+## 2026-10-06：VLA 结果路径索引复核
+
+- [x] 核对 B0 offline、B0 restore、B1、B2、B3、B4 的远端真实结果路径，见 `experiment_workspace/vla_result_index_20261006.md`。
+- [x] 确认 B1 当前结果使用 C-RADIO manifest `2c472004...`；B2–B4 使用 semantic manifest `d7660c9c...`。
+- [ ] 这些结果仍是 preflight/interface smoke；没有正式 LIBERO 成功率、OOD 或方法优越性结论。
