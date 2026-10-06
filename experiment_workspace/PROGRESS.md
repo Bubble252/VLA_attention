@@ -1015,3 +1015,10 @@ PYTHONPATH=src python scripts/validate_p1_report.py \
 - [x] B0 offline/restore、B1–B4 interface smoke 已有独立结果；这些结果只证明接口、有限步训练和恢复链路可运行。
 - [ ] 正式 LIBERO rollout 的 demo provenance/disjointness 仍未验证；因此不能把现有 2-episode engineering smoke 写成正式成功率或 OOD 结论。
 - 下一步：在不改 cache 的前提下继续 offline-only 方法验证；若要正式 rollout，需要先提供可核验的 LIBERO demo 来源与 episode 对应关系。
+
+## 2026-10-06：Flickr 五条失败样本明细复核
+
+- [x] 从远端 `retry_audit.json` 读取并固化 5 条失败样本的 `part`、`sample_id`、map SHA、metadata SHA 与 retry manifest SHA；明细见 `experiment_workspace/flickr_retry_audit_20261006.md`。
+- [x] 五条样本均按原 teacher/seed/steps/inner_steps/resolution 定向重试成功，`expected=5`、`valid=5`、`failures=[]`。
+- [x] retry 结果保存在独立 overlay，未覆盖原始 Flickr cache；正式 manifest 必须显式记录 overlay 来源。
+- [x] B0 原始 driver 日志包含 `P6_B0_GPU_GATE_COMPLETE`，30-step action smoke、restore 和工程 rollout 已完成；后续结果不可解释为正式 benchmark 性能。
