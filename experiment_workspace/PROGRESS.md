@@ -1048,3 +1048,9 @@ PYTHONPATH=src python scripts/validate_p1_report.py \
 - [x] 固化 101 上 B0 50-step preflight 的 9 个 held-out episode action L1 摘要：mean `0.8292718066`、median `0.8395277262`、min/max `0.7216840982/0.8976615071`。
 - [x] 所有 held-out prediction finite，来源文件和 episode ID 已保留；该摘要仅作为 B0 离线 paired comparison 基线。
 - [ ] 该结果不代表 LIBERO 成功率、OOD 泛化或方法优越性。
+
+## 2026-10-06：正式 rollout 前 offline-only 边界冻结
+
+- [x] 在 demo provenance/disjointness 未验证前，允许继续 B0 held-out、B1–B4 paired offline、checkpoint restore、teacher/control 一致性和统计分析。
+- [x] 明确禁止启动长时间正式 rollout，禁止把 2-episode engineering smoke 写成成功率，禁止重新生成或覆盖已有 cache。
+- [ ] 正式 rollout 解锁仍需要可核验 LIBERO demo 来源、episode 对应关系及 train/eval/rollout disjointness 审计。

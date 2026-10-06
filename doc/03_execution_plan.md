@@ -1099,3 +1099,7 @@ cache gate、B0 offline/restore 和 B1–B4 interface smoke 已完成统一审�
 ### 2026-10-06 cache 深度完整性审计
 
 对三个 cache 的全部 `.npy` 做了只读 shape/finite 检查。semantic、C-RADIO 均完整；Flickr 原目录 9947 条加 retry overlay 5 条达到 9952。`failures.json` 是列表型审计元数据，不属于损坏 cache。
+
+### 2026-10-06 offline-only 继续执行边界
+
+在 demo provenance/disjointness 尚未补齐前，允许继续的工作限定为：B0 held-out action prediction、B1–B4 训练接口和 paired offline 对照、checkpoint restore、teacher/control 一致性检查以及结果统计。禁止启动长时间正式 rollout，禁止把 2-episode engineering smoke 写成成功率，禁止重新生成或覆盖任何已有 cache。正式 rollout 的解锁条件是获得可核验的 LIBERO demo 来源、episode 对应关系和 train/eval/rollout disjointness 审计。
