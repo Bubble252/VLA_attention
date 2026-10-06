@@ -854,3 +854,9 @@ PYTHONPATH=src python scripts/validate_p1_report.py \
 - [x] 写入已由真实 P1/smoke 证实的 OpenVLA revision、双相机、8×7 action chunk、SD semantic manifest SHA、C-RADIO manifest SHA、lambda 和 attribution 定义。
 - [x] 预注册 controls：correct teacher、wrong-word、wrong-image、area-matched random、raw-attention proxy、retention-only、semantic-only、phase-shuffled support。
 - [ ] 正式训练仍未启动：effective batch、gradient accumulation、官方 evaluator commit、正式 rollout episode manifest 和三 seed controls 结果需要先冻结；当前配置状态明确为 `smoke_frozen_formal_training_pending_controls`。
+
+## 2026-10-06：正式训练前配置准入检查
+
+- [x] 新冻结配置 `configs/vla/p6_b0_b4_frozen_seed17_smoke.json` 已通过 `scripts/validate_vla_config.py`，矩阵严格为 B0–B4，报告动作 schema 为 delta_eef_7d，seeds 为 17/29/41，offline-first 和 episode-cluster bootstrap 已冻结。
+- [x] 修复验证器兼容带版本后缀的冻结 experiment_id，并将缺省 `drop_last` 按 false 验证；提交 `9235e9a` 已推送。
+- [ ] 正式长训练仍未启动。仍需在 vla101 上冻结并审计 effective batch、gradient accumulation、正式 rollout manifest/evaluator 版本，并运行 controls smoke 后才可进入 10k-step 训练。
