@@ -800,3 +800,12 @@ PYTHONPATH=src python scripts/validate_p1_report.py \
 - [x] B0 driver 修复已提交并推送：commit `7e23096`，远端 driver SHA 已校验；当前不再需要人工介入 cache gate 或 EGL 环境设置。
 - [x] B0 工程验证边界已冻结：cache→audit→P1→30-step B0→独立 restore→官方 episode loop 均可运行；两个未充分训练 rollout 为 `0/2`，仅作工程 smoke。
 - [ ] B1 retention smoke 尚未启动；开始前仍需单独创建 B1 结果目录和明确 B1 的视觉 retention 输入/梯度检查，不得复用 B0 checkpoint 作为 B1 结果。
+
+## 2026-10-06：B1 启动前接口冻结要求
+
+- [x] 已确认 B0 工程链路独立通过：cache audit、OpenVLA P1、30-step B0、独立 restore、官方 episode loop 均有独立证据；B0 rollout 的 `0/2` 仅是未充分训练 checkpoint 的工程 smoke。
+- [x] 已确认 C-RADIOv3-L retention cache 为每个 camera `256×1024` FP32 patch feature，OpenVLA P1 的学生视觉块为两路 `16×16` patch，proprio 位于 index `512`；两者空间网格可对齐，但通道维度不同。
+- [ ] B1 不能直接复用 B0 脚本或把通用 `vla_bc.py` 合成器当成真实实验；必须增加真实 OpenVLA retention adapter：冻结 C-RADIO teacher，读取 cache，按 camera/provenance 对齐 student patch，使用明确的 trainable projector `student_dim→1024`，并记录 projector 初始化、参数组和 retention 梯度。
+- [ ] B1 首个运行只做独立的 20–30 step interface smoke，输出目录必须为新的 `B1_retention_interface_seed17`，不覆盖 B0、cache 或 restore 目录；检查 action loss、retention loss、teacher 无梯度、student/projector 梯度 finite、两路 patch 数/坐标一致和 checkpoint restore。
+- [ ] B1 smoke 通过后，才允许冻结 B1 三 seed 的正式配置；B2/B3/B4 仍必须逐项 smoke，不能因 B1 通过而批量启动。
+- [ ] 当前尚未启动 B1 GPU 作业。
