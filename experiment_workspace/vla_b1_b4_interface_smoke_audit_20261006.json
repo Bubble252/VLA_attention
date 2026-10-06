@@ -1,0 +1,89 @@
+{
+  "kind": "vla_b1_b4_interface_smoke_audit",
+  "created_at": "2026-10-06T13:41:29.762914+00:00",
+  "hostname": "di-20260613120619-84fwm",
+  "status": "passed_with_provenance_note",
+  "results": [
+    {
+      "name": "B1_retention_interface_seed17",
+      "status": "passed",
+      "steps": 20,
+      "seed": 17,
+      "model_revision": "47a0ec7fc4ec123775a391911046cf33cf9ed83f",
+      "teacher_frozen": true,
+      "train_manifest_sha256": "695681afb03012bd18c34d09c9a4fbf15ca489605d4463cbf891cd7213bca921",
+      "eval_manifest_sha256": "c93ae5afeb919de8fb148bfa1f935173d04f3ac0502b85e3b6916afb15e9dd0b",
+      "semantic_manifest_sha256": null,
+      "purpose": "engineering interface smoke; not benchmark performance"
+    },
+    {
+      "name": "B2_semantic_interface_seed17",
+      "status": "passed",
+      "steps": 20,
+      "seed": 17,
+      "model_revision": "47a0ec7fc4ec123775a391911046cf33cf9ed83f",
+      "teacher_frozen": true,
+      "train_manifest_sha256": "695681afb03012bd18c34d09c9a4fbf15ca489605d4463cbf891cd7213bca921",
+      "eval_manifest_sha256": "c93ae5afeb919de8fb148bfa1f935173d04f3ac0502b85e3b6916afb15e9dd0b",
+      "semantic_manifest_sha256": "d7660c9c8286483ebeeafee2d8ff2100dce99ddc9151b35f4beb03c3e3fb87fe",
+      "purpose": "engineering interface smoke; not benchmark performance"
+    },
+    {
+      "name": "B3_dynamic_action_interface_seed17",
+      "status": "passed",
+      "steps": 20,
+      "seed": 17,
+      "model_revision": "47a0ec7fc4ec123775a391911046cf33cf9ed83f",
+      "teacher_frozen": true,
+      "train_manifest_sha256": "695681afb03012bd18c34d09c9a4fbf15ca489605d4463cbf891cd7213bca921",
+      "eval_manifest_sha256": "c93ae5afeb919de8fb148bfa1f935173d04f3ac0502b85e3b6916afb15e9dd0b",
+      "semantic_manifest_sha256": "d7660c9c8286483ebeeafee2d8ff2100dce99ddc9151b35f4beb03c3e3fb87fe",
+      "purpose": "engineering interface smoke; not benchmark performance"
+    },
+    {
+      "name": "B4_combined_interface_seed17",
+      "status": "passed",
+      "steps": 20,
+      "seed": 17,
+      "model_revision": "47a0ec7fc4ec123775a391911046cf33cf9ed83f",
+      "teacher_frozen": true,
+      "train_manifest_sha256": "695681afb03012bd18c34d09c9a4fbf15ca489605d4463cbf891cd7213bca921",
+      "eval_manifest_sha256": "c93ae5afeb919de8fb148bfa1f935173d04f3ac0502b85e3b6916afb15e9dd0b",
+      "semantic_manifest_sha256": "d7660c9c8286483ebeeafee2d8ff2100dce99ddc9151b35f4beb03c3e3fb87fe",
+      "purpose": "engineering interface smoke; not benchmark performance"
+    },
+    {
+      "name": "control_role_swapped_same_image_seed17_final",
+      "status": "passed",
+      "steps": 20,
+      "seed": 17,
+      "model_revision": "47a0ec7fc4ec123775a391911046cf33cf9ed83f",
+      "teacher_frozen": true,
+      "train_manifest_sha256": "695681afb03012bd18c34d09c9a4fbf15ca489605d4463cbf891cd7213bca921",
+      "eval_manifest_sha256": "c93ae5afeb919de8fb148bfa1f935173d04f3ac0502b85e3b6916afb15e9dd0b",
+      "semantic_manifest_sha256": "d7660c9c8286483ebeeafee2d8ff2100dce99ddc9151b35f4beb03c3e3fb87fe",
+      "purpose": "engineering interface smoke; not benchmark performance"
+    },
+    {
+      "name": "control_area_matched_random_seed17_final",
+      "status": "passed",
+      "steps": 20,
+      "seed": 17,
+      "model_revision": "47a0ec7fc4ec123775a391911046cf33cf9ed83f",
+      "teacher_frozen": true,
+      "train_manifest_sha256": "695681afb03012bd18c34d09c9a4fbf15ca489605d4463cbf891cd7213bca921",
+      "eval_manifest_sha256": "c93ae5afeb919de8fb148bfa1f935173d04f3ac0502b85e3b6916afb15e9dd0b",
+      "semantic_manifest_sha256": "d7660c9c8286483ebeeafee2d8ff2100dce99ddc9151b35f4beb03c3e3fb87fe",
+      "purpose": "engineering interface smoke; not benchmark performance"
+    }
+  ],
+  "common_train_manifest_sha256": "695681afb03012bd18c34d09c9a4fbf15ca489605d4463cbf891cd7213bca921",
+  "common_eval_manifest_sha256": "c93ae5afeb919de8fb148bfa1f935173d04f3ac0502b85e3b6916afb15e9dd0b",
+  "notes": [
+    "These are 20-step engineering/interface smokes, not benchmark performance.",
+    "B1 uses radio_manifest_sha256=2c47200466c63e43c187b6abad68b533ec07ffd3f9ad722c77537672179478ac; current radio cache audit manifest is b01fb7082921b91de0847d8283c53b5e183b453dafc4e370e7b13e5a2bf4adf, so B1 must be rerun before formal training.",
+    "B2/B3/B4 and strict controls use semantic manifest d7660c9c8286483ebeeaf2d8ff2100dce99ddc9151b35f4beb03c3e3fb87fe.",
+    "Rollout provenance remains unverified."
+  ],
+  "all_passed": true
+}

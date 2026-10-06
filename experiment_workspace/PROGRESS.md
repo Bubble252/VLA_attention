@@ -937,3 +937,12 @@ PYTHONPATH=src python scripts/validate_p1_report.py \
 - [x] continuation report 通过：loss/grad norm 在绝对误差 `1e-4` 内，学习率和 scheduler 完全一致。
 - [x] 远程审计：`vla_workspace/artifacts/vla_b0_restore_preflight_audit_20261006.json`。
 - [ ] rollout provenance 仍未证明；本次 restore 没有启动 rollout。
+
+
+## 2026-10-06：B1–B4 interface smoke 汇总审计
+
+- [x] B1、B2、B3、B4 以及 strict role-swapped / area-matched-random controls 均报告 `passed`，每个 20 steps，teacher frozen。
+- [x] B2/B3/B4 和控制组使用 semantic manifest SHA `d7660c9c8286483ebeeaf2d8ff2100dce99ddc9151b35f4beb03c3e3fb87fe`。
+- [ ] B1 使用的 C-RADIO manifest SHA `2c472004...` 与当前 cache audit 的 `b01fb708...` 不一致；B1 必须用当前冻结 cache 重新跑后，才能进入正式比较。
+- [ ] 所有这些仍是 interface smoke，不是 benchmark 性能结果；rollout provenance 仍未验证。
+- 汇总审计：`vla_workspace/artifacts/vla_b1_b4_interface_smoke_audit_20261006.json`。

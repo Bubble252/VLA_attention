@@ -292,3 +292,8 @@ rollout inventory 的唯一性不能替代 demo provenance。当前只证明 spl
 ### B0 restore 证据
 
 独立 checkpoint restore 达到 exact prediction equality，continuation 的 loss/gradient、学习率和 scheduler 均可复现。这证明训练状态可恢复，但仍不代表方法在 LIBERO rollout 上取得性能提升。
+
+
+### B1–B4 接口证据边界
+
+B1–B4 的 20-step smoke 证明接口可运行，但 B1 使用了不同版本的 C-RADIO manifest，不能直接与当前冻结 cache 作为同一正式实验比较；B2–B4 的 semantic manifest 已一致。
