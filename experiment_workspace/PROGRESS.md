@@ -894,3 +894,15 @@ PYTHONPATH=src python scripts/validate_p1_report.py \
 - [x] 严格 `area_matched_random` control 完成 20/20 steps，结果：`results/P6_vla_b0_b4/control_area_matched_random_seed17_final/report.json`，所有 loss/gradient/attribution finite，teacher frozen，semantic manifest SHA 与正确 control 一致。
 - [x] 两个修正版 control 均使用 OpenVLA revision=`47a0ec7fc4ec123775a391911046cf33cf9ed83f`、seed=17、lambda_sem=0.10、temperature=1.0、相同 train/eval manifest；没有重新生成或覆盖任何 cache，也没有覆盖旧 control 结果。
 - [ ] 这些结果证明严格 control 的接口和数据配对可运行，不代表正确 teacher 已在 20-step smoke 上获得统计显著优势；正式机制 gate 仍需固定 validation 集上的 paired attribution metrics 和正式训练后的能力指标。
+
+## 2026-10-06：正式 VLA 配置前置审计
+
+- [x] vla101 GPU 当前空闲；hostname=`di-20260613120619-84fwm`。
+- [x] 官方源码版本已冻结为：OpenVLA-OFT `e4287e94541f459edc4feabc4e181f537cd569a8`；LIBERO `8f1084e3132a39270c3a13ebe37270a43ece2a01`；transformers-OFT `bc339d9ad707454c0c115970db43c260067c61ab`；dlimp `040105d256bd28866cc6620621a3d5f7b6b91b46`；RADIO `c0f37017930e9dda53f93424cf4bf39fc51f287e`。
+- [x] 官方 evaluator 文件 `openvla-oft/experiments/robot/libero/run_libero_eval.py` SHA256=`701a20b6ca2942aa36e0e7d567b25647268b936a23af79c5893534f10bec7802`；evaluator import audit 已通过。
+- [x] 当前 task0 train/validation/offline_eval manifest 分别为 27/9/9 episodes，episode_id 与 content_hash 在各 split 内唯一，train、validation、offline_eval 两两不重叠。SHA：train=`695681afb03012bd18c34d09c9a4fbf15ca489605d4463cbf891cd7213bca921`，validation=`d4ce5edc0b08dbedf64a5e9c5f669cd8f84a23624f575e865344bc780710d687`，offline_eval=`c93ae5afeb919de8fb148bfa1f935173d04f3ac0502b85e3b6916afb15e9dd0b`。
+- [x] train manifest 的完整 H=8 action transitions 数为 2520；在 `effective_batch_size=1`、`gradient_accumulation_steps=1` 下，每个自然 pass 为 2520 optimizer updates，达到 10000 updates 需要确定性重复 4 个 dataset pass（实际 10080 updates）。
+- [x] 该 batch/accumulation 选择与已通过的 20/30-step smoke 显存约 20.2 GiB 一致，首轮正式配置建议冻结为 batch=1、accumulation=1，避免改变显存和梯度尺度。
+- [x] 生成远端 `artifacts/vla_formal_preflight_audit_20261006.json`，记录 manifest SHA、split overlap、50 个唯一 rollout init-state hash、OpenVLA evaluator SHA。
+- [ ] 正式 rollout manifest 仍未完全冻结：现有 init inventory 标记为 `inventory_only`，demo-to-init-state disjointness 未验证；不得把该字段写成已验证 true。
+- [ ] 正式配置仍需写入 effective batch=1、accumulation=1、10080 fixed optimizer updates、四 pass deterministic sampler，以及 rollout manifest 的 provenance caveat；完成后才可启动正式 B0 小规模训练。
