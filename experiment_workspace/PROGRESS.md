@@ -989,3 +989,11 @@ PYTHONPATH=src python scripts/validate_p1_report.py \
 - [x] `configs/vla/p6_b0_b4_formal_preflight_20261006.json` JSON 校验通过，`git diff --check` 通过。
 - [x] 101 当前 SSH 正常、GPU 空闲、无活动 cache/训练进程。
 - [ ] 远程正式 rollout 仍受 demo provenance/disjointness 阻塞；本轮没有启动任何新 GPU 训练或 rollout。
+
+
+## 2026-10-06：LIBERO provenance 可用性复核
+
+- [x] 101 浅层检查确认当前工作区、data、LIBERO repo 和 artifacts 下没有可访问的 `.hdf5/.h5` 原始 demo 文件。
+- [x] train manifest 的 `original_file_path` 仍指向外部路径 `/iris/u/moojink/prismatic-dev/LIBERO/..._demo.hdf5`，该路径不在当前 101 工作区。
+- [x] 未修改任何 cache 或 manifest；未启动新的 GPU 任务。
+- [ ] 因此 rollout demo provenance 仍无法验证，正式 rollout 入口继续保持关闭。

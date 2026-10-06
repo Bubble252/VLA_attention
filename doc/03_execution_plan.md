@@ -1085,3 +1085,8 @@ cache gate、B0 offline/restore 和 B1–B4 interface smoke 已完成统一审�
 ### 2026-10-06 formal rollout entry audit
 
 已汇总所有正式 rollout 入口文件的 SHA256。train/eval split 和 init state 唯一性已验证，但 demo provenance 仍缺失，因此入口状态保持 `not_ready_provenance_pending`。
+
+
+### 2026-10-06 LIBERO provenance 可用性复核
+
+服务器当前没有可访问的原始 HDF5 demo，训练 manifest 的 source path 指向外部环境。因此不能从现有文件证明 rollout init state 与训练 demo 的物理 disjointness；正式 rollout 仍需补充数据源或 provenance 索引。
