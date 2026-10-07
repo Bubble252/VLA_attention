@@ -1119,3 +1119,14 @@ PYTHONPATH=src python scripts/validate_p1_report.py \
 - [x] 真实 phrase-gradient 审计报告已拉回本地：`experiment_workspace/vla_remote_results/20261007_gradient_audits/phrase_gradient_report.json`（SHA256=`54082a69d994b31ef2febf7c35a6d1a1b32ace3d7597d98356b7d51c250f4dc3`）；action-map differentiability 报告为 `semantic_gradient_report.json`（SHA256=`574d1807cc6d877e685299d63c1ebfba2e0b4e31c04d38f45874eed0c80bdb7c`）。
 - [x] 因此正式协议中的 `A_lang` 冻结为 phrase-score gradient×activation；已有 B2/B3/B4 smoke 中使用 action-loss map 的结果只能标记为 interface/proxy smoke，不能被写成正式语义归因训练结果。
 - [ ] 仍未完成：将 phrase-score `A_lang`、可微 `A_act`、math-attention backend、B0–B4 开关和 10,080-step artifact/checkpoint cadence 合并进统一正式 offline launcher；在该 launcher 的 20-step all-group smoke 通过前，不提交 10k 长作业。
+
+
+## 2026-10-07：B0–B4 unified runner retry2 与恢复边界
+
+- [x] 修复并上传 unified runner 的计时初始化：从中间 checkpoint resume 时初始化 `previous_time`，避免第一步 continuation 写入 `UnboundLocalError`。新 code bundle SHA256=`06e67101427cf375fcd1c42b90519bdab51d03eef721e531817ad8358927081d`；上传验证 `VLA_UPLOAD_VERIFY_OK`。
+- [x] 在 101 上完成带 warm-up、math SDPA、真实 phrase-score gradient×activation `A_lang` 的 B0–B4 retry2 smoke，输出根目录：`results/P6_vla_b0_b4/formal_offline_smoke_20261007_retry2/`。五组均 `FORMAL_OFFLINE_*_SEED_17_PASSED`，未覆盖 retry1 结果。
+- [x] retry2 每组均使用相同 train manifest SHA=`695681afb03012bd18c34d09c9a4fbf15ca489605d4463cbf891cd7213bca921`、eval manifest SHA=`c93ae5afeb919de8fb148bfa1f935173d04f3ac0502b85e3b6916afb15e9dd0b`、semantic manifest SHA=`d7660c9c8286483ebeeafee2d8ff2100dce99ddc9151b35f4beb03c3e3fb87fe` 和 radio manifest SHA=`2c47200466c63e43c187b6abad68b533ec07ffd3f9ad722c77537672179478ac`。B2–B4 的 `phrase_positions` 均为 source `[12,13,14,15]`、target `[28,29]`，`attribution_create_graph=true`，loss/gradient 全部 finite。
+- [x] retry2 峰值显存：B0 约 21.25 GiB，B1 约 21.28 GiB，B2 约 36.02 GiB，B3 约 36.06 GiB，B4 约 43.12 GiB；均低于 81 GiB 单卡容量。B4 containment loss 非零且 finite，说明 B4 的真实二阶 action attribution 路径可执行。
+- [x] 每组 checkpoint 均生成 `checkpoint_00005/10/15/20/restore_probe.json`，但最后一步 checkpoint 不能直接作为同一 `max_steps` 的 continuation；runner 会严格拒绝已完成步数和配置不一致的 resume。
+- [ ] 独立中间 checkpoint resume probe 暴露并修复了 `previous_time` 初始化 bug；修复后还需从 B4 step10 以同一 20-step metadata 做一次最终 resume 验证，再进入正式 10080-step 长跑。
+- [ ] 当前 retry2 是接口/恢复前置验证，不产生 VLA 优越性结论；正式 offline 仍需 B0–B4 各 10080 updates，并保留 rollout provenance 未解锁的限制。

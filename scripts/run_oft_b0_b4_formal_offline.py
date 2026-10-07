@@ -599,6 +599,7 @@ def main() -> None:
     progress_path = args.output / "progress_summary.jsonl"
     failures_path = args.output / "failure_episodes.jsonl"
     started_at = time.time()
+    previous_time = started_at
     for step in range(start_step, args.steps):
         batch = None
         try:
