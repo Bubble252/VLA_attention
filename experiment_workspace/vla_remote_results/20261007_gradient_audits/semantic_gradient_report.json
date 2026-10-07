@@ -1,0 +1,31 @@
+{
+  "status": "passed",
+  "purpose": "semantic-loss differentiability gate; no optimizer step",
+  "model_revision": "47a0ec7fc4ec123775a391911046cf33cf9ed83f",
+  "train_manifest_sha256": "695681afb03012bd18c34d09c9a4fbf15ca489605d4463cbf891cd7213bca921",
+  "eval_manifest_sha256": "c93ae5afeb919de8fb148bfa1f935173d04f3ac0502b85e3b6916afb15e9dd0b",
+  "statistics_sha256": "21692284b4cbf9cdbdb2b3e2060ac4e62924eabf2b6db1881292e47f3b830397",
+  "semantic_manifest_sha256": "d7660c9c8286483ebeeafee2d8ff2100dce99ddc9151b35f4beb03c3e3fb87fe",
+  "seed": 17,
+  "temperature": 1.25,
+  "student_signal": "differentiable action-loss gradient times visual-token activation",
+  "create_graph": true,
+  "attn_implementation": "eager",
+  "student_map_shape": [
+    1,
+    512
+  ],
+  "teacher_map_shape": [
+    1,
+    512
+  ],
+  "action_loss": 0.637245774269104,
+  "semantic_loss": 0.7692679166793823,
+  "trainable_parameter_count": 898,
+  "semantic_gradient_nonzero_parameter_count": 443,
+  "semantic_gradient_finite": true,
+  "semantic_gradient_norm_max": 248.31126403808594,
+  "peak_memory_bytes": 29295522304,
+  "episode_id": "a6edba7f75caf2b7b7053bbf8a5aac3eca01d271b548b9ed227edf2ed2b6c192",
+  "timestep": 80
+}

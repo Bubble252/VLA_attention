@@ -88,7 +88,7 @@ StarVLA 源码已作为可选参考固定归档于 `references/repos/starvla`（
 
 其中：
 
-- `A_lang` 由与 VLM 主线相同的冻结 `T_sem` 和学生语言短语归因生成；学生图使用 phrase score 对 visual tokens 的 gradient×activation，不能把某个模型的 raw attention 当成通用教师。
+- `A_lang` 由与 VLM 主线相同的冻结 `T_sem` 和学生语言短语归因生成；学生图使用 source/target noun phrase 的 teacher-forced log-probability 对 visual tokens 的 **可微 gradient×activation**。当前真实审计已经证明 OpenVLA prompt 中的 phrase span 可定位、语义 loss 能回传到可训练参数。不能把某个模型的 raw attention 当成通用教师，也不能把 action-loss map 直接冒充 `A_lang`。
 - `A_act` 首版定义为固定动作目标的 action loss 对 visual tokens 的 gradient×activation。若模型天然有 action query attention，只额外记录作解释分支，不把它作为跨模型必需接口。
 - 层级分工固定为：B1 retention 参考 BlindVLA 使用中间视觉层作为通用视觉表征保持目标；B2/B3 的 `A_lang` 与 B4 的 `A_act` 使用 action-head 输入前的 action-relevant visual tokens。其他层只做固定 checkpoint、单 seed 的 attribution sensitivity，不重复完整 B0–B4。
 - D0 使用 stop-gradient 的语言支持图 `M_lang`，对动作图在语言支持区域外的质量施加软约束；首版不加入 `L_phase`、`R_future`、world-model refiner 或 action expert 蒸馏。动作图约束的候选形式记录为：
@@ -96,6 +96,17 @@ StarVLA 源码已作为可选参考固定归档于 `references/repos/starvla`（
   `L_contain = mean_t sum_i A_act(t,i) * (1 - M_lang(i))`。
 
   正式实现须同时报告 `A_act` 的归一化、阈值/软 mask、温度和是否对 EEF/目标区域使用额外允许项；没有这些 metadata 的结果不能进入主表。
+
+### 2.1 Attribution differentiability gate
+
+`A_lang` 和 `A_act` 在训练中都必须保留从 attribution map 到策略参数的梯度路径。对 action loss 或 phrase score 使用普通 `backward()` 后再读取 `.grad` 得到的 map 默认是 detached 的，只能作诊断，不能支持语义训练。正式实现使用 `torch.autograd.grad(..., create_graph=True)`，并记录：
+
+- attention backend；当前 pinned OpenVLA/OFT 的 flash/SDPA 二阶路径会报 `aten::_scaled_dot_product_flash_attention_backward` 未实现，正式归因训练先使用 math SDPA；
+- source/target phrase、token span、occurrence 规则和 phrase-score 定义；
+- `A_lang`/`A_act` 的原生 grid、归一化、公共坐标桥；
+- semantic/containment loss 对 optimizer 参数的非零有限梯度数量和峰值显存。
+
+2026-10-07 的单步审计已通过：phrase-score `A_lang` 对 898 个可训练参数中的 430 个产生非零有限梯度，action-loss `A_act` 对 443 个产生非零有限梯度；两者峰值显存约 29.4 GiB。因此正式首轮继续采用 `batch=1`、accumulation=1，先完成 all-group 20-step launcher smoke，再提交 10,080-step 长训练。
 
 ## 3. 训练和评测顺序
 

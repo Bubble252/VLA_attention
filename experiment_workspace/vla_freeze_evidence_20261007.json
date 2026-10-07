@@ -53,6 +53,18 @@
       "formal_best_single_claim": false
     }
   },
+  "attribution_gradient_audit": {
+    "status": "passed",
+    "attention_backend": "math_sdpa",
+    "create_graph": true,
+    "action_loss_map_report": "results/P6_vla_b0_b4/semantic_gradient_audit_20261007_eager/report.json",
+    "phrase_score_map_report": "results/P6_vla_b0_b4/phrase_gradient_audit_20261007/report.json",
+    "action_nonzero_trainable_parameters": 443,
+    "phrase_nonzero_trainable_parameters": 430,
+    "peak_memory_gib_upper_bound": 29.4,
+    "formal_language_signal": "phrase_score_gradient_times_activation",
+    "legacy_smoke_signal": "action_loss_gradient_times_activation_only; proxy_not_formal_A_lang"
+  },
   "training_candidate": {
     "optimizer": "adamw",
     "scheduler": "cosine",
@@ -69,6 +81,8 @@
     "retention_warmup_steps": 500,
     "containment_warmup_steps": 1000,
     "semantic_temperature": 1.25,
+    "attribution_training_graph": "create_graph_true",
+    "attention_backend": "math_sdpa",
     "semantic_temperature_selection": {
       "protocol": "paired 20-step B3 interface smoke, seed=17, same manifest/order",
       "temperature_1p0_report": "experiment_workspace/vla_remote_results/20261007_b3_temperature/report_temp1p0.json",

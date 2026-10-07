@@ -106,6 +106,18 @@ train/eval episode disjointness、rollout init 唯一性和官方 evaluator 源�
 
 因此 batch=1 的当前理由是与已约定的更新数和数据遍历次数匹配，并且是唯一经过真实 B0 smoke 验证的 batch；显存读数只证明该配置的运行峰值。若要把 batch 2/4 作为正式候选，需先明确比较口径：固定数据遍历次数，还是固定 optimizer updates，并对 B1–B4 的 attribution backward 单独做 OOM/吞吐 smoke。不能仅凭 B0 的显存余量推断 B2–B4 的 batch 安全。
 
+### 1.7 可微 attribution 路径（2026-10-07）
+
+batch=1 还服务于 B2–B4 的 attribution 计算。正式语义项不能只把 gradient map 当作 detached 诊断量，否则 `L_sem` 会被记录但不会更新策略。单步真实审计结果如下：
+
+| 路径 | 结果 | 说明 |
+|---|---|---|
+| action-loss gradient×activation | 通过 | math SDPA 下 443/898 个可训练参数收到有限非零梯度；峰值约 29.3 GiB |
+| phrase-score gradient×activation (`A_lang`) | 通过 | source/target phrase 均能在 OpenVLA prompt 中定位；430/898 个可训练参数收到有限非零梯度；峰值约 29.4 GiB |
+| 现有 flash/SDPA 二阶路径 | 不可用 | `aten::_scaled_dot_product_flash_attention_backward` 没有实现二阶导数 |
+
+因此正式 B2/B3/B4 必须使用 math SDPA（或经过等价二阶梯度审计的实现），并用 `create_graph=True` 生成可训练的 attribution map。旧 B2/B3/B4 smoke 仍然保留为有限性/接口证据，但其 action-map semantic loss 不得被当成正式 `A_lang` 性能结论。
+
 ## 4. 推荐的收敛顺序
 
 1. 建立并验证统一正式 B0–B4 launcher。

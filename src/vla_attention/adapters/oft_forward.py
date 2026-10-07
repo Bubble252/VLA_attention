@@ -36,5 +36,14 @@ def forward_l1(policy, action_head, proprio_projector, batch, *, device, visual_
         loss = torch.nn.functional.l1_loss(prediction,target)
     if not torch.isfinite(loss) or not torch.isfinite(prediction).all():
         raise FloatingPointError('Nonfinite native OFT forward')
-    return {'loss':loss,'prediction':prediction,'visual_and_proprio_features':output.projector_features,
-            'action_hidden_states':action_features}
+    return {
+        'loss': loss,
+        'prediction': prediction,
+        'visual_and_proprio_features': output.projector_features,
+        'action_hidden_states': action_features,
+        # Kept for the VLA language-evidence adapter.  The native OFT loss
+        # still uses only the action-token block; callers may optionally score
+        # instruction phrase tokens from these logits without changing B0.
+        'logits': output.logits,
+        'input_ids': inputs['input_ids'],
+    }

@@ -1110,3 +1110,12 @@ PYTHONPATH=src python scripts/validate_p1_report.py \
 - [x] 现有真实 B0 smoke 仅验证 effective batch=1、gradient accumulation=1 可运行；峰值显存为 21618780160 bytes（约 20.2 GiB）。远端 smoke 入口对样本逐条 collate，未实现 batch-size 对照。
 - [ ] batch=1 尚未被证明为最优或显存所迫。batch=2 若固定 4 passes 只有 5040 updates；若固定 10080 updates 则约 8 passes。若改变 batch，需先声明固定 exposure 还是 fixed updates，并对包含归因 backward 的 B1–B4 实际测试。
 - [ ] 正式训练继续把 batch=1/accumulation=1 作为候选配置，待 B3 修复、temperature gate 和 unified launcher 完成后再启动；本记录不代表已启动长训练。
+# 2026-10-07：batch=1 复核、可微 attribution 与真实 A_lang 审计
+
+- [x] 重新核对 batch=1 的依据：当前 train manifest 有 2,520 个完整 H=8 transition；batch=1、gradient accumulation=1、4 个确定性 pass 正好产生 10,080 个 optimizer updates。batch=2 若保持 4 pass 只有 5,040 updates；若保持 10,080 updates 则需要约 8 pass，因此 batch 不能脱离“固定 exposure 还是固定 updates”的预算口径单独修改。
+- [x] 记录 batch=1 不是理论最优值：它是目前唯一被真实 B0/B1–B4 smoke 验证、且能保留单样本 attribution 图和已有 10k 更新规则的候选配置。B0 峰值显存约 20.2 GiB，带二阶 attribution 的单样本审计约 29.4 GiB；不能用 B0 显存余量推断 B2–B4 可以用更大 batch。
+- [x] 新增并上传 `scripts/audit_oft_semantic_gradient_path.py`。在现有 SDPA/flash attention 下，二阶导数会触发 `aten::_scaled_dot_product_flash_attention_backward` 未实现；切到 math SDPA 后，action-loss gradient×activation semantic map 对 898 个可训练参数中的 443 个产生有限非零梯度，峰值约 29.3 GiB。
+- [x] 新增并上传 `scripts/audit_oft_phrase_gradient_path.py`，并扩展 `src/vla_attention/adapters/oft_forward.py` 返回 logits/input_ids。OpenVLA prompt 中 `the black bowl`（source，token span `[12,13,14,15]`）和 `the plate`（target，token span `[28,29]`）均可定位；真正的 phrase-score log-probability gradient×activation `A_lang` 对 898 个可训练参数中的 430 个产生有限非零梯度，峰值约 29.4 GiB。
+- [x] 真实 phrase-gradient 审计报告已拉回本地：`experiment_workspace/vla_remote_results/20261007_gradient_audits/phrase_gradient_report.json`（SHA256=`54082a69d994b31ef2febf7c35a6d1a1b32ace3d7597d98356b7d51c250f4dc3`）；action-map differentiability 报告为 `semantic_gradient_report.json`（SHA256=`574d1807cc6d877e685299d63c1ebfba2e0b4e31c04d38f45874eed0c80bdb7c`）。
+- [x] 因此正式协议中的 `A_lang` 冻结为 phrase-score gradient×activation；已有 B2/B3/B4 smoke 中使用 action-loss map 的结果只能标记为 interface/proxy smoke，不能被写成正式语义归因训练结果。
+- [ ] 仍未完成：将 phrase-score `A_lang`、可微 `A_act`、math-attention backend、B0–B4 开关和 10,080-step artifact/checkpoint cadence 合并进统一正式 offline launcher；在该 launcher 的 20-step all-group smoke 通过前，不提交 10k 长作业。

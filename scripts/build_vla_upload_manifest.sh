@@ -14,6 +14,9 @@ cd "$ROOT"
   find src/vla_attention -type f -name '*.py' -print
   find scripts -maxdepth 1 -type f -name 'validate_vla_config.py' -print
   printf '%s\n' scripts/run_oft_b3_retention_semantic_smoke.py
+  printf '%s\n' scripts/audit_oft_semantic_gradient_path.py
+  printf '%s\n' scripts/audit_oft_phrase_gradient_path.py
+  printf '%s\n' scripts/run_oft_b0_b4_formal_offline.py
   find tests -maxdepth 1 -type f -name 'test_*contract*.py' -print
   find tests -maxdepth 1 -type f -name 'test_plugin_*.py' -print
   printf '%s\n' tests/test_vla_local_pipeline.py

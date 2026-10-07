@@ -1,0 +1,54 @@
+{
+  "status": "passed",
+  "purpose": "true VLA language phrase attribution differentiability gate; no optimizer step",
+  "model_revision": "47a0ec7fc4ec123775a391911046cf33cf9ed83f",
+  "train_manifest_sha256": "695681afb03012bd18c34d09c9a4fbf15ca489605d4463cbf891cd7213bca921",
+  "eval_manifest_sha256": "c93ae5afeb919de8fb148bfa1f935173d04f3ac0502b85e3b6916afb15e9dd0b",
+  "statistics_sha256": "21692284b4cbf9cdbdb2b3e2060ac4e62924eabf2b6db1881292e47f3b830397",
+  "semantic_manifest_sha256": "d7660c9c8286483ebeeafee2d8ff2100dce99ddc9151b35f4beb03c3e3fb87fe",
+  "seed": 17,
+  "temperature": 1.25,
+  "student_signal": "phrase-score log-probability gradient times visual-token activation",
+  "phrase_scores": {
+    "source": -26.4444637298584,
+    "target": -27.298734664916992
+  },
+  "phrase_positions": {
+    "source": [
+      12,
+      13,
+      14,
+      15
+    ],
+    "target": [
+      28,
+      29
+    ]
+  },
+  "phrases": {
+    "source": "the black bowl",
+    "target": "the plate"
+  },
+  "phrase_occurrences": {
+    "source": "first",
+    "target": "last"
+  },
+  "create_graph": true,
+  "student_map_shape": [
+    1,
+    512
+  ],
+  "teacher_map_shape": [
+    1,
+    512
+  ],
+  "action_loss": 0.637245774269104,
+  "semantic_loss": 1.0084468126296997,
+  "trainable_parameter_count": 898,
+  "semantic_gradient_nonzero_parameter_count": 430,
+  "semantic_gradient_finite": true,
+  "semantic_gradient_norm_max": 19.564208984375,
+  "peak_memory_bytes": 29418371584,
+  "episode_id": "a6edba7f75caf2b7b7053bbf8a5aac3eca01d271b548b9ed227edf2ed2b6c192",
+  "timestep": 80
+}
