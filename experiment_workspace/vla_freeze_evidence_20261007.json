@@ -1,7 +1,7 @@
 {
   "kind": "p6_vla_freeze_evidence",
   "created_at": "2026-10-07",
-  "status": "offline_candidate_not_launchable",
+  "status": "offline_candidate_b3_corrected_temperature_frozen_not_launchable",
   "scope": {
     "backbone": "openvla-oft",
     "checkpoint_revision": "47a0ec7fc4ec123775a391911046cf33cf9ed83f",
@@ -68,13 +68,19 @@
     "lambda_containment": 0.02,
     "retention_warmup_steps": 500,
     "containment_warmup_steps": 1000,
-    "semantic_temperature": "pending_1p0_vs_1p25_smoke"
+    "semantic_temperature": 1.25,
+    "semantic_temperature_selection": {
+      "protocol": "paired 20-step B3 interface smoke, seed=17, same manifest/order",
+      "temperature_1p0_report": "experiment_workspace/vla_remote_results/20261007_b3_temperature/report_temp1p0.json",
+      "temperature_1p25_report": "experiment_workspace/vla_remote_results/20261007_b3_temperature/report_temp1p25.json",
+      "temperature_1p0_finite": true,
+      "temperature_1p25_finite": true,
+      "selected": 1.25,
+      "reason": "both stable; 1.25 matches the frozen VLM protocol"
+    }
   },
   "pending_gates": [
-    "correct_B3_retention_plus_semantic_smoke",
-    "semantic_temperature_freeze",
     "rollout_demo_disjointness",
-    "formal_B0_B4_long_launcher_contract",
-    "official_final_trial_count_10_smoke_vs_50_final"
+    "formal_B0_B4_long_launcher_contract"
   ]
 }

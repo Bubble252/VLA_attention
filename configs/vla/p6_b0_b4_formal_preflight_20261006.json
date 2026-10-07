@@ -1,6 +1,6 @@
 {
   "experiment_id": "P6-VLA-B0-B4-formal-preflight-20261006",
-  "status": "formal_preflight_manifest_provenance_pending",
+  "status": "offline_candidate_b3_corrected_temperature_frozen_rollout_provenance_pending",
   "plugin_api_version": "v1",
   "plugins": {
     "model_adapter": "openvla_oft",
@@ -79,10 +79,10 @@
     "normalization": "checkpoint_or_dataset_statistics_only"
   },
   "teacher": {
-    "semantic_map": "T_sem_FROM_FROZEN_VLM_PROTOCOL",
+    "semantic_map": "sd15_null_text_reconstruction_v3",
     "revision": "stable-diffusion-v1-5",
     "grid": "16x16",
-    "temperature": "inherit_frozen_vlm_protocol",
+    "temperature": 1.25,
     "cache_manifest_sha256": "d7660c9c8286483ebeeaf2d8ff2100dce99ddc9151b35f4beb03c3e3fb87fe"
   },
   "attribution": {
@@ -97,7 +97,7 @@
     "coordinate_bridge": "normalized_coordinate_area_pooling",
     "language_target": "phrase_score_gradient_times_activation",
     "action_target": "action_loss_gradient_times_activation",
-    "action_scalar": "mean_squared_error_on_fixed_native_action_target",
+    "action_scalar": "native_mean_L1_on_fixed_native_action_target",
     "grid_bridge": "normalized_coordinate_bridge",
     "normalization": "per-map finite nonnegative sum normalization",
     "raw_attention_proxy": "diagnostic_only"
@@ -154,6 +154,9 @@
     "epochs": 4,
     "effective_batch_size": 1,
     "gradient_accumulation_steps": 1,
+    "batch_size_status": "candidate_only_b0_b4_smoke_verified",
+    "batch_size_basis": "2520 H=8 transitions; batch=1 and 4 deterministic passes give 10080 optimizer updates",
+    "batch_size_sweep": "not_run; larger batch requires an explicit fixed-updates-versus-fixed-exposure decision",
     "min_optimizer_steps": 10000,
     "max_steps": "max(ceil(train_transition_records/effective_batch_size)*epochs, min_optimizer_steps)",
     "dataset_passes": 4,
@@ -176,7 +179,7 @@
     ]
   },
   "losses": {
-    "lambda_sem": "INHERIT_FROZEN_VLM_TUNING",
+    "lambda_sem": 0.1,
     "lambda_retention": 0.05,
     "lambda_containment": 0.02,
     "retention_warmup_optimizer_steps": 500,
@@ -193,6 +196,9 @@
     "save_failure_reason": true,
     "save_state_summary": true,
     "trials_per_task": 10,
+    "smoke_trials_per_task": 10,
+    "final_trials_per_task": 50,
+    "trial_count_status": "10_engineering_smoke_50_final_official",
     "max_horizon": 230,
     "action_repeat": 1,
     "metrics": [

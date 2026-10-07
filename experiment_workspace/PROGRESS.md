@@ -1,13 +1,26 @@
 # 训练前准备进度
 
+## 2026-10-07：corrected B3、temperature 冻结与 batch 依据澄清
+
+- [x] 用户确认首轮使用 SD1.5 null-text reconstruction 作为 operational semantic teacher；PixArt-α/Σ 与 Playground-v2.5 后置为 teacher-swap。
+- [x] 用户确认先完成 offline B0–B4；正式 LIBERO rollout success 等 rollout demo provenance 修复后评测。
+- [x] 新增并上传 `scripts/run_oft_b3_retention_semantic_smoke.py`，SHA256=`3524ad744e5796e4eb0dff4369984d7199d382b191903a6e2d67893cf8ba860d`；远端编译通过。
+- [x] corrected B3 矩阵验证完成：retention=1、semantic=1、containment=0；seed=17、20 steps、相同 train/eval/cache manifest，temperature=1.0 和 1.25 两个独立结果均 `passed`、所有 loss/gradient/attribution finite。
+- [x] temperature 按预注册规则冻结为 `1.25`：两者都稳定，选择与 VLM protocol 一致的值；报告保存在 `experiment_workspace/vla_remote_results/20261007_b3_temperature/report_temp1p0.json` 与 `report_temp1p25.json`。
+- [x] formal preflight config 已写入 `semantic_map=sd15_null_text_reconstruction_v3`、`temperature=1.25`、`lambda_sem=0.10` 和 native action scalar=`native_mean_L1`；状态仍为 rollout provenance pending，不能误认为长训练已启动。
+- [x] batch=1 的依据已经明确：train manifest 有 2520 个完整 H=8 transition，batch=1 × 4 deterministic passes = 10080 optimizer updates；B0/B1–B4 现有真实 smoke 都只验证了单样本 collate。
+- [x] batch=1 不是 batch-size sweep 证明的最优值，也不是已证明唯一可行值；若改为 batch=2，固定 4 passes 只得到 5040 updates，固定 10080 updates 则约需 8 passes，必须先声明 fixed exposure 或 fixed optimizer updates。
+- [ ] 仍未完成：统一正式 B0–B4 10080-step launcher；已有 smoke 不能替代统一的 checkpoint cadence、逐 step metrics、controls 和 restore gate。
+- [ ] 仍未完成：rollout init inventory 的 demo-to-init-state disjointness/provenance；在此之前只做 offline B0–B4，不报告正式 LIBERO success。
+
 ## 2026-10-07：把已知字段与真实未决项分开
 
 - [x] 新增 `experiments/P6-vla-b0-b4/freeze_decision_20261007.md`，把 OpenVLA/OFT revision、外部代码 commit、LIBERO task0、train/eval/statistics manifest SHA、双相机预处理、7D delta EEF、H=8、C-RADIOv3-L、SD1.5 fallback、优化器、seed、10080 steps 和 cache SHA 逐项写成有证据的候选冻结值。
 - [x] 新增机器可读审计 `experiment_workspace/vla_freeze_evidence_20261007.json`。它是 `offline_candidate_not_launchable`，不能被误当成长训练启动配置。
 - [x] 通过 101 只读核对 OpenVLA processor/preprocessor hash、官方 resize 链路、`NUM_ACTIONS_CHUNK=8` 和 LIBERO-Spatial `TASK_MAX_STEPS=220`；官方 evaluator 源文件 SHA 已记录。
 - [x] 确认当前 radio cache 的修正 manifest SHA 为 `2c47200466c63e43c187b6abad68b533ec07ffd3f9ad722c77537672179478ac`；B1 current radio 20-step interface smoke 使用该 SHA 并通过。
-- [ ] 发现并记录真实矩阵问题：`scripts/run_oft_b3_dynamic_smoke.py` 实际计算 semantic+containment，没有计算协议定义的 retention+semantic；因此现有 B3 不能算正式矩阵 B3，需新增正确 B3 smoke，历史结果不得覆盖。
-- [ ] VLA semantic temperature 尚未冻结：VLM protocol 为 1.25，VLA smoke 曾用 1.0；需要同 seed 的 20-step paired interface smoke 后冻结。
+- [x] 发现并记录真实矩阵问题：旧 `scripts/run_oft_b3_dynamic_smoke.py` 实际计算 semantic+containment，没有计算协议定义的 retention+semantic；已新增 corrected B3 smoke，历史结果不得覆盖。
+- [x] VLA semantic temperature 已按同 seed paired smoke 冻结为 1.25；历史使用 1.0 的 smoke 保留为历史接口证据。
 - [ ] rollout init inventory 仍是 `inventory_only`，demo-to-init-state disjointness 未验证；在此之前只允许 offline B0–B4，不报告 LIBERO 闭环 success。
 - [ ] 当前仍缺一个将 B0–B4 矩阵、correct controls、逐 step metrics、checkpoint cadence 和 restore gate 统一起来的正式 10080-step launcher；已有 smoke 脚本不能直接替代它。
 
@@ -1087,3 +1100,12 @@ PYTHONPATH=src python scripts/validate_p1_report.py \
 - [x] B1–B4 的 teacher/loss 组件、step 数和 smoke 目的已整理到 `experiment_workspace/vla_smoke_comparability_audit_20261006.md`。
 - [ ] 不能比较当前 B1–B4 smoke 的 action loss 均值来推断优劣：B0 为 50-step offline preflight，B1–B4 为 20-step interface smoke，采样轨迹也不同。
 - [ ] 正式比较仍需统一初始化、step budget、episode 顺序和 held-out evaluator；rollout provenance 未解锁前只能做 offline-only 对照。
+
+## 2026-10-07：VLA 边界确认与 batch-size 依据澄清
+
+- [x] 用户确认首轮 operational semantic teacher 使用 SD1.5 null-text reconstruction；PixArt-α/Σ 与 Playground-v2.5 后置为 teacher-swap。
+- [x] 用户确认先完成 offline B0–B4；正式 LIBERO rollout success 等 rollout demo provenance 修复后评测。
+- [x] batch=1 的算术依据：2520 个 H=8 transition × 4 deterministic passes = 10080 optimizer updates；该预算同时满足此前约定的 10k 量级和 4-pass exposure。
+- [x] 现有真实 B0 smoke 仅验证 effective batch=1、gradient accumulation=1 可运行；峰值显存为 21618780160 bytes（约 20.2 GiB）。远端 smoke 入口对样本逐条 collate，未实现 batch-size 对照。
+- [ ] batch=1 尚未被证明为最优或显存所迫。batch=2 若固定 4 passes 只有 5040 updates；若固定 10080 updates 则约 8 passes。若改变 batch，需先声明固定 exposure 还是 fixed updates，并对包含归因 backward 的 B1–B4 实际测试。
+- [ ] 正式训练继续把 batch=1/accumulation=1 作为候选配置，待 B3 修复、temperature gate 和 unified launcher 完成后再启动；本记录不代表已启动长训练。
