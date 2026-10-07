@@ -1157,3 +1157,10 @@ PYTHONPATH=src python scripts/validate_p1_report.py \
 - [x] B0 seed17 已实际开始，输出目录 `results/P6_vla_b0_b4/formal_offline_20261007/B0_seed17/`，当前核验为 38/10080 steps、failure=0；最近记录 `finite=true`，峰值显存约 21.2 GiB。
 - [x] launcher 按 B0→B1→B2→B3→B4 串行执行，每组前重新生成 GPU window；每组独立目录；任何现存目标目录会 fail-closed，不覆盖。
 - [ ] 训练进行中：需在 10/25/50/75/100% 节点核验并记录每组 progress、checkpoint 和失败清单；完成后再做 held-out/control 评测。此阶段仅为 offline training，不报告 rollout success。
+
+
+## 2026-10-07：正式 B0 训练进度复核
+
+- [x] 远端 launcher PID=`3504719` 仍存活，B0 seed17 未被异常终止。
+- [x] `B0_seed17/train_metrics.jsonl` 已从此前 38 steps 增长到约 374 steps；最近记录 `finite=true`，failure episodes=0，显存约 21.3 GiB。
+- [ ] B0 尚未达到第一个 checkpoint step=2520；未启动 B1–B4。继续使用同一后台任务，不重复启动。
