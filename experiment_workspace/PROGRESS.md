@@ -1,5 +1,16 @@
 # 训练前准备进度
 
+## 2026-10-07：把已知字段与真实未决项分开
+
+- [x] 新增 `experiments/P6-vla-b0-b4/freeze_decision_20261007.md`，把 OpenVLA/OFT revision、外部代码 commit、LIBERO task0、train/eval/statistics manifest SHA、双相机预处理、7D delta EEF、H=8、C-RADIOv3-L、SD1.5 fallback、优化器、seed、10080 steps 和 cache SHA 逐项写成有证据的候选冻结值。
+- [x] 新增机器可读审计 `experiment_workspace/vla_freeze_evidence_20261007.json`。它是 `offline_candidate_not_launchable`，不能被误当成长训练启动配置。
+- [x] 通过 101 只读核对 OpenVLA processor/preprocessor hash、官方 resize 链路、`NUM_ACTIONS_CHUNK=8` 和 LIBERO-Spatial `TASK_MAX_STEPS=220`；官方 evaluator 源文件 SHA 已记录。
+- [x] 确认当前 radio cache 的修正 manifest SHA 为 `2c47200466c63e43c187b6abad68b533ec07ffd3f9ad722c77537672179478ac`；B1 current radio 20-step interface smoke 使用该 SHA 并通过。
+- [ ] 发现并记录真实矩阵问题：`scripts/run_oft_b3_dynamic_smoke.py` 实际计算 semantic+containment，没有计算协议定义的 retention+semantic；因此现有 B3 不能算正式矩阵 B3，需新增正确 B3 smoke，历史结果不得覆盖。
+- [ ] VLA semantic temperature 尚未冻结：VLM protocol 为 1.25，VLA smoke 曾用 1.0；需要同 seed 的 20-step paired interface smoke 后冻结。
+- [ ] rollout init inventory 仍是 `inventory_only`，demo-to-init-state disjointness 未验证；在此之前只允许 offline B0–B4，不报告 LIBERO 闭环 success。
+- [ ] 当前仍缺一个将 B0–B4 矩阵、correct controls、逐 step metrics、checkpoint cadence 和 restore gate 统一起来的正式 10080-step launcher；已有 smoke 脚本不能直接替代它。
+
 ## 2026-09-25：P6 VLA 并行工程准备与 goal 对齐（当前有效）
 
 本次严格重新读取 goal 附件，并核对 `doc/03_execution_plan.md`、P4 protocol、P6 protocol、本文档和当前代码树。结论按证据区分如下：
