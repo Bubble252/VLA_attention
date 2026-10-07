@@ -1140,3 +1140,11 @@ PYTHONPATH=src python scripts/validate_p1_report.py \
 - [x] 使用同一最新 bundle、同一配置从 B4 step10 checkpoint 做 step10→20 resume probe；`restore_report.json`：`status=passed`、`probe_count=9`、`max_prediction_error=0.0`。
 - [x] 计时初始化修复已包含在统一 bundle；resume continuation 不再触发 `previous_time` 未初始化错误。
 - [ ] 下一步为正式 B0–B4 各 10,080 optimizer updates 的串行 offline 长训练；rollout provenance 仍独立阻塞 LIBERO success，不阻塞本 offline 主线。
+
+
+## 2026-10-07：正式 offline launcher 已建立
+
+- [x] 新增 `server/run_p6_formal_offline_20261007.sh`，Git commit=`13e551b`。launcher 串行执行 B0→B4，固定 seed=17、10080 updates、batch=1、所有 manifest/teacher/lambda/temperature 参数，并在每组前重新生成 GPU window。
+- [x] launcher fail-closed 检查模型、P1、semantic/radio cache、code bundle SHA、输出目录和 GPU 占用；不读取旧 `configs/vla/p6_b0_b4.json`，不启动 rollout，不覆盖已有 smoke。
+- [x] launcher 日志路径固定为远端 `vla_workspace/logs/p6_formal_offline_20261007.log`，正式输出根目录为 `results/P6_vla_b0_b4/formal_offline_20261007/`。
+- [ ] 尚未启动 10080-step 长训练；启动前需要将该 launcher 上传到 101，并再次确认远端 GPU 空闲。
