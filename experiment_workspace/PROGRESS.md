@@ -1148,3 +1148,12 @@ PYTHONPATH=src python scripts/validate_p1_report.py \
 - [x] launcher fail-closed 检查模型、P1、semantic/radio cache、code bundle SHA、输出目录和 GPU 占用；不读取旧 `configs/vla/p6_b0_b4.json`，不启动 rollout，不覆盖已有 smoke。
 - [x] launcher 日志路径固定为远端 `vla_workspace/logs/p6_formal_offline_20261007.log`，正式输出根目录为 `results/P6_vla_b0_b4/formal_offline_20261007/`。
 - [ ] 尚未启动 10080-step 长训练；启动前需要将该 launcher 上传到 101，并再次确认远端 GPU 空闲。
+
+
+## 2026-10-07：正式 B0–B4 offline seed17 长训练已启动
+
+- [x] 远端 launcher SHA 与本地一致：`a71528536902cb43db04c75a3a4a14d2b4940b7e05265d6d85e21dac45b3bcf3`；`bash -n` 通过。
+- [x] 正式串行 launcher 已在 vla101 启动，PID=`3504719`；日志：`vla_workspace/logs/p6_formal_offline_20261007.log`；配置入口：`server/run_p6_formal_offline_20261007.sh`；Git commit=`13e551b`（之后 PROGRESS 更新 commit=`fa9b208`）。
+- [x] B0 seed17 已实际开始，输出目录 `results/P6_vla_b0_b4/formal_offline_20261007/B0_seed17/`，当前核验为 38/10080 steps、failure=0；最近记录 `finite=true`，峰值显存约 21.2 GiB。
+- [x] launcher 按 B0→B1→B2→B3→B4 串行执行，每组前重新生成 GPU window；每组独立目录；任何现存目标目录会 fail-closed，不覆盖。
+- [ ] 训练进行中：需在 10/25/50/75/100% 节点核验并记录每组 progress、checkpoint 和失败清单；完成后再做 held-out/control 评测。此阶段仅为 offline training，不报告 rollout success。
