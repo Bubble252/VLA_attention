@@ -8,6 +8,7 @@
 - [x] corrected B3 矩阵验证完成：retention=1、semantic=1、containment=0；seed=17、20 steps、相同 train/eval/cache manifest，temperature=1.0 和 1.25 两个独立结果均 `passed`、所有 loss/gradient/attribution finite。
 - [x] temperature 按预注册规则冻结为 `1.25`：两者都稳定，选择与 VLM protocol 一致的值；报告保存在 `experiment_workspace/vla_remote_results/20261007_b3_temperature/report_temp1p0.json` 与 `report_temp1p25.json`。
 - [x] formal preflight config 已写入 `semantic_map=sd15_null_text_reconstruction_v3`、`temperature=1.25`、`lambda_sem=0.10` 和 native action scalar=`native_mean_L1`；状态仍为 rollout provenance pending，不能误认为长训练已启动。
+- [x] 本轮变更提交为 Git commit `2b4c774`；代码 bundle 已重新生成并上传 101，远端逐文件 SHA 校验通过，未上传模型、数据、cache 或 checkpoint。
 - [x] batch=1 的依据已经明确：train manifest 有 2520 个完整 H=8 transition，batch=1 × 4 deterministic passes = 10080 optimizer updates；B0/B1–B4 现有真实 smoke 都只验证了单样本 collate。
 - [x] batch=1 不是 batch-size sweep 证明的最优值，也不是已证明唯一可行值；若改为 batch=2，固定 4 passes 只得到 5040 updates，固定 10080 updates 则约需 8 passes，必须先声明 fixed exposure 或 fixed optimizer updates。
 - [ ] 仍未完成：统一正式 B0–B4 10080-step launcher；已有 smoke 不能替代统一的 checkpoint cadence、逐 step metrics、controls 和 restore gate。
