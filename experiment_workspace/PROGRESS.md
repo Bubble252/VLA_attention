@@ -1130,3 +1130,13 @@ PYTHONPATH=src python scripts/validate_p1_report.py \
 - [x] 每组 checkpoint 均生成 `checkpoint_00005/10/15/20/restore_probe.json`，但最后一步 checkpoint 不能直接作为同一 `max_steps` 的 continuation；runner 会严格拒绝已完成步数和配置不一致的 resume。
 - [ ] 独立中间 checkpoint resume probe 暴露并修复了 `previous_time` 初始化 bug；修复后还需从 B4 step10 以同一 20-step metadata 做一次最终 resume 验证，再进入正式 10080-step 长跑。
 - [ ] 当前 retry2 是接口/恢复前置验证，不产生 VLA 优越性结论；正式 offline 仍需 B0–B4 各 10080 updates，并保留 rollout provenance 未解锁的限制。
+
+
+## 2026-10-07：最新 bundle mini smoke 与 checkpoint resume gate
+
+- [x] 最新 code bundle 在 101 远端核验通过：SHA256=`06e67101427cf375fcd1c42b90519bdab51d03eef721e531817ad8358927081d`；未包含模型、数据、cache 或 checkpoint。
+- [x] 发现旧 retry2 checkpoint 的 metadata 绑定旧 bundle SHA；按 provenance 规则未篡改旧 checkpoint，改用最新 bundle 新建 `results/P6_vla_b0_b4/resume_contract_smoke_20261007/B4_seed17`。
+- [x] 最新 bundle 的 B4 20-step mini smoke 通过：loss/gradient/attribution finite，峰值显存约 43.1 GiB，输出未覆盖旧 retry2。
+- [x] 使用同一最新 bundle、同一配置从 B4 step10 checkpoint 做 step10→20 resume probe；`restore_report.json`：`status=passed`、`probe_count=9`、`max_prediction_error=0.0`。
+- [x] 计时初始化修复已包含在统一 bundle；resume continuation 不再触发 `previous_time` 未初始化错误。
+- [ ] 下一步为正式 B0–B4 各 10,080 optimizer updates 的串行 offline 长训练；rollout provenance 仍独立阻塞 LIBERO success，不阻塞本 offline 主线。
