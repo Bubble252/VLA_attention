@@ -1164,3 +1164,47 @@ PYTHONPATH=src python scripts/validate_p1_report.py \
 - [x] 远端 launcher PID=`3504719` 仍存活，B0 seed17 未被异常终止。
 - [x] `B0_seed17/train_metrics.jsonl` 已从此前 38 steps 增长到约 374 steps；最近记录 `finite=true`，failure episodes=0，显存约 21.3 GiB。
 - [ ] B0 尚未达到第一个 checkpoint step=2520；未启动 B1–B4。继续使用同一后台任务，不重复启动。
+
+## 2026-10-08 15:26 CST - P6 VLA formal offline status
+
+- 远端进程仍在运行：`run_p6_formal_offline_20261007.sh`，PID `3504719`，累计运行约 1 天。
+- B0/B1/B2/B3 均已完成 `10080/10080` steps，并生成 `final.json` 与 25%/50%/75%/100% checkpoint。
+- 当前正在跑 B4：`9497/10080` steps，进度 `94.22%`。
+- B4 最新日志为 finite，无 NaN/OOM；最近 `action_loss=0.3219`，`semantic_loss=3.6142`，`containment_loss=0.00148`，`total_loss=0.6984`。
+- GPU0 正在运行，显存约 `49.0/80GB`，利用率约 `65%`；GPU1 空闲。
+- 按 B4 当前约 `2.27s/step` 估算，剩余 `583` steps，约 22–25 分钟完成训练阶段。训练完成后应立即进入 held-out offline action prediction、controls 和 Go/No-Go 汇总。
+
+## 2026-10-08 19:28 CST - P6 post-train evaluation started
+
+- 正式 B0--B4 seed17 offline training 已完成并通过远端产物核验：每组 `train_metrics.jsonl` 为 10080 行，`final.json` 存在，`checkpoint_02520/05040/07560/10080` 均存在。
+- 新增并上传训练后 held-out offline action evaluator：`scripts/eval_oft_formal_offline.py`，远端 SHA256 `9e7cea6eea3e9615ce49397a051d638754965b4c3db39e76a69c0d72e141d569`。
+- 启动远端 action evaluation：PID `928882`，日志 `/vepfs-mlp2/c20250405/400040/transfer/vla_attention/vla_workspace/logs/p6_posttrain_eval_20261008.log`，输出目标 `/vepfs-mlp2/c20250405/400040/transfer/vla_attention/results/P6_vla_b0_b4/posttrain_eval_20261008/action_eval`。该评测只报告 offline action prediction，不报告 rollout success。
+- 发现当前 semantic cache 只覆盖 train：offline_eval 9 个 episode 对应 `3076/3076` 个 semantic cache key 缺失，因此 held-out controls 不能直接跑。
+- 新增并上传通用 LIBERO semantic input exporter：`scripts/export_libero_semantic_inputs.py`，远端 SHA256 `22c6e5b0de8f8e4cb48d976331e7ef31b8f54888c820a3690fa8e2b3f488549c`。
+- 启动 offline_eval semantic input export：PID `929188`，输出 `/vepfs-mlp2/c20250405/400040/transfer/vla_attention/vla_workspace/cache_inputs/libero_spatial_task0_eval_v1`。该任务只导出 PNG/JSONL，不运行 teacher。
+- 下一步：等待 action eval 产出 B0--B4 held-out metrics；semantic input export 完成后再生成 eval SD cache，并据此运行 wrong-word/wrong-image/random/raw-attention proxy 或记录 raw-attention 不可用边界。
+
+## 2026-10-08 19:31 CST - P6 held-out control cache preparation started
+
+- offline_eval semantic input export 完成：9 episodes，1538 frames，3076 source/target semantic rows。输出：`/vepfs-mlp2/c20250405/400040/transfer/vla_attention/vla_workspace/cache_inputs/libero_spatial_task0_eval_v1`。
+- 启动 held-out eval SD1.5 semantic cache：PID `930653`，日志 `/vepfs-mlp2/c20250405/400040/transfer/vla_attention/vla_workspace/logs/semantic_eval_task0_v1.log`，cache root `/vepfs-mlp2/c20250405/400040/transfer/vla_attention/vla_workspace/teacher_cache/semantic_eval_task0_v1`。
+- action eval PID `928882` 仍在运行；当前脚本按 group 完成后写 `summary.json`，因此运行中没有中间 action_eval 文件是预期情况。
+- 当前边界：held-out action metrics 可在 action eval 完成后生成；controls 必须等待 eval semantic cache 完成后再运行，不能用 train cache 代替 held-out controls。
+
+## 2026-10-08 19:38 CST - post-train 评测边界与 controls evaluator
+
+- [x] 新增 `experiments/P6-vla-b0-b4/posttrain_eval_protocol_20261008.md`，明确本阶段只恢复已完成的 B0–B4 checkpoint、做 held-out offline action prediction、归因 controls 和结果汇总；不重新训练、不覆盖 checkpoint/cache/data、不把 offline 指标写成 rollout success。
+- [x] 新增 `scripts/eval_oft_posttrain_controls.py`，固定正确 semantic support、same-image role-swapped（操作性 wrong-word）、wrong-image、random、area-matched random 五类控制；学生信号为 action-loss gradient×activation。
+- [x] controls evaluator 已通过本地 `py_compile`，远端 SHA256=`30c6d19f81c6a8c0e86f2fe9fed6f35889d117b66de6157cec3a1a623c9ef989`。
+- [ ] held-out SD1.5 cache 和 action evaluator 仍在远端运行；完成后按 `posttrain_eval_protocol_20261008.md` 顺序执行 controls、汇总和 Go/No-Go。
+- [x] 为避免单卡 cache 成为瓶颈，已改为四个严格不重叠的 SD1.5 worker：`0:769 eval_gpu1a`、`769:1538 eval_gpu1b`、`1538:2307 eval_gpu0a`、`2307:3076 eval_gpu0b`。所有 worker 共享同一 frozen manifest、teacher、seed、steps、inner steps 和 cache contract；脚本会跳过已有完整 map，不覆盖训练产物。
+- [x] action evaluator 已先产出 B0/B1/B2 held-out metrics，B3/B4 仍在运行。当前只是中间状态，完整表和 Go/No-Go 等 B0--B4 全部完成后再写入正式 summary。
+- [x] 为优先完成 B0--B4 主 action 表，临时停止 GPU0 上的 `eval_gpu0a/eval_gpu0b` cache worker；GPU1 上 `eval_gpu1a/eval_gpu1b` 继续运行。GPU0 分片后续可用同一 row range 续跑，已生成 map 会被脚本跳过。
+
+## 2026-10-08 20:03 CST - P6 seed17 held-out action 表完成
+
+- [x] B0--B4 `checkpoint_10080` 的 held-out offline action prediction 全部完成并拉回本地。远端源：`results/P6_vla_b0_b4/posttrain_eval_20261008/action_eval/`；本地源：`experiment_workspace/vla_remote_results/20261008_posttrain_action_eval/action_eval/`。
+- [x] 本地生成正式 action 总表：`experiments/P6-vla-b0-b4/results/formal_offline_action_summary_20261008.md`，机器可读结果：`formal_offline_action_metrics_20261008.json/csv`。
+- [x] seed17 结果：B0 action MSE=`0.187634`，B1=`0.170122`，B2=`0.270470`，B3=`0.204097`，B4=`0.249770`。B1 相对 B0 改善 `-9.33%`；B2 相对 B0 恶化 `+44.15%`；B3 相对 B1 恶化 `+19.97%`；B4 相对 B3 恶化 `+22.38%`。
+- [x] 当前结论边界：seed17 offline action prediction 支持 B1/retention 是当前最强基线；不支持 `semantic attribution` 或 `containment` 已经提升 VLA action prediction。该结果仍不是 rollout success，也不是三 seed 统计结论。
+- [x] action evaluator 完成后恢复 GPU0 的两个 held-out SD1.5 cache 分片：`eval_gpu0a/eval_gpu0b`。controls 仍需等待 3076 个 held-out semantic map 完整生成。

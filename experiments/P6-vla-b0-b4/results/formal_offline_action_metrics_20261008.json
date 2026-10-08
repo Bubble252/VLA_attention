@@ -1,0 +1,133 @@
+{
+  "status": "passed",
+  "source": "held-out offline action prediction only; no rollout success claim",
+  "rows": [
+    {
+      "group": "B0",
+      "n_transitions": 769,
+      "action_mse": 0.18763376772403717,
+      "action_mae": 0.3085252344608307,
+      "translation_mse": 0.2578570246696472,
+      "rotation_mse": 0.14103347063064575,
+      "gripper_mse": 0.11676489561796188,
+      "gripper_accuracy_sign_normalized": 0.7693433029908973,
+      "native_l1_forward_loss_mean": 0.3085304342781924,
+      "elapsed_seconds": 304.10720348358154,
+      "checkpoint": "/vepfs-mlp2/c20250405/400040/transfer/vla_attention/results/P6_vla_b0_b4/formal_offline_20261007/B0_seed17/checkpoint_10080",
+      "checkpoint_sha256": "a9f515092d86a90032d6f82146d1c3ca58292be666334c915771dae52106af3a",
+      "eval_manifest_sha256": "c93ae5afeb919de8fb148bfa1f935173d04f3ac0502b85e3b6916afb15e9dd0b",
+      "statistics_sha256": "21692284b4cbf9cdbdb2b3e2060ac4e62924eabf2b6db1881292e47f3b830397"
+    },
+    {
+      "group": "B1",
+      "n_transitions": 769,
+      "action_mse": 0.17012165486812592,
+      "action_mae": 0.29368630051612854,
+      "translation_mse": 0.22347745299339294,
+      "rotation_mse": 0.13610750436782837,
+      "gripper_mse": 0.11209681630134583,
+      "gripper_accuracy_sign_normalized": 0.7865734720416124,
+      "native_l1_forward_loss_mean": 0.29369040638673444,
+      "elapsed_seconds": 310.3087794780731,
+      "checkpoint": "/vepfs-mlp2/c20250405/400040/transfer/vla_attention/results/P6_vla_b0_b4/formal_offline_20261007/B1_seed17/checkpoint_10080",
+      "checkpoint_sha256": "a0652d5b50292e901d17c56bc8700c237141843803af1a0a99a43c5fde5cc1e4",
+      "eval_manifest_sha256": "c93ae5afeb919de8fb148bfa1f935173d04f3ac0502b85e3b6916afb15e9dd0b",
+      "statistics_sha256": "21692284b4cbf9cdbdb2b3e2060ac4e62924eabf2b6db1881292e47f3b830397"
+    },
+    {
+      "group": "B2",
+      "n_transitions": 769,
+      "action_mse": 0.2704699635505676,
+      "action_mae": 0.38377487659454346,
+      "translation_mse": 0.31801825761795044,
+      "rotation_mse": 0.1497139036655426,
+      "gripper_mse": 0.49009302258491516,
+      "gripper_accuracy_sign_normalized": 1.0,
+      "native_l1_forward_loss_mean": 0.38377606297112876,
+      "elapsed_seconds": 418.552476644516,
+      "checkpoint": "/vepfs-mlp2/c20250405/400040/transfer/vla_attention/results/P6_vla_b0_b4/formal_offline_20261007/B2_seed17/checkpoint_10080",
+      "checkpoint_sha256": "f101a921efa1c37bc0ab909943e7c4b2791a1d912a7b3ac7539008df4af60b82",
+      "eval_manifest_sha256": "c93ae5afeb919de8fb148bfa1f935173d04f3ac0502b85e3b6916afb15e9dd0b",
+      "statistics_sha256": "21692284b4cbf9cdbdb2b3e2060ac4e62924eabf2b6db1881292e47f3b830397"
+    },
+    {
+      "group": "B3",
+      "n_transitions": 769,
+      "action_mse": 0.20409683883190155,
+      "action_mae": 0.32632172107696533,
+      "translation_mse": 0.26625949144363403,
+      "rotation_mse": 0.14218847453594208,
+      "gripper_mse": 0.2033340185880661,
+      "gripper_accuracy_sign_normalized": 0.8153446033810143,
+      "native_l1_forward_loss_mean": 0.32632306559188157,
+      "elapsed_seconds": 351.4864740371704,
+      "checkpoint": "/vepfs-mlp2/c20250405/400040/transfer/vla_attention/results/P6_vla_b0_b4/formal_offline_20261007/B3_seed17/checkpoint_10080",
+      "checkpoint_sha256": "750dd2680e7c6b8ce56a3cf7399c7c8b40b47fd912682980c3a48bd80f9268af",
+      "eval_manifest_sha256": "c93ae5afeb919de8fb148bfa1f935173d04f3ac0502b85e3b6916afb15e9dd0b",
+      "statistics_sha256": "21692284b4cbf9cdbdb2b3e2060ac4e62924eabf2b6db1881292e47f3b830397"
+    },
+    {
+      "group": "B4",
+      "n_transitions": 769,
+      "action_mse": 0.24976962804794312,
+      "action_mae": 0.3841501772403717,
+      "translation_mse": 0.3149673044681549,
+      "rotation_mse": 0.14955131709575653,
+      "gripper_mse": 0.35483166575431824,
+      "gripper_accuracy_sign_normalized": 1.0,
+      "native_l1_forward_loss_mean": 0.3841499829439565,
+      "elapsed_seconds": 305.64560103416443,
+      "checkpoint": "/vepfs-mlp2/c20250405/400040/transfer/vla_attention/results/P6_vla_b0_b4/formal_offline_20261007/B4_seed17/checkpoint_10080",
+      "checkpoint_sha256": "1d8e7b01ead1ca26c8fb850390a6d06de31004b991241ea62e02a5e61b56d78c",
+      "eval_manifest_sha256": "c93ae5afeb919de8fb148bfa1f935173d04f3ac0502b85e3b6916afb15e9dd0b",
+      "statistics_sha256": "21692284b4cbf9cdbdb2b3e2060ac4e62924eabf2b6db1881292e47f3b830397"
+    }
+  ],
+  "comparisons": [
+    {
+      "comparison": "B1-vs-B0",
+      "delta_action_mse": -0.017512112855911255,
+      "delta_action_mae": -0.014838933944702148,
+      "delta_translation_mse": -0.03437957167625427,
+      "delta_rotation_mse": -0.004925966262817383,
+      "delta_gripper_acc": 0.01723016905071517,
+      "action_mse_relative_pct": -9.333135004604953
+    },
+    {
+      "comparison": "B2-vs-B0",
+      "delta_action_mse": 0.08283619582653046,
+      "delta_action_mae": 0.07524964213371277,
+      "delta_translation_mse": 0.06016123294830322,
+      "delta_rotation_mse": 0.00868043303489685,
+      "delta_gripper_acc": 0.23065669700910274,
+      "action_mse_relative_pct": 44.14780816444617
+    },
+    {
+      "comparison": "B3-vs-B1",
+      "delta_action_mse": 0.033975183963775635,
+      "delta_action_mae": 0.03263542056083679,
+      "delta_translation_mse": 0.04278203845024109,
+      "delta_rotation_mse": 0.0060809701681137085,
+      "delta_gripper_acc": 0.0287711313394019,
+      "action_mse_relative_pct": 19.971110667899605
+    },
+    {
+      "comparison": "B4-vs-B3",
+      "delta_action_mse": 0.045672789216041565,
+      "delta_action_mae": 0.05782845616340637,
+      "delta_translation_mse": 0.048707813024520874,
+      "delta_rotation_mse": 0.007362842559814453,
+      "delta_gripper_acc": 0.18465539661898567,
+      "action_mse_relative_pct": 22.37799932494724
+    },
+    {
+      "comparison": "B4-vs-B2",
+      "delta_action_mse": -0.02070033550262451,
+      "delta_action_mae": 0.00037530064582824707,
+      "delta_translation_mse": -0.0030509531497955322,
+      "delta_rotation_mse": -0.00016258656978607178,
+      "delta_gripper_acc": 0.0,
+      "action_mse_relative_pct": -7.6534692543611555
+    }
+  ]
+}

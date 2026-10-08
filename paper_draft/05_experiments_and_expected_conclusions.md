@@ -307,3 +307,19 @@ B1–B4 的 20-step smoke 证明接口可运行，但 B1 使用了不同版本�
 ### VLA smoke 统一结论边界
 
 统一审计确认 B0–B4 链路和控制组可运行，但这些结果不支持正式 benchmark 或 rollout 泛化结论。论文中必须把 rollout provenance 未验证作为当前限制，直到获得可追溯的 demo-to-init-state 证据。
+
+### P6 seed17 正式 offline action prediction（2026-10-08）
+
+OpenVLA/OFT + LIBERO 的 B0–B4 seed17 已完成 10,080 optimizer updates，并在 held-out offline action prediction 上恢复 `checkpoint_10080` 评测。该评测只比较 action prediction error，不报告 LIBERO rollout success。完整表见 `experiments/P6-vla-b0-b4/results/formal_offline_action_summary_20261008.md`。
+
+| 组 | action MSE ↓ | action MAE ↓ | translation MSE ↓ | rotation MSE ↓ | gripper acc ↑ |
+|---|---:|---:|---:|---:|---:|
+| B0 原生 action baseline | 0.187634 | 0.308525 | 0.257857 | 0.141033 | 0.769343 |
+| B1 BlindVLA-style retention | 0.170122 | 0.293686 | 0.223477 | 0.136108 | 0.786573 |
+| B2 semantic attribution | 0.270470 | 0.383775 | 0.318018 | 0.149714 | 1.000000 |
+| B3 retention + semantic attribution | 0.204097 | 0.326322 | 0.266259 | 0.142188 | 0.815345 |
+| B4 B3 + containment | 0.249770 | 0.384150 | 0.314967 | 0.149551 | 1.000000 |
+
+当前 seed17 的直接结论是：B1 是最强 offline action baseline，说明 BlindVLA-style 视觉表征保持在这个设置下确实有效；B2 相对 B0 恶化，B3 相对 B1 恶化，B4 相对 B3 继续恶化，因此不能声称 semantic attribution 或 containment 已经提升 VLA action prediction。B4 相对 B2 的 action MSE 略低，只能说明 containment 在已恶化的 semantic 分支上有弱修正，不能说明 D0 成为有效方法。
+
+该结果要求后续叙事收紧：VLA 阶段当前不是“方法已胜出”，而是“强 baseline 已跑通，语义/动作归因项暴露出 loss scale、teacher map、动作证据定义或 offline 指标不匹配的问题”。下一步必须完成 held-out semantic controls、action evidence support mass、wrong-word/wrong-image/random/area-matched random 对照和 patch/action evidence 干预，再决定是修正 `L_sem/L_contain` 进入第二轮，还是把 VLA 主张降级为机制诊断和 future work。multi-seed 与 rollout provenance 仍是正式性能结论的前置条件。
