@@ -1208,3 +1208,10 @@ PYTHONPATH=src python scripts/validate_p1_report.py \
 - [x] seed17 结果：B0 action MSE=`0.187634`，B1=`0.170122`，B2=`0.270470`，B3=`0.204097`，B4=`0.249770`。B1 相对 B0 改善 `-9.33%`；B2 相对 B0 恶化 `+44.15%`；B3 相对 B1 恶化 `+19.97%`；B4 相对 B3 恶化 `+22.38%`。
 - [x] 当前结论边界：seed17 offline action prediction 支持 B1/retention 是当前最强基线；不支持 `semantic attribution` 或 `containment` 已经提升 VLA action prediction。该结果仍不是 rollout success，也不是三 seed 统计结论。
 - [x] action evaluator 完成后恢复 GPU0 的两个 held-out SD1.5 cache 分片：`eval_gpu0a/eval_gpu0b`。controls 仍需等待 3076 个 held-out semantic map 完整生成。
+### 2026-10-08 20:13 CST — P6 posttrain 边界规则补充
+
+- 已补充 `experiments/P6-vla-b0-b4/posttrain_eval_protocol_20261008.md` 第 7 节。
+- 本轮执行边界固定为：只做 B0--B4 posttrain held-out action prediction、semantic controls 和 Go/No-Go 汇总；不重训、不覆盖 checkpoint/cache/data、不声称 rollout success。
+- 必须交互文档已列明：P6 protocol、freeze decision、formal preflight config、posttrain eval protocol、PROGRESS、P6 result summaries、paper draft 05。
+- 服务器 checkpoint/cache/model/data 目录按只读处理；新结果只写入 posttrain eval 输出目录和本地小体积 summary。
+

@@ -49,4 +49,49 @@
 - seed17 只能作为单 seed 正式证据，不能宣称统计显著或三 seed 泛化；
 - B0–B4 结果只支持“离线动作预测和归因机制是否出现方向性证据”，不能单独证明 LIBERO 闭环成功；
 - 如果 controls 或 evaluator 被阻塞，保留已有训练结果，记录阻塞原因，继续不依赖该步骤的汇总和文档工作。
+## 7. 边界与文档交互规则（给 goal 模式执行用）
+
+这一步只做 **P6 VLA B0--B4 训练后验证**，不是重新设计方法，也不是重新训练。执行时必须遵守以下边界。
+
+### 7.1 允许执行的动作
+
+- 读取已经完成的 B0--B4 `checkpoint_10080`、配置、manifest 和日志。
+- 运行 held-out offline action prediction evaluator。
+- 在 held-out semantic cache 可用后运行 controls evaluator：correct、same-image role-swap、wrong-image、random、area-matched random。
+- 生成小体积结果摘要：`json`、`csv`、`md`。
+- 更新进度、结果、论文实验规划文档。
+- 提交小脚本和小结果文件到 Git。
+
+### 7.2 禁止执行的动作
+
+- 不重跑 B0--B4 formal training。
+- 不覆盖已有 checkpoint、cache、dataset、manifest。
+- 不把 checkpoint、大 cache、大数据文件加入 Git。
+- 不用 train semantic cache 替代 held-out semantic cache。
+- 不把 offline action prediction 结果写成 rollout success。
+- 不伪造 raw-attention proxy；如果当前 OpenVLA/OFT 不暴露可比较视觉 attention，就记录为 unavailable。
+
+### 7.3 必须交互和更新的文档
+
+执行过程必须读取或更新这些文件：
+
+- `experiments/P6-vla-b0-b4/protocol.md`：P6 原始实验协议。
+- `experiments/P6-vla-b0-b4/freeze_decision_20261007.md`：冻结配置和不再变动的实验选择。
+- `configs/vla/p6_b0_b4_formal_preflight_20261006.json`：正式训练前配置入口。
+- `experiments/P6-vla-b0-b4/posttrain_eval_protocol_20261008.md`：当前训练后验证边界。
+- `experiment_workspace/PROGRESS.md`：每个阶段的进度、命令、路径、失败原因和结果。
+- `experiments/P6-vla-b0-b4/results/`：只放小体积结果摘要和表格。
+- `paper_draft/05_experiments_and_expected_conclusions.md`：把结果解释写入论文实验叙事。
+
+执行过程可以读取但不能改写这些大文件区域：
+
+- 服务器 checkpoint 目录：`/vepfs-mlp2/c20250405/400040/transfer/vla_attention/results/P6_vla_b0_b4/formal_offline_20261007`。
+- 服务器 held-out semantic cache：`/vepfs-mlp2/c20250405/400040/transfer/vla_attention/vla_workspace/teacher_cache/semantic_eval_task0_v1`。
+- 服务器数据和模型缓存：`/vepfs-mlp2/c20250405/400040/transfer/vla_attention/vla_workspace` 下的 dataset/model/cache。
+
+### 7.4 当前阻塞关系
+
+- action prediction 已完成，可以写结论边界。
+- controls 依赖 held-out semantic cache；cache 未完成时，只能做小子集 smoke 或等待。
+- rollout 仍不属于本轮结论范围，除非后续单独建立 rollout provenance 和 evaluator 文档。
 
