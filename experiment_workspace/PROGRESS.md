@@ -1214,4 +1214,13 @@ PYTHONPATH=src python scripts/validate_p1_report.py \
 - 本轮执行边界固定为：只做 B0--B4 posttrain held-out action prediction、semantic controls 和 Go/No-Go 汇总；不重训、不覆盖 checkpoint/cache/data、不声称 rollout success。
 - 必须交互文档已列明：P6 protocol、freeze decision、formal preflight config、posttrain eval protocol、PROGRESS、P6 result summaries、paper draft 05。
 - 服务器 checkpoint/cache/model/data 目录按只读处理；新结果只写入 posttrain eval 输出目录和本地小体积 summary。
+### 2026-10-08 20:24 CST — P6 产物完整性核验与 controls guard
+
+- 已生成 `experiments/P6-vla-b0-b4/results/formal_offline_integrity_20261008.json` 和 `formal_offline_integrity_summary_20261008.md`。
+- B0--B4 seed17 formal offline 产物核验通过：五组 `final.json.status=passed`，五组 `train_metrics.jsonl=10080` 行，四个 checkpoint 均存在并生成 fingerprint。
+- 远端 repo Git SHA 暂不可用：`/vepfs-mlp2/.../repo/VLA_attention` 在远端不是可解析 git worktree；当前记录本地 Git commit 与远端产物 fingerprint。
+- 已生成 `formal_offline_result_summary_20261008.md`，合并完整性和 action prediction 结果；该文件明确 controls 未完成，不报告 rollout success。
+- 已部署远端 guard：`/vepfs-mlp2/c20250405/400040/transfer/vla_attention/vla_workspace/artifacts/p6_controls_after_cache_20261008.pid`，log 为 `.../logs/p6_controls_after_cache_20261008.log`。
+- guard 只读取四个当前 held-out cache worker：`eval_gpu1a/eval_gpu1b/eval_gpu0a/eval_gpu0b`。当 cache 达到 `3076/3076` 且 failures=0、map_count=3076 后，自动运行 full controls evaluator，输出到 `results/P6_vla_b0_b4/posttrain_eval_20261008/controls_eval_full_seed17`。
+- 当前 cache 快照：`76/3076`，failures=0；controls 仍等待 cache 完整。
 

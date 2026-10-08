@@ -1,0 +1,885 @@
+{
+  "root": "/vepfs-mlp2/c20250405/400040/transfer/vla_attention/results/P6_vla_b0_b4/formal_offline_20261007",
+  "repo": "/vepfs-mlp2/c20250405/400040/transfer/vla_attention/repo/VLA_attention",
+  "git_sha": "unavailable:CalledProcessError(128, ['git', '-C', '/vepfs-mlp2/c20250405/400040/transfer/vla_attention/repo/VLA_attention', 'rev-parse', 'HEAD'])",
+  "groups": {
+    "B0": {
+      "run_dir": "/vepfs-mlp2/c20250405/400040/transfer/vla_attention/results/P6_vla_b0_b4/formal_offline_20261007/B0_seed17",
+      "exists": true,
+      "final_path": "/vepfs-mlp2/c20250405/400040/transfer/vla_attention/results/P6_vla_b0_b4/formal_offline_20261007/B0_seed17/final.json",
+      "train_metrics_path": "/vepfs-mlp2/c20250405/400040/transfer/vla_attention/results/P6_vla_b0_b4/formal_offline_20261007/B0_seed17/train_metrics.jsonl",
+      "final_exists": true,
+      "train_metrics_exists": true,
+      "final_sha256": "bf038f5d4eead18c0672fe41cc4e283e3f65e843c042e6134ae8150cfa0e4a0b",
+      "final_json": {
+        "status": "passed",
+        "group": "B0",
+        "seed": 17,
+        "steps": 10080,
+        "train_manifest_sha256": "695681afb03012bd18c34d09c9a4fbf15ca489605d4463cbf891cd7213bca921",
+        "eval_manifest_sha256": "c93ae5afeb919de8fb148bfa1f935173d04f3ac0502b85e3b6916afb15e9dd0b",
+        "attribution_create_graph": false,
+        "purpose": "offline action training; rollout not run"
+      },
+      "train_metrics_sha256": "dac2a3dce6232ec748528f21f73d5fc5c9818a2ae109dffe8c137577b49f5856",
+      "train_metrics_lines": 10080,
+      "train_metrics_last_line": {
+        "optimizer_step": 10080,
+        "max_steps": 10080,
+        "progress_fraction": 1.0,
+        "group": "B0",
+        "seed": 17,
+        "episode_id": "046f864859938594fd054d25025a6756e2dbc278f98ff99cd0d88be8adc9305a",
+        "timestep": 114,
+        "action_loss": 0.261794775724411,
+        "retention_loss": 0.0,
+        "semantic_loss": 0.0,
+        "containment_loss": 0.0,
+        "total_loss": 0.261794775724411,
+        "effective_lambda_semantic": 0.1,
+        "effective_lambda_retention": 0.05,
+        "effective_lambda_containment": 0.02,
+        "retention_warmup_scale": 1.0,
+        "containment_warmup_scale": 1.0,
+        "gradient_norm_pre_clip": 20.5,
+        "learning_rate": 0.0,
+        "step_seconds": 1.154660701751709,
+        "peak_memory_bytes": 22801471488,
+        "finite": true,
+        "attribution_create_graph": false,
+        "phrase_positions": {}
+      },
+      "checkpoints": {
+        "checkpoint_02520": {
+          "path": "/vepfs-mlp2/c20250405/400040/transfer/vla_attention/results/P6_vla_b0_b4/formal_offline_20261007/B0_seed17/checkpoint_02520",
+          "exists": true,
+          "required": {
+            "checkpoint.json": {
+              "exists": true,
+              "path": "/vepfs-mlp2/c20250405/400040/transfer/vla_attention/results/P6_vla_b0_b4/formal_offline_20261007/B0_seed17/checkpoint_02520/checkpoint.json",
+              "sha256": "1f082c970e1afcf2a5d9ab2d01b095576347e41e5acf4a147364e0f2b2bc695f"
+            },
+            "modules.pt": {
+              "exists": true,
+              "path": "/vepfs-mlp2/c20250405/400040/transfer/vla_attention/results/P6_vla_b0_b4/formal_offline_20261007/B0_seed17/checkpoint_02520/modules.pt",
+              "sha256": "e5dae9629555b4c0ffa59d36437eb2ecf3dbe682eafcfaaaa550c8d2399d85d7"
+            },
+            "adapter": {
+              "exists": true,
+              "path": "/vepfs-mlp2/c20250405/400040/transfer/vla_attention/results/P6_vla_b0_b4/formal_offline_20261007/B0_seed17/checkpoint_02520/adapter"
+            }
+          },
+          "fingerprint_sha256": "ba54b1c6c926a2a6a127726d2bcf741e655ac4947fc86d07d6f8f9677b302991",
+          "file_count": 6,
+          "fingerprint_sample": [
+            "adapter/README.md\t5166\tsize:5166",
+            "adapter/adapter_config.json\t1001\t387ea286b87494f23865bdaf886d155ff10291b8cbd33320b9ad23e6693b4da6",
+            "adapter/adapter_model.safetensors\t484458600\tc7b65df07db242fca96c9919f70f4400689fefb94016df5ed88dcaa00498e3e5",
+            "checkpoint.json\t417\t1f082c970e1afcf2a5d9ab2d01b095576347e41e5acf4a147364e0f2b2bc695f",
+            "modules.pt\t1440248450\te5dae9629555b4c0ffa59d36437eb2ecf3dbe682eafcfaaaa550c8d2399d85d7",
+            "restore_probe.json\t15339\t404e4781c6968a9146f6c1f7a1298e9217b9b877baa0460a3c89e7ee725e8bd8"
+          ]
+        },
+        "checkpoint_05040": {
+          "path": "/vepfs-mlp2/c20250405/400040/transfer/vla_attention/results/P6_vla_b0_b4/formal_offline_20261007/B0_seed17/checkpoint_05040",
+          "exists": true,
+          "required": {
+            "checkpoint.json": {
+              "exists": true,
+              "path": "/vepfs-mlp2/c20250405/400040/transfer/vla_attention/results/P6_vla_b0_b4/formal_offline_20261007/B0_seed17/checkpoint_05040/checkpoint.json",
+              "sha256": "5e6060f3e7accd86b165b0a4e2fae7fb3dd8e6d1c35aaf3b28eebcf61ea8038e"
+            },
+            "modules.pt": {
+              "exists": true,
+              "path": "/vepfs-mlp2/c20250405/400040/transfer/vla_attention/results/P6_vla_b0_b4/formal_offline_20261007/B0_seed17/checkpoint_05040/modules.pt",
+              "sha256": "95224fd6bb2b31bf0071c6b528d985f1dd7fda622e8add27a9bb276ec4f55764"
+            },
+            "adapter": {
+              "exists": true,
+              "path": "/vepfs-mlp2/c20250405/400040/transfer/vla_attention/results/P6_vla_b0_b4/formal_offline_20261007/B0_seed17/checkpoint_05040/adapter"
+            }
+          },
+          "fingerprint_sha256": "f63287c09ee242341735bdb33fc9820343d33e1ad0ceb4513ae0dd5d797c6d10",
+          "file_count": 6,
+          "fingerprint_sample": [
+            "adapter/README.md\t5166\tsize:5166",
+            "adapter/adapter_config.json\t1001\t387ea286b87494f23865bdaf886d155ff10291b8cbd33320b9ad23e6693b4da6",
+            "adapter/adapter_model.safetensors\t484458600\ta4175eb4c2446cd0205663b9aa15cb4aca9ce49d086d3711d6e0909b366952ab",
+            "checkpoint.json\t417\t5e6060f3e7accd86b165b0a4e2fae7fb3dd8e6d1c35aaf3b28eebcf61ea8038e",
+            "modules.pt\t1440248450\t95224fd6bb2b31bf0071c6b528d985f1dd7fda622e8add27a9bb276ec4f55764",
+            "restore_probe.json\t15410\t969416410804bb5c8baa126fe198a70d0e1c281d2886edac821b31fc8b3fa06f"
+          ]
+        },
+        "checkpoint_07560": {
+          "path": "/vepfs-mlp2/c20250405/400040/transfer/vla_attention/results/P6_vla_b0_b4/formal_offline_20261007/B0_seed17/checkpoint_07560",
+          "exists": true,
+          "required": {
+            "checkpoint.json": {
+              "exists": true,
+              "path": "/vepfs-mlp2/c20250405/400040/transfer/vla_attention/results/P6_vla_b0_b4/formal_offline_20261007/B0_seed17/checkpoint_07560/checkpoint.json",
+              "sha256": "9981be45401414d1d56685e10570082a1ad83845c7153324a124cb9a965f7f3a"
+            },
+            "modules.pt": {
+              "exists": true,
+              "path": "/vepfs-mlp2/c20250405/400040/transfer/vla_attention/results/P6_vla_b0_b4/formal_offline_20261007/B0_seed17/checkpoint_07560/modules.pt",
+              "sha256": "b69d903a74fd35c64559eb706f24e392965b802824e06fe461d352bd527aa867"
+            },
+            "adapter": {
+              "exists": true,
+              "path": "/vepfs-mlp2/c20250405/400040/transfer/vla_attention/results/P6_vla_b0_b4/formal_offline_20261007/B0_seed17/checkpoint_07560/adapter"
+            }
+          },
+          "fingerprint_sha256": "61349200109c0f0fb1d0d51332ad5bbd88cff1e281d63e18d7e4dae77ff78152",
+          "file_count": 6,
+          "fingerprint_sample": [
+            "adapter/README.md\t5166\tsize:5166",
+            "adapter/adapter_config.json\t1001\t387ea286b87494f23865bdaf886d155ff10291b8cbd33320b9ad23e6693b4da6",
+            "adapter/adapter_model.safetensors\t484458600\t0ea621883e0d569de10c50df49396385f77f27809001db4c44edb579f51ce528",
+            "checkpoint.json\t417\t9981be45401414d1d56685e10570082a1ad83845c7153324a124cb9a965f7f3a",
+            "modules.pt\t1440248450\tb69d903a74fd35c64559eb706f24e392965b802824e06fe461d352bd527aa867",
+            "restore_probe.json\t15141\t06af249aaa498fed1b1ebd71ffcd7c0f8768173bf9a98ce79fde9d973307e177"
+          ]
+        },
+        "checkpoint_10080": {
+          "path": "/vepfs-mlp2/c20250405/400040/transfer/vla_attention/results/P6_vla_b0_b4/formal_offline_20261007/B0_seed17/checkpoint_10080",
+          "exists": true,
+          "required": {
+            "checkpoint.json": {
+              "exists": true,
+              "path": "/vepfs-mlp2/c20250405/400040/transfer/vla_attention/results/P6_vla_b0_b4/formal_offline_20261007/B0_seed17/checkpoint_10080/checkpoint.json",
+              "sha256": "26815a55c59fb0f10ee4b5b88552da6405440d9ed24be51334ccb16f6f4e28f0"
+            },
+            "modules.pt": {
+              "exists": true,
+              "path": "/vepfs-mlp2/c20250405/400040/transfer/vla_attention/results/P6_vla_b0_b4/formal_offline_20261007/B0_seed17/checkpoint_10080/modules.pt",
+              "sha256": "a9f515092d86a90032d6f82146d1c3ca58292be666334c915771dae52106af3a"
+            },
+            "adapter": {
+              "exists": true,
+              "path": "/vepfs-mlp2/c20250405/400040/transfer/vla_attention/results/P6_vla_b0_b4/formal_offline_20261007/B0_seed17/checkpoint_10080/adapter"
+            }
+          },
+          "fingerprint_sha256": "53bbfe71509cbd671999f722ed35b96d61277016c905c2019fbcff28a45a0989",
+          "file_count": 6,
+          "fingerprint_sample": [
+            "adapter/README.md\t5166\tsize:5166",
+            "adapter/adapter_config.json\t1001\t387ea286b87494f23865bdaf886d155ff10291b8cbd33320b9ad23e6693b4da6",
+            "adapter/adapter_model.safetensors\t484458600\t5629c662409d803d8d759ddb6655248fc77c788620f3e438b1e05b1efb507736",
+            "checkpoint.json\t418\t26815a55c59fb0f10ee4b5b88552da6405440d9ed24be51334ccb16f6f4e28f0",
+            "modules.pt\t1440248450\ta9f515092d86a90032d6f82146d1c3ca58292be666334c915771dae52106af3a",
+            "restore_probe.json\t14629\t48168d9a36de86c36cc764520ca052278cfd7cf291b1d0583bb1a5fb433b5493"
+          ]
+        }
+      }
+    },
+    "B1": {
+      "run_dir": "/vepfs-mlp2/c20250405/400040/transfer/vla_attention/results/P6_vla_b0_b4/formal_offline_20261007/B1_seed17",
+      "exists": true,
+      "final_path": "/vepfs-mlp2/c20250405/400040/transfer/vla_attention/results/P6_vla_b0_b4/formal_offline_20261007/B1_seed17/final.json",
+      "train_metrics_path": "/vepfs-mlp2/c20250405/400040/transfer/vla_attention/results/P6_vla_b0_b4/formal_offline_20261007/B1_seed17/train_metrics.jsonl",
+      "final_exists": true,
+      "train_metrics_exists": true,
+      "final_sha256": "1d23a9d3bcec507e17a2a378bf673751fb094324b103dbce6166b3fb128c4a1e",
+      "final_json": {
+        "status": "passed",
+        "group": "B1",
+        "seed": 17,
+        "steps": 10080,
+        "train_manifest_sha256": "695681afb03012bd18c34d09c9a4fbf15ca489605d4463cbf891cd7213bca921",
+        "eval_manifest_sha256": "c93ae5afeb919de8fb148bfa1f935173d04f3ac0502b85e3b6916afb15e9dd0b",
+        "attribution_create_graph": false,
+        "purpose": "offline action training; rollout not run"
+      },
+      "train_metrics_sha256": "84f5044e409f83bebc3fd0e132d449792df112a3aa35661edabecb9616827a51",
+      "train_metrics_lines": 10080,
+      "train_metrics_last_line": {
+        "optimizer_step": 10080,
+        "max_steps": 10080,
+        "progress_fraction": 1.0,
+        "group": "B1",
+        "seed": 17,
+        "episode_id": "046f864859938594fd054d25025a6756e2dbc278f98ff99cd0d88be8adc9305a",
+        "timestep": 114,
+        "action_loss": 0.23711887001991272,
+        "retention_loss": 0.30078086256980896,
+        "semantic_loss": 0.0,
+        "containment_loss": 0.0,
+        "total_loss": 0.25215792655944824,
+        "effective_lambda_semantic": 0.1,
+        "effective_lambda_retention": 0.05,
+        "effective_lambda_containment": 0.02,
+        "retention_warmup_scale": 1.0,
+        "containment_warmup_scale": 1.0,
+        "gradient_norm_pre_clip": 22.375,
+        "learning_rate": 0.0,
+        "step_seconds": 1.1548912525177002,
+        "peak_memory_bytes": 22844771840,
+        "finite": true,
+        "attribution_create_graph": false,
+        "phrase_positions": {}
+      },
+      "checkpoints": {
+        "checkpoint_02520": {
+          "path": "/vepfs-mlp2/c20250405/400040/transfer/vla_attention/results/P6_vla_b0_b4/formal_offline_20261007/B1_seed17/checkpoint_02520",
+          "exists": true,
+          "required": {
+            "checkpoint.json": {
+              "exists": true,
+              "path": "/vepfs-mlp2/c20250405/400040/transfer/vla_attention/results/P6_vla_b0_b4/formal_offline_20261007/B1_seed17/checkpoint_02520/checkpoint.json",
+              "sha256": "d5141ef8a35ebe2c3780343c86d59847ace8be4a39faebb487a4658ac26d54f2"
+            },
+            "modules.pt": {
+              "exists": true,
+              "path": "/vepfs-mlp2/c20250405/400040/transfer/vla_attention/results/P6_vla_b0_b4/formal_offline_20261007/B1_seed17/checkpoint_02520/modules.pt",
+              "sha256": "ff01107d4019a71769f3bc277624c5e92811c0abf38e48d937fd023b166eb113"
+            },
+            "adapter": {
+              "exists": true,
+              "path": "/vepfs-mlp2/c20250405/400040/transfer/vla_attention/results/P6_vla_b0_b4/formal_offline_20261007/B1_seed17/checkpoint_02520/adapter"
+            }
+          },
+          "fingerprint_sha256": "11f13faf10bead265239886434f34b1a8366fc6b9ecc6dbdb2bc047def9c53a9",
+          "file_count": 6,
+          "fingerprint_sample": [
+            "adapter/README.md\t5166\tsize:5166",
+            "adapter/adapter_config.json\t1001\tbf2c4bc9dfb1873a309b3d94ca26d69f2e2554450878cf79541c6295c4f92e35",
+            "adapter/adapter_model.safetensors\t484458600\t90f6f005bcebb61631a4cb901cda0c8c68afe7a153c8c4abc6181ed5691d9ad9",
+            "checkpoint.json\t417\td5141ef8a35ebe2c3780343c86d59847ace8be4a39faebb487a4658ac26d54f2",
+            "modules.pt\t1465425854\tff01107d4019a71769f3bc277624c5e92811c0abf38e48d937fd023b166eb113",
+            "restore_probe.json\t14642\t6337bbfbac3c8790e6b39ccdc2bde8f3fdc5d5284b7566ab744ead97c1c443e0"
+          ]
+        },
+        "checkpoint_05040": {
+          "path": "/vepfs-mlp2/c20250405/400040/transfer/vla_attention/results/P6_vla_b0_b4/formal_offline_20261007/B1_seed17/checkpoint_05040",
+          "exists": true,
+          "required": {
+            "checkpoint.json": {
+              "exists": true,
+              "path": "/vepfs-mlp2/c20250405/400040/transfer/vla_attention/results/P6_vla_b0_b4/formal_offline_20261007/B1_seed17/checkpoint_05040/checkpoint.json",
+              "sha256": "b91b29863937f3f25c94e7a11748303cf8b675702e4617df0cd7a8d2de7f6df9"
+            },
+            "modules.pt": {
+              "exists": true,
+              "path": "/vepfs-mlp2/c20250405/400040/transfer/vla_attention/results/P6_vla_b0_b4/formal_offline_20261007/B1_seed17/checkpoint_05040/modules.pt",
+              "sha256": "057c2d9159923a3b0089c59c44a67fb6e1dbfb892554c70c97536e1987e2e691"
+            },
+            "adapter": {
+              "exists": true,
+              "path": "/vepfs-mlp2/c20250405/400040/transfer/vla_attention/results/P6_vla_b0_b4/formal_offline_20261007/B1_seed17/checkpoint_05040/adapter"
+            }
+          },
+          "fingerprint_sha256": "d59c3f234d020556f02e5231ed366d5e07023dda979d6472c5be3140f5e881f4",
+          "file_count": 6,
+          "fingerprint_sample": [
+            "adapter/README.md\t5166\tsize:5166",
+            "adapter/adapter_config.json\t1001\tbf2c4bc9dfb1873a309b3d94ca26d69f2e2554450878cf79541c6295c4f92e35",
+            "adapter/adapter_model.safetensors\t484458600\td266732759106b78208181aa7a3225f27de919d17ab2cddc57b364d27de88a1e",
+            "checkpoint.json\t417\tb91b29863937f3f25c94e7a11748303cf8b675702e4617df0cd7a8d2de7f6df9",
+            "modules.pt\t1465425854\t057c2d9159923a3b0089c59c44a67fb6e1dbfb892554c70c97536e1987e2e691",
+            "restore_probe.json\t15301\tdaef5a7396723e1481396e8d23edb83983ba4c795ce37b93f42ca4ed6ca4d266"
+          ]
+        },
+        "checkpoint_07560": {
+          "path": "/vepfs-mlp2/c20250405/400040/transfer/vla_attention/results/P6_vla_b0_b4/formal_offline_20261007/B1_seed17/checkpoint_07560",
+          "exists": true,
+          "required": {
+            "checkpoint.json": {
+              "exists": true,
+              "path": "/vepfs-mlp2/c20250405/400040/transfer/vla_attention/results/P6_vla_b0_b4/formal_offline_20261007/B1_seed17/checkpoint_07560/checkpoint.json",
+              "sha256": "06eca277d5a0a2e704acc753b280e92aabd2032f5f3c5e7c0bc2e7d9f8649671"
+            },
+            "modules.pt": {
+              "exists": true,
+              "path": "/vepfs-mlp2/c20250405/400040/transfer/vla_attention/results/P6_vla_b0_b4/formal_offline_20261007/B1_seed17/checkpoint_07560/modules.pt",
+              "sha256": "59d3b4eff90f06becd02e0926bc734baf1fa61efc85e7abc3df1b5fa3d1425b3"
+            },
+            "adapter": {
+              "exists": true,
+              "path": "/vepfs-mlp2/c20250405/400040/transfer/vla_attention/results/P6_vla_b0_b4/formal_offline_20261007/B1_seed17/checkpoint_07560/adapter"
+            }
+          },
+          "fingerprint_sha256": "46fc6ed50ed9c1c00761c6b4c9b746d219711c11bc2c91bde602c76e076a435a",
+          "file_count": 6,
+          "fingerprint_sample": [
+            "adapter/README.md\t5166\tsize:5166",
+            "adapter/adapter_config.json\t1001\tbf2c4bc9dfb1873a309b3d94ca26d69f2e2554450878cf79541c6295c4f92e35",
+            "adapter/adapter_model.safetensors\t484458600\t2198cacdf0aa3727f15411940ce933fc62d70d5cc664d349adf89a17cb954bd2",
+            "checkpoint.json\t417\t06eca277d5a0a2e704acc753b280e92aabd2032f5f3c5e7c0bc2e7d9f8649671",
+            "modules.pt\t1465425854\t59d3b4eff90f06becd02e0926bc734baf1fa61efc85e7abc3df1b5fa3d1425b3",
+            "restore_probe.json\t15159\td3474791b628aac2538dc722590ef970e41dfa5c059269b6042bd8ab75fb922d"
+          ]
+        },
+        "checkpoint_10080": {
+          "path": "/vepfs-mlp2/c20250405/400040/transfer/vla_attention/results/P6_vla_b0_b4/formal_offline_20261007/B1_seed17/checkpoint_10080",
+          "exists": true,
+          "required": {
+            "checkpoint.json": {
+              "exists": true,
+              "path": "/vepfs-mlp2/c20250405/400040/transfer/vla_attention/results/P6_vla_b0_b4/formal_offline_20261007/B1_seed17/checkpoint_10080/checkpoint.json",
+              "sha256": "8a36f11aa8e37e2901a8f0f0a87834400773357a733e5eff46ded0e5f5b2ef71"
+            },
+            "modules.pt": {
+              "exists": true,
+              "path": "/vepfs-mlp2/c20250405/400040/transfer/vla_attention/results/P6_vla_b0_b4/formal_offline_20261007/B1_seed17/checkpoint_10080/modules.pt",
+              "sha256": "a0652d5b50292e901d17c56bc8700c237141843803af1a0a99a43c5fde5cc1e4"
+            },
+            "adapter": {
+              "exists": true,
+              "path": "/vepfs-mlp2/c20250405/400040/transfer/vla_attention/results/P6_vla_b0_b4/formal_offline_20261007/B1_seed17/checkpoint_10080/adapter"
+            }
+          },
+          "fingerprint_sha256": "10535f13487ad541ecdea93dc30f9b9f288f44bbf05c5eab58cdf1bb644bef8e",
+          "file_count": 6,
+          "fingerprint_sample": [
+            "adapter/README.md\t5166\tsize:5166",
+            "adapter/adapter_config.json\t1001\tbf2c4bc9dfb1873a309b3d94ca26d69f2e2554450878cf79541c6295c4f92e35",
+            "adapter/adapter_model.safetensors\t484458600\t10ecab04abe47e04c7a0d5264ebecd357660fa24628e051d78460dedfb383417",
+            "checkpoint.json\t418\t8a36f11aa8e37e2901a8f0f0a87834400773357a733e5eff46ded0e5f5b2ef71",
+            "modules.pt\t1465425854\ta0652d5b50292e901d17c56bc8700c237141843803af1a0a99a43c5fde5cc1e4",
+            "restore_probe.json\t14458\tc3d8dd46b8057c996f29750d5e0cf91f0a16f987dde8facb9377e1dd1d7a43ff"
+          ]
+        }
+      }
+    },
+    "B2": {
+      "run_dir": "/vepfs-mlp2/c20250405/400040/transfer/vla_attention/results/P6_vla_b0_b4/formal_offline_20261007/B2_seed17",
+      "exists": true,
+      "final_path": "/vepfs-mlp2/c20250405/400040/transfer/vla_attention/results/P6_vla_b0_b4/formal_offline_20261007/B2_seed17/final.json",
+      "train_metrics_path": "/vepfs-mlp2/c20250405/400040/transfer/vla_attention/results/P6_vla_b0_b4/formal_offline_20261007/B2_seed17/train_metrics.jsonl",
+      "final_exists": true,
+      "train_metrics_exists": true,
+      "final_sha256": "87f710cb05d95c9b1825631a21653dd6a67c00351e2e210ec27eb5cad4d39015",
+      "final_json": {
+        "status": "passed",
+        "group": "B2",
+        "seed": 17,
+        "steps": 10080,
+        "train_manifest_sha256": "695681afb03012bd18c34d09c9a4fbf15ca489605d4463cbf891cd7213bca921",
+        "eval_manifest_sha256": "c93ae5afeb919de8fb148bfa1f935173d04f3ac0502b85e3b6916afb15e9dd0b",
+        "attribution_create_graph": true,
+        "purpose": "offline action training; rollout not run"
+      },
+      "train_metrics_sha256": "c288cafadebe9ef648e2d4cf13d363eaefefc541c0548db7105729d0bcff061b",
+      "train_metrics_lines": 10080,
+      "train_metrics_last_line": {
+        "optimizer_step": 10080,
+        "max_steps": 10080,
+        "progress_fraction": 1.0,
+        "group": "B2",
+        "seed": 17,
+        "episode_id": "046f864859938594fd054d25025a6756e2dbc278f98ff99cd0d88be8adc9305a",
+        "timestep": 114,
+        "action_loss": 0.31606683135032654,
+        "retention_loss": 0.0,
+        "semantic_loss": 0.03908082842826843,
+        "containment_loss": 0.0,
+        "total_loss": 0.3199748992919922,
+        "effective_lambda_semantic": 0.1,
+        "effective_lambda_retention": 0.05,
+        "effective_lambda_containment": 0.02,
+        "retention_warmup_scale": 1.0,
+        "containment_warmup_scale": 1.0,
+        "gradient_norm_pre_clip": 22.0,
+        "learning_rate": 0.0,
+        "step_seconds": 1.8969714641571045,
+        "peak_memory_bytes": 38676335616,
+        "finite": true,
+        "attribution_create_graph": true,
+        "phrase_positions": {
+          "source": [
+            12,
+            13,
+            14,
+            15
+          ],
+          "target": [
+            28,
+            29
+          ]
+        }
+      },
+      "checkpoints": {
+        "checkpoint_02520": {
+          "path": "/vepfs-mlp2/c20250405/400040/transfer/vla_attention/results/P6_vla_b0_b4/formal_offline_20261007/B2_seed17/checkpoint_02520",
+          "exists": true,
+          "required": {
+            "checkpoint.json": {
+              "exists": true,
+              "path": "/vepfs-mlp2/c20250405/400040/transfer/vla_attention/results/P6_vla_b0_b4/formal_offline_20261007/B2_seed17/checkpoint_02520/checkpoint.json",
+              "sha256": "15794a660d8aae51ee724e1f748a97d9cdb4f9c4e7eff31c13bf22c11e7a55fa"
+            },
+            "modules.pt": {
+              "exists": true,
+              "path": "/vepfs-mlp2/c20250405/400040/transfer/vla_attention/results/P6_vla_b0_b4/formal_offline_20261007/B2_seed17/checkpoint_02520/modules.pt",
+              "sha256": "68e10b0c7c2048ed2ccc09306ca87dd5d812f73f6d2c2c73d8a24511d9ff14d0"
+            },
+            "adapter": {
+              "exists": true,
+              "path": "/vepfs-mlp2/c20250405/400040/transfer/vla_attention/results/P6_vla_b0_b4/formal_offline_20261007/B2_seed17/checkpoint_02520/adapter"
+            }
+          },
+          "fingerprint_sha256": "7653bb44ebd077fccaa4e36e8d585a306f8babda2b12951987f6707e73657b58",
+          "file_count": 6,
+          "fingerprint_sample": [
+            "adapter/README.md\t5166\tsize:5166",
+            "adapter/adapter_config.json\t1001\td4794bf352455de0236fde973ce1da5aee757db493389c4c651ca797d7385a05",
+            "adapter/adapter_model.safetensors\t484458600\t16ef346dbcbcf06a12d628d69cb96b55e2716a4e0a495649d87d4d417c555210",
+            "checkpoint.json\t426\t15794a660d8aae51ee724e1f748a97d9cdb4f9c4e7eff31c13bf22c11e7a55fa",
+            "modules.pt\t1444878652\t68e10b0c7c2048ed2ccc09306ca87dd5d812f73f6d2c2c73d8a24511d9ff14d0",
+            "restore_probe.json\t14947\t8aeea0c8758d259be6a7a5f0e614ab3913ef64cd218682161fb313f285ed44a3"
+          ]
+        },
+        "checkpoint_05040": {
+          "path": "/vepfs-mlp2/c20250405/400040/transfer/vla_attention/results/P6_vla_b0_b4/formal_offline_20261007/B2_seed17/checkpoint_05040",
+          "exists": true,
+          "required": {
+            "checkpoint.json": {
+              "exists": true,
+              "path": "/vepfs-mlp2/c20250405/400040/transfer/vla_attention/results/P6_vla_b0_b4/formal_offline_20261007/B2_seed17/checkpoint_05040/checkpoint.json",
+              "sha256": "51f2ac291e06eac1549b7489d867ba3a6049595018bb901eb3aa290e5f79e760"
+            },
+            "modules.pt": {
+              "exists": true,
+              "path": "/vepfs-mlp2/c20250405/400040/transfer/vla_attention/results/P6_vla_b0_b4/formal_offline_20261007/B2_seed17/checkpoint_05040/modules.pt",
+              "sha256": "8a9fe62847e49419ff748d9a83d971c98ba03df016bf681452674d13eb4df928"
+            },
+            "adapter": {
+              "exists": true,
+              "path": "/vepfs-mlp2/c20250405/400040/transfer/vla_attention/results/P6_vla_b0_b4/formal_offline_20261007/B2_seed17/checkpoint_05040/adapter"
+            }
+          },
+          "fingerprint_sha256": "ff08b74ede44b0142a0113c03a1d66acbc2de5e3dbee0b32929e9f9b0eac7575",
+          "file_count": 6,
+          "fingerprint_sample": [
+            "adapter/README.md\t5166\tsize:5166",
+            "adapter/adapter_config.json\t1001\td4794bf352455de0236fde973ce1da5aee757db493389c4c651ca797d7385a05",
+            "adapter/adapter_model.safetensors\t484458600\tfbacfff8254521dea83d768c86202d9a993e3343238b616ab08778a400cd3423",
+            "checkpoint.json\t426\t51f2ac291e06eac1549b7489d867ba3a6049595018bb901eb3aa290e5f79e760",
+            "modules.pt\t1444878652\t8a9fe62847e49419ff748d9a83d971c98ba03df016bf681452674d13eb4df928",
+            "restore_probe.json\t15175\tca9e8d2e523238a0e27bed0ae4f9f63ec3ff447320aea2ea0bd89bfaa869a778"
+          ]
+        },
+        "checkpoint_07560": {
+          "path": "/vepfs-mlp2/c20250405/400040/transfer/vla_attention/results/P6_vla_b0_b4/formal_offline_20261007/B2_seed17/checkpoint_07560",
+          "exists": true,
+          "required": {
+            "checkpoint.json": {
+              "exists": true,
+              "path": "/vepfs-mlp2/c20250405/400040/transfer/vla_attention/results/P6_vla_b0_b4/formal_offline_20261007/B2_seed17/checkpoint_07560/checkpoint.json",
+              "sha256": "2f3495125b4bed27c0090206726a9253c78c446cb25bd256ed79e8cd66bfb0e0"
+            },
+            "modules.pt": {
+              "exists": true,
+              "path": "/vepfs-mlp2/c20250405/400040/transfer/vla_attention/results/P6_vla_b0_b4/formal_offline_20261007/B2_seed17/checkpoint_07560/modules.pt",
+              "sha256": "c0c4d05f2a67df61d114b74efc320b27fbc999fc318ffd53b8ee2736914d680f"
+            },
+            "adapter": {
+              "exists": true,
+              "path": "/vepfs-mlp2/c20250405/400040/transfer/vla_attention/results/P6_vla_b0_b4/formal_offline_20261007/B2_seed17/checkpoint_07560/adapter"
+            }
+          },
+          "fingerprint_sha256": "6658f92a31706bf2f752ff3be410e2c2c564a7286daf7ede163707d752fe64cf",
+          "file_count": 6,
+          "fingerprint_sample": [
+            "adapter/README.md\t5166\tsize:5166",
+            "adapter/adapter_config.json\t1001\td4794bf352455de0236fde973ce1da5aee757db493389c4c651ca797d7385a05",
+            "adapter/adapter_model.safetensors\t484458600\t1a9d3ccbb98de4cf44dc1252d7ab70df6bb6e4594be48149c2f80264b8056aa0",
+            "checkpoint.json\t426\t2f3495125b4bed27c0090206726a9253c78c446cb25bd256ed79e8cd66bfb0e0",
+            "modules.pt\t1444878652\tc0c4d05f2a67df61d114b74efc320b27fbc999fc318ffd53b8ee2736914d680f",
+            "restore_probe.json\t15500\t02d5d0f41fd944220ca2c0c2a0c7e1ed09c7de41e8b7adbd19120a36c49d0e3b"
+          ]
+        },
+        "checkpoint_10080": {
+          "path": "/vepfs-mlp2/c20250405/400040/transfer/vla_attention/results/P6_vla_b0_b4/formal_offline_20261007/B2_seed17/checkpoint_10080",
+          "exists": true,
+          "required": {
+            "checkpoint.json": {
+              "exists": true,
+              "path": "/vepfs-mlp2/c20250405/400040/transfer/vla_attention/results/P6_vla_b0_b4/formal_offline_20261007/B2_seed17/checkpoint_10080/checkpoint.json",
+              "sha256": "2bc9bb73e9c06f0a4f31597791212943fefe2fc686de7f36508d8a03a8fe5463"
+            },
+            "modules.pt": {
+              "exists": true,
+              "path": "/vepfs-mlp2/c20250405/400040/transfer/vla_attention/results/P6_vla_b0_b4/formal_offline_20261007/B2_seed17/checkpoint_10080/modules.pt",
+              "sha256": "f101a921efa1c37bc0ab909943e7c4b2791a1d912a7b3ac7539008df4af60b82"
+            },
+            "adapter": {
+              "exists": true,
+              "path": "/vepfs-mlp2/c20250405/400040/transfer/vla_attention/results/P6_vla_b0_b4/formal_offline_20261007/B2_seed17/checkpoint_10080/adapter"
+            }
+          },
+          "fingerprint_sha256": "9569ef0e15092287b1044d4f477f1a81b2210804ecd2dcbe42afdfccc1daac78",
+          "file_count": 6,
+          "fingerprint_sample": [
+            "adapter/README.md\t5166\tsize:5166",
+            "adapter/adapter_config.json\t1001\td4794bf352455de0236fde973ce1da5aee757db493389c4c651ca797d7385a05",
+            "adapter/adapter_model.safetensors\t484458600\t8049beaf7464d3f3d79ed1360983fe707e0756e1c4e6107140d37421cf89db4b",
+            "checkpoint.json\t427\t2bc9bb73e9c06f0a4f31597791212943fefe2fc686de7f36508d8a03a8fe5463",
+            "modules.pt\t1444878652\tf101a921efa1c37bc0ab909943e7c4b2791a1d912a7b3ac7539008df4af60b82",
+            "restore_probe.json\t15835\tdc6fb36f34a6d74e927798fa1b574e710a7298ce97a6a60995210e27936e1283"
+          ]
+        }
+      }
+    },
+    "B3": {
+      "run_dir": "/vepfs-mlp2/c20250405/400040/transfer/vla_attention/results/P6_vla_b0_b4/formal_offline_20261007/B3_seed17",
+      "exists": true,
+      "final_path": "/vepfs-mlp2/c20250405/400040/transfer/vla_attention/results/P6_vla_b0_b4/formal_offline_20261007/B3_seed17/final.json",
+      "train_metrics_path": "/vepfs-mlp2/c20250405/400040/transfer/vla_attention/results/P6_vla_b0_b4/formal_offline_20261007/B3_seed17/train_metrics.jsonl",
+      "final_exists": true,
+      "train_metrics_exists": true,
+      "final_sha256": "87b46c071e797f97849787834db4f462d3d315fa830528a2a8bed741c8810e1c",
+      "final_json": {
+        "status": "passed",
+        "group": "B3",
+        "seed": 17,
+        "steps": 10080,
+        "train_manifest_sha256": "695681afb03012bd18c34d09c9a4fbf15ca489605d4463cbf891cd7213bca921",
+        "eval_manifest_sha256": "c93ae5afeb919de8fb148bfa1f935173d04f3ac0502b85e3b6916afb15e9dd0b",
+        "attribution_create_graph": true,
+        "purpose": "offline action training; rollout not run"
+      },
+      "train_metrics_sha256": "522dab9f2f8654c6f2d24af15376cd0904445c4855d7447ab7098b3da6e3af9d",
+      "train_metrics_lines": 10080,
+      "train_metrics_last_line": {
+        "optimizer_step": 10080,
+        "max_steps": 10080,
+        "progress_fraction": 1.0,
+        "group": "B3",
+        "seed": 17,
+        "episode_id": "046f864859938594fd054d25025a6756e2dbc278f98ff99cd0d88be8adc9305a",
+        "timestep": 114,
+        "action_loss": 0.22878047823905945,
+        "retention_loss": 0.3017066717147827,
+        "semantic_loss": 0.1392802596092224,
+        "containment_loss": 0.0,
+        "total_loss": 0.2577938437461853,
+        "effective_lambda_semantic": 0.1,
+        "effective_lambda_retention": 0.05,
+        "effective_lambda_containment": 0.02,
+        "retention_warmup_scale": 1.0,
+        "containment_warmup_scale": 1.0,
+        "gradient_norm_pre_clip": 20.75,
+        "learning_rate": 0.0,
+        "step_seconds": 1.9318571090698242,
+        "peak_memory_bytes": 38721098240,
+        "finite": true,
+        "attribution_create_graph": true,
+        "phrase_positions": {
+          "source": [
+            12,
+            13,
+            14,
+            15
+          ],
+          "target": [
+            28,
+            29
+          ]
+        }
+      },
+      "checkpoints": {
+        "checkpoint_02520": {
+          "path": "/vepfs-mlp2/c20250405/400040/transfer/vla_attention/results/P6_vla_b0_b4/formal_offline_20261007/B3_seed17/checkpoint_02520",
+          "exists": true,
+          "required": {
+            "checkpoint.json": {
+              "exists": true,
+              "path": "/vepfs-mlp2/c20250405/400040/transfer/vla_attention/results/P6_vla_b0_b4/formal_offline_20261007/B3_seed17/checkpoint_02520/checkpoint.json",
+              "sha256": "1a8403038dc014127b0bf63e71e94044587c06249cc0da38f4f87e647b6199be"
+            },
+            "modules.pt": {
+              "exists": true,
+              "path": "/vepfs-mlp2/c20250405/400040/transfer/vla_attention/results/P6_vla_b0_b4/formal_offline_20261007/B3_seed17/checkpoint_02520/modules.pt",
+              "sha256": "92db5ee5c976a8e34868f78f6a25a32d41c4b8241c154392384e47b0b5b3be38"
+            },
+            "adapter": {
+              "exists": true,
+              "path": "/vepfs-mlp2/c20250405/400040/transfer/vla_attention/results/P6_vla_b0_b4/formal_offline_20261007/B3_seed17/checkpoint_02520/adapter"
+            }
+          },
+          "fingerprint_sha256": "e028c86e11bb8fa4bd1d385bcea5b904c1c160539893610bf63254ed9dca4f23",
+          "file_count": 6,
+          "fingerprint_sample": [
+            "adapter/README.md\t5166\tsize:5166",
+            "adapter/adapter_config.json\t1001\tb9697c5dc88ef46f87706838f1ad27ed74b89f2f50afba0829c0dac8a95d7d2d",
+            "adapter/adapter_model.safetensors\t484458600\tfeb264c51a88bcc19a1dd9a5eb7a2197f7ed1af34cf34bf6a253871406fb0d1f",
+            "checkpoint.json\t426\t1a8403038dc014127b0bf63e71e94044587c06249cc0da38f4f87e647b6199be",
+            "modules.pt\t1470056056\t92db5ee5c976a8e34868f78f6a25a32d41c4b8241c154392384e47b0b5b3be38",
+            "restore_probe.json\t14684\t88c4b47c05597fdd4e3ec60a36b362cc4114cf6aef563ada81d2465fbb4daa34"
+          ]
+        },
+        "checkpoint_05040": {
+          "path": "/vepfs-mlp2/c20250405/400040/transfer/vla_attention/results/P6_vla_b0_b4/formal_offline_20261007/B3_seed17/checkpoint_05040",
+          "exists": true,
+          "required": {
+            "checkpoint.json": {
+              "exists": true,
+              "path": "/vepfs-mlp2/c20250405/400040/transfer/vla_attention/results/P6_vla_b0_b4/formal_offline_20261007/B3_seed17/checkpoint_05040/checkpoint.json",
+              "sha256": "1ed5aabf66be8fc3ccb0cd3f410040186125235cc2a25b4f6e5246065704e819"
+            },
+            "modules.pt": {
+              "exists": true,
+              "path": "/vepfs-mlp2/c20250405/400040/transfer/vla_attention/results/P6_vla_b0_b4/formal_offline_20261007/B3_seed17/checkpoint_05040/modules.pt",
+              "sha256": "419b6c7bee76dcce1cbb4cf9bcd3233d88baab39457b8dabf45161d0c5011a6c"
+            },
+            "adapter": {
+              "exists": true,
+              "path": "/vepfs-mlp2/c20250405/400040/transfer/vla_attention/results/P6_vla_b0_b4/formal_offline_20261007/B3_seed17/checkpoint_05040/adapter"
+            }
+          },
+          "fingerprint_sha256": "7a6ba1c9bf988b9c0b99e8b03005cc3bb8dcf29181067ab2c7aa2d6caf3c1d72",
+          "file_count": 6,
+          "fingerprint_sample": [
+            "adapter/README.md\t5166\tsize:5166",
+            "adapter/adapter_config.json\t1001\tb9697c5dc88ef46f87706838f1ad27ed74b89f2f50afba0829c0dac8a95d7d2d",
+            "adapter/adapter_model.safetensors\t484458600\t450fb3cc9a9a8afd86b7358328980d4ca00249bfe938f3c7b0bf80954d62ce54",
+            "checkpoint.json\t426\t1ed5aabf66be8fc3ccb0cd3f410040186125235cc2a25b4f6e5246065704e819",
+            "modules.pt\t1470056056\t419b6c7bee76dcce1cbb4cf9bcd3233d88baab39457b8dabf45161d0c5011a6c",
+            "restore_probe.json\t14957\t44e295f574e405f9da72378bec9acdbe3d0eafb304af62a1eea93323146a006b"
+          ]
+        },
+        "checkpoint_07560": {
+          "path": "/vepfs-mlp2/c20250405/400040/transfer/vla_attention/results/P6_vla_b0_b4/formal_offline_20261007/B3_seed17/checkpoint_07560",
+          "exists": true,
+          "required": {
+            "checkpoint.json": {
+              "exists": true,
+              "path": "/vepfs-mlp2/c20250405/400040/transfer/vla_attention/results/P6_vla_b0_b4/formal_offline_20261007/B3_seed17/checkpoint_07560/checkpoint.json",
+              "sha256": "47676d049d84c0e7757cbcb5f683101db74989719efe3998fea42c0c812fa1c3"
+            },
+            "modules.pt": {
+              "exists": true,
+              "path": "/vepfs-mlp2/c20250405/400040/transfer/vla_attention/results/P6_vla_b0_b4/formal_offline_20261007/B3_seed17/checkpoint_07560/modules.pt",
+              "sha256": "821bbeebe4a082c47a37755e5df5f7bda6943159b6b47cd50007d46c0843e698"
+            },
+            "adapter": {
+              "exists": true,
+              "path": "/vepfs-mlp2/c20250405/400040/transfer/vla_attention/results/P6_vla_b0_b4/formal_offline_20261007/B3_seed17/checkpoint_07560/adapter"
+            }
+          },
+          "fingerprint_sha256": "9aeaa5a21c70a00f35a2f0e175c479678f6dc90e99d6a328dfadd48e3a8a3b78",
+          "file_count": 6,
+          "fingerprint_sample": [
+            "adapter/README.md\t5166\tsize:5166",
+            "adapter/adapter_config.json\t1001\tb9697c5dc88ef46f87706838f1ad27ed74b89f2f50afba0829c0dac8a95d7d2d",
+            "adapter/adapter_model.safetensors\t484458600\tb8261b56b3d4554ce966564475b3ec852924e8c63367f61b0b4494af5941ab41",
+            "checkpoint.json\t426\t47676d049d84c0e7757cbcb5f683101db74989719efe3998fea42c0c812fa1c3",
+            "modules.pt\t1470056056\t821bbeebe4a082c47a37755e5df5f7bda6943159b6b47cd50007d46c0843e698",
+            "restore_probe.json\t15274\t838531a5d9276f5b603757751c7520e60e74293922a002370d21d294a2470176"
+          ]
+        },
+        "checkpoint_10080": {
+          "path": "/vepfs-mlp2/c20250405/400040/transfer/vla_attention/results/P6_vla_b0_b4/formal_offline_20261007/B3_seed17/checkpoint_10080",
+          "exists": true,
+          "required": {
+            "checkpoint.json": {
+              "exists": true,
+              "path": "/vepfs-mlp2/c20250405/400040/transfer/vla_attention/results/P6_vla_b0_b4/formal_offline_20261007/B3_seed17/checkpoint_10080/checkpoint.json",
+              "sha256": "6f1143f850a5da0b3a20d3520b7d4f702234cb1a743d7d1cb9bec71bdfc5b0c6"
+            },
+            "modules.pt": {
+              "exists": true,
+              "path": "/vepfs-mlp2/c20250405/400040/transfer/vla_attention/results/P6_vla_b0_b4/formal_offline_20261007/B3_seed17/checkpoint_10080/modules.pt",
+              "sha256": "750dd2680e7c6b8ce56a3cf7399c7c8b40b47fd912682980c3a48bd80f9268af"
+            },
+            "adapter": {
+              "exists": true,
+              "path": "/vepfs-mlp2/c20250405/400040/transfer/vla_attention/results/P6_vla_b0_b4/formal_offline_20261007/B3_seed17/checkpoint_10080/adapter"
+            }
+          },
+          "fingerprint_sha256": "01dd850ec8eed764e414b840248cdb55b1e4b0cde6ef6d5e6d3569f0dc480d51",
+          "file_count": 6,
+          "fingerprint_sample": [
+            "adapter/README.md\t5166\tsize:5166",
+            "adapter/adapter_config.json\t1001\tb9697c5dc88ef46f87706838f1ad27ed74b89f2f50afba0829c0dac8a95d7d2d",
+            "adapter/adapter_model.safetensors\t484458600\td451265f32f71b3f6482d41ed1eb6ab580d82bfb5f1e1d005732e42dfd4468aa",
+            "checkpoint.json\t427\t6f1143f850a5da0b3a20d3520b7d4f702234cb1a743d7d1cb9bec71bdfc5b0c6",
+            "modules.pt\t1470056056\t750dd2680e7c6b8ce56a3cf7399c7c8b40b47fd912682980c3a48bd80f9268af",
+            "restore_probe.json\t14939\te2fe70f41e2f379df7b3ed6016daa2d9b5c70bca1f74edad5f3897e0e4524439"
+          ]
+        }
+      }
+    },
+    "B4": {
+      "run_dir": "/vepfs-mlp2/c20250405/400040/transfer/vla_attention/results/P6_vla_b0_b4/formal_offline_20261007/B4_seed17",
+      "exists": true,
+      "final_path": "/vepfs-mlp2/c20250405/400040/transfer/vla_attention/results/P6_vla_b0_b4/formal_offline_20261007/B4_seed17/final.json",
+      "train_metrics_path": "/vepfs-mlp2/c20250405/400040/transfer/vla_attention/results/P6_vla_b0_b4/formal_offline_20261007/B4_seed17/train_metrics.jsonl",
+      "final_exists": true,
+      "train_metrics_exists": true,
+      "final_sha256": "2fa7918ee412a5d1dcdb7cc609b3a8f6e987adf80a0c69148e24d3caaafce64c",
+      "final_json": {
+        "status": "passed",
+        "group": "B4",
+        "seed": 17,
+        "steps": 10080,
+        "train_manifest_sha256": "695681afb03012bd18c34d09c9a4fbf15ca489605d4463cbf891cd7213bca921",
+        "eval_manifest_sha256": "c93ae5afeb919de8fb148bfa1f935173d04f3ac0502b85e3b6916afb15e9dd0b",
+        "attribution_create_graph": true,
+        "purpose": "offline action training; rollout not run"
+      },
+      "train_metrics_sha256": "677a69277a8a5a165acbc9855e391995e9e7cc587de5e7d73f3faa7865785934",
+      "train_metrics_lines": 10080,
+      "train_metrics_last_line": {
+        "optimizer_step": 10080,
+        "max_steps": 10080,
+        "progress_fraction": 1.0,
+        "group": "B4",
+        "seed": 17,
+        "episode_id": "046f864859938594fd054d25025a6756e2dbc278f98ff99cd0d88be8adc9305a",
+        "timestep": 114,
+        "action_loss": 0.32235828042030334,
+        "retention_loss": 0.3035193681716919,
+        "semantic_loss": 3.803358554840088,
+        "containment_loss": 0.000940276775509119,
+        "total_loss": 0.7178889513015747,
+        "effective_lambda_semantic": 0.1,
+        "effective_lambda_retention": 0.05,
+        "effective_lambda_containment": 0.02,
+        "retention_warmup_scale": 1.0,
+        "containment_warmup_scale": 1.0,
+        "gradient_norm_pre_clip": 1776.0,
+        "learning_rate": 0.0,
+        "step_seconds": 2.3452656269073486,
+        "peak_memory_bytes": 46261135360,
+        "finite": true,
+        "attribution_create_graph": true,
+        "phrase_positions": {
+          "source": [
+            12,
+            13,
+            14,
+            15
+          ],
+          "target": [
+            28,
+            29
+          ]
+        }
+      },
+      "checkpoints": {
+        "checkpoint_02520": {
+          "path": "/vepfs-mlp2/c20250405/400040/transfer/vla_attention/results/P6_vla_b0_b4/formal_offline_20261007/B4_seed17/checkpoint_02520",
+          "exists": true,
+          "required": {
+            "checkpoint.json": {
+              "exists": true,
+              "path": "/vepfs-mlp2/c20250405/400040/transfer/vla_attention/results/P6_vla_b0_b4/formal_offline_20261007/B4_seed17/checkpoint_02520/checkpoint.json",
+              "sha256": "9caa888fd0c281ed705f97a18af0fc0d07e02d4c00c838e502eae0020cdd2682"
+            },
+            "modules.pt": {
+              "exists": true,
+              "path": "/vepfs-mlp2/c20250405/400040/transfer/vla_attention/results/P6_vla_b0_b4/formal_offline_20261007/B4_seed17/checkpoint_02520/modules.pt",
+              "sha256": "5cbdb0cb03425b61484fd6b0fdf6340415269697e77c166bc876ef030627de0e"
+            },
+            "adapter": {
+              "exists": true,
+              "path": "/vepfs-mlp2/c20250405/400040/transfer/vla_attention/results/P6_vla_b0_b4/formal_offline_20261007/B4_seed17/checkpoint_02520/adapter"
+            }
+          },
+          "fingerprint_sha256": "ad6def21ab72d472ab69bb9c9ba9475bab267f63de52ec229b964309b8de59ae",
+          "file_count": 6,
+          "fingerprint_sample": [
+            "adapter/README.md\t5166\tsize:5166",
+            "adapter/adapter_config.json\t1001\t278441b4a8981d669d1b1b70ded6e11be4bcb676a4f2a468e4050e846ffca6a2",
+            "adapter/adapter_model.safetensors\t484458600\t9cf2d281754ad42fc8fd136f6a9d3402cfc6b056ce956b491f71c4078a642e1a",
+            "checkpoint.json\t426\t9caa888fd0c281ed705f97a18af0fc0d07e02d4c00c838e502eae0020cdd2682",
+            "modules.pt\t1470056120\t5cbdb0cb03425b61484fd6b0fdf6340415269697e77c166bc876ef030627de0e",
+            "restore_probe.json\t15615\t95494cf66e27f53f7ce55c3ed46455fd8ea2645eef41105d346cb30330e139aa"
+          ]
+        },
+        "checkpoint_05040": {
+          "path": "/vepfs-mlp2/c20250405/400040/transfer/vla_attention/results/P6_vla_b0_b4/formal_offline_20261007/B4_seed17/checkpoint_05040",
+          "exists": true,
+          "required": {
+            "checkpoint.json": {
+              "exists": true,
+              "path": "/vepfs-mlp2/c20250405/400040/transfer/vla_attention/results/P6_vla_b0_b4/formal_offline_20261007/B4_seed17/checkpoint_05040/checkpoint.json",
+              "sha256": "dfb1b09f40ed1d6f441ca0a66e38a05b1943d5a08ecd60ea638e92288fcc533c"
+            },
+            "modules.pt": {
+              "exists": true,
+              "path": "/vepfs-mlp2/c20250405/400040/transfer/vla_attention/results/P6_vla_b0_b4/formal_offline_20261007/B4_seed17/checkpoint_05040/modules.pt",
+              "sha256": "8a8555b3492a16e1dbb6a174e032585b6989eace52b80a80a9433c9c484c2988"
+            },
+            "adapter": {
+              "exists": true,
+              "path": "/vepfs-mlp2/c20250405/400040/transfer/vla_attention/results/P6_vla_b0_b4/formal_offline_20261007/B4_seed17/checkpoint_05040/adapter"
+            }
+          },
+          "fingerprint_sha256": "0055d79bfe3d0c69e64b5263f5b46f6f1d14d585eb07f8b6791e873728675f5c",
+          "file_count": 6,
+          "fingerprint_sample": [
+            "adapter/README.md\t5166\tsize:5166",
+            "adapter/adapter_config.json\t1001\t278441b4a8981d669d1b1b70ded6e11be4bcb676a4f2a468e4050e846ffca6a2",
+            "adapter/adapter_model.safetensors\t484458600\t581324d6f6041978c6153f7fa478f808ba47b0c4f7f120d6cc9725ab7be519b3",
+            "checkpoint.json\t426\tdfb1b09f40ed1d6f441ca0a66e38a05b1943d5a08ecd60ea638e92288fcc533c",
+            "modules.pt\t1470056120\t8a8555b3492a16e1dbb6a174e032585b6989eace52b80a80a9433c9c484c2988",
+            "restore_probe.json\t15633\t63867d5d99669d447f3456eff90f4bf59eab01918754acaa8653c1c42c8dbb76"
+          ]
+        },
+        "checkpoint_07560": {
+          "path": "/vepfs-mlp2/c20250405/400040/transfer/vla_attention/results/P6_vla_b0_b4/formal_offline_20261007/B4_seed17/checkpoint_07560",
+          "exists": true,
+          "required": {
+            "checkpoint.json": {
+              "exists": true,
+              "path": "/vepfs-mlp2/c20250405/400040/transfer/vla_attention/results/P6_vla_b0_b4/formal_offline_20261007/B4_seed17/checkpoint_07560/checkpoint.json",
+              "sha256": "b2ed2382df37b27f75d7f311f72790ae064424dbe833994d4a386c72328e4df4"
+            },
+            "modules.pt": {
+              "exists": true,
+              "path": "/vepfs-mlp2/c20250405/400040/transfer/vla_attention/results/P6_vla_b0_b4/formal_offline_20261007/B4_seed17/checkpoint_07560/modules.pt",
+              "sha256": "edb06834cea848a87146607a5daf4ff5cf700c591afe5d09e8f88d257b5f2a18"
+            },
+            "adapter": {
+              "exists": true,
+              "path": "/vepfs-mlp2/c20250405/400040/transfer/vla_attention/results/P6_vla_b0_b4/formal_offline_20261007/B4_seed17/checkpoint_07560/adapter"
+            }
+          },
+          "fingerprint_sha256": "eb7f7d1843efdab3b14e73c04591358be171a08b7ba6ff19858fbd3ad3e0bb60",
+          "file_count": 6,
+          "fingerprint_sample": [
+            "adapter/README.md\t5166\tsize:5166",
+            "adapter/adapter_config.json\t1001\t278441b4a8981d669d1b1b70ded6e11be4bcb676a4f2a468e4050e846ffca6a2",
+            "adapter/adapter_model.safetensors\t484458600\tea05965419d06982adf5c64744cdfdad98eaeb95965f55ca13224a8433ab7e24",
+            "checkpoint.json\t426\tb2ed2382df37b27f75d7f311f72790ae064424dbe833994d4a386c72328e4df4",
+            "modules.pt\t1470056120\tedb06834cea848a87146607a5daf4ff5cf700c591afe5d09e8f88d257b5f2a18",
+            "restore_probe.json\t15233\tbc6418cd5198f98cda48d727b8115d5b9520844b28863f933ea8ed2fe6dda38c"
+          ]
+        },
+        "checkpoint_10080": {
+          "path": "/vepfs-mlp2/c20250405/400040/transfer/vla_attention/results/P6_vla_b0_b4/formal_offline_20261007/B4_seed17/checkpoint_10080",
+          "exists": true,
+          "required": {
+            "checkpoint.json": {
+              "exists": true,
+              "path": "/vepfs-mlp2/c20250405/400040/transfer/vla_attention/results/P6_vla_b0_b4/formal_offline_20261007/B4_seed17/checkpoint_10080/checkpoint.json",
+              "sha256": "52268ed1c361817658d9ecbad9a01adba0c48c74bf3adceb471fdefe64089c49"
+            },
+            "modules.pt": {
+              "exists": true,
+              "path": "/vepfs-mlp2/c20250405/400040/transfer/vla_attention/results/P6_vla_b0_b4/formal_offline_20261007/B4_seed17/checkpoint_10080/modules.pt",
+              "sha256": "1d8e7b01ead1ca26c8fb850390a6d06de31004b991241ea62e02a5e61b56d78c"
+            },
+            "adapter": {
+              "exists": true,
+              "path": "/vepfs-mlp2/c20250405/400040/transfer/vla_attention/results/P6_vla_b0_b4/formal_offline_20261007/B4_seed17/checkpoint_10080/adapter"
+            }
+          },
+          "fingerprint_sha256": "6f456b7635853f9791da20b23cea6511ff9fd1c05bf25e49c5be196e7c04723f",
+          "file_count": 6,
+          "fingerprint_sample": [
+            "adapter/README.md\t5166\tsize:5166",
+            "adapter/adapter_config.json\t1001\t278441b4a8981d669d1b1b70ded6e11be4bcb676a4f2a468e4050e846ffca6a2",
+            "adapter/adapter_model.safetensors\t484458600\t2aa2f61fb5f80de60e06680d2c0c978aad521f22421e232d3aa63ae3b35f16a2",
+            "checkpoint.json\t427\t52268ed1c361817658d9ecbad9a01adba0c48c74bf3adceb471fdefe64089c49",
+            "modules.pt\t1470056120\t1d8e7b01ead1ca26c8fb850390a6d06de31004b991241ea62e02a5e61b56d78c",
+            "restore_probe.json\t15344\tda4331947dfb8f9c2a97baa6173a670a36a9b81bdb7e36f606494dc8972f4c75"
+          ]
+        }
+      }
+    }
+  }
+}
