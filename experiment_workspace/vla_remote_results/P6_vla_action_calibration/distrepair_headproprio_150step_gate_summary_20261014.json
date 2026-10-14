@@ -1,0 +1,87 @@
+{
+  "status": "passed",
+  "not_formal_benchmark": true,
+  "purpose": "Gate comparison for distribution-repair tiny-overfit smoke",
+  "created_at_unix": 1791987739.2849426,
+  "new_checkpoint": "/vepfs-mlp2/c20250405/400040/transfer/vla_attention/results/P6_vla_action_calibration/tiny_overfit_distrepair_headproprio_seed17_150step_20261014/checkpoint_00150",
+  "new_train_final": "/vepfs-mlp2/c20250405/400040/transfer/vla_attention/results/P6_vla_action_calibration/tiny_overfit_distrepair_headproprio_seed17_150step_20261014/final.json",
+  "new_tiny_eval": "/vepfs-mlp2/c20250405/400040/transfer/vla_attention/results/P6_vla_action_calibration/tiny_overfit_distrepair_headproprio_seed17_150step_20261014/tiny_eval_20261014/summary.json",
+  "new_heldout_eval": "/vepfs-mlp2/c20250405/400040/transfer/vla_attention/results/P6_vla_action_calibration/tiny_overfit_distrepair_headproprio_seed17_150step_20261014/heldout_eval_20261014/summary.json",
+  "new_config": "/vepfs-mlp2/c20250405/400040/transfer/vla_attention/results/P6_vla_action_calibration/tiny_overfit_distrepair_headproprio_seed17_150step_20261014/config.json",
+  "tiny_metrics": {
+    "B1_on_tiny": {
+      "action_mae": 0.2988643944263458,
+      "first_horizon_mae": 0.28804638981819153,
+      "translation_mae": 0.38639628887176514,
+      "rotation_mae": 0.25038039684295654,
+      "gripper_mae": 0.1817205846309662,
+      "gripper_accuracy_sign_normalized": 0.7128623188405797
+    },
+    "head_proprio_tiny": {
+      "action_mae": 0.28469187021255493,
+      "first_horizon_mae": 0.2821671962738037,
+      "translation_mae": 0.37200626730918884,
+      "rotation_mae": 0.23371750116348267,
+      "gripper_mae": 0.1756718009710312,
+      "gripper_accuracy_sign_normalized": 0.853713768115942
+    },
+    "policy_lora_head_proprio_tiny": {
+      "action_mae": 0.29609009623527527,
+      "first_horizon_mae": 0.2927127480506897,
+      "translation_mae": 0.38422730565071106,
+      "rotation_mae": 0.24344974756240845,
+      "gripper_mae": 0.18959985673427582,
+      "gripper_accuracy_sign_normalized": 0.8278985507246377
+    },
+    "distrepair_head_proprio_150step": {
+      "action_mae": 0.29664239287376404,
+      "first_horizon_mae": 0.2867497205734253,
+      "translation_mae": 0.3838914632797241,
+      "rotation_mae": 0.24865584075450897,
+      "gripper_mae": 0.17885485291481018,
+      "gripper_accuracy_sign_normalized": 0.7916666666666666
+    }
+  },
+  "heldout_metrics": {
+    "B1_reference": {
+      "action_mae": 0.293686,
+      "first_horizon_mae": 0.292031,
+      "translation_mae": 0.377516,
+      "rotation_mae": 0.262067,
+      "gripper_mae": 0.137056,
+      "gripper_accuracy_sign_normalized": 0.786573
+    },
+    "P6_1a_lowrot_lowlr": {
+      "action_mae": 0.293306,
+      "first_horizon_mae": 0.291071,
+      "translation_mae": 0.376033,
+      "rotation_mae": 0.261234,
+      "gripper_mae": 0.141341,
+      "gripper_accuracy_sign_normalized": 0.802503
+    },
+    "P6_2_head_proprio": {
+      "action_mae": 0.293562,
+      "first_horizon_mae": 0.290828,
+      "translation_mae": 0.378003,
+      "rotation_mae": 0.261015,
+      "gripper_mae": 0.13788,
+      "gripper_accuracy_sign_normalized": 0.844603
+    },
+    "distrepair_head_proprio_150step": {
+      "action_mae": 0.2930963337421417,
+      "first_horizon_mae": 0.29211899638175964,
+      "translation_mae": 0.37845608592033386,
+      "rotation_mae": 0.25996944308280945,
+      "gripper_mae": 0.13639771938323975,
+      "gripper_accuracy_sign_normalized": 0.8320871261378413
+    }
+  },
+  "gate": {
+    "tiny_beats_head_proprio_action_mae": false,
+    "tiny_beats_head_proprio_rotation_mae": false,
+    "heldout_beats_B1_action_mae": true,
+    "heldout_beats_B1_rotation_mae": true,
+    "rollout_allowed": false,
+    "decision": "NO_GO_FOR_ROLLOUT: held-out weakly improves over B1, but tiny gate fails against head+proprio-only; do not run same-init rollout or semantic/P7 closed-loop claim."
+  }
+}

@@ -1224,3 +1224,496 @@ PYTHONPATH=src python scripts/validate_p1_report.py \
 - guard 只读取四个当前 held-out cache worker：`eval_gpu1a/eval_gpu1b/eval_gpu0a/eval_gpu0b`。当 cache 达到 `3076/3076` 且 failures=0、map_count=3076 后，自动运行 full controls evaluator，输出到 `results/P6_vla_b0_b4/posttrain_eval_20261008/controls_eval_full_seed17`。
 - 当前 cache 快照：`76/3076`，failures=0；controls 仍等待 cache 完整。
 
+
+
+## 2026-10-09 P6 VLA controls completed
+
+- Held-out semantic cache completed: 3076/3076, failed=0.
+- Controls completed: B0-B4, 769 transitions each, status=passed.
+- Local controls summary: `experiments/P6-vla-b0-b4/results/formal_offline_controls_summary_20261009.md`.
+- Go/No-Go: `experiments/P6-vla-b0-b4/results/go_no_go_20261009.md`.
+- Result boundary: B1 remains strongest action baseline; semantic branch has weak/partial mechanism signal but no action-prediction gain and no rollout claim.
+
+## 2026-10-13：P6 rollout smoke 与 P7-lite 修复准备启动
+
+- [x] 按 goal 文件重新核验任务边界：P6 B0–B4 seed17 已完成离线 action prediction、held-out semantic cache 与 controls；B1/BlindVLA-style retention 是当前最强 baseline，B2/B3/B4 semantic containment 不能直接进入大 benchmark。
+- [x] 101 当前可 SSH 连接；GPU0 空闲约 80GB，GPU1 有非本项目模型服务占用约 12GB；未发现 P6 训练/评估进程继续运行。因此 rollout smoke 优先使用 GPU0。
+- [x] 远端 P6 checkpoint 结构核验通过：`formal_offline_20261007/{B0,B1,B3,B4}_seed17/checkpoint_10080/` 均包含 `adapter/`、`modules.pt`、`checkpoint.json`；`checkpoint.json` 的 OpenVLA revision 为 `47a0ec7fc4ec123775a391911046cf33cf9ed83f`。
+- [x] 远端 LIBERO 初始化 inventory 存在：`vla_workspace/artifacts/rollout_init_inventory_20260928.json`，suite=`libero_spatial`，task0=`pick_up_the_black_bowl_between_the_plate_and_the_ramekin_and_place_it_on_the_plate`，50 个 init states，smoke indices `[0,1]`。
+- [x] 新增 P6 专用 rollout smoke 脚本 `scripts/eval_oft_p6_rollout_smoke.py`。它读取 P6 正式 checkpoint 格式 `adapter/ + modules.pt + checkpoint.json`，不再使用旧 B0 smoke 的 `state.pt` 假设；输出 per-episode log、summary、failure type，并明确标记 `not_formal_benchmark=true`。本地语法检查：`python3 -m py_compile scripts/eval_oft_p6_rollout_smoke.py` 通过。
+- [x] 新增 P7-lite 最小目标函数：`action_evidence_support_mass` 与 `action_evidence_ranking_loss`，目标是 `score(correct) > score(wrong-image/role-swapped/area-matched random)`，用于替代 P6 静态 containment 的修复 smoke。测试：`python3 -m pytest -q tests/test_semantic_map_losses.py`，8 passed。
+- [x] 新增 P7-lite protocol 与配置：`experiments/P7-vla-lite/protocol.md`、`configs/vla/p7_lite_ranking_smoke.json`。首轮只做 offline smoke，不做完整训练；base 使用 B1 checkpoint_10080。
+- [ ] 下一步：上传 `scripts/eval_oft_p6_rollout_smoke.py` 到 101，先运行 B0/B1 各 1 episode 的 LIBERO task0 rollout smoke；成功后再扩展到 B0/B1/B3/B4 的 5–10 episodes。
+
+## 2026-10-13：P6 LIBERO rollout smoke 进展
+
+- [x] 已将 `scripts/eval_oft_p6_rollout_smoke.py` 上传至 101：`/vepfs-mlp2/c20250405/400040/transfer/vla_attention/repo/VLA_attention/scripts/eval_oft_p6_rollout_smoke.py`，远端 SHA256=`825b26db8affbbfb61fd4fb15e75e846b671a593b02ade84a831b8059233e7e6`。
+- [x] B0/B1 各 1 episode 的 LIBERO task0 smoke 已完成，证明官方 evaluator、P6 checkpoint restore、OpenVLA model path、train statistics、init-state provenance 和 action head/proprio restore 可以跑通。远端结果：`/vepfs-mlp2/c20250405/400040/transfer/vla_attention/results/P6_vla_b0_b4/rollout_smoke_20261013/b0_b1_one_episode/summary.json`；本地副本：`experiment_workspace/vla_remote_results/20261013_rollout_smoke/b0_b1_one_episode/summary.json`。
+- [x] 1-episode smoke 结果只说明工程闭环可运行，不是 benchmark：B0 success `0/1`，B1 success `0/1`，两者均完整执行 230 steps、无 environment error、reward=0，failure type 暂记为 `task_failure_unclassified`。不能声称 rollout 成功。
+- [x] 新增可复用启动脚本：`server/run_p6_rollout_smoke_20261013.sh`，默认启动 B0/B1/B3/B4 每组 5 episodes 的 P6 LIBERO smoke；通过 `GROUPS`、`EPISODES`、`CUDA_DEVICE`、`TAG` 环境变量覆盖。
+- [x] 已启动 B0/B1/B3/B4 每组 5 episodes 的扩展 smoke：远端 PID `321576`，日志 `/vepfs-mlp2/c20250405/400040/transfer/vla_attention/logs/p6_rollout_smoke_b0_b1_b3_b4_five_episodes_20261013.log`，输出 `/vepfs-mlp2/c20250405/400040/transfer/vla_attention/results/P6_vla_b0_b4/rollout_smoke_20261013/b0_b1_b3_b4_five_episodes`。该运行仍是 smoke，不作为正式 benchmark。
+
+- [x] 新增 rollout smoke post-hoc 分类脚本 `scripts/summarize_p6_rollout_smoke.py`，已上传 101。该脚本不修改原始 rollout 结果，只读取 episode action/reward log，补充 gripper 饱和比例、motion 统计和轻量 failure type。B0/B1 单 episode 本地重分析均为 `late_gripper_positive_saturation_possible`，提示后续应优先核对 gripper 符号、动作归一化和任务阶段，而不是直接扩大 benchmark。
+- [ ] 等 5-episode smoke 完成后，拉回 summary，判断失败是否集中在 action normalization、task/camera provenance、checkpoint overfit 或策略本身不足。
+
+## 2026-10-13：P6 rollout smoke 完成与结论
+
+- [x] B0/B1/B3/B4 每组 5 episodes 的 LIBERO task0 smoke 已完成。远端结果：`/vepfs-mlp2/c20250405/400040/transfer/vla_attention/results/P6_vla_b0_b4/rollout_smoke_20261013/b0_b1_b3_b4_five_episodes/summary.json`；本地副本：`experiment_workspace/vla_remote_results/20261013_rollout_smoke/five_episode_pull_214708/b0_b1_b3_b4_five_episodes/summary.json`。
+- [x] 官方 episode loop 全部完整执行，无 environment error、无 OOM、无 checkpoint restore failure。每组 5 episodes 均执行完成。
+- [x] task success 全部为 0：B0 `0/5`，B1 `0/5`，B3 `0/5`，B4 `0/5`。该结果仍是 smoke，不是正式 benchmark。
+- [x] post-hoc action log 分类：B0 `late_gripper_positive_saturation_possible 5/5`；B1 `late_gripper_positive_saturation_possible 5/5`；B3 `gripper_mostly_negative_saturation_possible 5/5`；B4 `gripper_mostly_positive_saturation_possible 5/5`。本地文件：`experiment_workspace/vla_remote_results/20261013_rollout_smoke/five_episode_pull_214708/b0_b1_b3_b4_five_episodes/posthoc_failure_summary.json`。
+- [x] 当前判断：P6 checkpoint 能进入 LIBERO 闭环，但闭环动作失败是系统性的，优先怀疑 gripper 符号、action unnormalization、OFT constants、相机/任务 provenance 或 offline policy 本身未学到可 rollout 行为。不能直接扩大到正式 benchmark。
+- [ ] 下一步应先做 action-interface repair smoke：比较 expert replay / checkpoint action replay / gripper sign flip / gripper clamp / unnormalization sanity；只有至少一个 B0/B1 smoke 出现非零成功或可解释失败改善后，才进入更大 rollout。P7-lite ranking/KL 继续保留为 offline mechanism repair，不应在当前闭环 0/20 情况下直接上正式 rollout。
+
+## 2026-10-13：P7-lite ranking dry-run 完成
+
+- [x] 新增 `scripts/p7_lite_ranking_dryrun.py`，基于 P6 controls records 计算 ranking/KL-style 修复目标的当前满足程度；不训练、不改 checkpoint。
+- [x] 运行命令：`python3 scripts/p7_lite_ranking_dryrun.py experiment_workspace/vla_remote_results/20261009_posttrain_controls/controls_eval_full_seed17 --groups B1,B3,B4 --margin 0.02 --output experiments/P7-vla-lite/results/ranking_dryrun_20261013`。
+- [x] 结果：B1/B3/B4 对 role-swapped 与 area-matched random 基本已经可区分（约 97.8–100%），但对 wrong-image 近似随机：B1 correct > wrong-image `49.28%`，B3 `49.93%`，B4 `52.15%`。
+- [x] 解释：P7-lite 的核心负控应聚焦 wrong-image / instance-sensitive semantic map，而不是继续扩大面积随机或 role-swapped 负控。首选 base 仍是 B1，因为 B3/B4 action loss 更差，且 ranking dry-run 没显示它们在 wrong-image 上有实质优势。
+- [ ] 后续：若 action-interface repair smoke 解决闭环 0/20 问题，再用 B1 + wrong-image-focused ranking 做 100–500 step offline smoke；否则 P7-lite 保持为机制诊断，不进入 rollout。
+
+## 2026-10-13：action-interface gripper flip smoke
+
+- [x] 为 `scripts/eval_oft_p6_rollout_smoke.py` 增加 `--action-intervention`，支持 `none`、`gripper_sign_flip`、`gripper_force_close_negative`、`gripper_force_open_positive`。该干预只在 `env.step` 前修改动作，不改变 checkpoint。
+- [x] 已上传新脚本到 101，并运行 B0/B1 各 1 episode 的 `gripper_sign_flip` 诊断。远端结果：`/vepfs-mlp2/c20250405/400040/transfer/vla_attention/results/P6_vla_b0_b4/rollout_smoke_20261013/b0_b1_one_episode_gripper_flip/summary.json`。
+- [x] 结果：B0 `0/1`，B1 `0/1`，episode 完整、无环境错误。单纯翻转 gripper 符号不能立刻修复当前 task0 闭环失败。
+- [ ] 下一步如果继续定位 action interface，应测试 expert action replay / force-close windows / unnormalization replay，而不是只做符号翻转。
+
+
+## 2026-10-13：P6 action-interface audit 与 official-stats smoke
+
+- [x] 新增只读审计脚本 `scripts/audit_oft_action_interface.py`，已上传 101 并生成审计结果。远端：`/vepfs-mlp2/c20250405/400040/transfer/vla_attention/results/P6_vla_b0_b4/action_interface_audit_20261013/audit.json`；本地：`experiments/P6-vla-b0-b4/results/action_interface_audit_20261013/audit.json`。
+- [x] 审计确认训练侧与 rollout 侧 gripper 链路需要严格核对：训练 loader 已执行 `1 - raw_gripper`；官方 OFT rollout 在 `env.step` 前又执行 `normalize_gripper_action` 与 OpenVLA 专属 `invert_gripper_action`。这解释了为什么 gripper 饱和类失败必须先按 action-interface 问题处理。
+- [x] 发现 P6 checkpoint 目录不含官方 `dataset_statistics.json`，rollout wrapper 当前手动注入 `project_train` stats。project stats SHA=`21692284b4cbf9cdbdb2b3e2060ac4e62924eabf2b6db1881292e47f3b830397`；官方 OFT stats SHA=`3f8b7854c8634ea6ccfd6ef6b8f983e3b30b067c2cdaf690b152c0899d5d9282`；action mask 相同但 q01/q99/mean 不完全一致。
+- [x] 已将 `scripts/eval_oft_p6_rollout_smoke.py` 改为兼容 top-level、`project_train` 和 `libero_spatial_no_noops` 三种 stats schema，并在 episode record 中写入 `rollout_statistics_path` 与 `rollout_statistics_schema_key`。本地 `py_compile` 通过。
+- [x] 运行 B0/B1 各 1 episode 的 official-stats smoke。远端：`/vepfs-mlp2/c20250405/400040/transfer/vla_attention/results/P6_vla_b0_b4/rollout_smoke_20261013/b0_b1_one_episode_official_stats/`；本地：`/home/bubble/类脑计算/VLM终局/experiment_workspace/vla_remote_results/20261013_rollout_smoke/official_stats_pull_220647/b0_b1_one_episode_official_stats/`。
+- [x] official-stats smoke 结果：B0 `0/1`，B1 `0/1`，均完整执行 230 steps、无 environment error；post-hoc 均为 `late_gripper_positive_saturation_possible`。因此“只换官方 stats”不能修复当前闭环失败。
+- [ ] 下一步应优先完成 action-interface 正控，而不是扩大 P7 或正式 benchmark：1）官方 OFT checkpoint 正控是否可加载；2）expert action replay；3）windowed gripper force negative/positive gripper；4）chunk timing 与 camera/task provenance；5）必要时重新生成 P6 checkpoint 的官方格式 `dataset_statistics.json`。
+- [ ] P7-lite 仍保留为 offline mechanism repair；在 B0/B1 闭环仍 0/1 或 0/5 时，不进入正式 rollout，也不把 P7-lite 解释为 VLA 闭环有效。
+
+## 2026-10-13：expert action replay 正控与模型/专家动作对比
+
+- [x] 新增 `scripts/replay_libero_expert_actions.py`，只读取 OpenVLA modified LIBERO RLDS TFRecord 中的 expert action，并在同一 LIBERO `libero_spatial` task0 init states 上重放；不加载模型、不改 checkpoint。
+- [x] 远端 expert replay grid 已完成。远端结果：`/vepfs-mlp2/c20250405/400040/transfer/vla_attention/results/P6_vla_b0_b4/action_interface_audit_20261013/expert_replay_grid_small/`；本地副本：`experiment_workspace/vla_remote_results/20261013_action_interface_audit/expert_replay_grid_small_pull_222428/expert_replay_grid_small/`。
+- [x] expert replay 结果：raw expert action `6/9` 成功，`train01_to_env` action `6/9` 成功，`flip_gripper` `0/9` 成功。总体 `12/27`，但关键结论是 raw 与官方 train01→env 约定能成功，单纯 gripper 翻转是错误方向。
+- [x] 新增 `scripts/compare_rollout_to_expert_actions.py`，对比 P6 模型 rollout action log 与 expert replay action log。输出：`experiments/P6-vla-b0-b4/results/action_interface_audit_20261013/model_vs_expert_action_compare/action_group_summary.csv`。
+- [x] 对比结论：expert raw 成功轨迹的 translation L2 mean 约 `0.756`，B0/B1 模型 rollout 约 `0.229/0.226`；B3 gripper 全程 `-1`，B4 gripper 几乎全程 `+1`。因此当前闭环失败不应归因于 LIBERO 环境或 raw action 符号不可用，而应继续定位模型动作输出幅度、action head、训练目标和 rollout postprocess。
+- [ ] 下一步：补一个预测动作与 expert action 的逐步对齐诊断，优先比较 B0/B1 在同 init state 的前 20–50 step action、translation norm、gripper phase 和 action chunk timing；若确认模型输出幅度过小或 phase 错位，再决定是否做 action scaling/chunk timing 修复 smoke。
+
+## 2026-10-13：B0/B1 与 expert 前 50 步逐步动作对齐
+
+- [x] 新增 `scripts/compare_action_timeseries.py`，对模型 rollout episode 与 expert replay episode 做同长度逐步动作对比；只读 JSONL，不加载模型和环境。
+- [x] 运行 B0/B1 episode0 vs expert demo0/init0 raw 的前 50 步对比。输出目录：`experiments/P6-vla-b0-b4/results/action_interface_audit_20261013/timeseries_compare/`。
+- [x] B0 前 50 步：model translation L2 mean `0.440` vs expert `0.797`；model rotation L2 mean `0.0037` vs expert `0.0467`；model gripper mean `-1.0` vs expert `-0.44`。
+- [x] B1 前 50 步：model translation L2 mean `0.485` vs expert `0.797`；model rotation L2 mean `0.0098` vs expert `0.0467`；model gripper mean `-0.36` vs expert `-0.44`。
+- [x] 判断：B1 的 gripper phase 比 B0 更接近 expert，但 translation/rotation 幅度仍偏小；当前闭环 0 success 的优先排查项应是 action magnitude、rotation under-actuation、chunk timing 和 action head/postprocess，而不是继续扩大 semantic loss。
+
+## 2026-10-13：raw-vs-processed action trace 与 open-loop=1 修复 smoke
+
+- [x] 新增 `scripts/trace_oft_action_pipeline.py`，记录 OpenVLA/OFT `get_action` raw chunk、每步 raw action、官方 `process_action` 后 action、EEF/gripper state 和 env step 结果；该脚本只做诊断，不是 benchmark。
+- [x] 首次 trace 因 source lock 路径误写为不存在的 `artifacts/source_lock_20260928.json` 失败，未加载模型、未覆盖产物。随后使用正式 wrapper 中的 `$W/source_models_20260928.json` 重跑成功。
+- [x] 成功 trace 远端：`/vepfs-mlp2/c20250405/400040/transfer/vla_attention/results/P6_vla_b0_b4/action_interface_audit_20261013/raw_processed_trace_b0_b1_50steps_153522/`；本地：`experiment_workspace/vla_remote_results/20261013_action_interface_audit/raw_processed_trace_b0_b1_50steps_pull_233709/raw_processed_trace_b0_b1_50steps_153522/`。
+- [x] trace 结果：B0 raw/processed translation L2 mean 都是 `0.491`，rotation L2 mean 都是 `0.0086`；B1 raw/processed translation L2 mean 都是 `0.530`，rotation L2 mean 都是 `0.0179`。因此 translation/rotation 幅度不是 `process_action` 改小的；主要仍来自模型 raw prediction / action head 输出。
+- [x] gripper 确实被 official `process_action` 改变：B0 raw gripper mean `0.874` -> processed `-0.720`；B1 raw `0.528` -> processed `0.040`。后续 gripper 失败分类应使用 `positive/negative saturation`，不要在没有最终符号验证前写死 positive/negative 符号语义。
+- [x] B1 前几个 chunk 的 translation 幅度接近 expert，但后续 chunk 迅速下降；因此额外测试 `num_open_loop_steps=1`，即每步重新查询模型。
+- [x] open-loop=1 repair smoke 远端：`/vepfs-mlp2/c20250405/400040/transfer/vla_attention/results/P6_vla_b0_b4/rollout_smoke_20261013/b0_b1_one_episode_openloop1_153740/`；本地：`experiment_workspace/vla_remote_results/20261013_rollout_smoke/openloop1_pull_234040/b0_b1_one_episode_openloop1_153740/`。
+- [x] open-loop=1 结果：B0 `0/1`，B1 `0/1`，完整执行 230 steps，无 environment error。posthoc 仍显示尾段单侧 gripper 饱和，translation norm mean 约 `0.218/0.207`。因此仅把 H=8 改成 H=1 不能修复闭环失败。
+- [ ] 下一步：生成更中性的 gripper sign summary，并比较 expert raw action、model processed action 在符号切换时序上的差异；同时考虑是否需要 action magnitude scaling 的离线/短 smoke，但不能在没有明确依据前把 scaling 作为正式方法。
+
+## 2026-10-14：neutral gripper summary 与 101 连接状态
+
+- [x] 将 `scripts/summarize_p6_rollout_smoke.py` 的 gripper 后处理标签从 open/close 语义改为 neutral sign 语义：`positive_saturation` / `negative_saturation`。原因是 raw-vs-processed trace 已确认 official `process_action` 会改变 gripper 符号，在最终符号语义未完全冻结前不应把正负号直接解释为开/合。
+- [x] 本地语法检查通过：`python3 -m py_compile scripts/summarize_p6_rollout_smoke.py`。
+- [x] 已重新生成中性标签版 posthoc summary：
+  - five-episode smoke：`experiment_workspace/vla_remote_results/20261013_rollout_smoke/five_episode_pull_214708/b0_b1_b3_b4_five_episodes/posthoc_failure_summary_neutral.json`；结果为 B0/B1 `late_gripper_positive_saturation_possible 5/5`，B3 `gripper_mostly_negative_saturation_possible 5/5`，B4 `gripper_mostly_positive_saturation_possible 5/5`。
+  - open-loop=1 smoke：`experiment_workspace/vla_remote_results/20261013_rollout_smoke/openloop1_pull_234040/b0_b1_one_episode_openloop1_153740/posthoc_failure_summary_neutral.json`；B0/B1 均为 `late_gripper_positive_saturation_possible 1/1`。
+- [x] 当前 101 SSH 状态复核：`ssh -o BatchMode=yes -o ConnectTimeout=20 vla101 ...` 返回 `Connection timed out`。本轮没有重启远端任务、没有覆盖远端结果；继续完成本地脚本、summary 和文档工作。
+- [ ] 101 恢复后需要上传新版 `scripts/summarize_p6_rollout_smoke.py`，并在远端对 rollout smoke 目录重新生成 neutral summary。随后再决定是否做 diagnostic-only action magnitude scaling smoke。
+
+
+## 2026-10-14：diagnostic-only action magnitude scaling 开关准备
+
+- [x] 为 `scripts/eval_oft_p6_rollout_smoke.py` 增加 `--eef-action-scale`，默认 `1.0`。该参数只在显式传入非 1 值时将 env.step 前的 action 前 6 维乘以 scale，并在 episode log / run manifest 中写入 `eef_action_scale` 与 `diagnostic_action_scaling`。
+- [x] 该开关只用于诊断 action magnitude 是否是闭环失败主因，不作为正式方法、不作为 benchmark 结果、不修改 checkpoint、cache 或训练记录。
+- [x] 本地语法检查通过：`python3 -m py_compile scripts/eval_oft_p6_rollout_smoke.py`。
+- [ ] 101 恢复后建议先上传新版 rollout/posthoc 脚本，再运行 B1 one-episode diagnostic smoke，例如 `--eef-action-scale 1.5` 和必要时 `2.0`；只要仍为 0 success，也只能记录为诊断证据，不能扩大到正式 benchmark。
+
+- [x] 更新 `server/run_p6_rollout_smoke_20261013.sh`：新增 `ACTION_INTERVENTION` 与 `EEF_ACTION_SCALE` 环境变量透传。默认 `none/1.0`，因此不改变已有 smoke；恢复 101 后可直接用 `TAG=b1_scale15 GROUPS=B1 EPISODES=0 EEF_ACTION_SCALE=1.5 bash server/run_p6_rollout_smoke_20261013.sh` 跑诊断。
+
+## 2026-10-14：101 恢复、远端 neutral summary 与 B1 action scaling 诊断
+
+- [x] 101 SSH 已恢复。复核命令：`ssh -o BatchMode=yes -o ConnectTimeout=20 vla101 'echo SSH_OK; hostname; date -Is; nvidia-smi ...'`。GPU0 空闲，GPU1 有非本项目服务占用约 12GB，因此继续使用 GPU0。
+- [x] 已上传并校验新版脚本：`scripts/eval_oft_p6_rollout_smoke.py`、`scripts/summarize_p6_rollout_smoke.py`、`server/run_p6_rollout_smoke_20261013.sh`。远端 SHA256 校验全部 OK。
+- [x] 已在 101 对已有 rollout smoke 重新生成 neutral posthoc summary：
+  - five-episode：B0/B1 `late_gripper_positive_saturation_possible 5/5`，B3 `gripper_mostly_negative_saturation_possible 5/5`，B4 `gripper_mostly_positive_saturation_possible 5/5`。
+  - open-loop=1：B0/B1 均 `late_gripper_positive_saturation_possible 1/1`。
+  - 本地拉回：`experiment_workspace/vla_remote_results/20261014_neutral_remote/`。
+- [x] 首次 B1 scale=1.5 诊断启动失败，原因是 shell 内置只读/特殊变量 `GROUPS` 在远端展开为系统组 `1000`，导致 evaluator 报 `unknown groups: ['1000']`。已修复启动脚本，改用 `VLA_GROUPS` 并保留旧 `GROUPS` fallback；该失败目录不作为实验结果。
+- [x] B1 diagnostic-only action magnitude scaling 已完成两档：
+  - `EEF_ACTION_SCALE=1.5`：B1 `0/1`，230 steps，environment error=none，posthoc=`late_gripper_positive_saturation_possible`。
+  - `EEF_ACTION_SCALE=2.0`：B1 `0/1`，230 steps，environment error=none，posthoc=`late_gripper_positive_saturation_possible`。
+  - 远端结果：`results/P6_vla_b0_b4/rollout_smoke_20261014/b1_scale15_diag_v2_20261014/` 与 `b1_scale20_diag_20261014/`。
+  - 本地汇总：`experiment_workspace/vla_remote_results/20261014_action_scale_diag/action_scale_diag_summary_20261014.md`。
+- [x] 诊断结论：单纯放大 EEF 前 6 维动作幅度不能修复 B1 在 LIBERO task0/init0 上的闭环失败；action magnitude under-scaling 不是充分解释。下一步应优先定位 action head calibration、rollout state drift、proprio/observation mismatch、gripper phase 和 task-stage behavior，而不是把 scalar action scaling 写成正式方法或进入大 benchmark。
+- [ ] P7-lite 仍只保留为 offline mechanism repair。当前不进入正式 LIBERO benchmark，不宣称 VLA rollout success。
+
+
+## 2026-10-14：expert state trace 与 B1 closed-loop state drift 诊断
+
+- [x] 新增只读诊断脚本 `scripts/replay_libero_expert_trace.py`：重放 LIBERO expert action 时记录 EEF position/quaternion、gripper qpos、action stats 和每步 EEF delta；不加载模型、不改 checkpoint。
+- [x] 新增只读比较脚本 `scripts/compare_expert_model_state_trace.py`：把 expert state trace 与模型 rollout trace 对齐，比较 action magnitude、实际 EEF 位移、EEF position gap 和 gripper qpos。
+- [x] 101 上运行 expert demo0/init0 raw state trace 成功，任务完成：success=true，expert steps=72，last_reward=1.0。远端：`results/P6_vla_b0_b4/action_interface_audit_20261014/expert_state_trace_demo0_init0_raw/`；本地：`experiment_workspace/vla_remote_results/20261014_expert_state_trace/expert_state_trace_demo0_init0_raw/`。
+- [x] 与 B1 现有 50-step model trace 对齐比较完成，输出：`experiments/P6-vla-b0-b4/results/action_interface_audit_20261014/state_trace_compare_b1_vs_expert_demo0_init0/`。
+- [x] 关键数值：expert action trans L2 mean `0.7973` vs B1 `0.5298`；expert rot L2 mean `0.0467` vs B1 `0.0179`；expert EEF delta mean `0.00965` vs B1 `0.00680`；EEF position gap mean `0.0949m`，max `0.1515m`。
+- [x] 诊断结论：B1 与 expert 的差异不只是 action 数值偏小；在闭环前 50 步中，实际 EEF state 已经明显偏离 expert trajectory。结合 1.5x/2.0x scalar scaling 仍 0/1，下一步应定位 action-head calibration、state-conditioned policy drift、proprio/observation mismatch 和 stage/phase behavior，而不是继续做全局 action scale。
+
+
+## 2026-10-14：B1 policy-on-expert-state 诊断
+
+- [x] 新增 `scripts/query_policy_on_expert_states.py`。该脚本让 LIBERO 环境由 expert action 推进，同时在每个 expert state 上查询 P6 policy；模型 action 只记录、不执行。目的：区分“policy 在正确 expert state 上也预测差”与“只是在自己 rollout drift 后变差”。
+- [x] 101 上完成 B1 demo0/init0 raw expert-state query，50 steps。远端：`results/P6_vla_b0_b4/action_interface_audit_20261014/query_b1_on_expert_states_demo0_init0_raw_50/`；本地：`experiment_workspace/vla_remote_results/20261014_query_policy_on_expert_states/query_b1_on_expert_states_demo0_init0_raw_50/`。
+- [x] 本地摘要：`experiments/P6-vla-b0-b4/results/action_interface_audit_20261014/query_b1_on_expert_states_demo0_init0_raw_50/summary.md`。
+- [x] 关键结果：expert trans L2 mean `0.7973`，B1 model processed trans L2 mean `0.6054`；expert rot L2 mean `0.0467`，B1 model processed rot L2 mean `0.0131`；processed-vs-expert trans diff mean `0.5704`，rot diff mean `0.0388`，gripper abs diff mean `0.12`。
+- [x] 诊断结论：B1 即使在 expert-driven states 上仍与 expert action 明显不匹配，尤其 rotation 预测偏小。因此当前问题不只是 closed-loop state drift；还包括 action head/action target calibration 或 task-specific action learning 不足。下一步应优先检查 action target normalization、rotation/gripper target 分布、loss 权重和 action-head calibration，而不是继续扩大 rollout benchmark 或增加 semantic loss。
+
+
+## 2026-10-14：action calibration audit 与 P6.1 计划冻结
+
+- [x] 新增 `scripts/audit_action_calibration.py`，融合 train statistics、B1 held-out per-dim metrics 与 B1 policy-on-expert-state query，生成 action calibration 审计。
+- [x] 输出目录：`experiments/P6-vla-b0-b4/results/action_interface_audit_20261014/action_calibration_audit/`。
+- [x] 关键结果：translation magnitude ratio B1/expert=`0.759`，rotation magnitude ratio=`0.281`；rot_x pred/expert=`0.033`，rot_y=`0.096`，rot_z=`0.848`。rotation 尤其 rot_x/rot_y 是最明显瓶颈。
+- [x] 解释：OFT 原生 mean L1 over 8x7 chunk 在当前短训练设置下可能让低幅 rotation 维度被 translation/gripper 主导；P7-lite semantic loss 不能替代这个 action 基础问题。
+- [x] 新增 P6.1 action calibration protocol：`experiments/P6-vla-action-calibration/protocol.md`。首轮建议从 B1 checkpoint 出发，只做 weighted-action loss smoke，权重 `[1,1,1,3,3,2,1]`，100--500 step，不加入 semantic loss，不覆盖 P6 结果。
+- [x] P6.1 weighted-action smoke 已完成；held-out per-dim eval 未通过 gate，因此未进入 policy-on-expert-state query 或 one-episode rollout。正式 benchmark 仍暂缓。
+
+
+
+## 2026-10-14：P6.1 weighted-action calibration smoke 与 held-out gate
+
+- [x] 已实现并上传 P6.1 诊断脚本：`scripts/run_oft_p61_action_calibration_smoke.py` 与 `scripts/eval_oft_single_checkpoint.py`；本地和远端 `py_compile` 均通过。
+- [x] 首次 held-out eval 启动因 shell 变量展开路径错误失败，未加载模型、未产生结果；随后改为写入远端 runner 脚本并成功运行。
+- [x] P6.1 训练完成：从 `B1_seed17/checkpoint_10080` 出发，使用 weighted L1 权重 `[1,1,1,3,3,2,1]`，100 optimizer steps。远端目录：`/vepfs-mlp2/c20250405/400040/transfer/vla_attention/results/P6_vla_action_calibration/p61_weighted_l1_seed17_100step_20261014_042923`。
+- [x] 训练 smoke 通过：`P61_ACTION_CALIBRATION_SMOKE_PASSED`；checkpoint 为 `checkpoint_00100`，包含 adapter、modules.pt、checkpoint.json 和 restore_probe.json。最后一步 weighted_action_loss=`0.198784`，native_l1=`0.146230`。
+- [x] 完整 held-out offline eval 完成，769 个 action chunks；远端目录：`/vepfs-mlp2/c20250405/400040/transfer/vla_attention/results/P6_vla_action_calibration/heldout_eval_20261014_043503`；本地汇总：`experiment_workspace/vla_remote_results/20261014_p61_action_calibration/summary.md`。
+- [x] B1 reference：action_mae=`0.293686`，translation_mae=`0.377516`，rotation_mae=`0.262067`，gripper_mae=`0.137056`，gripper_accuracy=`0.786573`。
+- [x] P6.1 weighted L1：action_mae=`0.303364`，translation_mae=`0.396345`，rotation_mae=`0.267450`，gripper_mae=`0.132161`，gripper_accuracy=`0.853056`。
+- [x] Gate 判断：**No-Go for rollout**。P6.1 只改善 gripper 相关指标，但损伤 action/translation/rotation 主误差；因此不进入 expert-state query、不进入 one-episode rollout、不进入正式 benchmark。
+- [ ] 下一步：若继续 action calibration，只做更小 ablation；候选包括降低 rotation 权重、降低学习率、冻结更多模块、只调 action head/proprio projector、或只做 gripper phase 专项诊断。所有候选必须先过 held-out offline gate。
+
+## 2026-10-14：P6.1a low-rotation / low-LR calibration ablation
+
+- [x] 启动 P6.1a 前复核 P6 manifest：正式 train manifest 是 `rlds_inventory_v2_20260928/train.jsonl`，不是 `offline_train.jsonl`。首次 P6.1a launch 因沿用错误 `offline_train.jsonl` 路径失败，未进入训练、未产生 checkpoint；随后修正为 `train.jsonl`，SHA256=`695681afb03012bd18c34d09c9a4fbf15ca489605d4463cbf891cd7213bca921`，与 P6 config 一致。
+- [x] P6.1a 训练完成：base=`B1_seed17/checkpoint_10080`，weights=`[1,1,1,1.5,1.5,1.2,1]`，learning rate=`3e-5`，100 optimizer steps，seed=17。远端训练目录：`/vepfs-mlp2/c20250405/400040/transfer/vla_attention/results/P6_vla_action_calibration/p61a_lowrot_lowlr_seed17_100step_20261014_050423`。
+- [x] 训练 smoke 通过：`P61_ACTION_CALIBRATION_SMOKE_PASSED`；checkpoint=`checkpoint_00100`，包含 adapter、modules.pt、checkpoint.json、restore_probe.json。第 100 step weighted_action_loss=`0.150475`，native_l1=`0.140906`。
+- [x] P6.1a held-out eval 完成，769 个 action chunks。远端 eval：`/vepfs-mlp2/c20250405/400040/transfer/vla_attention/results/P6_vla_action_calibration/heldout_eval_p61a_20261014_050423/P61a_lowrot_lowlr_100`；本地汇总：`experiment_workspace/vla_remote_results/20261014_p61a_lowrot_lowlr/summary.md`。
+- [x] B1 reference：action_mae=`0.293686`，translation_mae=`0.377516`，rotation_mae=`0.262067`，gripper_mae=`0.137056`，gripper_accuracy=`0.786573`。
+- [x] P6.1a：action_mae=`0.293306`，translation_mae=`0.376033`，rotation_mae=`0.261234`，gripper_mae=`0.141341`，gripper_accuracy=`0.802503`。
+- [x] Gate 判断：P6.1a 相比 P6.1 修掉了 action/translation/rotation 恶化，并且相对 B1 在这三项上有极小改善；但 gripper MAE 变差，gripper 只在 sign accuracy 上改善。因此它不是 VLA rollout 成功证据，也不能进入正式 benchmark。合理下一步是只跑 P6.1a expert-state query；若 expert-state rotation ratio 和阶段行为没有明确改善，则停止 action calibration 分支，转向 action target normalization / rotation representation / action-head 结构审计。
+- [ ] 下一步：运行 P6.1a policy-on-expert-state query，复用 B1 的 demo0/init0/raw expert-state protocol，只记录动作匹配和 rotation ratio；通过前不跑 rollout smoke。
+
+## 2026-10-14：P6.1a expert-state query 与最终 gate
+
+- [x] P6.1a policy-on-expert-state query 已完成。运行方式：在 LIBERO demo0/init0/raw expert-driven states 上只查询 P6.1a policy，不执行模型动作；该诊断不是 rollout benchmark。
+- [x] 远端结果：`/vepfs-mlp2/c20250405/400040/transfer/vla_attention/results/P6_vla_action_calibration/query_p61a_on_expert_states_demo0_init0_raw_50_20261014_v2/`；本地结果：`experiment_workspace/vla_remote_results/20261014_p61a_lowrot_lowlr/query_on_expert_states/`。
+- [x] 运行问题记录：第一次 expert-state query 因 runner 缺少 LIBERO/OFT `PYTHONPATH` 和 `LIBERO_CONFIG_PATH` 失败，未加载 checkpoint、未产生结果；v2 设置 `PYTHONPATH=$R:$W/repos/openvla-oft:$W/repos/libero` 与 `LIBERO_CONFIG_PATH=$W/libero_config` 后通过。
+- [x] B1 expert-state baseline：model processed trans L2 mean=`0.605427`，rot L2 mean=`0.013138`，trans diff=`0.570370`，rot diff=`0.038765`，gripper abs diff=`0.120000`。
+- [x] P6.1a expert-state：model processed trans L2 mean=`0.615595`，rot L2 mean=`0.013062`，trans diff=`0.563464`，rot diff=`0.038335`，gripper abs diff=`0.120000`。Expert trans/rot L2 mean 分别为 `0.797271/0.046681`。
+- [x] Gate 判断：**No-Go for rollout**。P6.1a 对 expert-state translation/rotation diff 有很小改善，但核心 rotation magnitude bottleneck 没有改善，model rot L2 仍约 `0.013`，远低于 expert `0.0467`，并且略低于 B1。因此不运行 one-episode rollout，不进入正式 benchmark。
+- [ ] 下一步：停止当前 P6.1/P6.1a weighted-loss 分支；优先做 action target normalization、rotation representation、action head/proprio projector 和 task-stage supervision 审计。P7-lite semantic ranking 继续保持 offline mechanism repair，不能作为闭环提升主张。
+
+
+## 2026-10-14：P6 action target / normalization 只读审计
+
+本轮在 P6.1/P6.1a 都未达到 rollout gate 后，没有继续加 loss 试错，而是新增并运行了只读审计脚本：
+
+- 本地脚本：`scripts/audit_oft_action_targets.py`
+- 远程结果：`/vepfs-mlp2/c20250405/400040/transfer/vla_attention/results/P6_vla_action_calibration/action_target_audit_20261014_054039/`
+- 本地结果：`experiment_workspace/vla_remote_results/20261014_action_target_audit/`
+- 产物：
+  - `action_target_audit.json`
+  - `action_target_audit.md`
+  - `per_dim_target_stats.csv`
+  - `per_horizon_target_stats.csv`
+  - `audit.log`
+
+审计范围：
+
+- train manifest：27 个 episode，2709 step，2520 个 H=8 chunk；hash failure=0；
+- eval manifest：9 个 episode，832 step，769 个 H=8 chunk；hash failure=0；
+- 使用 `train_statistics.json` 的 bounds-q99 contract；
+- 复现 P6 loader 中的 gripper 目标变换：`target_gripper = 1 - clip(raw_gripper, 0, 1)`；
+- 复现 normalization：mask=True 的 0:6 维映射到 `[-1,1]`，gripper mask=False 保持 0/1 空间。
+
+关键数值：
+
+| 维度组 | train normalized mean_abs | eval normalized mean_abs | 解释 |
+|---|---:|---:|---|
+| translation avg | 0.4645 | 约 0.4604 | 动作目标幅度正常 |
+| rotation avg | 0.2839 | 约 0.2964 | rotation 并非归一化后接近 0 |
+| gripper | 0.5164 | 0.5252 | gripper 保持 0/1 目标，mask=False |
+
+rotation 维度细节：
+
+- `rot_x` stat range=0.238671，normalized saturation=0.021，near-zero<=0.05=0.075；
+- `rot_y` stat range=0.401357，normalized saturation=0.021，near-zero<=0.05=0.079；
+- `rot_z` stat range=0.311529，normalized saturation=0.021，near-zero<=0.05=0.066。
+
+判断：
+
+1. **normalization 本身没有明显错误。** rotation 的 raw range 虽小，但 q99 normalization 后目标并不稀疏，也不是几乎全零。
+2. **train/eval 分布没有明显漂移。** eval 的 rotation mean_abs 与 train 接近，不能把 P6/P6.1 的失败主要归因于 held-out 分布异常。
+3. **P6.1a expert-state query 中模型 rotation L2 明显低于 expert，而 target 审计显示 rotation target 本身有足够幅度。** 因此更可能的问题在 action head / chunk learning / loss reduction / rollout action interface，而不是 target 数据天然不可学。
+4. **gripper 仍需单独确认 rollout convention。** 训练 target 是 0/1，official rollout 里还有 process_action 与 invert_gripper_action；虽然本次审计确认训练 target 构造一致，但不能单独证明闭环执行端 gripper 符号完全正确。
+
+下一步 gate：
+
+- 不建议继续直接加 semantic P7 loss 或开始正式 rollout benchmark；
+- 优先做 action-head/interface 修复：检查 OFT action head、chunk H=8 取第几步执行、process_action/invert_gripper_action、rotation 单位与 env controller；
+- 若要训练，只做更小范围的 action-head/proprio/projector smoke，且必须先通过 held-out + expert-state query，再考虑 1 episode rollout。
+
+## 2026-10-14：OpenVLA/OFT action-head 与 rollout-interface 只读审计
+
+本轮在 action target / normalization 审计之后，继续完成了 action-head / rollout-interface 只读审计。该审计不训练、不 rollout、不修改 checkpoint、不修改 cache。
+
+- 本地脚本：`scripts/audit_oft_action_head_interface.py`
+- 远端结果：`/vepfs-mlp2/c20250405/400040/transfer/vla_attention/results/P6_vla_action_calibration/action_head_interface_audit_20261014_055847/`
+- 本地结果：`experiment_workspace/vla_remote_results/20261014_action_head_interface_audit/`
+- OpenVLA-OFT commit：`e4287e94541f459edc4feabc4e181f537cd569a8`
+- 产物：`action_head_interface_audit.json`、`action_head_interface_audit.md`、`module_parameter_audit.csv`。
+
+源码契约核验：
+
+- LIBERO action 常量为 `NUM_ACTIONS_CHUNK=8`、`ACTION_DIM=7`；
+- L1 regression action head 将 action-token hidden states reshape 为 `B × 8 × (7D)` 后用 MLPResNet 输出 `B × 8 × 7`；
+- 训练路径使用 full chunk mean L1，也就是对完整 `B×8×7` 求平均；
+- official rollout 默认执行完整 action chunk；
+- gripper 后处理为 `[0,1] -> [-1,+1]` binarization，然后 OpenVLA 分支再做 gripper sign inversion。
+
+关键数值：
+
+| metric | B1 | P6.1a | 解释 |
+|---|---:|---:|---|
+| held-out action_mae | 0.293686 | 0.293306 | P6.1a 仅极小改善 |
+| held-out translation_mae | 0.377516 | 0.376033 | 极小改善 |
+| held-out rotation_mae | 0.262067 | 0.261234 | 极小改善 |
+| held-out gripper_mae | 0.137056 | 0.141341 | 变差 |
+| expert-state trans_ratio | 0.759374 | 0.772128 | translation magnitude 仍低于 expert |
+| expert-state rot_ratio | 0.281449 | 0.279822 | rotation under-production 未修复 |
+| processed-vs-expert trans diff | 0.570370 | 0.563464 | 小幅改善 |
+| processed-vs-expert rot diff | 0.038765 | 0.038335 | 小幅改善但幅度瓶颈仍在 |
+
+模块变化量：P6.1a 相比 B1 的 action head `delta_l2_total=0.270923`，比较参数数 `151117831`；proprio/projector 相关模块 `delta_l2_total=0.229930`，比较参数数 `16818176`。这说明 100 step 温和校准确实改动了可训练模块，但改动规模和结果都不足以修复闭环动作瓶颈。
+
+Gate 判断：**No-Go for formal rollout / benchmark**。target distribution 已证明 rotation target 并非接近 0，而 expert-state query 又显示模型 rotation 输出只有 expert 的约 28%。因此当前主要问题更可能在 action head/chunk learning/loss reduction/rollout interface，而不是“继续加 semantic loss”。
+
+下一步只允许进入 action-head/interface repair gate：
+
+- per-horizon action MAE；
+- first-action-only MAE；
+- horizon 0/1/2/7 的 translation、rotation、gripper 分布；
+- raw action、processed action、env action 与 expert action 的一致性；
+- process_action、gripper invert、chunk execution 的端到端对照。
+
+在 B0/B1 action-interface gate 通过前，不启动正式 LIBERO/LIBERO-Plus/RoboTwin benchmark；P7 semantic ranking/KL 仍只能作为 offline mechanism repair，不能作为闭环 VLA 提升主张。
+
+## 2026-10-14：per-horizon × per-dimension action 诊断
+
+在 action-head/interface audit 后，新增并运行了只读 horizon×dimension 诊断，用于确认 full-chunk mean L1 是否掩盖 first-step 或特定动作维度错误。
+
+- 本地脚本：`scripts/audit_oft_horizon_dim_errors.py`
+- 远端结果：`/vepfs-mlp2/c20250405/400040/transfer/vla_attention/results/P6_vla_action_calibration/horizon_dim_audit_20261014_060808/`
+- 本地结果：`experiment_workspace/vla_remote_results/20261014_horizon_dim_audit/`
+- 产物：`summary.json`、`summary.md`、`horizon_summary.csv`、`dim_summary.csv`、`horizon_dim_stats.csv`。
+- 运行说明：第一次失败因缺少 `PYTHONPATH`；第二次失败因 manifest 路径误写；第三次使用 `$R/src:$R:$W/repos/openvla-oft:$W/repos/libero` 和 `$W/artifacts/rlds_inventory_v2_20260928/offline_eval.jsonl` 成功。失败运行未产生有效评估结论。
+
+关键结果：
+
+| group | action MAE | first-horizon MAE | last-horizon MAE | translation MAE | rotation MAE | gripper MAE |
+|---|---:|---:|---:|---:|---:|---:|
+| B1 | 0.293686 | 0.292031 | 0.301750 | 0.377516 | 0.262067 | 0.137056 |
+| P6.1a | 0.293306 | 0.291071 | 0.302049 | 0.376033 | 0.261234 | 0.141341 |
+
+first-action 视角下，P6.1a 相比 B1 只改善 `0.000960`，属于诊断级变化，不足以进入 rollout。horizon 7 反而略差。
+
+维度尺度证据：
+
+- B1 horizon0 `x/z` pred_abs_to_target_abs_ratio 约 `0.404/0.633`，P6.1a 约 `0.401/0.657`；
+- B1 horizon0 `rot_x/rot_y/rot_z` ratio 约 `0.477/0.181/0.338`，P6.1a 约 `0.512/0.206/0.358`；
+- B1 horizon7 `rot_x/rot_y/rot_z` ratio 约 `0.475/0.161/0.319`，P6.1a 约 `0.510/0.183/0.339`。
+
+判断：P6.1a 对 rotation 输出幅度有轻微拉升，但远不足以修复 rot_y/rot_z under-production；同时 gripper MAE 变差。当前不能进入正式 rollout/benchmark。下一步的最短有效路径是 action-head/interface repair：优先尝试 first-action/horizon-aware loss 或只调 action head/proprio projector 的小步 smoke，并继续以 held-out + expert-state query 作为 gate。
+
+## 2026-10-14：P6.2 horizon-weighted action-head/proprio repair smoke
+
+本轮在 P6.1/P6.1a、target normalization audit、action-head/interface audit 和 horizon×dimension audit 之后，执行了一个更窄的 action-head/interface 修复实验。P6.2 从 P6 B1 `checkpoint_10080` 出发，冻结 policy LoRA，只训练 action head 与 proprio projector，使用 native `H=8, D=7` chunk 的 horizon-weighted action L1。
+
+远程与本地产物：
+
+- 远程训练目录：`/vepfs-mlp2/c20250405/400040/transfer/vla_attention/results/P6_vla_action_calibration/p62_horizon_headproprio_seed17_150step_20261014_063738/`
+- 远程 eval：`/vepfs-mlp2/c20250405/400040/transfer/vla_attention/results/P6_vla_action_calibration/p62_horizon_headproprio_seed17_150step_20261014_063738/heldout_eval_20261014_064305/`
+- 本地镜像：`experiment_workspace/vla_remote_results/20261014_p62_horizon_headproprio/`
+- 本地 summary：`experiment_workspace/vla_remote_results/20261014_p62_horizon_headproprio/summary.md`
+
+配置：steps=`150`，lr=`3e-5`，action weights=`[1,1,1,2,3,2,1]`，horizon weights=`[2,1.5,1.25,1,1,0.8,0.8,0.8]`。训练通过 `P62_HORIZON_ACTION_REPAIR_SMOKE_PASSED`，checkpoint restore 文件已生成；该实验不是 rollout benchmark。
+
+同口径 held-out offline action prediction：
+
+| group | action MAE | first-horizon MAE | last-horizon MAE | translation MAE | rotation MAE | gripper MAE | gripper sign acc |
+|---|---:|---:|---:|---:|---:|---:|---:|
+| B1 reference | 0.293686 | 0.292031 | 0.301750 | 0.377516 | 0.262067 | 0.137056 | 0.786573 |
+| P6.1 weighted L1 | 0.303364 | 0.303968 | 0.311687 | 0.396345 | 0.267450 | 0.132161 | 0.853056 |
+| P6.1a lowrot/lowlr | 0.293306 | 0.291071 | 0.302048 | 0.376033 | 0.261234 | 0.141341 | 0.802503 |
+| P6.2 head+proprio | 0.293562 | 0.290828 | 0.302845 | 0.378003 | 0.261015 | 0.137880 | 0.844603 |
+
+P6.2 相对 B1：action MAE `-0.000124`，first-horizon MAE `-0.001203`，rotation MAE `-0.001052`，但 translation MAE `+0.000487`，gripper MAE `+0.000824`。因此 P6.2 是弱改善，不是 action-interface 修复完成的证据。
+
+Gate 判断：**No-Go for formal rollout / benchmark**。P6.2 可以作为“只调 action head/proprio 有微弱可动性”的诊断证据，但不能解锁 LIBERO/LIBERO-Plus/RoboTwin 正式 benchmark。下一步仍应做 P6.3 action-head/interface repair 或 expert-state query 复核；P7-lite ranking/KL 只能作为 offline mechanism repair 继续推进，不能替代 action 基础问题。
+
+
+## 2026-10-14：rollout smoke 顶层 summary 补齐
+
+- [x] 为 P6 minimal LIBERO rollout smoke 补齐可读顶层 summary：`experiment_workspace/vla_remote_results/20261013_rollout_smoke/summary.md`。
+- [x] 已上传远端：`/vepfs-mlp2/c20250405/400040/transfer/vla_attention/results/P6_vla_b0_b4/rollout_smoke_20261013/summary.md`，SHA256=`31dbfb5bf4f18ff1d588d0b9bed2ef41f24152dfb6c0affa5db6352893d8a595`。
+- [x] 结论未变：B0/B1 one-episode smoke 跑通 evaluator 但 `0/1`；B0/B1/B3/B4 five-episode smoke 均 `0/5`；gripper sign flip 仍 `0/1`。该阶段是工程 smoke，不是正式 benchmark，且不支持进入 LIBERO/LIBERO-Plus/RoboTwin 正式评测。
+
+## 2026-10-14：P7-lite ranking/KL 机制 dry-run
+
+- [x] 已按 goal 要求运行 P7-lite 最小 offline mechanism smoke；该 smoke 只复用 P6 controls records 计算 ranking 目标，不训练、不覆盖 P6 artifacts，也不声称 benchmark success。
+- [x] 本地结果：`experiment_workspace/vla_remote_results/20261014_p7_lite_ranking_dryrun/`；远端结果：`/vepfs-mlp2/c20250405/400040/transfer/vla_attention/results/P7_vla_lite/ranking_dryrun_20261014/`。
+- [x] 远端命令：`/root/starvla_cu124/bin/python scripts/p7_lite_ranking_dryrun.py $P/results/P6_vla_b0_b4/posttrain_eval_20261008/controls_eval_full_seed17 --groups B1,B3,B4 --margin 0.02 --output $P/results/P7_vla_lite/ranking_dryrun_20261014`。
+- [x] 远端日志：`/vepfs-mlp2/c20250405/400040/transfer/vla_attention/results/P7_vla_lite/ranking_dryrun_20261014/run.log`；脚本 SHA256=`b85f5bcb3df20e9b6615f304156a9bd1c0e58c80c83226e0199286d859d50650`；summary SHA256=`93bd02654605ba765e03f469dc5deec1b87c8c72eeb54b87ea9a95185da60f81`；csv SHA256=`23ed2112169dbabbab21824c986995e98299adf17ca8bbf7783423e52ab6441f`。
+- [x] 失败样本已记录：`/vepfs-mlp2/c20250405/400040/transfer/vla_attention/results/P7_vla_lite/ranking_dryrun_20261014/failure_samples.jsonl`，64 条 correct-vs-wrong-image margin violation，SHA256=`f071c37bd9d08c5da4982de8067c50ccc7af1a6546bfbf06b3caa3d459722376`。最强失败样本为 B1 `episode_id=7ce60a01aa87246c2e089e791249fddce291006e42558c6a9be2e59a1e31a92c, timestep=23`，correct=`0.230921`、wrong-image=`0.458608`、violation=`0.247687`。
+- [x] 远端 P7-lite loss import/backward smoke 通过：`REMOTE_P7_LOSS_IMPORT_OK 0.0 True`。本地 `pytest -q tests/test_semantic_map_losses.py tests/test_vla_local_pipeline.py` 通过 20 个测试。
+- [x] B1 dry-run：action loss=`0.293690`，correct-wrong_image mean=`0.001270`，correct > wrong-image rate=`0.492848`，带 margin 后=`0.326398`；correct > role-swapped 带 margin=`0.971391`；correct > area-matched random 带 margin=`0.998700`；all-three 带 margin=`0.315995`。
+- [x] B3 dry-run：action loss=`0.326323`，correct-wrong_image mean=`-0.000068`，correct > wrong-image rate=`0.499350`，带 margin 后=`0.288687`；all-three 带 margin=`0.278283`。
+- [x] B4 dry-run：action loss=`0.384150`，correct-wrong_image mean=`0.001887`，correct > wrong-image rate=`0.521456`，带 margin 后=`0.339402`；all-three 带 margin=`0.270481`。
+- [x] 结论：P7-lite 的主要机制缺口是 correct-vs-wrong-image，而不是 role-swapped 或 area-matched random。若继续 P7，应把 wrong-image ranking 作为首要训练负控，并以 action MAE 不劣化为硬约束。
+- [ ] 下一步：P7-lite 仍不能替代 action-head/interface gate。正式 P7 训练前，需要决定是否先做 P6.3 action-head/interface repair，或仅运行一个 B1-based offline P7 ranking training smoke 并明确其结论边界。
+
+## 2026-10-14：VLA positive-control checkpoint repair 与 evaluator preflight
+
+- [x] 已按 goal 重新读取原始目标文件 `/home/bubble/.codex/attachments/a2cc6a8e-cf55-43f5-b70c-0f11843e8a29/pasted-text-1.txt`。当前阶段目标保持不变：先建立 OpenVLA-OFT/LIBERO action pipeline positive control，不继续扩大 semantic/P7 训练。
+- [x] 101 SSH 已恢复：`ssh -o BatchMode=yes -o ConnectTimeout=10 vla101 'echo SSH_OK; hostname; date -Is'` 返回 `SSH_OK`，主机 `di-20260613120619-84fwm`。
+- [x] GPU 状态核查：GPU0 约 `4 MiB / 81920 MiB`，GPU1 约 `12265 MiB / 81920 MiB`；当前 GPU 进程 PID `914554` 占用约 `12252 MiB`。
+- [x] 公开 checkpoint 修复任务核查：旧 PID `590189` 仍在运行但卡在 `huggingface.co` retry，`model-00001-of-00004.safetensors.partial` 长时间保持 `95,988,030` bytes；`curl -I` 证明 `hf-mirror.com` 可访问，`huggingface.co` 超时。
+- [x] 安全修复：未删除 partial、未触碰 P6/P7 artifacts；停止旧 PID 后启动 mirror-first 续传脚本 `/vepfs-mlp2/c20250405/400040/transfer/vla_attention/jobs/moojink_checkpoint_repair_20261014/download_missing_moojink_shards_mirror_first.py`，新 PID `592053`，日志 `mirror_first_download.log`，PID 文件 `mirror_first.pid`。
+- [x] checkpoint shard 当前状态：`model-00001-of-00004.safetensors` 已从 `hf-mirror.com` 下载完成并通过 SHA256 `2809bd7be9422315c5ecbe91eea612f5b02925f37e0051728ad45bc993c79251`；`model-00004-of-00004.safetensors` 早已完整；`model-00002-of-00004.safetensors.partial` 正在续传，最近核查为 `1,977,101,703 / 4,947,392,496` bytes（约 `39.96%`）；`model-00003-of-00004.safetensors.partial` 仍为 `0`。
+- [x] OpenVLA-OFT/LIBERO preflight：OpenVLA-OFT commit `e4287e94541f459edc4feabc4e181f537cd569a8`；LIBERO commit `8f1084e3132a39270c3a13ebe37270a43ece2a01`；source lock SHA256 `da709dc71c967cd3fd3f2fa27d30f06b73ad9a30f70a883d5025e8a06436f24b`。
+- [x] evaluator 环境边界：`/root/starvla_cu124/bin/python` 缺 `draccus`，不适合直接导入官方 evaluator；workspace 官方环境 `/vepfs-mlp2/c20250405/400040/transfer/vla_attention/vla_workspace/envs/oft/bin/python` 可成功导入 `experiments.robot.libero.run_libero_eval`。
+- [x] 官方常量 preflight：导入官方 evaluator 时显示 `NUM_ACTIONS_CHUNK=8`、`ACTION_DIM=7`、`PROPRIO_DIM=8`、`ACTION_PROPRIO_NORMALIZATION_TYPE=bounds_q99`。这确认首轮 positive control 应保持原生 `H=8, D=7` chunk，不做 H=1 改写。
+- [x] task0 provenance：`libero_spatial` 共 10 个 task；task0 名称 `pick_up_the_black_bowl_between_the_plate_and_the_ramekin_and_place_it_on_the_plate`；语言 `pick up the black bowl between the plate and the ramekin and place it on the plate`；BDDL `pick_up_the_black_bowl_between_the_plate_and_the_ramekin_and_place_it_on_the_plate.bddl`；默认 init states shape `(50, 92)`，SHA256 `f061b67788d541001f3d6872be9a3a3b0b7de3490dac4683e181f9b0703f8e20`。
+- [ ] checkpoint 完整并逐 shard hash verified 前，不运行官方 positive-control rollout；下一步继续轮询 PID `592053`，完成 shard 2/3 后做模型 load preflight 和 task0 5-episode minimal rollout。
+
+## 2026-10-14：官方 OpenVLA-OFT/LIBERO task0 positive control 通过
+
+- [x] 公开 checkpoint `moojink--openvla-7b-oft-finetuned-libero-spatial` 已完成 mirror-first 修复，4 个 safetensors shard 均为完整 target 文件，无 `.partial` 残留参与加载。
+- [x] 缺失 shard 验证：shard1 SHA256 `2809bd7be9422315c5ecbe91eea612f5b02925f37e0051728ad45bc993c79251`；shard2 SHA256 `a00a7c5f2b6586ccfc89c693a9c36f3552ff455ff2b1bfea3e92642e4cd2b6d3`；shard3 SHA256 `a894b7230a08b471af55c57dd7385fd3b51fae2c4d9307a36a8017ef57abf22a`。
+- [x] load preflight 通过：官方 OFT env `/vepfs-mlp2/c20250405/400040/transfer/vla_attention/vla_workspace/envs/oft/bin/python` 成功加载模型、`L1RegressionActionHead`、`ProprioProjector`、`PrismaticProcessor`；`unnorm_key=libero_spatial_no_noops`；policy resize size `224`。
+- [x] 注意：官方加载工具自动修改了 checkpoint 目录内 `config.json` 和 `modeling_prismatic.py`，并创建 `.back.20261014_*` 备份。这是 OpenVLA-OFT 兼容 Hugging Face remote code 的自动步骤，已记录为 checkpoint restore/compatibility 状态。
+- [x] positive-control 命令：`CUDA_VISIBLE_DEVICES=0 LIBERO_CONFIG_PATH=$W/libero_config PYTHONPATH=$W/repos/openvla-oft:$W/repos/libero:$PYTHONPATH $W/envs/oft/bin/python run_task0_positive_control.py`，脚本路径 `/vepfs-mlp2/c20250405/400040/transfer/vla_attention/jobs/positive_control_moojink_task0_20261014/run_task0_positive_control.py`。
+- [x] 远端结果目录：`/vepfs-mlp2/c20250405/400040/transfer/vla_attention/results/positive_control_moojink_task0_20261014/`；summary `summary.json`；日志 `run.log` 和 `logs/EVAL-libero_spatial-openvla-2026_10_14-12_11_48--moojink_public_task0_5ep_positive_control.txt`；视频 `rollouts/2026_10_14/*.mp4` 共 5 个。
+- [x] 结果：`libero_spatial` task0，默认 init states，5 episodes，`5/5` success，success rate `1.0`。task language：`pick up the black bowl between the plate and the ramekin and place it on the plate`。
+- [x] 结论边界：基础 OpenVLA-OFT/LIBERO evaluator、camera、default init state、chunk execution、dataset statistics 和 gripper/action processing 在官方 checkpoint 上可成功；此前 P6 B0/B1/B3/B4 的 `0/5` 不能再解释为 LIBERO 管线整体不可用，而应继续定位我们的训练 checkpoint/action-head/interface 差异。
+- [x] 下一步按原固定顺序执行 expert action replay 复核，然后做 1–3 条 task0 tiny overfit；已完成 expert replay 与 head+proprio tiny-overfit，结果见下方 2026-10-14 记录。
+
+## 2026-10-14：expert action replay positive control 复核
+
+- [x] 已在官方 positive control 通过后执行 expert action replay，不加载学生 checkpoint，不修改 P6/P7 artifacts。
+- [x] 命令：`LIBERO_CONFIG_PATH=$W/libero_config PYTHONPATH=$R:$W/repos/openvla-oft:$W/repos/libero:$PYTHONPATH $W/envs/oft/bin/python scripts/replay_libero_expert_actions.py --inventory-jsonl $W/artifacts/rlds_inventory_v2_20260928/inventory.jsonl --init-inventory $W/artifacts/rollout_init_inventory_20260928.json --output $P/results/P6_vla_action_calibration/expert_replay_positive_control_20261014_after_moojink.tmp --demo-limit 3 --init-indices 0,1,2 --variants raw,train01_to_env --num-steps-wait 10 --tail-dummy-steps 40 --resolution 256`。
+- [x] 远端结果目录：`/vepfs-mlp2/c20250405/400040/transfer/vla_attention/results/P6_vla_action_calibration/expert_replay_positive_control_20261014_after_moojink/`；summary SHA256 `8680f9fd38d0cddf8624f8dfc0d4c759820f6bd128652165ff3b607340b35731`。
+- [x] 输入 provenance：RLDS inventory SHA256 `0ddcfc40481f86d11ccf4120881b6ea2aaf3eb3e9e53aa7964e251be1348c654`；init inventory SHA256 `c4dae51e9b48616af4f2a38463821a851a91c31b8dce63f1bcc75bde08c03a7f`。
+- [x] 结果：3 条 demo × init 0/1/2 × `raw/train01_to_env`，共 18 trials，12 success，success rate `0.6667`。`raw` 与 `train01_to_env` 在相同组合上成败一致。
+- [x] 关键解释：expert action replay 并非任意 init 都成功；跨 init 复用专家轨迹会失败。因此 tiny overfit 和同 init rollout 必须严格绑定 demo/init provenance，不能用错配 init-state 的失败解释 action pipeline 失败。
+- [x] 正控结论：raw expert action 与 train01→env action 在可匹配 init 上可成功，说明 task0 环境、expert TFRecord action、gripper/sign 转换和 env action API 至少在正控路径上有效。
+- [x] 下一步：选择 1–3 条 replay 成功的同 init demo 作为 tiny overfit 子集，只训练 action head/proprio projector 或官方推荐可训练模块，验证训练 episode action loss 是否显著下降，并尝试回同 init rollout。head+proprio 版本已完成，offline action prediction 改善但 same-init rollout 仍为 0/1。
+
+## 2026-10-14：tiny-overfit head+proprio 结果与同 init rollout gate
+
+- [x] 已从 expert replay 成功记录构建 tiny manifest：`/vepfs-mlp2/c20250405/400040/transfer/vla_attention/vla_workspace/artifacts/tiny_overfit_20261014/train_tiny_task0_3eps.jsonl`，3 条 task0 episode，train/eval 同集用于过拟合 gate，SHA256 `9a2bd44eb0c3a1d51db2bf4c89be0ad05fb9c1d9265e0258f4ece1e08e2f4d1b`。
+- [x] 为 tiny-overfit 创建专用脚本 `scripts/run_oft_tiny_overfit_smoke.py`，远端 SHA256 `b094470eb995e3a3b377b8c6ea3d6a847df5ddc503298b8d53dee3a412288c44`。该脚本只放宽 tiny-overfit 的 train/eval overlap，并记录 P1 原始 provenance；正式 P6/P7 脚本不改。
+- [x] 训练命令使用 GPU0，B1 checkpoint 为 `results/P6_vla_b0_b4/formal_offline_20261007/B1_seed17/checkpoint_10080`，只训练 action head + proprio projector，steps `300`，lr `1e-4`，输出目录 `/vepfs-mlp2/c20250405/400040/transfer/vla_attention/results/P6_vla_action_calibration/tiny_overfit_headproprio_seed17_300step_20261014_retry2/`。
+- [x] 训练通过 `P6_TINY_OVERFIT_SMOKE_PASSED`，checkpoint `checkpoint_00300`，modules SHA256 `aff949d8e05e1833ac973c266787e7516f8ff5b4979d24d8c85b83fc334c7e55`。
+- [x] B1-on-tiny offline eval：action MAE `0.298864`，first-horizon MAE `0.288046`，translation MAE `0.386396`，rotation MAE `0.250380`，gripper MAE `0.181721`，gripper sign acc `0.712862`。
+- [x] tiny-on-tiny offline eval：action MAE `0.284692`，first-horizon MAE `0.282167`，translation MAE `0.372006`，rotation MAE `0.233718`，gripper MAE `0.175672`，gripper sign acc `0.853714`。
+- [x] offline delta tiny - B1：action MAE `-0.014173`，first-horizon MAE `-0.005879`，translation MAE `-0.014390`，rotation MAE `-0.016663`，gripper MAE `-0.006049`，gripper sign acc `+0.140851`。说明 tiny head+proprio 训练确实改善同集 action prediction。
+- [x] same-init rollout smoke：`/vepfs-mlp2/c20250405/400040/transfer/vla_attention/results/P6_vla_action_calibration/tiny_overfit_same_init_rollout_20261014/`，init 0，1 episode，结果 `0/1`，failure type `task_failure_unclassified`，summary SHA256 `c55b6f54625c68c7c4daede4b8510044f3471502b3da7b5205de9c7ce6899842`。
+- [x] 结论：官方 checkpoint `5/5`、expert replay 正控可成功、head+proprio tiny offline 有改善，但同 init closed-loop 仍失败。因此当前瓶颈不再是基础 evaluator 或 gripper/sign，而是我们的训练 checkpoint/action distribution 与闭环状态漂移之间的差距；只调 action head/proprio 不足以解锁 rollout gate。
+- [ ] 下一步：继续 action-interface repair，优先测试解冻 policy LoRA + action head + proprio 的 tiny-overfit，或直接对比官方 moojink checkpoint 的 action traces；semantic/P7 分支仍不得恢复为闭环 VLA 成功主张。
+
+## 2026-10-14：tiny-overfit policy LoRA + head+proprio 启动
+
+- [x] head+proprio-only tiny-overfit 的 `final.json` 已补充远端 `final_corrected.json`，修正原 `final.json` 中保留 `.tmp` checkpoint 路径的问题；实际 checkpoint 为 `/vepfs-mlp2/c20250405/400040/transfer/vla_attention/results/P6_vla_action_calibration/tiny_overfit_headproprio_seed17_300step_20261014_retry2/checkpoint_00300`。
+- [x] 已确认标准 P1 provenance 文件真实路径为 `/vepfs-mlp2/c20250405/400040/transfer/vla_attention/repo/VLA_attention/experiment_workspace/results/P6_vla_b0_b4/p1_interface/p1_interface.json`，不是先前误写的 `results/P6_vla_b0_b4/p1_interface/report.json`。该文件记录 OpenVLA revision `47a0ec7fc4ec123775a391911046cf33cf9ed83f`、action shape `[1,8,7]`、normalization round-trip、module restore、visual grid 和 gradient finite/nonzero。
+- [x] 已启动下一轮 tiny-overfit：从 B1 checkpoint 出发，解冻 policy LoRA + action head + proprio projector，300 steps，lr `5e-5`，仍使用同一个 3-episode tiny manifest，远端 job 为 `/vepfs-mlp2/c20250405/400040/transfer/vla_attention/jobs/tiny_overfit_policy_lora_20261014_retry3/`，PID `623231`。
+- [x] 该作业已经通过 GPU gate、source-lock、P1 provenance 和模型加载，开始写 `train_metrics.jsonl`；截至首次记录，训练已达到 57/300 steps，loss finite，GPU0 约 23GB。
+- [x] policy-LoRA tiny 作业完成后的三方 offline action prediction 对比已由下一节完成；结论是 policy-LoRA tiny 没有超过 head+proprio-only，因此不触发 same-init rollout gate。
+- [x] official moojink trace、B1 center-crop trace 与 official-vs-B1 对比已由下一节完成；后续不继续 policy-LoRA 分支，转向 action distribution / rotation repair。
+
+## 2026-10-14：policy-LoRA tiny 评估、center-crop 复核与官方 action trace 对比
+
+- [x] policy LoRA + head + proprio tiny-overfit 已完成 300/300 steps，远端目录为 `/vepfs-mlp2/c20250405/400040/transfer/vla_attention/results/P6_vla_action_calibration/tiny_overfit_policy_lora_headproprio_seed17_300step_20261014/`，checkpoint 为 `checkpoint_00300`，`final.json` 状态为 `passed`。
+- [x] 三方 tiny offline action prediction 对比已生成：`tiny_eval_three_way_comparison.json`，SHA256 `092179040be1e6b63c3f2ff5fe5fb15ce4a46c105ab09b35e98fbe172d50ba83`。结果：policy-LoRA tiny 相比 B1 只有轻微改善，但比 head+proprio-only tiny 更差。
+
+| metric | B1 | head+proprio tiny | policy-LoRA tiny | policy - B1 | policy - head |
+|---|---:|---:|---:|---:|---:|
+| action MAE | 0.298864 | 0.284692 | 0.296090 | -0.002774 | +0.011398 |
+| first-horizon MAE | 0.288046 | 0.282167 | 0.292713 | +0.004666 | +0.010546 |
+| translation MAE | 0.386396 | 0.372006 | 0.384227 | -0.002169 | +0.012221 |
+| rotation MAE | 0.250380 | 0.233718 | 0.243450 | -0.006931 | +0.009732 |
+| gripper MAE | 0.181721 | 0.175672 | 0.189600 | +0.007879 | +0.013928 |
+| gripper sign acc | 0.712862 | 0.853714 | 0.827899 | +0.115036 | -0.025815 |
+
+结论：解冻 policy LoRA 没有超过 head+proprio-only tiny，因此不满足“offline 明显优于 head-only 后再跑 same-init rollout”的 gate。当前不把 policy-LoRA tiny 当作闭环候选。
+
+- [x] 为 rollout/trace 脚本新增 `--center-crop` 诊断开关，默认仍为 false，保持历史 P6 结果可复现。B1 使用 `center_crop=True` 的 1-episode rollout 结果仍为 `0/1`，目录为 `/vepfs-mlp2/c20250405/400040/transfer/vla_attention/results/P6_vla_action_calibration/b1_center_crop_one_episode_20261014/`。这说明 official positive control 与我们 wrapper 的 center-crop 差异不是单独充分原因。
+- [x] 生成官方 `moojink/openvla-7b-oft-finetuned-libero-spatial` task0/init0 action trace，目录为 `/vepfs-mlp2/c20250405/400040/transfer/vla_attention/results/P6_vla_action_calibration/official_moojink_task0_init0_action_trace_20261014/`。该 trace 前 30 control steps 未必覆盖完整成功过程，只用于动作分布诊断，不是 benchmark。官方 loader 再次备份并改写了 moojink checkpoint 的 `config.json`，这是 OpenVLA-OFT 官方 loader 的既有行为。
+- [x] 官方 trace 与 B1 center-crop rollout 前 30 步对比已生成：`/vepfs-mlp2/c20250405/400040/transfer/vla_attention/results/P6_vla_action_calibration/official_vs_b1_center_crop_action_compare_20261014/summary.json`。关键数值如下：
+
+| metric | official moojink | our B1 center-crop | interpretation |
+|---|---:|---:|---|
+| processed translation L2 mean | 0.927672 | 0.561660 | B1 平移幅度明显偏弱 |
+| processed rotation L2 mean | 0.041404 | 0.000821 | B1 rotation 几乎塌缩 |
+| processed gripper mean | -1.000000 | -1.000000 | gripper sign 一致，不是主因 |
+| action diff L2 mean | — | 0.670821 | 动作分布与成功 checkpoint 差距很大 |
+| translation diff L2 mean | — | 0.666692 | 主要差距来自平移轨迹 |
+| rotation diff L2 mean | — | 0.041017 | rotation under-production 仍成立 |
+
+当前判断：P6 闭环失败的主断点更像是动作分布/动作幅度与 rotation 学习不足，而不是 evaluator、LIBERO 环境、init state、gripper sign 或 center-crop。下一步应优先做 action distribution repair：用官方成功 checkpoint 的 action trace/statistics 或 expert trajectory 约束 action magnitude、rotation 和 early-horizon，而不是继续扩大 semantic/P7。semantic/P7 仍不得声称闭环 VLA 有效。
+
+## 2026-10-14：expert / official / B1 action distribution audit
+
+- [x] 生成只读动作分布审计，不启动模型、不占 GPU。远端结果：`/vepfs-mlp2/c20250405/400040/transfer/vla_attention/results/P6_vla_action_calibration/expert_official_b1_action_distribution_compare_20261014/summary.json`；本地副本：`experiment_workspace/vla_remote_results/P6_vla_action_calibration/expert_official_b1_action_distribution_compare_20261014/summary.json`；summary SHA256=`266b8224a75ae5627043aabe822c6f52d5bb1b7cb6841de6e7e91b931473cb83`。
+- [x] 审计口径已区分 official trace 的 `10 wait + 30 control`、expert replay 的 `wait/expert` phase，以及 B1 trace 无 phase 的限制。因此报告两种 B1 口径：旧对齐的 `first30`，以及跳过前 10 个 wait-like step 后的 `skip_wait_then30`。
+
+| comparison | translation ratio | rotation ratio | interpretation |
+|---|---:|---:|---|
+| B1 first30 / official control30 | 0.605451 | 0.019825 | 与旧 official-vs-B1 对比一致，B1 rotation 几乎塌缩 |
+| B1 skip-wait30 / official control30 | 0.806219 | 0.096544 | 即使跳过初始 wait-like zeros，B1 rotation 仍只有 official 的约 10% |
+| B1 skip-wait30 / expert-success control | 0.895273 | 0.044216 | 相对成功 expert action，B1 translation 接近但 rotation 仍极低 |
+| official control30 / expert-success control | 1.110459 | 0.457994 | official learned policy 与 expert action 分布不完全一致，因此 official 只作为成功策略参照，不直接当训练 target |
+
+当前结论：gripper sign、center-crop、evaluator 和 init state 已不是主疑点；最稳的断点是 rotation under-production，其次是 early-horizon action magnitude。下一步不进入 semantic/P7 训练，也不进入正式 LIBERO/LIBERO-Plus/RoboTwin benchmark；先做一个更窄的 action repair smoke：从 B1 出发，只训练 action head + proprio projector，加入 first-horizon/early-horizon、rotation-aware 和 action-magnitude 约束，150--300 step 后先过 offline tiny/held-out gate。
+
+## 2026-10-14：distribution-repair head+proprio smoke 与 gate
+
+- [x] 基于 action distribution audit 启动了独立 repair smoke，没有引入 semantic/P7 loss，也没有覆盖历史 P6/P7 结果。远端训练目录：`/vepfs-mlp2/c20250405/400040/transfer/vla_attention/results/P6_vla_action_calibration/tiny_overfit_distrepair_headproprio_seed17_150step_20261014/`；checkpoint：`checkpoint_00150`；训练状态：`P6_TINY_OVERFIT_SMOKE_PASSED`。
+- [x] 训练配置：从 B1 `checkpoint_10080` 出发，只训练 action head + proprio projector；steps=`150`，lr=`5e-5`，action weights=`[1,1,1,2,4,3,1]`，horizon weights=`[3,2,1.5,1.25,1,0.8,0.8,0.8]`，translation magnitude weight=`0.05`，rotation magnitude weight=`0.25`。该配置只用于 action-interface repair 诊断，不是论文主方法。
+- [x] gate summary 已生成：远端 `results/P6_vla_action_calibration/distrepair_headproprio_150step_gate_summary_20261014.json`；本地副本 `experiment_workspace/vla_remote_results/P6_vla_action_calibration/distrepair_headproprio_150step_gate_summary_20261014.json`；SHA256=`2c76b074a17fbce03b19d0eb169f80fe6cf6d5c6d53fc0fd4de22aa904e96cc0`。
+
+| split / metric | B1 | head+proprio tiny | policy-LoRA tiny | dist-repair 150 | gate |
+|---|---:|---:|---:|---:|---|
+| tiny action MAE | 0.298864 | **0.284692** | 0.296090 | 0.296642 | dist-repair 未超过 head+proprio |
+| tiny rotation MAE | 0.250380 | **0.233718** | 0.243450 | 0.248656 | dist-repair 未超过 head+proprio |
+| tiny gripper sign acc | 0.712862 | **0.853714** | 0.827899 | 0.791667 | dist-repair 未超过 head+proprio |
+
+| held-out metric | B1 | P6.2 head+proprio | dist-repair 150 | interpretation |
+|---|---:|---:|---:|---|
+| action MAE | 0.293686 | 0.293562 | **0.293096** | 比 B1/P6.2 略好 |
+| translation MAE | 0.377516 | 0.378003 | 0.378456 | 略差，不足以证明修复 |
+| rotation MAE | 0.262067 | 0.261015 | **0.259969** | 有弱改善 |
+| gripper MAE | 0.137056 | 0.137880 | **0.136398** | 有弱改善 |
+| gripper sign acc | 0.786573 | **0.844603** | 0.832087 | 好于 B1，低于 P6.2 |
+
+Gate 判断：**No-Go for rollout / No-Go for semantic-P7 closed-loop claim**。虽然 held-out 上 action/rotation 有弱改善，但 tiny gate 没有超过 head+proprio-only，说明这次 magnitude/rotation repair 没有解决同 init tiny-overfit 闭环前置问题。因此不运行 same-init rollout，不进入正式 LIBERO/LIBERO-Plus/RoboTwin benchmark，也不把 P7-lite 加回闭环训练。下一步应转向更底层的 action interface / controller 诊断：action chunk 执行时序、rotation representation、action head 输出尺度、proprio 输入、以及 official successful checkpoint 与我们 checkpoint 的 step-wise state/action 对齐。
+

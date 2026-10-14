@@ -1,0 +1,9 @@
+{
+  "status": "passed",
+  "steps": 150,
+  "base": "B1",
+  "checkpoint": "/vepfs-mlp2/c20250405/400040/transfer/vla_attention/results/P6_vla_action_calibration/tiny_overfit_distrepair_headproprio_seed17_150step_20261014/checkpoint_00150",
+  "elapsed_seconds": 93.40782403945923,
+  "not_formal_benchmark": true,
+  "tiny_overfit": true
+}

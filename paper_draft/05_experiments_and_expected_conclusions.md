@@ -323,3 +323,225 @@ OpenVLA/OFT + LIBERO 的 B0–B4 seed17 已完成 10,080 optimizer updates，并
 当前 seed17 的直接结论是：B1 是最强 offline action baseline，说明 BlindVLA-style 视觉表征保持在这个设置下确实有效；B2 相对 B0 恶化，B3 相对 B1 恶化，B4 相对 B3 继续恶化，因此不能声称 semantic attribution 或 containment 已经提升 VLA action prediction。B4 相对 B2 的 action MSE 略低，只能说明 containment 在已恶化的 semantic 分支上有弱修正，不能说明 D0 成为有效方法。
 
 该结果要求后续叙事收紧：VLA 阶段当前不是“方法已胜出”，而是“强 baseline 已跑通，语义/动作归因项暴露出 loss scale、teacher map、动作证据定义或 offline 指标不匹配的问题”。下一步必须完成 held-out semantic controls、action evidence support mass、wrong-word/wrong-image/random/area-matched random 对照和 patch/action evidence 干预，再决定是修正 `L_sem/L_contain` 进入第二轮，还是把 VLA 主张降级为机制诊断和 future work。multi-seed 与 rollout provenance 仍是正式性能结论的前置条件。
+
+
+## 2026-10-09 P6 VLA seed17 offline result update
+
+P6 seed17 post-train evaluation now has both held-out action prediction and held-out controls. Action prediction favors B1, the BlindVLA-style visual representation retention baseline. The semantic attribution / containment branches B2/B3/B4 do not improve held-out action MSE over B1. Controls provide only partial mechanism support: correct semantic maps are stronger than role-swapped and area-matched random maps, but they are not consistently stronger than wrong-image maps. This means the current method should not be claimed as a final VLA improvement yet; it supports a revised next iteration focused on instance-sensitive semantic teachers and phase/action-conditioned soft evidence alignment. No rollout success is claimed from this stage.
+
+## 2026-10-13 更新：VLA 实验结论边界与下一轮假设
+
+P6 的结果使 VLA 部分的论证边界更清楚：当前最强证据不是 semantic containment，而是 BlindVLA-style 视觉表征保持。B1 在 held-out offline action prediction 上最强；B2/B3/B4 没有稳定 action 收益。因此论文中不能把 P6 B3/B4 写成最终有效方法，只能作为“静态 containment 不足”的负结果和设计动机。
+
+后续 VLA 论证分两步：
+
+1. **闭环工程可运行性**：用 LIBERO pick-place task0 做最小 rollout smoke。B0/B1 各 1 episode 已完整跑通 evaluator，但 success=0，不作为 benchmark。扩展到 B0/B1/B3/B4 每组 5 episodes 后，只分析失败模式。
+2. **P7-lite 机制修复**：以 B1 为基线，将 semantic loss 从“落在支撑区域内”改为判别式 ranking/KL：correct map 的 action evidence score 要高于 wrong-image、role-swapped、area-matched random。若该目标能提升 correct-vs-control margin 且不显著损伤 action MSE，再考虑进入正式训练和 rollout。
+
+预期结论不再写成“semantic containment 一定提升 VLA”，而是更稳健地写成：视觉表征保持是强必要 baseline；语言条件空间归因若要服务 VLA，需要从静态 containment 转向可判别、阶段化或动态证据目标。P7-lite 是验证这一修正假设的最小实验。
+
+### 2026-10-13 rollout smoke 实际结果
+
+B0/B1/B3/B4 每组 5 episodes 的 LIBERO pick-place task0 smoke 已完成，所有 episode 都完整跑完，说明 checkpoint restore、official evaluator、模型路径、统计文件和 init-state provenance 可以工作。但四组 success 均为 `0/5`，post-hoc action log 显示失败集中在 gripper 饱和：B0/B1 是尾段 positive saturation，B3 大多 negative-like，B4 大多 positive saturation。
+
+因此后续 VLA 不能直接扩大到正式 benchmark。下一步先做 action-interface repair smoke：expert replay、checkpoint action replay、gripper sign flip、gripper clamp、unnormalization sanity 和 OFT constants 检查。P7-lite ranking/KL 只作为 offline mechanism repair 继续推进；在闭环 0/20 的情况下，不能用 semantic loss 结果声称 VLA 成功。
+
+### 2026-10-13 P7-lite ranking dry-run
+
+基于 P6 controls records 的 dry-run 显示：B1/B3/B4 对 role-swapped 与 area-matched random 已经很容易区分，但对 wrong-image 基本接近随机。B1 的 correct > wrong-image rate 为 49.28%，B3 为 49.93%，B4 为 52.15%；而 correct > role-swapped 和 correct > area-matched random 大多在 97% 以上。
+
+这意味着下一轮 semantic repair 的重点不应是继续证明“比随机图好”，而应是提升实例/图像条件辨别力，尤其是 correct map vs wrong-image map。P7-lite 因此以 B1 为 base，优先使用 wrong-image-focused ranking/KL 目标做 100–500 step offline smoke。若闭环 action-interface smoke 仍为 0 success，则 P7-lite 不进入 rollout，只作为机制修复实验。
+
+### 2026-10-13 gripper sign flip 诊断
+
+在同一 P6 checkpoint、同一 LIBERO task0 init state 上，仅把 env.step 前的 gripper action 取反，B0/B1 仍为 `0/1`。这说明当前闭环失败不是“简单 gripper 符号翻转”能够立即修复的问题。后续 action-interface 诊断应进入更细的 replay：expert action replay、预测动作 unnormalization replay、force negative/positive gripper 时间窗、以及 OFT constants / bounds_q99 统计一致性检查。
+
+
+
+## 2026-10-13 补充：P6 rollout 失败的 action-interface 边界
+
+P6 B0/B1/B3/B4 已能进入官方 LIBERO episode loop，但 task0 smoke 全部失败。最新 action-interface audit 显示：训练数据侧已经对 gripper 执行 `1 - raw_gripper`，官方 OpenVLA/OFT rollout 侧又在 `env.step` 前执行 gripper normalization 与 OpenVLA sign inversion；同时 P6 checkpoint 目录没有官方格式 `dataset_statistics.json`，当前由 wrapper 手动注入 `project_train` stats。替换为官方 OFT stats 后，B0/B1 各 1 episode 仍为 `0/1`，post-hoc 仍是 `late_gripper_positive_saturation_possible`。
+
+因此当前结论边界冻结为：P6 的闭环失败首先是 action-interface / evaluator / task execution 问题，而不是 semantic attribution 方法本身的有效性结论。VLA 后续必须先建立 action-interface 正控，包括 official checkpoint 正控、expert action replay、windowed gripper intervention、chunk timing 和 camera/task provenance；在 B0/B1 出现非零 smoke success 或失败类型被明确修复前，不进入正式 rollout benchmark。P7-lite 只作为 offline mechanism repair 继续准备，不能提前声称闭环收益。
+
+### 2026-10-13 expert replay 正控对 VLA 结论边界的影响
+
+为避免把闭环失败误判为语义归因方法失败，我们加入了 expert action replay 正控：不加载模型，直接重放 OpenVLA modified LIBERO RLDS 的 task0 expert action。结果显示 raw expert action 在相同 task0/init-state 设置下成功 `6/9`，按官方 train01→env 约定转换后同样成功 `6/9`，而 gripper flip 为 `0/9`。这给出一个明确边界：LIBERO task0、init state、raw action convention 和官方 env action convention 均可产生成功轨迹。
+
+模型 rollout 与 expert replay 的动作日志对比进一步显示，B0/B1 的 translation L2 mean 明显小于 expert，B3/B4 出现 gripper 饱和。因此当前 VLA 负结果应被解释为 action-interface / action-head / phase 或 normalization 问题仍未解决，而不是直接证明 semantic attribution 对 VLA 无效。论文实验叙事应保留 P6 的负结果：B1/retention 是强 baseline，静态 semantic containment 尚未带来 action 收益；同时把 P7-lite 定位为 offline mechanism repair，而非已经可进入正式 rollout 的最终方法。
+
+### 2026-10-13 raw-vs-processed trace 的实验含义
+
+raw-vs-processed trace 显示，B0/B1 的 translation/rotation 在 official `process_action` 前后不变，动作幅度不足主要来自模型 raw prediction 或 action head，而不是 rollout 后处理。gripper 维度会被 official postprocess 改变，且当前 posthoc 的 positive/negative 命名可能存在符号歧义，因此论文中应避免用单一 gripper 语义解释失败，只报告 positive/negative saturation 和 expert replay 正控。
+
+`num_open_loop_steps=1` 的最小 smoke 仍为 B0/B1 `0/1`，说明 chunk timing 不是单独充分修复项。当前 VLA 阶段的合理结论是：B1 是 offline action 最强 baseline，但闭环部署还需要 action head / raw prediction calibration；semantic ranking/KL 的 P7-lite 只能继续作为 offline mechanism repair，不能跳过 action-interface 问题进入正式 rollout benchmark。
+
+### 2026-10-14 VLA failure analysis wording update
+
+For P6 rollout smoke, gripper-related failure types should be reported as sign-neutral saturation patterns, i.e., positive or negative saturation, rather than open or close failures. The raw-vs-processed action trace shows that the official OpenVLA/OFT action post-processing changes the gripper dimension, so assigning semantic open/close meaning to a sign before final convention verification would overstate the evidence.
+
+This wording change does not weaken or improve the result. The substantive conclusion remains: B1 is the strongest offline action baseline, P6 semantic containment does not yet improve action prediction, and current rollout failures require action-interface/action-head diagnosis before any formal LIBERO benchmark claim.
+
+### 2026-10-14 VLA diagnostic result: scalar action scaling is insufficient
+
+A diagnostic-only rollout test scaled B1's first six EEF action dimensions by 1.5× and 2.0× before `env.step`. Both runs completed the 230-step LIBERO task0 episode without environment error, but both remained at 0/1 success with late positive gripper saturation. This weakens the hypothesis that simple EEF magnitude under-scaling alone explains the closed-loop failure. The next VLA iteration should focus on action-head calibration, state drift under closed-loop rollout, proprio/observation mismatch, gripper phase, and stage-aware behavior rather than using scalar action scaling as a method.
+
+### 2026-10-14 State-trace diagnosis for VLA rollout failure
+
+We added an expert state trace by replaying the successful demo0/init0 raw expert trajectory and recording EEF pose and gripper state at each step. Compared with the B1 rollout trace over the first 50 aligned steps, the expert has higher action translation magnitude (0.7973 vs. 0.5298), higher rotation magnitude (0.0467 vs. 0.0179), and larger realized EEF displacement (0.00965 vs. 0.00680). The mean EEF position gap between the model rollout and the expert trajectory is 9.49 cm, with a maximum of 15.15 cm.
+
+This supports a more precise failure interpretation: the B1 policy does not merely suffer from a scalar action magnitude mismatch; the closed-loop state trajectory diverges from the expert trajectory early. Since 1.5× and 2.0× action scaling do not recover success, the next VLA iteration should diagnose action-head calibration, state-conditioned rollout drift, proprioception/observation mismatch, gripper phase, and stage-aware behavior before any formal LIBERO benchmark claim.
+
+### 2026-10-14 Policy-on-expert-state diagnosis
+
+To separate closed-loop state drift from action-mapping error, we queried the B1 policy on states generated by the expert trajectory while executing only expert actions in the environment. B1 remains mismatched to expert actions even on these expert-driven states: expert translation magnitude is 0.7973 while B1 predicts 0.6054, and expert rotation magnitude is 0.0467 while B1 predicts only 0.0131. The processed-vs-expert translation difference is 0.5704 and the rotation difference is 0.0388.
+
+This means the rollout failure is not only caused by state drift after the model executes its own actions. The action head, action target calibration, rotation/gripper target distribution, or task-specific action learning is already insufficient on expert states. Therefore the next VLA iteration should repair action supervision and calibration before using semantic attribution losses as a closed-loop improvement claim.
+
+### 2026-10-14 Action calibration audit before semantic VLA claims
+
+The action calibration audit shows that B1's expert-state mismatch is concentrated in rotation. The B1/expert translation magnitude ratio is 0.759, but the rotation ratio is only 0.281. Per-dimension ratios are especially low for rot_x (0.033) and rot_y (0.096), while rot_z is closer (0.848). This suggests that the native mean L1 action objective over the 8×7 action chunk may under-emphasize low-magnitude rotation dimensions in our short training setting.
+
+Therefore, the next VLA step should not add semantic losses directly. We introduce a P6.1 action-calibration smoke that starts from B1 and changes only action supervision, using a per-dimension weighted L1 such as `[1,1,1,3,3,2,1]`. The required gate is improvement on held-out per-dimension metrics and policy-on-expert-state query before any rollout or semantic P7-lite claim.
+
+
+### 2026-10-14 P6.1 action calibration negative result
+
+We tested a minimal action-calibration repair before adding more semantic losses. Starting from the B1 retention checkpoint, P6.1 used a per-dimension weighted L1 objective with weights `[1,1,1,3,3,2,1]` for 100 steps. The training and checkpoint restore succeeded, but the held-out action prediction gate failed. Compared with B1, P6.1 improved gripper sign accuracy from 0.7866 to 0.8531, while worsening action MAE from 0.2937 to 0.3034, translation MAE from 0.3775 to 0.3963, and rotation MAE from 0.2621 to 0.2675.
+
+This is a useful negative result. It shows that the VLA bottleneck is not solved by naively upweighting weak rotation dimensions. The paper should not claim a closed-loop VLA improvement from P6/P6.1. The defensible story is narrower: B1/retention remains the strongest offline baseline; static semantic containment does not yet help action prediction; rollout failures require action-head, state-drift, proprioception, gripper-phase, and task-stage diagnostics before formal LIBERO/LIBERO-Plus/RoboTwin benchmark claims.
+
+### 2026-10-14 P6.1a action-calibration ablation
+
+We then tested a milder calibration ablation, P6.1a, using weights `[1,1,1,1.5,1.5,1.2,1]` and a lower learning rate `3e-5` for 100 steps from the same B1 checkpoint. This ablation fixes the main failure mode of P6.1: it no longer worsens action, translation, and rotation MAE relative to B1. On the held-out action set, B1 gives action/translation/rotation MAE of `0.293686/0.377516/0.262067`, while P6.1a gives `0.293306/0.376033/0.261234`. However, the gains are very small, gripper MAE worsens from `0.137056` to `0.141341`, and only gripper sign accuracy improves modestly from `0.786573` to `0.802503`.
+
+This result should be interpreted as a diagnostic partial recovery, not as a VLA method success. It suggests that a softer action calibration can avoid damaging the B1 retention baseline, but it does not yet solve the closed-loop bottleneck. The next admissible test is policy-on-expert-state query for P6.1a. If the expert-state rotation ratio and phase behavior do not improve, the VLA path should shift from semantic losses to action target normalization, rotation representation, action-head/proprio design, and task-stage supervision.
+
+### 2026-10-14 P6.1a expert-state gate
+
+We further evaluated P6.1a on policy-on-expert-state query, where the environment is advanced by expert actions and the policy is only queried on those expert-driven states. P6.1a slightly reduces the processed-vs-expert translation difference from `0.570370` to `0.563464` and the rotation difference from `0.038765` to `0.038335`. However, it does not improve the key rotation-magnitude bottleneck: B1's model rotation L2 mean is `0.013138`, P6.1a's is `0.013062`, while the expert is `0.046681`.
+
+This closes the current action-calibration branch as a No-Go for rollout. The result says that mild weighted action calibration can avoid damaging the offline B1 baseline, but it still does not repair the rotation/action-head mismatch on expert states. For the paper, this is a useful boundary result: before making any closed-loop VLA claim, the next system iteration must audit action target normalization, rotation representation, action-head/proprio design, and stage supervision. Semantic ranking losses remain offline mechanism experiments until the action interface is fixed.
+
+
+### P6 action target audit and its implication for VLA evidence
+
+A read-only target audit was added after P6.1/P6.1a failed the rollout gate. The audit reads the exact RLDS episodes used by the P6 train/eval manifests, reproduces the gripper transform and bounds-q99 normalization, and computes per-dimension target distributions and H=8 chunk statistics.
+
+Main evidence:
+
+- Train split: 27 episodes, 2709 steps, 2520 H=8 chunks, 0 hash failures.
+- Eval split: 9 episodes, 832 steps, 769 H=8 chunks, 0 hash failures.
+- Train normalized translation mean_abs average is 0.4645.
+- Train normalized rotation mean_abs average is 0.2839.
+- Rotation target saturation is low, about 0.021 per rotation dimension.
+- Rotation near-zero<=0.05 is only about 0.066–0.079.
+- Eval rotation distribution is close to train.
+
+This weakens the simple explanation that the model fails because rotation targets are numerically tiny after normalization. The more defensible interpretation is that the current VLA bottleneck lies in action-head learning, chunk execution, controller/action convention, or rollout interface. Therefore, semantic attribution losses should not be treated as the next direct fix for closed-loop VLA until the action interface gate is repaired.
+
+For the paper narrative, this result is useful even though it is negative: it prevents overstating the semantic attribution method and gives a clean boundary between VLM/VLA grounding evidence and robotics execution evidence. VLA claims should require a repaired action-interface baseline before comparing B2/B3/B4-style semantic methods.
+
+
+### 2026-10-14 Action-head and rollout-interface audit
+
+We added a read-only audit of the OpenVLA/OFT action path after the action target audit. The audit confirms that the model predicts an 8-step, 7D action chunk, the native continuous objective is mean L1 over the full `B×8×7` chunk, and the official LIBERO rollout path executes chunked actions with gripper binarization and OpenVLA sign inversion. The source snapshot is OpenVLA-OFT commit `e4287e94541f459edc4feabc4e181f537cd569a8`.
+
+The evidence sharpens the negative result. B1 has an expert-state translation magnitude ratio of `0.759` and a rotation magnitude ratio of only `0.281`. P6.1a slightly improves held-out action, translation, and rotation MAE, but its expert-state rotation ratio remains `0.280`. This means mild weighted action calibration changes the modules but does not repair the main rotation/action-head bottleneck. Since the target audit already shows non-trivial normalized rotation targets, the failure is more likely in action-head learning, chunk-level loss reduction, horizon-specific execution, or rollout action processing than in the absence of semantic attribution.
+
+This affects the paper plan. P6/P6.1/P6.1a should be reported as a boundary and diagnostic result, not as a VLA success. The next VLA claim requires an action-interface gate: per-horizon error, first-action error, raw/processed/env-action consistency, and gripper convention verification. Semantic ranking or attribution losses can remain in the method pipeline, but they should not be used to claim closed-loop robotics improvement until B0/B1 action execution is repaired.
+
+
+### 2026-10-14 Horizon-wise action diagnosis
+
+A horizon × dimension diagnostic was added to avoid hiding rollout-relevant errors behind the full-chunk mean L1. The result again supports a No-Go decision for immediate rollout benchmark. P6.1a reduces first-horizon action MAE from `0.292031` to `0.291071`, but the improvement is only diagnostic-scale and the last-horizon MAE slightly worsens from `0.301750` to `0.302049`.
+
+The more important evidence is dimensional under-production. At horizon 0, B1's predicted-to-target absolute magnitude ratios for `rot_x/rot_y/rot_z` are `0.477/0.181/0.338`; P6.1a only raises them to `0.512/0.206/0.358`. This is consistent with the expert-state query result: the action head still under-produces rotation even when the state is driven by the expert.
+
+This gives the next VLA iteration a sharper target. The right repair is not another broad semantic loss, but an action-interface repair that explicitly handles horizon and action dimension behavior. Candidate repairs include first-action or horizon-aware weighting, action-head/proprio-projector-only smoke training, and rotation-specific calibration. These remain engineering gates before any formal LIBERO/LIBERO-Plus/RoboTwin benchmark claim.
+
+### 2026-10-14 P6.2 action-head/proprio repair boundary
+
+A narrower P6.2 repair was tested after P6.1/P6.1a and the action-interface audits. The experiment starts from the B1 checkpoint, freezes the policy LoRA, and updates only the action head and proprio projector with a horizon-weighted native `8×7` action loss. It passed the training and restore smoke, but the held-out offline gains were too small to unlock rollout claims: action MAE changed from `0.293686` to `0.293562`, first-horizon MAE from `0.292031` to `0.290828`, and rotation MAE from `0.262067` to `0.261015`, while translation and gripper MAE slightly worsened.
+
+This sharpens the paper boundary. The current VLA evidence says that BlindVLA-style B1 remains the strongest robust baseline, simple semantic containment does not improve action prediction, and isolated action-head/proprio tuning produces only diagnostic-level gains. Formal LIBERO/LIBERO-Plus/RoboTwin benchmark claims require a stronger action-interface repair or a nonzero minimal rollout smoke; P7-lite ranking/KL remains an offline mechanism experiment until that gate is passed.
+
+### 2026-10-14 P7-lite mechanism dry-run
+
+We added a P7-lite dry-run that reuses the P6 control records and evaluates a discriminative semantic-evidence ranking objective without training. The strongest failure mode is correct-vs-wrong-image separation. For B1, correct evidence mass beats the wrong-image map in only `49.3%` of held-out records, and only `32.6%` with a `0.02` margin. In contrast, role-swapped and area-matched random negatives are already mostly separable.
+
+This result gives a concrete next mechanism target: if semantic attribution is continued in VLA, the loss should prioritize image-instance-sensitive ranking rather than static containment. It does not establish a closed-loop VLA gain. The paper should state that P7-lite is an offline mechanism repair candidate and remains gated by action-head/interface repair before any formal LIBERO or RoboTwin benchmark claim.
+
+### 2026-10-14 VLA positive-control checkpoint repair 与 evaluator preflight
+
+当前 VLA 主线已切回 positive control：先确认官方/公开 OpenVLA-OFT checkpoint 能在 LIBERO `libero_spatial` task0 上完成最小 rollout，再决定是否继续 P6.3/P7-lite。101 SSH 已恢复。公开 checkpoint 原有三个 shard 不完整，其中 shard 1 已通过 mirror-first 续传完成并验证 SHA256；shard 2 正在续传，shard 3 尚未开始。完整 hash verified 前不运行 rollout。
+
+官方 evaluator 必须使用 workspace 的 OFT 环境 `/vepfs-mlp2/c20250405/400040/transfer/vla_attention/vla_workspace/envs/oft/bin/python`，并设置 `LIBERO_CONFIG_PATH=/vepfs-mlp2/c20250405/400040/transfer/vla_attention/vla_workspace/libero_config`。`/root/starvla_cu124` 缺 `draccus`，不能作为官方 evaluator 环境。preflight 已确认 OpenVLA-OFT commit `e4287e94541f459edc4feabc4e181f537cd569a8`、LIBERO commit `8f1084e3132a39270c3a13ebe37270a43ece2a01`，以及官方常量 `H=8, D=7, proprio=8, bounds_q99`。
+
+首轮 task 固定为 `libero_spatial` task0：`pick up the black bowl between the plate and the ramekin and place it on the plate`，默认 init states `(50, 92)`，SHA256 `f061b67788d541001f3d6872be9a3a3b0b7de3490dac4683e181f9b0703f8e20`。positive control 至少 5 episodes；若仍为 0 success，按 evaluator wrapper、dataset statistics、action normalization、gripper convention、camera、task/init state、chunk execution 的顺序排查。
+
+### 2026-10-14 官方 OpenVLA-OFT/LIBERO task0 positive control 通过
+
+公开 `moojink/openvla-7b-oft-finetuned-libero-spatial` checkpoint 已修复完整，并用官方 OpenVLA-OFT evaluator 函数在 `libero_spatial` task0 上完成 5-episode positive control。结果为 `5/5` success，`success_rate=1.0`，远端目录为 `/vepfs-mlp2/c20250405/400040/transfer/vla_attention/results/positive_control_moojink_task0_20261014/`。
+
+该结果改变 VLA 诊断边界：LIBERO 环境、官方 evaluator、默认 init state、agent/wrist camera、`H=8,D=7` chunk、`bounds_q99` unnormalization 和 gripper/action processing 在官方 checkpoint 上可成功。因此，P6 B0/B1/B3/B4 rollout smoke 的 0 success 不能再归因于基础管线整体不可用；后续应对比我们的 checkpoint restore、训练后 action head/proprio projector、normalization key、action magnitude、rotation under-production 和 rollout wrapper 差异。下一步仍按固定顺序做 expert action replay 与 tiny overfit，不直接跳到 P6.3/P7-lite。
+
+### 2026-10-14 expert action replay positive control 复核
+
+官方 checkpoint positive control 通过后，已复核 LIBERO task0 expert action replay。远端结果为 `/vepfs-mlp2/c20250405/400040/transfer/vla_attention/results/P6_vla_action_calibration/expert_replay_positive_control_20261014_after_moojink/`，3 条 demo × init 0/1/2 × `raw/train01_to_env` 共 18 trials，12 success，summary SHA256 `8680f9fd38d0cddf8624f8dfc0d4c759820f6bd128652165ff3b607340b35731`。
+
+结论是：raw expert action 与 train01→env action 在可匹配 init 上可成功，gripper/sign 转换不是主要断点；但 expert action 不是任意 init 通用，跨 init 复用会失败。因此下一步 tiny overfit 必须使用 replay 成功的同 init demo，并把 rollout 回同一 init-state 作为 gate。
+
+### 2026-10-14 tiny-overfit head+proprio 结果与同 init rollout gate
+
+基于 expert replay 成功记录构建了 3 条 task0 episode 的 tiny manifest，SHA256 `9a2bd44eb0c3a1d51db2bf4c89be0ad05fb9c1d9265e0258f4ece1e08e2f4d1b`。从 P6 B1 出发，只训练 action head + proprio projector，300 steps，lr `1e-4`，训练通过，远端目录为 `/vepfs-mlp2/c20250405/400040/transfer/vla_attention/results/P6_vla_action_calibration/tiny_overfit_headproprio_seed17_300step_20261014_retry2/`。
+
+offline tiny eval 有明确改善：action MAE `0.298864 -> 0.284692`，first-horizon MAE `0.288046 -> 0.282167`，rotation MAE `0.250380 -> 0.233718`，gripper sign acc `0.712862 -> 0.853714`。但 same-init rollout smoke 仍为 `0/1`，目录为 `/vepfs-mlp2/c20250405/400040/transfer/vla_attention/results/P6_vla_action_calibration/tiny_overfit_same_init_rollout_20261014/`。
+
+该结果说明只调 action head/proprio 能改善 normalized offline prediction，但不足以修复 closed-loop state drift。VLA 主线仍应继续 action-interface repair，优先测试解冻 policy LoRA + action head + proprio 的 tiny-overfit，或对比官方 moojink checkpoint 的 action traces；semantic/P7 不应被恢复为闭环成功主张。
+
+## 2026-10-14：tiny-overfit policy LoRA + head+proprio 启动
+
+- [x] head+proprio-only tiny-overfit 的 `final.json` 已补充远端 `final_corrected.json`，修正原 `final.json` 中保留 `.tmp` checkpoint 路径的问题；实际 checkpoint 为 `/vepfs-mlp2/c20250405/400040/transfer/vla_attention/results/P6_vla_action_calibration/tiny_overfit_headproprio_seed17_300step_20261014_retry2/checkpoint_00300`。
+- [x] 已确认标准 P1 provenance 文件真实路径为 `/vepfs-mlp2/c20250405/400040/transfer/vla_attention/repo/VLA_attention/experiment_workspace/results/P6_vla_b0_b4/p1_interface/p1_interface.json`，不是先前误写的 `results/P6_vla_b0_b4/p1_interface/report.json`。该文件记录 OpenVLA revision `47a0ec7fc4ec123775a391911046cf33cf9ed83f`、action shape `[1,8,7]`、normalization round-trip、module restore、visual grid 和 gradient finite/nonzero。
+- [x] 已启动下一轮 tiny-overfit：从 B1 checkpoint 出发，解冻 policy LoRA + action head + proprio projector，300 steps，lr `5e-5`，仍使用同一个 3-episode tiny manifest，远端 job 为 `/vepfs-mlp2/c20250405/400040/transfer/vla_attention/jobs/tiny_overfit_policy_lora_20261014_retry3/`，PID `623231`。
+- [x] 该作业已经通过 GPU gate、source-lock、P1 provenance 和模型加载，开始写 `train_metrics.jsonl`；截至首次记录，训练已达到 57/300 steps，loss finite，GPU0 约 23GB。
+- [ ] 作业完成后必须立即做 offline action prediction 对比：B1 原始 checkpoint、head+proprio tiny checkpoint、policy-LoRA tiny checkpoint；若 policy-LoRA tiny 在同集 action MAE/first-horizon/gripper/rotation 上明显优于 head-only，再做 same-init 1-episode rollout。
+- [ ] 若 policy-LoRA tiny offline 提升明显但 same-init rollout 仍失败，下一步不继续 semantic/P7，而是提取官方 moojink 成功 checkpoint 与我们 checkpoint 的 action trace，比较 action chunk、unnorm_key、proprio、translation/rotation scale 和 gripper trajectory。
+
+## 2026-10-14：policy-LoRA tiny 评估、center-crop 复核与官方 action trace 对比
+
+- [x] policy LoRA + head + proprio tiny-overfit 已完成 300/300 steps，远端目录为 `/vepfs-mlp2/c20250405/400040/transfer/vla_attention/results/P6_vla_action_calibration/tiny_overfit_policy_lora_headproprio_seed17_300step_20261014/`，checkpoint 为 `checkpoint_00300`，`final.json` 状态为 `passed`。
+- [x] 三方 tiny offline action prediction 对比已生成：`tiny_eval_three_way_comparison.json`，SHA256 `092179040be1e6b63c3f2ff5fe5fb15ce4a46c105ab09b35e98fbe172d50ba83`。结果：policy-LoRA tiny 相比 B1 只有轻微改善，但比 head+proprio-only tiny 更差。
+
+| metric | B1 | head+proprio tiny | policy-LoRA tiny | policy - B1 | policy - head |
+|---|---:|---:|---:|---:|---:|
+| action MAE | 0.298864 | 0.284692 | 0.296090 | -0.002774 | +0.011398 |
+| first-horizon MAE | 0.288046 | 0.282167 | 0.292713 | +0.004666 | +0.010546 |
+| translation MAE | 0.386396 | 0.372006 | 0.384227 | -0.002169 | +0.012221 |
+| rotation MAE | 0.250380 | 0.233718 | 0.243450 | -0.006931 | +0.009732 |
+| gripper MAE | 0.181721 | 0.175672 | 0.189600 | +0.007879 | +0.013928 |
+| gripper sign acc | 0.712862 | 0.853714 | 0.827899 | +0.115036 | -0.025815 |
+
+结论：解冻 policy LoRA 没有超过 head+proprio-only tiny，因此不满足“offline 明显优于 head-only 后再跑 same-init rollout”的 gate。当前不把 policy-LoRA tiny 当作闭环候选。
+
+- [x] 为 rollout/trace 脚本新增 `--center-crop` 诊断开关，默认仍为 false，保持历史 P6 结果可复现。B1 使用 `center_crop=True` 的 1-episode rollout 结果仍为 `0/1`，目录为 `/vepfs-mlp2/c20250405/400040/transfer/vla_attention/results/P6_vla_action_calibration/b1_center_crop_one_episode_20261014/`。这说明 official positive control 与我们 wrapper 的 center-crop 差异不是单独充分原因。
+- [x] 生成官方 `moojink/openvla-7b-oft-finetuned-libero-spatial` task0/init0 action trace，目录为 `/vepfs-mlp2/c20250405/400040/transfer/vla_attention/results/P6_vla_action_calibration/official_moojink_task0_init0_action_trace_20261014/`。该 trace 前 30 control steps 未必覆盖完整成功过程，只用于动作分布诊断，不是 benchmark。官方 loader 再次备份并改写了 moojink checkpoint 的 `config.json`，这是 OpenVLA-OFT 官方 loader 的既有行为。
+- [x] 官方 trace 与 B1 center-crop rollout 前 30 步对比已生成：`/vepfs-mlp2/c20250405/400040/transfer/vla_attention/results/P6_vla_action_calibration/official_vs_b1_center_crop_action_compare_20261014/summary.json`。关键数值如下：
+
+| metric | official moojink | our B1 center-crop | interpretation |
+|---|---:|---:|---|
+| processed translation L2 mean | 0.927672 | 0.561660 | B1 平移幅度明显偏弱 |
+| processed rotation L2 mean | 0.041404 | 0.000821 | B1 rotation 几乎塌缩 |
+| processed gripper mean | -1.000000 | -1.000000 | gripper sign 一致，不是主因 |
+| action diff L2 mean | — | 0.670821 | 动作分布与成功 checkpoint 差距很大 |
+| translation diff L2 mean | — | 0.666692 | 主要差距来自平移轨迹 |
+| rotation diff L2 mean | — | 0.041017 | rotation under-production 仍成立 |
+
+当前判断：P6 闭环失败的主断点更像是动作分布/动作幅度与 rotation 学习不足，而不是 evaluator、LIBERO 环境、init state、gripper sign 或 center-crop。下一步应优先做 action distribution repair：用官方成功 checkpoint 的 action trace/statistics 或 expert trajectory 约束 action magnitude、rotation 和 early-horizon，而不是继续扩大 semantic/P7。semantic/P7 仍不得声称闭环 VLA 有效。
+
+### 2026-10-14 VLA action-interface gate update
+
+当前 VLA 主线仍处在 action-interface repair 阶段。官方 moojink checkpoint 已在 LIBERO spatial task0 取得 5/5 positive control，expert replay 也能在匹配 init 下成功；因此基础 evaluator/LIBERO/action processing 可用。我们的 B1/P6 系列失败主要指向 action distribution，尤其 rotation under-production。
+
+最新 distribution-repair smoke 从 B1 出发，只训练 action head + proprio projector，并加入 early-horizon、translation magnitude 与 rotation magnitude 约束。结果：held-out action/rotation 指标相对 B1 有弱改善，但 tiny gate 没有超过 head+proprio-only tiny-overfit。因此当前结论仍是 No-Go for rollout：在 action-interface gate 通过前，不扩大 semantic/P7，不启动正式 LIBERO/LIBERO-Plus/RoboTwin benchmark，不把 P7-lite 解释为闭环 VLA 成功。
