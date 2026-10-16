@@ -1,6 +1,6 @@
 # Step 4 — 原文候选选择
 
-2026-10-16T12:05:27.430883+00:00
+2026-10-16T11:49:09.713077+00:00
 
 选择 7 篇：
 - RS-CL: Contrastive Representation Regularization for Vision-Language-Action Models。选择原因：物理状态距离可塑造控制相关表征。

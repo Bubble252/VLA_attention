@@ -40,8 +40,10 @@ PRIOR = [
 ]
 
 def main():
-    timestamp = datetime.now(timezone.utc).isoformat()
     raw = json.loads((ROOT/'search_raw.json').read_text())
+    # Keep generated reports byte-stable across recovery/rebuilds. The search
+    # timestamp is the evidence acquisition time for every downstream step.
+    timestamp = raw['retrieved_at']
     pool = {}
     for source, records in raw['results'].items():
         for p in records:
