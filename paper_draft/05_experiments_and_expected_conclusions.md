@@ -14,9 +14,11 @@ VLA 主线不再把静态 action-evidence containment 预设为最终涨点方�
 | J3 | J0 + 静态语义归因对齐 | 是否只需静态空间正则 |
 | J4 | J0 + LC-PEA | 语言指定证据的未来预测是否改善动作与闭环 |
 | J5 | J1 + LC-PEA | LC-PEA 在强 retention baseline 上是否仍有增量 |
-| C-J4 | wrong-word/image、random、uniform、future-shuffle | 增益是否来自正确的语言—视觉—时间对应 |
+| C-J4 | no-binding、same-image wrong-word/object、wrong-image、random、uniform、future-shuffle | 增益是否来自正确的语言—视觉—时间对应 |
 
 普通 JEPA 与 LC-PEA 必须共享 target encoder、predictor 容量、future offsets、action-plan 条件、额外前向和训练预算。首版 future target 来自 demonstration 的真实未来帧 latent；predictor 读取当前 policy 的 action-plan latent 或预测 action chunk，不直接读取专家未来动作。teacher-forced expert action 只作诊断上界，并配 action-drop/shuffle，防止仅凭动作标签预测未来。不使用测试 rollout 未来、不预测像素、不引入完整 WAM。语言权重是带均匀泄漏的 soft routing，action policy 仍读取完整视觉、wrist camera 和 proprioception。
+
+J4 的主监督预测 referent-conditioned latent change，而不是整幅未来表征；另以 same-image 错词/错对象构造 counterfactual binding ranking。没有合法同图候选时，该样本不进入主 ranking，wrong-image 只保留为较弱负控。short/mid offsets 用于检验 source→transport→target 的自然动态迁移，不将人工 phase label 作为首版训练真值。
 
 ### LC-PEA 的能力成功标准
 
@@ -27,6 +29,8 @@ VLA 主线不再把静态 action-evidence containment 预设为最终涨点方�
 5. **动态必要性**：J4 优于 J3、且 future-shuffle 显著破坏收益，才能声称未来表征是必要部分。
 6. **机制一致性**：`I_bind`、目标证据干预和 phase 成功应与 rollout 增量方向一致；机制指标单独改善不能替代能力涨点。
 7. **泛化**：先在 LIBERO ID 建立结果，再在 LIBERO-Plus 的 task-preserving OOD 和目标重定向上复核；DROID 仅报告离线真实数据迁移。
+
+没有任何配置能够预先确保涨点。每个候选必须同时画 `L_action/L_pred/L_bind`、各自 gradient norm、与 action gradient 的 cosine、correct-vs-counterfactual gap、held-out action 和 rollout 曲线。若辅助梯度长期冲突，先降低权重或用 warm-up；若正确/反事实 gap 不成立，停止 counterfactual 分支；若 latent 指标变好但动作/闭环不变，不能用收敛更快或热图更集中代替 VLA 能力结论。
 
 最小 Go/No-Go 实验先跑 `J0/J1/J2/J4/C-J4` 的单任务、固定 seed、小预算版本。只有 J4 同时超过 J0/J2、正确证据超过负控并通过 restore/rollout 工程 gate，才扩大到 10k updates 和三 seed。若 J2≈J4，结论是普通动态预测已经解释收益；若 J4 只改善 target selection 而 primitive execution 不变，论文只声称 grounding/retargeting 增益；若 action 和 rollout 都无增量，则 LC-PEA 停止升级为主方法，保留诊断结果。
 

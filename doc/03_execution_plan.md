@@ -600,6 +600,9 @@ P6 的研究目标从“让动作归因落入静态语言区域”调整为“�
 - [ ] 使用 LIBERO demonstration 的当前帧、原生 action chunk、本体状态和短时真实未来帧；target encoder 冻结或 EMA，目标 stop-gradient；
 - [ ] predictor 使用当前 policy 的 action-plan latent 或预测 action chunk；专家未来动作只作带 action-drop/shuffle 的诊断上界，禁止主方法通过动作标签捷径预测未来；
 - [ ] 使用 P4 冻结的 source/target 语言证据做 soft routing，并保留均匀泄漏；禁止 hard mask 完整视觉；
+- [ ] 主预测目标使用 referent-conditioned latent change `Δz*(w)=z*_{t+k}(w)-z*_t(w)`，而不是整幅未来图像或全局静态 latent；
+- [ ] 加入 same-image 错词/错对象的 counterfactual binding ranking；无合法同图负样本时跳过主 ranking，禁止用 wrong-image 冒充同图反事实；
+- [ ] 将 short/mid offsets 的 source/transport/target 变化作为自然动态阶段分析；首版不把人工 phase label 写入主训练损失；
 - [ ] 原生 action head 始终读取完整 agent/wrist RGB、proprioception、EEF/夹爪状态；预测分支只在训练期提供辅助目标；
 - [ ] 首版只做 latent prediction，不生成视频像素、不做候选动作搜索、不声称长时 world-model planning；
 - [ ] 新建 `P6-LCPEA-*` 配置与结果目录，不覆盖现有 P6 B0--B4、cache、checkpoint 或历史结论。
@@ -613,10 +616,12 @@ J2 = J0 + ordinary JEPA future-latent prediction
 J3 = J0 + static semantic attribution alignment
 J4 = J0 + LC-PEA
 J5 = J1 + LC-PEA
-C-J4 = wrong-word / wrong-image / random / uniform / future-shuffle controls
+C-J4 = no-binding / wrong-word / wrong-image / random / uniform / future-shuffle controls
 ```
 
 资源有限时先跑 `J0/J1/J2/J4/C-J4`。J2 与 J4 必须共享 target encoder、predictor、future offsets、训练样本和额外计算，唯一差异是语言条件 evidence routing。只有 J4 在 held-out action 或 official rollout 上超过 J0/J2、正确证据超过负控，且 J5 对 J1 仍有增量时，才把 LC-PEA 升级为论文主方法。若只改善 future-latent loss、热力图或 `I_bind`，则只能报告机制，不声称 VLA 能力提升。
+
+**涨点边界：不能保证。** LC-PEA 比静态 containment 更直接地服务动作学习，但仍可能因语言图错误、动作/背景捷径、辅助梯度与 action loss 冲突或基础 action head 能力不足而失败。每个 smoke 必须记录 `L_action/L_pred/L_bind`、各自对可训练参数的 gradient norm 与 cosine、正确/反事实预测 gap、held-out action 和 official rollout。辅助 loss 下降而 action/rollout 不升时，立即判为表征结果，不扩大训练。
 
 首轮 benchmark 顺序仍为标准 LIBERO pick-place → LIBERO-Plus task-preserving/goal-changing OOD → DROID offline；π0.5 用于跨动作结构复核，MolmoAct2/LingBot-VLA/RoboTwin 后置。当前 OpenVLA/OFT action-interface 与 positive-control 边界仍然有效，LC-PEA 不能绕过基础 B0/官方 checkpoint rollout gate。
 

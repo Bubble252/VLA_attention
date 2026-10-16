@@ -17,6 +17,8 @@
 - 首版只预测 demonstration 中短时未来观测的 latent，不生成像素，不做长时规划，不引入外部动作专家，也不把 world model 当作已完成模块。
 - predictor 使用当前 policy 的 action-plan latent 或预测 action chunk；专家未来动作不得作为主方法输入，只允许作为带 action-drop/shuffle 对照的诊断上界，防止动作标签捷径。
 - 语言证据只形成带泄漏余量的软权重；policy 始终读取完整 RGB、wrist camera、proprioception、EEF/夹爪状态和历史信息，禁止以硬 mask 删除动作必需的接触、夹爪或障碍证据。
+- 预测目标固定为语言 referent 的 latent change，而非全局未来外观；用 same-image 错词/错对象构造 counterfactual ranking，无合法候选则跳过该样本的主 ranking。
+- short/mid future offsets 用于检验 source→transport→target 的自然证据迁移；phase 只作分析，不进入首版训练标签。
 - teacher、future target encoder 和预测损失仅在训练时使用。首版推理图保持原 action policy；若后续将预测 latent 接入 action refinement，必须作为独立版本重新计算推理成本。
 
 LC-PEA 要回答的能力问题是：**语言指定的目标证据能否通过短时未来状态预测，改善 manipulation 的目标选择、闭环执行和 OOD 泛化，并在普通未来预测及视觉表征保持之外产生独立增量？**
@@ -103,11 +105,13 @@ StarVLA 源码已作为可选参考固定归档于 `references/repos/starvla`（
 | J3 | J0 + 静态 `T_sem → A_lang`，不预测未来 | 静态语言空间正则即可涨点 |
 | J4 | J0 + LC-PEA | 语言条件的未来证据预测是否有独立价值 |
 | J5 | J1 + LC-PEA | 在强 retention baseline 上是否仍有增量 |
-| C-J4 | J4 的 wrong-word、wrong-image、area-matched random、uniform/full-image 与 future-shuffle controls | 收益是否来自任意 mask、额外算力或时间监督 |
+| C-J4 | J4 的 no-binding、same-image wrong-word/object、wrong-image、area-matched random、uniform/full-image 与 future-shuffle controls | 收益是否来自正确语言—视觉—时间绑定 |
 
 资源不足时的最小判别矩阵固定为 `J0/J1/J2/J4/C-J4`；`J3/J5` 随后补齐。所有组共享 checkpoint、demonstration、optimizer updates、effective batch、action head、seed、数据增强和 evaluator。普通 JEPA 与 LC-PEA 必须使用同一 target encoder、future offsets、predictor 容量、action-plan 条件和额外前向预算；J4 只允许增加语言条件证据路由。
 
 **正式升级条件：** J4 必须在 held-out action 或正式 rollout 至少一项优于 J0 和 J2，J5 必须检验其相对 J1 的增量；正确语言证据必须优于 C-J4 负控；ID success 不得出现预注册范围外的退化。若只改善 latent loss、归因图或 `I_bind`，LC-PEA 只能报告为表征/机制结果，不能称为 VLA 能力提升。
+
+LC-PEA 没有理论或经验上的必涨保证。最小 smoke 同时记录 `L_action/L_pred/L_bind`、三个目标对 optimizer 参数的 gradient norm 与 pairwise cosine、correct-vs-counterfactual prediction gap、held-out action 和官方 rollout。语言图错误、动作/背景捷径、梯度冲突或基础 action head 失效任一出现，都可能抵消收益；辅助 loss 下降而 action/rollout 不升时停止扩大。
 
 ### 2.1 历史 B0--B4 矩阵
 

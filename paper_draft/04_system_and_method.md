@@ -261,7 +261,7 @@ $$
 
 $u_t$ 优先取 action head 输出前的原生计划表征；若骨干没有可比 latent，则使用当前 policy 的预测 action chunk，经轻量 adapter 编码。主方法不把专家未来动作直接输入 predictor，以免仅凭 action label 重建未来而绕过视觉证据。teacher-forced expert action 只作为诊断上界，并与 action-drop、action-shuffle 和无 action 条件版本共同报告。
 
-冻结或 EMA target encoder 从真实未来观测获得 stop-gradient 目标。未来证据权重使用同一指令重新计算，防止学生只预测全局背景变化：
+冻结或 EMA target encoder 从当前和真实未来观测获得 stop-gradient 目标。未来证据权重使用同一指令重新计算，防止学生只预测全局背景变化：
 
 $$
 z_{t+k}^{*}
@@ -270,23 +270,49 @@ z_{t+k}^{*}
 \right].
 $$
 
-首版预测损失采用归一化 cosine/MSE 二选一，并在 validation 上冻结，不同时搜索多种复杂目标：
+主预测对象不是未来帧的静态外观，而是语言 referent 在动作计划下的目标相关变化。定义：
+
+$$
+\Delta z_{t,k}^{*}(w)=z_{t+k}^{*}(w)-z_t^{*}(w),
+\qquad
+\widehat{\Delta z}_{t,k}(w)=
+P_\theta\!\left(z_t^{\mathrm{ev}}(w),\operatorname{Pool}(H_t),s_t,u_t,k\right).
+$$
+
+它优先表示 source 是否被抓取和移动、source--target 关系是否接近任务目标，以及放置阶段的关系变化，而不是重建全局背景。首版预测损失采用归一化 cosine/MSE 二选一，并在 validation 上冻结，不同时搜索多种复杂目标：
 
 $$
 L_{\mathrm{pred}}
 =\frac{1}{|K|}\sum_{k\in K}
-D\!\left(\operatorname{Norm}(\hat z_{t+k}^{\mathrm{ev}}),
-          \operatorname{Norm}(z_{t+k}^{*})\right),
+D\!\left(\operatorname{Norm}(\widehat{\Delta z}_{t,k}(w)),
+          \operatorname{Norm}(\Delta z_{t,k}^{*}(w))\right).
 $$
+
+只有正配对预测仍可能退化为普通动态建模，因此加入 phrase-level counterfactual binding。对 same-image 错词/错对象 $w^{-}$，要求正确指令证据比反事实证据更能预测同一个真实目标变化：
+
+$$
+L_{\mathrm{bind}}
+=\frac{1}{|K|}\sum_{k\in K}
+\left[
+m+D\!\left(\widehat{\Delta z}_{t,k}(w),\Delta z_{t,k}^{*}(w)\right)
+-D\!\left(\widehat{\Delta z}_{t,k}(w^-),\Delta z_{t,k}^{*}(w)\right)
+\right]_+.
+$$
+
+负样本优先使用同图中合法存在的另一个对象/目标短语；没有同图候选时，该样本不进入主 `L_bind`，wrong-image 和随机图只作为较弱对照，不能伪装成同图反事实。margin $m$ 与负样本规则只用 validation 冻结。
 
 $$
 L_{\mathrm{LC\text{-}PEA}}
-=L_{\mathrm{action}}+\lambda_{\mathrm{pred}}L_{\mathrm{pred}}.
+=L_{\mathrm{action}}
++\lambda_{\mathrm{pred}}L_{\mathrm{pred}}
++\lambda_{\mathrm{bind}}L_{\mathrm{bind}}.
 $$
 
-首版 $K$ 只取与原生 action chunk 对齐的 short-horizon offsets；完整 WAM、像素视频生成和长时规划不进入主损失。policy action head 始终读取完整视觉和 proprioception，$q_t$ 只作用于辅助预测分支。这样可以复用 VLM 的 `T_sem→A_lang` 结果，同时避免错误语言图硬遮掉夹爪、接触边缘、障碍和容器开口。
+首版 $K$ 只取与原生 action chunk 对齐的 short-horizon offsets；完整 WAM、像素视频生成和长时规划不进入主损失。不同 $k$ 的证据变化用于观察 source-dominant、transport 和 target-dominant 模式是否自然出现，phase label 只作分析或后续消融，不作为 LC-PEA 首版训练真值。policy action head 始终读取完整视觉和 proprioception，$q_t$ 只作用于辅助预测分支。这样可以复用 VLM 的 `T_sem→A_lang` 结果，同时避免错误语言图硬遮掉夹爪、接触边缘、障碍和容器开口。
 
-最关键的 matched controls 是：普通 JEPA（去掉语言权重）、静态语义对齐（去掉未来预测）、BlindVLA retention、wrong-word、wrong-image、future shuffle、uniform/full-image 权重和面积匹配随机图。只有 LC-PEA 相对普通 JEPA 与 retention 均有动作/rollout 增量，而且正确证据优于负控，才支持“语言条件动态表征”这一机制。`I_bind`、patch intervention 和 source/target phase 曲线用于解释涨点是否来自正确目标绑定，不能替代 success。
+最关键的 matched controls 是：普通 JEPA（去掉语言权重）、静态语义对齐（去掉未来预测）、去掉 `L_bind`、BlindVLA retention、wrong-word、wrong-image、future shuffle、uniform/full-image 权重和面积匹配随机图。只有 LC-PEA 相对普通 JEPA 与 retention 均有动作/rollout 增量，而且正确证据优于负控，才支持“语言条件动态表征”这一机制。`I_bind`、patch intervention 和 source/target phase 曲线用于解释涨点是否来自正确目标绑定，不能替代 success。
+
+LC-PEA 不保证涨点。它的性能假设是：目标相关未来变化比静态空间约束更贴近 action learning，并且语言反事实排序能阻止模型忽略 referent。该假设会在以下情形失败：`A_lang` 错误或覆盖不足；predictor 依赖 action/background shortcut；$L_{\mathrm{pred}}/L_{\mathrm{bind}}$ 与 action gradient 冲突；或基础 action head/rollout 接口尚未建立非零能力。必须记录 action 与两个辅助项的梯度范数和 cosine、正确/反事实预测差距、held-out action、官方 rollout 与 OOD；任一辅助 loss 下降本身都不是成功证据。
 
 ### 4.8.6 方法版本与历史边界
 
