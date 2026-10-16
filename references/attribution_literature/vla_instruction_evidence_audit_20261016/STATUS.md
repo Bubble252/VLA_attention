@@ -54,3 +54,7 @@
 - 2026-10-16：审计目录下 14 个 Markdown 文档均已成功上传/更新到文献调研文件夹 `DAB9w31AUiuZJAkN5B7cukoGn2g`。
 - 代表性文档：`STATUS.md` → `WCDJdqbtooFIm4xVzBwctJxtnPh`；`final_topic_verdict.md` → `OZzTdrayZoxIBAxb0HMcJF6Znsd`；`step3_abstract_triage.md` → `H7R4dHBpVo2zi6xLDtScYPYnnBf`。
 - 同步器同时发现云端已有 8 个历史文档而本地审计目录没有对应文件，因而报告 8 个任务失败；这些是云端反向下载任务，不影响本轮 14 个本地审计 Markdown 的上传，也没有删除或覆盖本地文件。
+
+## Git
+
+- 审计轻量产物提交：`dc9ae2064cdfcb450f988509a0de7b7fdabf3644` (`audit VLA instruction evidence topic`)。
