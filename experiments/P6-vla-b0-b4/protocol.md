@@ -6,6 +6,21 @@
 
 ## 1. 研究问题与首轮边界
 
+### 2026-10-16 方法路线更新：从静态 containment 转向 LC-PEA
+
+本节覆盖后文将 D0 containment 写成默认主方法的旧表述，但不删除既有 B0--B4 工程结果。新的**性能方法候选**为 **LC-PEA（Language-Conditioned Predictive Evidence Alignment，语言条件预测证据对齐）**：利用 VLM 阶段已经验证和缓存的语言条件空间证据，选择需要建模的 source/target 视觉表征，再以短时未来 latent 作为训练目标，使共享视觉表征同时服务于目标识别、状态变化预测和动作学习。原 `L_contain`、`I_bind` 与 patch intervention 保留为机制对照和诊断，不再预设为最终涨点方法。
+
+当前边界如下：
+
+- 这里将用户所说的 `JEV` 暂按 JEPA/joint-embedding predictive learning 理解；正式命名和近邻关系须经过单独的新颖性审计后冻结。
+- LC-PEA 是待验证候选，不因写入计划就宣称优于 BlindVLA、普通 JEPA、ECL 或 LIT。
+- 首版只预测 demonstration 中短时未来观测的 latent，不生成像素，不做长时规划，不引入外部动作专家，也不把 world model 当作已完成模块。
+- predictor 使用当前 policy 的 action-plan latent 或预测 action chunk；专家未来动作不得作为主方法输入，只允许作为带 action-drop/shuffle 对照的诊断上界，防止动作标签捷径。
+- 语言证据只形成带泄漏余量的软权重；policy 始终读取完整 RGB、wrist camera、proprioception、EEF/夹爪状态和历史信息，禁止以硬 mask 删除动作必需的接触、夹爪或障碍证据。
+- teacher、future target encoder 和预测损失仅在训练时使用。首版推理图保持原 action policy；若后续将预测 latent 接入 action refinement，必须作为独立版本重新计算推理成本。
+
+LC-PEA 要回答的能力问题是：**语言指定的目标证据能否通过短时未来状态预测，改善 manipulation 的目标选择、闭环执行和 OOD 泛化，并在普通未来预测及视觉表征保持之外产生独立增量？**
+
 ### 数据集角色边界
 
 本项目不是所有实验都使用 COCO，也不是所有实验都复刻 Lavender 的数据。不同数据集服务不同问题，不能合并成一个训练集或平均分：
@@ -22,7 +37,7 @@
 
 VLM 主训练采用的是 **Lavender 风格的 image-caption SFT 形式**，但主空间验证使用 Flickr30k Entities；COCO 只承担 BlindVLA-style 表征诊断和部分能力评测。VLA 阶段转向 LIBERO/DROID，不能用 COCO t-SNE 替代动作或闭环证据。
 
-P6 只回答一个可证伪问题：在同一个 VLA 骨干、同一动作头、同一数据和同一训练预算下，语言条件空间归因是否能改善动作预测和 LIBERO 闭环，并且增益是否超出 BlindVLA-style visual feature retention。
+更新后的 P6 只回答一个可证伪问题：在同一个 VLA 骨干、同一动作头、同一数据和同一训练预算下，语言条件 short-horizon future-latent prediction 是否能改善动作预测和 LIBERO 闭环，并且增益是否超出普通 JEPA auxiliary 与 BlindVLA-style visual feature retention。
 
 首轮冻结的工程口径如下；带 `TO_FREEZE` 的字段必须由真实接口审计或数据扫描产生，不能手填成看似合理的值。
 
@@ -74,7 +89,27 @@ StarVLA 源码已作为可选参考固定归档于 `references/repos/starvla`（
 
 只有在以下条件同时满足时，StarVLA 才可被临时用作运行时：它能加载已冻结的 OpenVLA/OFT checkpoint，processor、LIBERO 观测、动作单位和 checkpoint restore 与 P1 结果逐项一致，并且版本和 commit 被写入配置。否则应在 VEPFS 建立本项目独立环境。该边界保证即使 StarVLA 不可用，P6 的模型定义和论文结论仍然成立。
 
-## 2. B0–B4 主矩阵
+## 2. B0–B4 历史矩阵与 LC-PEA 新主矩阵
+
+原 B0--B4 结果继续作为历史工程证据和静态方法对照，不覆盖、不改名。LC-PEA 使用新实验 ID `P6-LCPEA-*` 和独立输出目录，避免同一个 `B2/B3/B4` 编号在两种定义间漂移。
+
+### 2.0 LC-PEA 主矩阵
+
+| 组 | 训练内容 | 需要排除的解释 |
+|---|---|---|
+| J0 | 原生 VLA action objective | 原始动作能力与训练预算 |
+| J1 | J0 + BlindVLA-style retention | 仅保持通用视觉表征即可涨点 |
+| J2 | J0 + 普通 JEPA future-latent auxiliary，不使用语言证据 | 任何未来预测辅助都能涨点 |
+| J3 | J0 + 静态 `T_sem → A_lang`，不预测未来 | 静态语言空间正则即可涨点 |
+| J4 | J0 + LC-PEA | 语言条件的未来证据预测是否有独立价值 |
+| J5 | J1 + LC-PEA | 在强 retention baseline 上是否仍有增量 |
+| C-J4 | J4 的 wrong-word、wrong-image、area-matched random、uniform/full-image 与 future-shuffle controls | 收益是否来自任意 mask、额外算力或时间监督 |
+
+资源不足时的最小判别矩阵固定为 `J0/J1/J2/J4/C-J4`；`J3/J5` 随后补齐。所有组共享 checkpoint、demonstration、optimizer updates、effective batch、action head、seed、数据增强和 evaluator。普通 JEPA 与 LC-PEA 必须使用同一 target encoder、future offsets、predictor 容量、action-plan 条件和额外前向预算；J4 只允许增加语言条件证据路由。
+
+**正式升级条件：** J4 必须在 held-out action 或正式 rollout 至少一项优于 J0 和 J2，J5 必须检验其相对 J1 的增量；正确语言证据必须优于 C-J4 负控；ID success 不得出现预注册范围外的退化。若只改善 latent loss、归因图或 `I_bind`，LC-PEA 只能报告为表征/机制结果，不能称为 VLA 能力提升。
+
+### 2.1 历史 B0--B4 矩阵
 
 所有组必须使用同一个模型初始化、LIBERO episode manifest、语言模板、图像预处理、动作归一化、H、optimizer、训练 steps、seed 和 evaluator。只有下表中标出的损失或 teacher 开关可以变化。
 
@@ -299,7 +334,7 @@ BlindVLA 的 t-SNE 主要支持“普通 SFT 会损伤可迁移视觉表征，�
 | 动作机制 | B4 相对 B3 在动作归因干预和至少一项 offline/rollout 指标有增量，且不是随机 mask 增益 | D0 作为诊断，不升级为核心创新 |
 | 泛化 | LIBERO-Plus/LIBERO-PRO 或 DROID 的预注册分组趋势复现 | 只报告 ID 机制结果，不声称 OOD/真实泛化 |
 
-多 seed 用 image/episode cluster bootstrap；不同模型和动作头不得直接比较绝对 success。B4 不通过时不能进入 D1 phase、WAM/VAM、RoboTwin 或真机扩展。
+多 seed 用 image/episode cluster bootstrap；不同模型和动作头不得直接比较绝对 success。此处 B4 gate 只约束历史 D0→D1/WAM 分支，不阻止使用独立编号执行 LC-PEA 的最小 falsification smoke；LC-PEA 是否扩大由 J4/J2、J5/J1 和 C-J4 gate 单独决定。
 
 ## 5. 代码和 artifact 结构
 
@@ -386,10 +421,11 @@ BlindVLA-style retention 是 `B1` 主矩阵；LIT 的 spatial-goal action prior 
 | P0 | Next Forcing 的 multi-layer attribution aggregation | layer-sensitivity 小消融 | 减少单层归因不稳定 | 否 |
 | P1 | image-free action-prior 对照 | `E-LIT-prior` | 分离 action prior 与空间归因收益 | 否，独立 baseline |
 | P1 | stop-gradient semantic interface | `D-interface` | 检验语言支持视觉摘要是否改善 action head | 是扩展变体，不进入 B0–B4 |
-| P2 | short/mid/long `R_future` consistency | F0/F1 | 检验动作归因是否与未来动力学一致 | 后期 WAM/VAM 扩展 |
+| P0 | short-horizon LC-PEA latent prediction | `P6-LCPEA-J2/J4` | 检验语言条件动态表征是否改善动作能力 | 新主方法候选 |
+| P2 | mid/long `R_future` consistency | F0/F1 | 检验动作归因是否与更长期动力学一致 | 后期 WAM/VAM 扩展 |
 | P2 | action noise-level attribution | π0.5/flow/diffusion 后期 | 检查不同 action denoising level 的归因稳定性 | 只适用于原生连续动作头 |
 
-首轮禁止同时启用 retention、semantic、phase、future、pose 五类损失。任何新增机制必须先作为单独对照或诊断跑通，再进入下一层；否则无法判断增量来自哪条链路。
+首轮仍禁止一次启用 retention、静态 semantic、phase、长时 future 和 pose 五类损失。LC-PEA 的 short-horizon prediction 是单独候选分支，必须先用 J2/J4 隔离普通预测与语言路由，再在 J5 中单独加入 retention；否则无法判断增量来自哪条链路。
 
 ## 8. 记录与 Git 操作
 

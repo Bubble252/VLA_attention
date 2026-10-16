@@ -63,7 +63,7 @@ Git 不含 PDF、`references/repos/`、权重、数据、实验日志、`outputs
 | P3 | 学生归因接口诊断 | attention/gradient/action attribution 报告 | [ ] |
 | P4 | VLM grounding 证明 | Prismatic/Qwen/InternVL/Ovis 候选中筛选两个；SpikingBrain 后置 | [ ] |
 | P5 | VLA delta EEF smoke | LIBERO 单任务闭环 | [ ] |
-| P6 | VLA 主方法训练 | D：Structure-Native Action Attribution Consistency | [ ] |
+| P6 | VLA 主方法训练 | LC-PEA：语言条件 short-horizon predictive evidence alignment；D0 降为历史/机制 baseline | [ ] |
 | P7 | 跨模型、跨 VLA 骨干和动作相关性细化 | π0/π0.5、MolmoAct2、OpenVLA/OFT；SpikingBrain 后置 | [ ] |
 | P8 | 消融和反证 | 随机、错图、错词、错层、无对齐结果 | [ ] |
 | P9 | 最终报告 | VLM + LIBERO 指标表、曲线、结论、真机计划 | [ ] |
@@ -590,7 +590,37 @@ git push
 
 ## 9. P6：VLA 主方法训练
 
-### P6-0：与 BlindVLA 的 VLA 强 baseline 比较（P6 首要 gate）
+### 2026-10-16 冻结候选：LC-PEA 涨点路线
+
+P6 的研究目标从“让动作归因落入静态语言区域”调整为“让语言指定的视觉证据预测短时未来任务表征，从而提升 manipulation 动作学习与闭环泛化”。候选方法名为 **LC-PEA（Language-Conditioned Predictive Evidence Alignment）**。D0 containment、`I_bind` 与 patch intervention 保留为静态 baseline 和机制诊断，不再预设为最终主方法。
+
+首版执行边界：
+
+- [ ] 先做专项新颖性审计，比较 VLA-JEPA、语言/目标条件 world model、ECL、LIT、BlindVLA 和已有 future-consistency 方法；审计未通过时只作为实验候选，不写主创新；
+- [ ] 使用 LIBERO demonstration 的当前帧、原生 action chunk、本体状态和短时真实未来帧；target encoder 冻结或 EMA，目标 stop-gradient；
+- [ ] predictor 使用当前 policy 的 action-plan latent 或预测 action chunk；专家未来动作只作带 action-drop/shuffle 的诊断上界，禁止主方法通过动作标签捷径预测未来；
+- [ ] 使用 P4 冻结的 source/target 语言证据做 soft routing，并保留均匀泄漏；禁止 hard mask 完整视觉；
+- [ ] 原生 action head 始终读取完整 agent/wrist RGB、proprioception、EEF/夹爪状态；预测分支只在训练期提供辅助目标；
+- [ ] 首版只做 latent prediction，不生成视频像素、不做候选动作搜索、不声称长时 world-model planning；
+- [ ] 新建 `P6-LCPEA-*` 配置与结果目录，不覆盖现有 P6 B0--B4、cache、checkpoint 或历史结论。
+
+最小比较固定为：
+
+```text
+J0 = native VLA action objective
+J1 = J0 + BlindVLA-style retention
+J2 = J0 + ordinary JEPA future-latent prediction
+J3 = J0 + static semantic attribution alignment
+J4 = J0 + LC-PEA
+J5 = J1 + LC-PEA
+C-J4 = wrong-word / wrong-image / random / uniform / future-shuffle controls
+```
+
+资源有限时先跑 `J0/J1/J2/J4/C-J4`。J2 与 J4 必须共享 target encoder、predictor、future offsets、训练样本和额外计算，唯一差异是语言条件 evidence routing。只有 J4 在 held-out action 或 official rollout 上超过 J0/J2、正确证据超过负控，且 J5 对 J1 仍有增量时，才把 LC-PEA 升级为论文主方法。若只改善 future-latent loss、热力图或 `I_bind`，则只能报告机制，不声称 VLA 能力提升。
+
+首轮 benchmark 顺序仍为标准 LIBERO pick-place → LIBERO-Plus task-preserving/goal-changing OOD → DROID offline；π0.5 用于跨动作结构复核，MolmoAct2/LingBot-VLA/RoboTwin 后置。当前 OpenVLA/OFT action-interface 与 positive-control 边界仍然有效，LC-PEA 不能绕过基础 B0/官方 checkpoint rollout gate。
+
+### P6-0：历史 B0--B5 与 BlindVLA 强 baseline（LC-PEA 的前置对照）
 
 BlindVLA 是 VLA 微调阶段的 feature-retention 方法，不是 P4 VLM grounding 的前置方法。本阶段要检验：即使视觉表征已被 DB-style 方法保持，语言条件空间归因与动作证据约束是否仍有独立价值。
 
@@ -613,9 +643,9 @@ BlindVLA 是 VLA 微调阶段的 feature-retention 方法，不是 P4 VLM ground
 - [ ] 采用同源教师控制或明确记录 C-RADIO feature 与扩散 map 同时改变 teacher/监督形式的混杂；
 - [ ] 报告 VLM 保留能力、phrase grounding、动作离线/闭环、raw/ratio/gradient/occlusion 一致性和训练成本；
 
-**继续条件**：P4 已确认正确扩散教师改善语言空间 grounding；B4 再在 B3 之上改善动作相关指标或 task-preserving OOD，且正确教师优于错词/错图/随机教师。D0-CF 不属于必需主线：只有离线反事实图通过 mask 稳定性、动作负控和目标/背景干预检查后，才增加 B5；若 B5 只改善热图集中度、没有改善动作预测/闭环或 OOD，则不保留为主方法。若 B4 无独立增量，停止把 D0 写作核心创新，转为 feature retention 或空间监督的诊断结果；若 B1 已解释全部动作收益，暂不进入 D1/B 路线。
+**历史分支继续条件**：P4 已确认正确扩散教师改善语言空间 grounding；B4 再在 B3 之上改善动作相关指标或 task-preserving OOD，且正确教师优于错词/错图/随机教师。D0-CF 不属于必需主线：只有离线反事实图通过 mask 稳定性、动作负控和目标/背景干预检查后，才增加 B5；若 B5 只改善热图集中度、没有改善动作预测/闭环或 OOD，则不保留。若 B4 无独立增量，D0 只作为 feature retention 或空间监督的诊断结果。LC-PEA 使用独立 J0--J5 gate，不能用历史 B4 失败直接否定，也不能用历史 B1 成功替代 J2/J4 比较。
 
-### 任务
+### 历史 D0/D1 任务（保留为 baseline 与机制审计）
 
 - [ ] 训练无对齐 OpenVLA/OFT 或 π0 系 baseline；
 - [ ] 加入所选主线模型的 similarity bridge 作为对照；层号由接口审计确定；

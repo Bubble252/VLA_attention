@@ -1,5 +1,37 @@
 # 5. Experiments 与预期结论
 
+## 2026-10-16：LC-PEA 性能路线更新
+
+VLA 主线不再把静态 action-evidence containment 预设为最终涨点方法。新的性能候选是 **LC-PEA：语言条件预测证据对齐**，即把 VLM 阶段得到的语言条件空间证据用于选择 short-horizon future latent 的预测目标，再由共享视觉表征支持 manipulation action learning。原 D0、`I_bind`、归因图与 patch occlusion 继续承担 baseline、机制解释和反事实验证。
+
+首轮 matched matrix 使用新的 `J*` 编号，避免覆盖已经产生的 B0--B4 结果：
+
+| 组 | 方法 | 核心问题 |
+|---|---|---|
+| J0 | 原生 VLA action training | 基础动作能力 |
+| J1 | J0 + BlindVLA-style retention | 通用视觉表征保持是否已足够 |
+| J2 | J0 + 普通 JEPA future-latent loss | 与语言无关的动态预测是否已足够 |
+| J3 | J0 + 静态语义归因对齐 | 是否只需静态空间正则 |
+| J4 | J0 + LC-PEA | 语言指定证据的未来预测是否改善动作与闭环 |
+| J5 | J1 + LC-PEA | LC-PEA 在强 retention baseline 上是否仍有增量 |
+| C-J4 | wrong-word/image、random、uniform、future-shuffle | 增益是否来自正确的语言—视觉—时间对应 |
+
+普通 JEPA 与 LC-PEA 必须共享 target encoder、predictor 容量、future offsets、action-plan 条件、额外前向和训练预算。首版 future target 来自 demonstration 的真实未来帧 latent；predictor 读取当前 policy 的 action-plan latent 或预测 action chunk，不直接读取专家未来动作。teacher-forced expert action 只作诊断上界，并配 action-drop/shuffle，防止仅凭动作标签预测未来。不使用测试 rollout 未来、不预测像素、不引入完整 WAM。语言权重是带均匀泄漏的 soft routing，action policy 仍读取完整视觉、wrist camera 和 proprioception。
+
+### LC-PEA 的能力成功标准
+
+1. **动作增量**：J4 在 held-out native action prediction 或 phase-level control 指标上优于 J0 和 J2；只降低 latent loss 不算成功。
+2. **闭环增量**：J4 的官方 LIBERO success、target selection 或 approach/grasp/place 至少一项有稳定增量，且 ID success 不出现不可接受退化。
+3. **强基线增量**：J5 相对 J1 仍有收益，才能说明效果没有被 BlindVLA retention 完全解释。
+4. **语义特异性**：正确词/图优于 wrong-word、wrong-image、random 和 uniform/full-image；否则只能解释为一般正则或额外计算。
+5. **动态必要性**：J4 优于 J3、且 future-shuffle 显著破坏收益，才能声称未来表征是必要部分。
+6. **机制一致性**：`I_bind`、目标证据干预和 phase 成功应与 rollout 增量方向一致；机制指标单独改善不能替代能力涨点。
+7. **泛化**：先在 LIBERO ID 建立结果，再在 LIBERO-Plus 的 task-preserving OOD 和目标重定向上复核；DROID 仅报告离线真实数据迁移。
+
+最小 Go/No-Go 实验先跑 `J0/J1/J2/J4/C-J4` 的单任务、固定 seed、小预算版本。只有 J4 同时超过 J0/J2、正确证据超过负控并通过 restore/rollout 工程 gate，才扩大到 10k updates 和三 seed。若 J2≈J4，结论是普通动态预测已经解释收益；若 J4 只改善 target selection 而 primitive execution 不变，论文只声称 grounding/retargeting 增益；若 action 和 rollout 都无增量，则 LC-PEA 停止升级为主方法，保留诊断结果。
+
+该路线仍需专项近邻审计，重点比较 VLA-JEPA、goal-conditioned world models、language-conditioned predictive representation、ECL、LIT 和 future-consistency VLA。审计完成前可做接口和小规模 falsification smoke，但不能写成已确认的新颖贡献。
+
 ## 原文精读后的基线补充（待筛选）
 
 详见 [Don't Blind / Anchor-Align / PosA-VLA 原文分析](../references/abstract_review/07_three_nearest_methods_deep_read.md)。增加三类强对照候选：中层 patch-feature alignment、全层 frozen-VLM anchoring + 同观测方向词监督、任务/EEF 双图前向 gating。它们分别排除表征保持、输出语义一致和空间门控的替代解释。
@@ -8,9 +40,9 @@ VLM 阶段独立运行 `V0 checkpoint / V1 SFT / V2 DB-style feature retention /
 
 本文后续原有 containment 公式尚为历史候选，不以 L1 概率图直接称“允许区域 mask”；归一化与 soft support/泄漏余量的修正建议见专题第 6 节，待小样本验证后再冻结。SpikingBrain 后置，主线模型组合继续由用户筛选。
 
-### 首要比较：当前方法是否超过 BlindVLA-style feature retention
+### 历史静态矩阵：是否超过 BlindVLA-style feature retention
 
-在 VLA 的任何 OOD 扩展前，首个动作结论必须来自下列同预算 paired comparison；它不替代 VLM 阶段的词级 grounding 验证：
+下列 B0--B5 是已经规划和产生工程证据的静态归因矩阵，继续作为 LC-PEA 的强 baseline 与历史结果；它不再定义新的性能主方法，也不替代 VLM 阶段的词级 grounding 验证：
 
 ```text
 B0  native SFT/BC
@@ -208,7 +240,7 @@ Don't Blind 现为本阶段重点参照。加入 **原始 checkpoint（仅评估
 
 禁止首轮同时使用 retention、semantic、phase、future 和 pose 五类损失。否则即使 success 上升，也不能判断提升来自哪条机制链路。
 
-### 推荐的主方法版本
+### 历史静态方法版本（现作为 baseline）
 
 ```text
 Ours-1: action objective + T_sem -> A_lang + L_sem + D0 A_act containment
@@ -216,7 +248,7 @@ Ours-2: Ours-1 + BlindVLA-style L_ret
 Ours-3: Ours-2 + R_future consistency
 ```
 
-Ours-1 是主方法候选；Ours-2 只用于证明语义归因在视觉表征保持之上仍有增量；Ours-3 只在 WAM/VAM 后期扩展。完整 LIT latent bottleneck、完整 Next Forcing MCP、EEF 高斯动作 teacher 和多 teacher ensemble 不进入首轮主方法。
+这些版本保留为静态归因和长时 future-consistency baseline；新的性能主方法候选是本章开头定义的 LC-PEA。完整 LIT latent bottleneck、完整 Next Forcing MCP、EEF 高斯动作 teacher 和多 teacher ensemble不进入 LC-PEA 首轮。
 
 ## 5.3 指标
 
