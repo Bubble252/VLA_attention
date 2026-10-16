@@ -1,0 +1,448 @@
+{
+  "retrieved_at": "2026-10-16T11:49:09.713077+00:00",
+  "queries": [
+    "vision language action state aliasing",
+    "robot policy representation metric learning",
+    "language conditioned action similarity contrastive representation"
+  ],
+  "years": [
+    2020,
+    2026
+  ],
+  "max_results_per_query_per_source": 3,
+  "results": {
+    "arxiv": [
+      {
+        "title": "Robot Trains Robot: Automatic Real-World Policy Adaptation and Learning for Humanoids",
+        "authors": [
+          "Kaizhe Hu",
+          "Haochen Shi",
+          "Yao He",
+          "Weizhuo Wang",
+          "C. Karen Liu",
+          "Shuran Song"
+        ],
+        "year": 2025,
+        "abstract": "Simulation-based reinforcement learning (RL) has significantly advanced humanoid locomotion tasks, yet direct real-world RL from scratch or adapting from pretrained policies remains rare, limiting the full potential of humanoid robots. Real-world learning, despite being crucial for overcoming the sim-to-real gap, faces substantial challenges related to safety, reward design, and learning efficiency. To address these limitations, we propose Robot-Trains-Robot (RTR), a novel framework where a robotic arm teacher actively supports and guides a humanoid robot student. The RTR system provides protection, learning schedule, reward, perturbation, failure detection, and automatic resets. It enables efficient long-term real-world humanoid training with minimal human intervention. Furthermore, we propose a novel RL pipeline that facilitates and stabilizes sim-to-real transfer by optimizing a single dynamics-encoded latent variable in the real world. We validate our method through two challenging real-world humanoid tasks: fine-tuning a walking policy for precise speed tracking and learning a humanoid swing-up task from scratch, illustrating the promising capabilities of real-world humanoid learning realized by RTR-style systems. See https://robot-trains-robot.github.io/ for more info.",
+        "url": "http://arxiv.org/abs/2508.12252v2",
+        "venue": "arXiv",
+        "citation_count": 0,
+        "publication_date": "2025-08-17",
+        "source": "arxiv",
+        "doi": null,
+        "arxiv_id": "2508.12252"
+      },
+      {
+        "title": "Learning to Discern: Imitating Heterogeneous Human Demonstrations with Preference and Representation Learning",
+        "authors": [
+          "Sachit Kuhar",
+          "Shuo Cheng",
+          "Shivang Chopra",
+          "Matthew Bronars",
+          "Danfei Xu"
+        ],
+        "year": 2023,
+        "abstract": "Practical Imitation Learning (IL) systems rely on large human demonstration datasets for successful policy learning. However, challenges lie in maintaining the quality of collected data and addressing the suboptimal nature of some demonstrations, which can compromise the overall dataset quality and hence the learning outcome. Furthermore, the intrinsic heterogeneity in human behavior can produce equally successful but disparate demonstrations, further exacerbating the challenge of discerning demonstration quality. To address these challenges, this paper introduces Learning to Discern (L2D), an offline imitation learning framework for learning from demonstrations with diverse quality and style. Given a small batch of demonstrations with sparse quality labels, we learn a latent representation for temporally embedded trajectory segments. Preference learning in this latent space trains a quality evaluator that generalizes to new demonstrators exhibiting different styles. Empirically, we show that L2D can effectively assess and learn from varying demonstrations, thereby leading to improved policy performance across a range of tasks in both simulations and on a physical robot.",
+        "url": "http://arxiv.org/abs/2310.14196v1",
+        "venue": "arXiv",
+        "citation_count": 0,
+        "publication_date": "2023-10-22",
+        "source": "arxiv",
+        "doi": null,
+        "arxiv_id": "2310.14196"
+      },
+      {
+        "title": "Untangling Dense Knots by Learning Task-Relevant Keypoints",
+        "authors": [
+          "Jennifer Grannen",
+          "Priya Sundaresan",
+          "Brijen Thananjeyan",
+          "Jeffrey Ichnowski",
+          "Ashwin Balakrishna",
+          "Minho Hwang",
+          "Vainavi Viswanath",
+          "Michael Laskey",
+          "Joseph E. Gonzalez",
+          "Ken Goldberg"
+        ],
+        "year": 2020,
+        "abstract": "Untangling ropes, wires, and cables is a challenging task for robots due to the high-dimensional configuration space, visual homogeneity, self-occlusions, and complex dynamics. We consider dense (tight) knots that lack space between self-intersections and present an iterative approach that uses learned geometric structure in configurations. We instantiate this into an algorithm, HULK: Hierarchical Untangling from Learned Keypoints, which combines learning-based perception with a geometric planner into a policy that guides a bilateral robot to untangle knots. To evaluate the policy, we perform experiments both in a novel simulation environment modelling cables with varied knot types and textures and in a physical system using the da Vinci surgical robot. We find that HULK is able to untangle cables with dense figure-eight and overhand knots and generalize to varied textures and appearances. We compare two variants of HULK to three baselines and observe that HULK achieves 43.3% higher success rates on a physical system compared to the next best baseline. HULK successfully untangles a cable from a dense initial configuration containing up to two overhand and figure-eight knots in 97.9% of 378 simulation experiments with an average of 12.1 actions per trial. In physical experiments, HULK achieves 61.7% untangling success, averaging 8.48 actions per trial. Supplementary material, code, and videos can be found at https://tinyurl.com/y3a88ycu.",
+        "url": "http://arxiv.org/abs/2011.04999v1",
+        "venue": "arXiv",
+        "citation_count": 0,
+        "publication_date": "2020-11-10",
+        "source": "arxiv",
+        "doi": null,
+        "arxiv_id": "2011.04999"
+      },
+      {
+        "title": "On the Similarities of Embeddings in Contrastive Learning",
+        "authors": [
+          "Chungpa Lee",
+          "Sehee Lim",
+          "Kibok Lee",
+          "Jy-yong Sohn"
+        ],
+        "year": 2025,
+        "abstract": "Contrastive learning operates on a simple yet effective principle: Embeddings of positive pairs are pulled together, while those of negative pairs are pushed apart. In this paper, we propose a unified framework for understanding contrastive learning through the lens of cosine similarity, and present two key theoretical insights derived from this framework. First, in full-batch settings, we show that perfect alignment of positive pairs is unattainable when negative-pair similarities fall below a threshold, and this misalignment can be mitigated by incorporating within-view negative pairs into the objective. Second, in mini-batch settings, smaller batch sizes induce stronger separation among negative pairs in the embedding space, i.e., higher variance in their similarities, which in turn degrades the quality of learned representations compared to full-batch settings. To address this, we propose an auxiliary loss that reduces the variance of negative-pair similarities in mini-batch settings. Empirical results show that incorporating the proposed loss improves performance in small-batch settings.",
+        "url": "http://arxiv.org/abs/2506.09781v2",
+        "venue": "arXiv",
+        "citation_count": 0,
+        "publication_date": "2025-06-11",
+        "source": "arxiv",
+        "doi": null,
+        "arxiv_id": "2506.09781"
+      },
+      {
+        "title": "Weakly-Supervised 3D Medical Image Segmentation using Geometric Prior and Contrastive Similarity",
+        "authors": [
+          "Hao Du",
+          "Qihua Dong",
+          "Yan Xu",
+          "Jing Liao"
+        ],
+        "year": 2023,
+        "abstract": "Medical image segmentation is almost the most important pre-processing procedure in computer-aided diagnosis but is also a very challenging task due to the complex shapes of segments and various artifacts caused by medical imaging, (i.e., low-contrast tissues, and non-homogenous textures). In this paper, we propose a simple yet effective segmentation framework that incorporates the geometric prior and contrastive similarity into the weakly-supervised segmentation framework in a loss-based fashion. The proposed geometric prior built on point cloud provides meticulous geometry to the weakly-supervised segmentation proposal, which serves as better supervision than the inherent property of the bounding-box annotation (i.e., height and width). Furthermore, we propose contrastive similarity to encourage organ pixels to gather around in the contrastive embedding space, which helps better distinguish low-contrast tissues. The proposed contrastive embedding space can make up for the poor representation of the conventionally-used gray space. Extensive experiments are conducted to verify the effectiveness and the robustness of the proposed weakly-supervised segmentation framework. The proposed framework is superior to state-of-the-art weakly-supervised methods on the following publicly accessible datasets: LiTS 2017 Challenge, KiTS 2021 Challenge, and LPBA40. We also dissect our method and evaluate the performance of each component.",
+        "url": "http://arxiv.org/abs/2302.02125v1",
+        "venue": "arXiv",
+        "citation_count": 0,
+        "publication_date": "2023-02-04",
+        "source": "arxiv",
+        "doi": "10.1109/TMI.2023.3269523",
+        "arxiv_id": "2302.02125"
+      },
+      {
+        "title": "MameLoshnLM: Yiddish Language Model and Evaluation Benchmark",
+        "authors": [
+          "Uri Katz",
+          "Omer Goldman",
+          "Tomasz Limisiewicz",
+          "Reut Tsarfaty",
+          "Noah A. Smith"
+        ],
+        "year": 2026,
+        "abstract": "We present MameLoshnLM, the first open-source 8B-parameter language model built specifically for Yiddish. Despite Yiddish's rich textual tradition, its limited digital presence and the scarcity of reliable evaluation resources have constrained progress in Yiddish language modeling. Existing multilingual corpora and benchmarks are often poor proxies for the language, containing substantial amounts of noisy, machine-translated, and misclassified text. We address these gaps by introducing Oytser, a high-quality Yiddish pretraining corpus that combines contemporary web-native sources with literary materials, and Kashes, a multi-task benchmark spanning translation, linguistic analysis, information extraction, and language understanding. Using these resources, we continue pretraining Llama 3.1 8B to obtain MameLoshnLM. Across the tasks in the benchmark, MameLoshnLM outperforms open baselines of similar scale. Our analyses show that these gains are not only quantitative: relative to general-purpose multilingual models, MameLoshnLM better captures language-defining lexical and morphological patterns, pointing to a broader failure mode of noisy web-scale multilingual data for low-resource languages. Our results provide both a foundation for Yiddish NLP and a practical template for language model development in historically rich but digitally underrepresented languages.",
+        "url": "http://arxiv.org/abs/2608.05850v2",
+        "venue": "arXiv",
+        "citation_count": 0,
+        "publication_date": "2026-08-06",
+        "source": "arxiv",
+        "doi": null,
+        "arxiv_id": "2608.05850"
+      }
+    ],
+    "dblp": [],
+    "open_alex": [
+      {
+        "title": "Mitigating State Aliasing in Vision-Language-Action Models via Inverse Dynamics Learning",
+        "authors": [
+          "Kyujin Lee",
+          "Injae Kim",
+          "Jihwan Park",
+          "Yejun Ju",
+          "Minseok Joo",
+          "Hyunwoo J. Kim"
+        ],
+        "year": 2026,
+        "abstract": "Vision-Language-Action (VLA) models have emerged as a promising framework that unifies perception, reasoning, and control for robot manipulation by adapting pretrained vision-language models (VLMs) to action prediction. However, VLM-derived representations are often insensitive to subtle visual distinctions required for low-level control, causing state aliasing between visually similar states that require substantially different actions. Prior VLA studies improve visual understanding by generating visual or reasoning outputs, such as future frames, 2D grounding points or traces, or intermediate spatial reasoning steps, but these objectives typically shape the vision encoder only indirectly through end-to-end prediction and do not explicitly analyze state aliasing in the learned visual feature space. To mitigate state aliasing, we introduce inverse dynamics learning as an auxiliary objective that directly supervises the VLA vision encoder. By predicting the action between current and future observations, our objective encourages the encoder to capture fine-grained visual distinctions that determine low-level actions. We further use pseudo-reversed supervision to expose the encoder to a broader range of action directions and improve generalization under limited robot demonstrations. Our method applies to diverse VLA baselines, uses only standard observation-action pairs without additional annotations, and preserves the original inference pipeline at test time. Experiments on CALVIN ABC-D and SimplerEnv show consistent gains across diverse VLA baselines. Frozen-encoder probing and state-feature alignment analyses further show that our method learns state-discriminative visual representations that reduce state aliasing and better align with robot state changes.",
+        "url": "https://doi.org/10.48550/arxiv.2605.29577",
+        "venue": "arXiv (Cornell University)",
+        "citation_count": 0,
+        "publication_date": "2026-05-28",
+        "source": "open_alex",
+        "doi": "10.48550/arxiv.2605.29577",
+        "arxiv_id": null
+      },
+      {
+        "title": "Comparison of Vision Language Action using goal state as action tokens",
+        "authors": [
+          "Bharatesh Chakravarthi"
+        ],
+        "year": 2026,
+        "abstract": "Vision–Language–Action (VLA) models differ in how they represent actions. Traditional VLA approaches predict low-level control commands or trajectories directly. In contrast, goal-state-as-action-token methods encode actions as desired future states (e.g., object poses or scene configurations). This shifts the problem from how to act to what outcome to achieve, improving abstraction, compositionality, and generalization across tasks while relying on a downstream controller to execute the goal.",
+        "url": "https://doi.org/10.48366/r1582110",
+        "venue": "Open Research Knowledge Graph (ORKG)",
+        "citation_count": 0,
+        "publication_date": "2026-02-02",
+        "source": "open_alex",
+        "doi": "10.48366/r1582110",
+        "arxiv_id": null
+      },
+      {
+        "title": "ALFRED-L: Investigating the Role of Language for Action Learning in Interactive Visual Environments",
+        "authors": [
+          "Arjun Akula",
+          "Spandana Gella",
+          "Aishwarya Padmakumar",
+          "Mahdi Namazifar",
+          "Mohit Bansal",
+          "Jesse Thomason",
+          "Dilek Zeynep Hakkani-Tür"
+        ],
+        "year": 2022,
+        "abstract": "Arjun Akula, Spandana Gella, Aishwarya Padmakumar, Mahdi Namazifar, Mohit Bansal, Jesse Thomason, Dilek Hakkani-Tur. Proceedings of the 2022 Conference on Empirical Methods in Natural Language Processing. 2022.",
+        "url": "https://doi.org/10.18653/v1/2022.emnlp-main.636",
+        "venue": "Conference on Empirical Methods in Natural Language Processing (EMNLP)",
+        "citation_count": 1,
+        "publication_date": "2022-01-01",
+        "source": "open_alex",
+        "doi": "10.18653/v1/2022.emnlp-main.636",
+        "arxiv_id": null
+      },
+      {
+        "title": "SpatialVLA: Exploring Spatial Representations for Visual-Language-Action Models",
+        "authors": [
+          "Delin Qu",
+          "Haoming Song",
+          "Qizhi Chen",
+          "Yuanqi Yao",
+          "Xinyi Ye",
+          "Jiayuan Gu",
+          "Zhigang Wang",
+          "Yan Fang Ding",
+          "Bin Zhao",
+          "Dong Wang",
+          "Xuelong Li"
+        ],
+        "year": 2025,
+        "abstract": "and real-world setups, where the pre-learned action grids are re-discretized to capture robot-specific spatial action movements of new setups.The superior results from extensive evaluations demonstrate the exceptional in-distribution generalization and out-of-distribution adaptation capability, highlighting the crucial benefit of the proposed spatial-aware representations for generalist robot policy learning.All the details and codes are opensourced.",
+        "url": "https://doi.org/10.15607/rss.2025.xxi.011",
+        "venue": "",
+        "citation_count": 50,
+        "publication_date": "2025-06-21",
+        "source": "open_alex",
+        "doi": "10.15607/rss.2025.xxi.011",
+        "arxiv_id": null
+      },
+      {
+        "title": "Learning Representations Via a Robust Behavioral Metric for Deep Reinforcement Learning",
+        "authors": [
+          "Jianda Chen",
+          "Sinno Jialin Pan"
+        ],
+        "year": 2022,
+        "abstract": "",
+        "url": "https://doi.org/10.52202/068431-2656",
+        "venue": "neural information processing systems",
+        "citation_count": 1,
+        "publication_date": "2022-01-01",
+        "source": "open_alex",
+        "doi": "10.52202/068431-2656",
+        "arxiv_id": null
+      },
+      {
+        "title": "Deployment-time reliability of learned robot policies",
+        "authors": [
+          "Christopher Agia",
+          "Jeannette Bohg",
+          "Marco Pavone",
+          "Clark Barrett",
+          "Stanford University. School of Engineering.",
+          "Stanford University. Computer Science Department."
+        ],
+        "year": 2026,
+        "abstract": "",
+        "url": "https://doi.org/10.25740/cp016xz0883",
+        "venue": "Stanford Digital Repository",
+        "citation_count": 0,
+        "publication_date": "2026-03-11",
+        "source": "open_alex",
+        "doi": "10.25740/cp016xz0883",
+        "arxiv_id": null
+      },
+      {
+        "title": "ConSERT: A Contrastive Framework for Self-Supervised Sentence Representation Transfer",
+        "authors": [
+          "Yuanmeng Yan",
+          "Rumei Li",
+          "Sirui Wang",
+          "Fuzheng Zhang",
+          "Wei Wu",
+          "Weiran Xu"
+        ],
+        "year": 2021,
+        "abstract": "Yuanmeng Yan, Rumei Li, Sirui Wang, Fuzheng Zhang, Wei Wu, Weiran Xu. Proceedings of the 59th Annual Meeting of the Association for Computational Linguistics and the 11th International Joint Conference on Natural Language Processing (Volume 1: Long Papers). 2021.",
+        "url": "https://doi.org/10.18653/v1/2021.acl-long.393",
+        "venue": "",
+        "citation_count": 504,
+        "publication_date": "2021-01-01",
+        "source": "open_alex",
+        "doi": "10.18653/v1/2021.acl-long.393",
+        "arxiv_id": null
+      },
+      {
+        "title": "DiffCSE: Difference-based Contrastive Learning for Sentence Embeddings",
+        "authors": [
+          "Yung-Sung Chuang",
+          "Rumen Dangovski",
+          "Hongyin Luo",
+          "Yang Zhang",
+          "Shiyu Chang",
+          "Marin Soljacic A",
+          "Shang-Wen Li",
+          "Scott Yih",
+          "Yoon Kim",
+          "James Glass"
+        ],
+        "year": 2022,
+        "abstract": "Yung-Sung Chuang, Rumen Dangovski, Hongyin Luo, Yang Zhang, Shiyu Chang, Marin Soljacic, Shang-Wen Li, Scott Yih, Yoon Kim, James Glass. Proceedings of the 2022 Conference of the North American Chapter of the Association for Computational Linguistics: Human Language Technologies. 2022.",
+        "url": "https://doi.org/10.18653/v1/2022.naacl-main.311",
+        "venue": "Conference of the North American Chapter of the Association for Computational Linguistics: Human Language Technologies (NAACL-HLT)",
+        "citation_count": 173,
+        "publication_date": "2022-01-01",
+        "source": "open_alex",
+        "doi": "10.18653/v1/2022.naacl-main.311",
+        "arxiv_id": null
+      },
+      {
+        "title": "Self-Guided Contrastive Learning for BERT Sentence Representations",
+        "authors": [
+          "Taeuk Kim",
+          "Kang Min Yoo",
+          "Sang‐goo Lee"
+        ],
+        "year": 2021,
+        "abstract": "Taeuk Kim, Kang Min Yoo, Sang-goo Lee. Proceedings of the 59th Annual Meeting of the Association for Computational Linguistics and the 11th International Joint Conference on Natural Language Processing (Volume 1: Long Papers). 2021.",
+        "url": "https://doi.org/10.18653/v1/2021.acl-long.197",
+        "venue": "",
+        "citation_count": 170,
+        "publication_date": "2021-01-01",
+        "source": "open_alex",
+        "doi": "10.18653/v1/2021.acl-long.197",
+        "arxiv_id": null
+      }
+    ],
+    "openreview": [],
+    "semantic_scholar": [],
+    "crossref": [
+      {
+        "title": "Grounding Hierarchical Vision-Language-Action Models Through Explicit Language-Action Alignment",
+        "authors": [],
+        "year": 2026,
+        "abstract": "",
+        "url": "https://doi.org/10.1109/cvprf71909.2026.00889",
+        "venue": "2026 IEEE/CVF Conference on Computer Vision and Pattern Recognition- FINDINGS Track (CVPRF)",
+        "citation_count": 1,
+        "publication_date": "2026-06",
+        "source": "crossref",
+        "doi": "10.1109/cvprf71909.2026.00889",
+        "arxiv_id": null
+      },
+      {
+        "title": "Vision-Language-Action and Vision Language Models for Robot Manipulation: A Comprehensive Review Towards Real-World Applications",
+        "authors": [
+          "Md Selim Sarowar",
+          "Sungho Kim"
+        ],
+        "year": null,
+        "abstract": "<jats:p>The convergence of vision, language, and action modeling has catalyzed a paradigm shift in robotic manipulation, enabling robots to interpret natural language commands and execute complex tasks through learned sensorimotor policies. This comprehensive review synthesizes recent advances in Vision-Language-Action (VLA) models and Vision-Language Models (VLMs) for robotic manipulation, establishing a systematic taxonomy spanning end-to-end transformer architectures, diffusion-based policies, and modular frameworks. We analyze foundational models including RT-1, RT-2, PaLM-E, Octo, and OpenVLA, examining their architectural innovations, training methodologies, and empirical performance across manipulation, grasping, and force control tasks. Quantitative analysis reveals that foundation model integration yields substantial generalization improvements (RT-2 achieves 85% success on novel objects compared to 60% for RT-1), while diffusion policies achieve state-of-the-art precision (over 95% success in insertion tasks compared to 70% for behavioral cloning). However, fundamental limitations persist: scaling laws exhibit diminishing returns (scaling exponent alpha approximately 0.15 to 0.25), distribution shift induces severe degradation (around 40% performance drop for novel geometries), temporal consistency degrades proportionally to the square root of the time horizon (sqrt(T)), and sample efficiency remains 100 to 1000 times worse than human learning. We identify critical research challenges in compositional generalization, long-horizon planning, safety verification, and multi-modal sensor fusion. Through systematic benchmark analysis revealing coverage gaps and evaluation inconsistencies, we propose standardized protocols incorporating robustness metrics beyond success rates. Our analysis of scaling relationships, failure modes, and action representation trade-offs provides concrete research directions, including physics-grounded world models, uncertainty-aware planning, hierarchical skill decomposition, and formal verification frameworks. This review establishes the current state of VLA research while identifying fundamental challenges that must be resolved for the deployment of general-purpose robotic manipulation systems in real-world environments.</jats:p>",
+        "url": "https://doi.org/10.20944/preprints202606.0400.v1",
+        "venue": "",
+        "citation_count": 0,
+        "publication_date": null,
+        "source": "crossref",
+        "doi": "10.20944/preprints202606.0400.v1",
+        "arxiv_id": null
+      },
+      {
+        "title": "Transforming the vision into action",
+        "authors": [],
+        "year": 2021,
+        "abstract": "",
+        "url": "https://doi.org/10.1017/9781009024648.008",
+        "venue": "Motivating Learners, Motivating Teachers",
+        "citation_count": 0,
+        "publication_date": "2021-09-17",
+        "source": "crossref",
+        "doi": "10.1017/9781009024648.008",
+        "arxiv_id": null
+      },
+      {
+        "title": "Peer Review #3 of \"Dynamic guided metric representation learning for multi-view clustering (v0.2)\"",
+        "authors": [],
+        "year": 2022,
+        "abstract": "",
+        "url": "https://doi.org/10.7287/peerj-cs.922v0.2/reviews/3",
+        "venue": "",
+        "citation_count": 0,
+        "publication_date": "2022-03-08",
+        "source": "crossref",
+        "doi": "10.7287/peerj-cs.922v0.2/reviews/3",
+        "arxiv_id": null
+      },
+      {
+        "title": "Peer Review #3 of \"Dynamic guided metric representation learning for multi-view clustering (v0.1)\"",
+        "authors": [],
+        "year": 2022,
+        "abstract": "",
+        "url": "https://doi.org/10.7287/peerj-cs.922v0.1/reviews/3",
+        "venue": "",
+        "citation_count": 0,
+        "publication_date": "2022-03-08",
+        "source": "crossref",
+        "doi": "10.7287/peerj-cs.922v0.1/reviews/3",
+        "arxiv_id": null
+      },
+      {
+        "title": "Peer Review #2 of \"Dynamic guided metric representation learning for multi-view clustering (v0.1)\"",
+        "authors": [],
+        "year": 2022,
+        "abstract": "",
+        "url": "https://doi.org/10.7287/peerj-cs.922v0.1/reviews/2",
+        "venue": "",
+        "citation_count": 0,
+        "publication_date": "2022-03-08",
+        "source": "crossref",
+        "doi": "10.7287/peerj-cs.922v0.1/reviews/2",
+        "arxiv_id": null
+      },
+      {
+        "title": "A Qualitative Similarity Framework for the Interpretation of Natural Language Similarity Expressions",
+        "authors": [
+          "Helmar Gust",
+          "Carla Umbach"
+        ],
+        "year": 2021,
+        "abstract": "<jats:title>Abstract</jats:title><jats:p>In this paper, a representational framework is presented featuring a qualitative notion of similarity. It is aimed at issues of natural language semantics, in particular the semantics of expressions of similarity and sameness and their role in comparison and ad-hoc kind formation. The framework makes use of attribute spaces, which are well-established in AI and also in some branches of natural language semantics, e.g., frame-based approaches (Barsalou 1992). What distinguishes attribute spaces and representations as proposed in this paper is the idea of systems of predicates on attribute spaces corresponding to predicates on the domain. On the worldy side, a domain includes a set of relevant predicates talking about individuals. These predicates have counterparts on the representational side talking about points of an attribute space. Counterpart predicates are required to be consistent with their originals; more precisely, they have to agree in truth-value on the set of positive and negative exemplars thereby approximating the original predicates. Moreover, counterpart predicates will be assumed to have convex and open extensions. This system facilitates a qualitative notion of similarity which is suited to account for the meaning of natural language similarity expressions and, furthermore, their role in comparison and ad-hoc kind formation.</jats:p>",
+        "url": "https://doi.org/10.1007/978-3-030-69823-2_4",
+        "venue": "Language, Cognition, and Mind Concepts in Action",
+        "citation_count": 2,
+        "publication_date": "2021",
+        "source": "crossref",
+        "doi": "10.1007/978-3-030-69823-2_4",
+        "arxiv_id": null
+      },
+      {
+        "title": "CLOP-DiT: Structured-Metadata-Conditioned Single-Cell Latent Generation via Contrastive Language-Omics Pretraining and Diffusion Transformers",
+        "authors": [
+          "Zeyu Fu"
+        ],
+        "year": null,
+        "abstract": "<jats:title>Abstract</jats:title>\n                <jats:p>\n                  Generating realistic single-cell transcriptomic profiles from structured biological descriptions would enable controlled simulation, data augmentation, and hypothesis-driven cell-state creation—yet no existing method combines text–cell alignment with conditional generation. We present CLOP-DiT, a modular three-stage pipeline: (1) a contrastive aligner (CLOP) maps BiomedBERT text embeddings and scGPT cell embeddings into a shared 512-dimensional space; (2) a conditional Diffusion Transformer (DiT) generates scGPT-compatible latent states via flow matching, steered by a five-field biological template (cell type, tissue, organism, marker genes, disease); and (3) a frozen scGPT decoder maps latents to gene expression. Across 69 cell types from 80 GEO datasets (220,304 cells), a high-fidelity regime (CFG = 2.0) achieves 36.9% KNN accuracy (25× chance) and 81.0% steering, while a high-diversity regime (CFG = 1.0) reaches diversity ratio 0.93 at 80.7% steering. Conditioning field ablation and swap-label permutation tests confirm that marker genes are the dominant steering signal (steering accuracy drops from 99.8% to 62.4% when only metadata fields are retained). Key limitations are identified transparently: in-distribution per-gene variance structure is well preserved (\n                  <jats:italic>r</jats:italic>\n                  = 0.98) but cross-dataset variance correlation drops to near zero, the discriminator AUC of 0.656 indicates residual distinguishability, and a pilot rare-cell augmentation study was negative. The modular architecture enables targeted remediation of each limitation without full retraining. CLOP-DiT establishes the feasibility of structured-metadata-conditioned single-cell generation and provides a composable framework for iterative improvement.\n                </jats:p>\n                <jats:sec>\n                  <jats:title>Simple Summary</jats:title>\n                  <jats:p>CLOP-DiT is a computational pipeline that generates synthetic single-cell gene expression profiles from structured biological descriptions (cell type, tissue, organism, marker genes, and disease context). It first learns to align text descriptions with real cell data in a shared mathematical space, then uses a diffusion model to generate new cell states matching a given description. The generated cells capture correct cell-type identity and marker gene patterns, but do not yet reproduce the full cell-to-cell variability seen in real single-cell experiments. This work demonstrates that text-guided single-cell generation is feasible as a proof of concept, opening directions for future simulation and hypothesis-generation tools in biology.</jats:p>\n                </jats:sec>",
+        "url": "https://doi.org/10.64898/2026.03.26.714457",
+        "venue": "",
+        "citation_count": 1,
+        "publication_date": null,
+        "source": "crossref",
+        "doi": "10.64898/2026.03.26.714457",
+        "arxiv_id": null
+      },
+      {
+        "title": "Enhancing SCGAN's Disentangled Representation Learning with Contrastive SSIM Similarity Constraints",
+        "authors": [
+          "Iman Yazdanpanah",
+          "Ali Eslamian"
+        ],
+        "year": 2024,
+        "abstract": "",
+        "url": "https://doi.org/10.1109/icee63041.2024.10668118",
+        "venue": "2024 32nd International Conference on Electrical Engineering (ICEE)",
+        "citation_count": 0,
+        "publication_date": "2024-05-14",
+        "source": "crossref",
+        "doi": "10.1109/icee63041.2024.10668118",
+        "arxiv_id": null
+      }
+    ]
+  }
+}

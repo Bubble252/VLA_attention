@@ -29,3 +29,11 @@
 5. sink/register mask 前后分别报告，不把 sink removal 本身包装成核心创新。
 
 完整检索结果和失败信息记录在仓库根目录 `allinone.md`；下载目标见 `references/attribution_literature/download_targets.md`。
+
+## VLA 候选创新性审计（2026-10-16）
+
+- 完整报告：[`vla_novelty_audit_20261016/report.md`](vla_novelty_audit_20261016/report.md)
+- 结论：原“语言区域汇聚 + action-chunk 距离 triplet”候选为 **Level 2 — High Overlap**。RS-CL 已在 VLA 中以 proprioception 距离塑造对比表征，PSE 已以行为相似性定义表征距离，FOCAL-VLA 已在子任务区域汇聚几何/未来运动教师特征。因此原候选保留为低成本机制对照，不冻结为论文主创新。
+- 审计边界：尚未发现逐项完全相同的方法；多源检索存在 arXiv SSL、DBLP 解析、OpenReview 依赖和 Semantic Scholar 429 失败，不能将未检出解释为不存在相关工作。
+- 原文核验：RS-CL、PSE、inverse-dynamics VLA、FOCAL-VLA、TCN、DBC，以及用户提供的 Copper-Policy。PDF 与全文提取保留为本地审计缓存，不进入 Git 或飞书。
+- 后续提出的“指令重定向 × 目标视觉干预”是独立新候选，尚未完成自己的创新性审计，不因原候选被否定而自动获得新颖性。

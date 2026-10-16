@@ -1,0 +1,14 @@
+{
+  "scope": "Synthetic logical witnesses only. Not an empirical LIBERO result.",
+  "shared_prefix": {
+    "chunk_distance": 0.0,
+    "continuation_distance": 0.05714285714285715,
+    "conclusion": "Finite action-chunk agreement does not establish future behavioral equivalence."
+  },
+  "multimodal_action": {
+    "chunk_distance": 0.02857142857142857,
+    "deterministic_embedding_distance_for_identical_input": 0,
+    "conclusion": "Different demonstrated actions do not necessarily imply separable observable states."
+  },
+  "limits": "These show failed universal implications. They do not prove a carefully filtered auxiliary loss cannot help."
+}

@@ -1,0 +1,149 @@
+[
+  {
+    "name": "RS-CL",
+    "title": "Contrastive Representation Regularization for Vision-Language-Action Models",
+    "date": "2025-10 / PDF v4 2026-05",
+    "url": "https://arxiv.org/abs/2510.01711",
+    "venue": "ICML 2026（PDF 首页）",
+    "problem": "VLA 表征缺乏控制状态敏感性",
+    "mechanism": "summary token + proprio 距离 soft weights + InfoNCE + view cutoff，与原动作损失联合",
+    "insight": "物理状态距离可塑造控制相关表征",
+    "domain": "GR00T/RoboCasa/LIBERO/真机",
+    "axes": [
+      "match",
+      "partial",
+      "match",
+      "match"
+    ],
+    "evidence": "§2.1–2.2 Eq.(2)–(5)；Table 2 LIBERO；Table 3 比较 TCN",
+    "scope": "使用 proprio 距离，非我们的语言区域 action-chunk triplet；不能说 exact duplicate。",
+    "matching_axes": 3,
+    "level": 2
+  },
+  {
+    "name": "PSE",
+    "title": "Contrastive Behavioral Similarity Embeddings for Generalization in Reinforcement Learning",
+    "date": "2021-01 / PDF v2 2021-03",
+    "url": "https://arxiv.org/abs/2101.05265",
+    "venue": "ICLR 2021（PDF 首页）",
+    "problem": "跨环境行为泛化",
+    "mechanism": "policy similarity metric 的当前动作分布差异+未来状态递归；contrastive metric embeddings",
+    "insight": "行为相似决定表示相似",
+    "domain": "RL/LQR/jumping/Distracting Control",
+    "axes": [
+      "partial",
+      "match",
+      "match",
+      "partial"
+    ],
+    "evidence": "§3 Eq.(2)；§4 Eq.(4)；Fig.3 联合 RL/IL 与辅助损失",
+    "scope": "需要专家/近似最优策略，保留未来行为；有限 H=8 action L1 不继承其理论。",
+    "matching_axes": 2,
+    "level": 3
+  },
+  {
+    "name": "Inverse dynamics VLA",
+    "title": "Mitigating State Aliasing in Vision-Language-Action Models via Inverse Dynamics Learning",
+    "date": "2026-05",
+    "url": "https://arxiv.org/abs/2605.29577",
+    "venue": "arXiv preprint",
+    "problem": "VLA 相似视觉对应不同动作的状态混淆",
+    "mechanism": "当前/未来编码器特征预测中间 action chunk，附加 pseudo time reversal",
+    "insight": "直接动作监督视觉编码器可减轻混淆",
+    "domain": "CALVIN ABC-D/SimplerEnv；LIBERO probing",
+    "axes": [
+      "match",
+      "partial",
+      "match",
+      "match"
+    ],
+    "evidence": "§3.1 inverse action loss；§3.2 PTR 的非精确反演声明；§4 和 frozen encoder probes",
+    "scope": "逆动力学非 triplet；未来观测只用于训练辅助头。",
+    "matching_axes": 3,
+    "level": 2
+  },
+  {
+    "name": "FOCAL-VLA",
+    "title": "FOCAL-VLA: Subtask-Guided Geometry Distillation and Implicit World Modeling for Vision-Language-Action Models",
+    "date": "2026-09",
+    "url": "https://arxiv.org/abs/2609.21228",
+    "venue": "arXiv preprint",
+    "problem": "当前子任务所需空间与未来动态理解",
+    "mechanism": "子任务实体 mask pooling VGGT/Track4World 教师特征，geometry/motion queries 条件化动作",
+    "insight": "全场景蒸馏包含无关信息，任务区域应随子任务改变",
+    "domain": "π0.5/LIBERO/真机",
+    "axes": [
+      "partial",
+      "partial",
+      "match",
+      "match"
+    ],
+    "evidence": "§III-B Eq.(1)–(2)；§III-C Eq.(3)–(4)；§III-D 原生 context 路径保留",
+    "scope": "依赖离线子任务语义和实体 masks；绝对教师特征蒸馏，不是动作距离监督。",
+    "matching_axes": 2,
+    "level": 3
+  },
+  {
+    "name": "Copper",
+    "title": "Copper-Policy: Focus on the Representation for Robust Robot Manipulation",
+    "date": "2026-09",
+    "url": "https://arxiv.org/abs/2609.32779",
+    "venue": "arXiv preprint（用户本地副本）",
+    "problem": "学习有利于控制的紧凑世界表征",
+    "mechanism": "意图条件 online/EMA compactor + future flow prediction + 当前帧细节动作通路",
+    "insight": "任务进展与执行细节互补，target space 随 policy 学习",
+    "domain": "LIBERO/Plus/RoboTwin/真机",
+    "axes": [
+      "partial",
+      "differ",
+      "match",
+      "match"
+    ],
+    "evidence": "§3.2 Eq.(2)–(3)；§3.4–3.5 asymmetric interface；§4.5 Table 7",
+    "scope": "未来条件为 task intention，非任意候选动作后果；完整架构不是训练期 triplet。",
+    "matching_axes": 2,
+    "level": 3
+  },
+  {
+    "name": "TCN",
+    "title": "Time-Contrastive Networks: Self-Supervised Learning from Video",
+    "date": "2017-04 / PDF v3 2018-03",
+    "url": "https://arxiv.org/abs/1704.06888",
+    "venue": "arXiv preprint（本次 PDF 未显示正式 venue）",
+    "problem": "视角不同但语义相同/外观相近但功能不同的操作状态",
+    "mechanism": "同步多视角 positives + temporal negatives + triplet margin",
+    "insight": "不变性与功能敏感性需同时学习",
+    "domain": "机器人模仿/倒水/人体姿态",
+    "axes": [
+      "partial",
+      "partial",
+      "match",
+      "match"
+    ],
+    "evidence": "Abstract；§III-A triplet inequality；§III-B/C reward 与 imitation 使用",
+    "scope": "同步视角/时间负对，非 action-chunk 距离；有单视角变体。",
+    "matching_axes": 2,
+    "level": 3
+  },
+  {
+    "name": "DBC",
+    "title": "Learning Invariant Representations for Reinforcement Learning without Reconstruction",
+    "date": "2020-06 / PDF v2 2021-04",
+    "url": "https://arxiv.org/abs/2006.10742",
+    "venue": "ICLR 2021（PDF 首页）",
+    "problem": "像素控制抗无关背景",
+    "mechanism": "latent 距离拟合 reward difference + transition Wasserstein distance",
+    "insight": "保留行为信息无需像素重建",
+    "domain": "视觉 MuJoCo/CARLA RL",
+    "axes": [
+      "partial",
+      "partial",
+      "match",
+      "partial"
+    ],
+    "evidence": "§3 bisimulation Definition 2；§4 encoder loss；§3 partial observability 假设",
+    "scope": "用 rewards/transitions，不等价于即时 action distance，理论不能借用。",
+    "matching_axes": 1,
+    "level": 4
+  }
+]

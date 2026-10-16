@@ -32,6 +32,7 @@ references/.download_failures.current
 paper_draft/.doc_sync_state.json
 **/.doc_sync_state.json
 references/recovered/*.pdf
+references/attribution_literature/vla_novelty_audit_*/papers/
 
 # Local secrets and machine configuration
 .env
