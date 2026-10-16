@@ -6,13 +6,18 @@
 
 ## 1. 研究问题与首轮边界
 
-### 2026-10-16 方法路线更新：从静态 containment 转向 LC-PEA
+### 2026-10-16 方法路线更新：JEV 与 JEPA/LC-PEA 分轨
 
-本节覆盖后文将 D0 containment 写成默认主方法的旧表述，但不删除既有 B0--B4 工程结果。新的**性能方法候选**为 **LC-PEA（Language-Conditioned Predictive Evidence Alignment，语言条件预测证据对齐）**：利用 VLM 阶段已经验证和缓存的语言条件空间证据，选择需要建模的 source/target 视觉表征，再以短时未来 latent 作为训练目标，使共享视觉表征同时服务于目标识别、状态变化预测和动作学习。原 `L_contain`、`I_bind` 与 patch intervention 保留为机制对照和诊断，不再预设为最终涨点方法。
+用户定义的 **JEV 是面向状态评估的统计分类器，不是 JEPA**。因此本项目保留两条互补而独立的性能路线：
+
+1. **VLM + JEV 状态验证路线**：冻结 VLM 提取语言条件的状态、关系和空间证据；轻量统计 JEV 输出校准后的阶段、成功、进度和失败概率。它可以先在离线轨迹上证明 VLM 状态理解能力，再作为固定执行器的监督层，执行继续、停止、重试、回退或重规划，以检验不训练 VLA action head 时能否提升 manipulation task completion。
+2. **JEPA-inspired LC-PEA 动态表征路线**：利用 VLM 阶段已经验证和缓存的语言条件空间证据，选择需要建模的 source/target 视觉表征，再以短时未来 latent 作为训练目标，使共享视觉表征同时服务于目标识别、状态变化预测和动作学习。
+
+后文将 D0 containment 写成默认主方法的旧表述由这两条路线覆盖，但既有 B0--B4 工程结果保留。`L_contain`、`I_bind` 与 patch intervention 继续作为机制对照和诊断。
 
 当前边界如下：
 
-- 这里将用户所说的 `JEV` 暂按 JEPA/joint-embedding predictive learning 理解；正式命名和近邻关系须经过单独的新颖性审计后冻结。
+- JEV 与 JEPA 不得混写。JEV 的主实现是低容量、可校准的统计分类/排序模型；LC-PEA 才使用 joint-embedding predictive learning。
 - LC-PEA 是待验证候选，不因写入计划就宣称优于 BlindVLA、普通 JEPA、ECL 或 LIT。
 - 首版只预测 demonstration 中短时未来观测的 latent，不生成像素，不做长时规划，不引入外部动作专家，也不把 world model 当作已完成模块。
 - predictor 使用当前 policy 的 action-plan latent 或预测 action chunk；专家未来动作不得作为主方法输入，只允许作为带 action-drop/shuffle 对照的诊断上界，防止动作标签捷径。
@@ -22,6 +27,37 @@
 - teacher、future target encoder 和预测损失仅在训练时使用。首版推理图保持原 action policy；若后续将预测 latent 接入 action refinement，必须作为独立版本重新计算推理成本。
 
 LC-PEA 要回答的能力问题是：**语言指定的目标证据能否通过短时未来状态预测，改善 manipulation 的目标选择、闭环执行和 OOD 泛化，并在普通未来预测及视觉表征保持之外产生独立增量？**
+
+### 1.0 VLM + JEV：不训练 VLA action head 的能力路线
+
+JEV 不从 RGB 端到端学习动作。对时刻 $t$，冻结 VLM 从当前帧或短视频窗、任务指令和候选状态命题中提取特征：phrase attribution mass、source/target relation score、VLM log-prob/margin、跨帧变化、回答一致性和可选的非视觉元数据。统计分类器输出：
+
+```text
+p_phase(t)   = P(approach / grasp / transport / place / done)
+p_success(t) = P(task predicate satisfied)
+p_fail(t)    = P(wrong object / missed grasp / dropped object / stalled / unsafe)
+progress(t)  = calibrated ordinal progress score
+```
+
+首版 JEV 推荐使用冻结特征上的 multinomial/ordinal logistic regression 或 gradient-boosted trees，并报告 temperature/isotonic calibration。它必须与以下对照比较：VLM 直接 yes/no 或文本打分、纯时间先验、仅 proprio/state 的分类器、仅图像通用 feature 的分类器、无语言特征 JEV，以及等参数 MLP。这样才能回答增益是否来自语言条件视觉状态证据，而不是分类器容量或轨迹时间。
+
+“只有 VLM”在机器人闭环中仍需要一个执行动作的固定 controller、脚本策略或现成 VLA；准确表述是**不训练新的 VLA policy/action head，VLM+JEV 是唯一新增学习模块**。JEV 可以通过以下三种接口带来真正能力涨点：
+
+1. **Verifier/reranker**：对固定 planner/VLM 产生的多个候选子目标或计划进行排序，选取预测成功率最高者；
+2. **Recovery monitor**：根据失败类型触发 retry、regrasp、回退或重新调用 planner；
+3. **Termination/progress controller**：避免过早停止和无效重复，在阶段完成后切换到下一子目标。
+
+JEV 的最小矩阵使用独立编号 `E*`：
+
+| 组 | 系统 | 主要问题 |
+|---|---|---|
+| E0 | 固定执行器，无 verifier | 原始 task completion |
+| E1 | 固定执行器 + VLM direct judge | 大 VLM 直接判断是否已足够 |
+| E2 | 固定执行器 + time/state-only classifier | 时间或机器人状态捷径是否已足够 |
+| E3 | 固定执行器 + VLM feature JEV | 校准状态评估是否提升选择/恢复/终止 |
+| E4 | E3 去语言归因/错指令/错图/时间打乱 | 增益是否来自语言条件视觉证据 |
+
+离线主指标为 macro-F1/AUROC、ordinal progress correlation、ECE/Brier、failure lead time 和跨 task/OOD 泛化；在线主指标为官方 success、错误目标率、恢复成功率、无效动作数、平均完成步数和额外调用成本。只有 E3 相对 E0/E1/E2 提高官方闭环 success 或恢复/终止能力，而且 E4 负控显著退化，才能声称 VLM+JEV 带来 manipulation 能力提升。离线分类准确率提高而闭环不升，只能声称状态评估提升。
 
 ### 数据集角色边界
 

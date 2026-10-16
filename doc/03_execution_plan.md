@@ -590,7 +590,24 @@ git push
 
 ## 9. P6：VLA 主方法训练
 
-### 2026-10-16 冻结候选：LC-PEA 涨点路线
+### 2026-10-16 路线 A：VLM + JEV 状态评估带来的能力提升
+
+这里的 **JEV 是面向状态评估的统计分类器，不是 JEPA**。路线 A 的目标是在不训练新 VLA action head 的前提下，检验 VLM 的状态理解是否能转化为 manipulation 能力增益：冻结 VLM 提取语言条件空间证据、关系分数、回答 margin 和短窗变化，JEV 将其校准为阶段、进度、成功概率和失败类型；固定 controller/现成 policy 负责执行，VLM+JEV 负责候选计划排序、终止、重试、回退和重规划。
+
+需要严格表述为“VLM+JEV 是唯一新增学习模块”，不能声称机器人完全没有动作执行器。若只做静态 benchmark，则可称 VLM-only state evaluation；若声称 manipulation success 涨点，则必须把 JEV 接入固定执行闭环。
+
+- [ ] 冻结 VLM 和输入模板，构建 frame/window-level 状态 manifest：task、episode、time、instruction、phase、success predicate、failure type、scene/camera split；
+- [ ] 从 VLM 导出 phrase attribution mass、source/target relation score、answer/log-prob margin、跨帧 feature/回答变化与一致性；
+- [ ] 训练低容量 JEV：优先 multinomial/ordinal logistic regression 或 gradient-boosted trees，另做等参数 MLP；
+- [ ] 与 VLM direct judge、纯时间先验、state/proprio-only、image-feature-only、无语言 JEV 做 matched comparison；
+- [ ] 离线报告 macro-F1/AUROC、progress correlation、ECE/Brier、failure lead time，以及 task/scene/camera/OOD 分组；
+- [ ] 在线固定同一个执行器，只改变 verifier：E0 无 verifier、E1 VLM direct、E2 time/state-only、E3 VLM-feature JEV、E4 错词/错图/无归因/时间打乱；
+- [ ] 在线报告 official success、错误目标率、recovery success、无效动作数、完成步数、VLM/JEV 调用成本和延迟；
+- [ ] 只有 E3 超过 E0/E1/E2 且 E4 负控退化，才声称能力提升；离线分类涨点而闭环不升，只能声称状态评估提升。
+
+这条路线优先复用 LIBERO 已有轨迹与官方 predicates；标签可由 simulator predicate、EEF/gripper/contact 事件和成功轨迹派生，不能用 test rollout 调阈值。它也可扩展到视频流程验证、工业操作步骤监测或医疗流程状态识别，但跨领域结果必须使用各自任务真值和闭环决策，不混成 manipulation 主表。
+
+### 2026-10-16 路线 B：JEPA-inspired LC-PEA 涨点路线（保留）
 
 P6 的研究目标从“让动作归因落入静态语言区域”调整为“让语言指定的视觉证据预测短时未来任务表征，从而提升 manipulation 动作学习与闭环泛化”。候选方法名为 **LC-PEA（Language-Conditioned Predictive Evidence Alignment）**。D0 containment、`I_bind` 与 patch intervention 保留为静态 baseline 和机制诊断，不再预设为最终主方法。
 

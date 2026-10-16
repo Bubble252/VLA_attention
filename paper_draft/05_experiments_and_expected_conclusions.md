@@ -1,5 +1,23 @@
 # 5. Experiments 与预期结论
 
+## 2026-10-16：VLM + JEV 状态评估能力路线
+
+JEV 在本计划中是面向状态评估的统计分类器，不是 JEPA。该路线单独回答：**冻结 VLM 的语言条件状态证据，经过低容量、校准的统计分类器后，是否能提升 manipulation 的计划选择、进度判断、终止和失败恢复？** LC-PEA 的 JEPA-inspired 动态表征实验继续保留在下一节，两者不混为同一方法。
+
+离线数据单元为 episode/time window，标签来自官方 success predicate、EEF/gripper/contact 事件和可审计的阶段规则。按 episode、task、scene 和 camera 隔离 train/validation/test，禁止将相邻帧随机拆到不同集合。JEV 首轮比较：
+
+| 组 | 状态评估器/系统 | 证明目标 |
+|---|---|---|
+| E0 | 固定执行器，无 verifier | 原始闭环能力 |
+| E1 | 固定执行器 + VLM direct judge | 大模型直接回答是否已足够 |
+| E2 | 固定执行器 + time/state-only classifier | 是否只是进度时间或 proprio shortcut |
+| E3 | 固定执行器 + VLM-feature JEV | VLM 状态证据经校准后是否有决策价值 |
+| E4 | E3 去语言归因、错指令、错图、时间打乱 | 是否真正使用语言条件视觉状态 |
+
+离线报告 phase/failure macro-F1、success AUROC、progress Spearman、ECE/Brier、failure lead time，并与等参数 MLP/GBDT/logistic 做容量对照。在线保持 controller、planner、policy checkpoint、任务和预算不变，只替换 verifier；报告 official success、wrong-target、recovery success、无效动作数、完成步数、延迟与调用成本。
+
+能力涨点的最低标准是 E3 在独立闭环上优于 E0/E1/E2，且 E4 负控显著下降。若 E3 只提高离线分类/calibration，不能宣称 manipulation 能力提升。若 VLM direct judge 已等于 E3，贡献只能是效率、校准或数据效率；若 state-only 等于 E3，不能声称语言视觉理解有贡献。
+
 ## 2026-10-16：LC-PEA 性能路线更新
 
 VLA 主线不再把静态 action-evidence containment 预设为最终涨点方法。新的性能候选是 **LC-PEA：语言条件预测证据对齐**，即把 VLM 阶段得到的语言条件空间证据用于选择 short-horizon future latent 的预测目标，再由共享视觉表征支持 manipulation action learning。原 D0、`I_bind`、归因图与 patch occlusion 继续承担 baseline、机制解释和反事实验证。

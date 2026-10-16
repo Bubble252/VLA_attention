@@ -237,7 +237,37 @@ $$
 
 因此，Next Forcing 式 multi-horizon `R_future` 归因和长时 WAM/VAM 仍是后期扩展，不进入历史 OpenVLA B0--B4。后文 LC-PEA 使用的 short-horizon future latent 是一个独立、最小化的 predictive auxiliary；它不继承 Next Forcing 的完整多 chunk 生成机制，也不等同于长时 `R_future` teacher。
 
-### 4.8.5 LC-PEA：语言条件预测证据对齐（新主方法候选）
+### 4.8.5 VLM + JEV：校准状态评估与闭环决策
+
+JEV 在本文中指 **面向状态评估的统计分类器**，与 JEPA 无关。其目的是先检验冻结 VLM 是否已经包含 manipulation 所需的状态信息，再把该信息变成可校准、可用于决策的数值，而不训练新的 VLA action head。
+
+令冻结 VLM 从当前帧或短窗 $x_{t-r:t}$、指令 $w$ 和预定义状态命题中导出特征：
+
+$$
+f_t=\left[
+h_{\mathrm{VLM}},
+m_{\mathrm{source}},m_{\mathrm{target}},
+r_{\mathrm{relation}},
+\ell_{\mathrm{answer}},
+\Delta h_t,
+c_{\mathrm{consistency}}
+\right].
+$$
+
+其中 $m$ 是语言条件归因质量，$r$ 是 source--target/EEF 关系分数，$\ell$ 是 VLM 回答或命题的 log-prob/margin，$\Delta h_t$ 是跨帧变化。JEV $g_\phi$ 输出校准的状态分布：
+
+$$
+(p_t^{\mathrm{phase}},p_t^{\mathrm{success}},p_t^{\mathrm{fail}},\rho_t)
+=g_\phi(f_t),
+$$
+
+其中 $\rho_t$ 是 ordinal progress。首版 $g_\phi$ 采用 multinomial/ordinal logistic regression 或 gradient-boosted trees；temperature/isotonic calibration 只在 validation 拟合。统计模型保持低容量，是为了判断 VLM 特征是否含有状态信息，而不是用另一个大网络重新学习视觉任务。
+
+离线训练目标由 phase cross-entropy、success/failure classification、ordinal progress 与 calibration 项组成。闭环时，JEV 不生成动作，只向固定 controller、脚本策略或现成 policy 提供以下控制信号：候选子目标/计划 reranking、阶段切换与 termination、失败后的 retry/regrasp/rollback/replan。因而准确表述是“VLM+JEV 是唯一新增学习模块”，而不是“系统完全不需要动作执行器”。
+
+JEV 的核心证据必须来自 E0 无 verifier、E1 VLM direct judge、E2 time/state-only classifier、E3 VLM-feature JEV、E4 无语言/错指令/错图/时间打乱的 paired comparison。离线 macro-F1/AUROC/ECE 上升不能自动证明 manipulation 能力；只有官方 success、恢复成功、错误目标率或有效完成步数改善，才能写能力涨点。
+
+### 4.8.6 LC-PEA：语言条件预测证据对齐（独立保留的动态表征候选）
 
 静态 `A_lang→A_act` containment 容易把语言实体区域误当成全部动作证据，也不能表达物体、夹爪和目标容器随动作变化的动态关系。为使 VLM 阶段的空间证据直接服务于 manipulation 能力，本文将主方法候选更新为 **LC-PEA（Language-Conditioned Predictive Evidence Alignment）**。它不要求语言热图直接规定动作，而是让语言指定的视觉证据负责预测短时未来的任务相关 latent，再由共享表征支持原生 action objective。
 
@@ -314,12 +344,13 @@ $$
 
 LC-PEA 不保证涨点。它的性能假设是：目标相关未来变化比静态空间约束更贴近 action learning，并且语言反事实排序能阻止模型忽略 referent。该假设会在以下情形失败：`A_lang` 错误或覆盖不足；predictor 依赖 action/background shortcut；$L_{\mathrm{pred}}/L_{\mathrm{bind}}$ 与 action gradient 冲突；或基础 action head/rollout 接口尚未建立非零能力。必须记录 action 与两个辅助项的梯度范数和 cosine、正确/反事实预测差距、held-out action、官方 rollout 与 OOD；任一辅助 loss 下降本身都不是成功证据。
 
-### 4.8.6 方法版本与历史边界
+### 4.8.7 方法版本与历史边界
 
 ```text
 Static-Ours = L_sem + D0 A_act containment（历史候选/机制 baseline）
+VLM-JEV = frozen VLM state evidence + calibrated statistical evaluator
 LC-PEA = L_action + language-conditioned short-horizon latent prediction
 LC-PEA-R = LC-PEA + BlindVLA-style L_ret
 ```
 
-LC-PEA 是新的性能主方法候选，须先完成独立新颖性审计和最小实验 gate；写入计划不等于已经证明创新或涨点。`Static-Ours` 保留为直接归因约束 baseline，`LC-PEA-R` 用于检验动态语义预测是否在通用视觉 retention 上仍有增量。长时 WAM/VAM、闭环 latent planning 和 action-conditioned video generation 继续作为后期扩展，不与首版 LC-PEA 混合。
+VLM-JEV 与 LC-PEA 是两条独立候选：前者不训练 action head，通过状态验证、reranking 和 recovery 提升固定系统；后者训练 VLA 的动态表征辅助项。两者都须完成独立新颖性审计和最小实验 gate；写入计划不等于已经证明创新或涨点。`Static-Ours` 保留为直接归因约束 baseline，`LC-PEA-R` 用于检验动态语义预测是否在通用视觉 retention 上仍有增量。长时 WAM/VAM、闭环 latent planning 和 action-conditioned video generation 继续作为后期扩展，不与首版 LC-PEA 混合。
