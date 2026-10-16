@@ -1,0 +1,566 @@
+{
+  "retrieved_at": "2026-10-16T12:50:01.293269+00:00",
+  "queries": [
+    "vision language action instruction target grounding manipulation",
+    "robot policy counterfactual visual evidence intervention",
+    "multi object manipulation instruction retargeting action"
+  ],
+  "start_year": 2021,
+  "end_year": 2026,
+  "max_results_per_query_per_source": 5,
+  "results": {
+    "arxiv": [
+      {
+        "title": "Inference-Time Attention Steering for Vision-Language-Action Driving Models",
+        "authors": [
+          "Darshan Nagendra Prasad",
+          "Lars Ullrich",
+          "Knut Graichen"
+        ],
+        "year": 2026,
+        "abstract": "Vision-language-action (VLA) driving models couple a reasoning stage with a diffusion-based trajectory decoder, but do not give a direct way to redirect attention toward safety-critical actors at inference time without retraining. We studied a bounded additive pre-softmax attention bias on the visual tokens of detector localized traffic actors on Alpamayo-R1's Qwen3-VL backbone. It is applied as a fail open forward pre-hook with no weight changes. On 50 lane-change scenarios from the Physical AI World Model Synthetic dataset. The trajectory decoder shows a monotonic dose response in the bias magnitude, separate from a paired zero bias control at every tested magnitude. It reaches $\\approx 17$\\,cm mean displacement with lateral shifts up to $\\sim 140$\\ cm at the clamp. A layer ablation places the action-relevant signal in late layers, where the effect increases with the number of hooked layers (2.0cm for the first 8 layers; 67.6cm for all 36). A per call injection audit explains why the Chain-of-Causation text never changes. The mask based bias never reaches the reasoning pathway in this serving stack, so the invariance is verified exposure, not robustness. Steered trajectories tend to shift toward the attended actor, suggesting the bias governs where the model looks rather than encoding a target behavior.",
+        "url": "http://arxiv.org/abs/2608.17095v1",
+        "venue": "arXiv",
+        "citation_count": 0,
+        "publication_date": "2026-08-17",
+        "source": "arxiv",
+        "doi": null,
+        "arxiv_id": "2608.17095"
+      },
+      {
+        "title": "Mini-BEHAVIOR-Gran: Revealing U-Shaped Effects of Instruction Granularity on Language-Guided Embodied Agents",
+        "authors": [
+          "Sukai Huang",
+          "Chenyuan Zhang",
+          "Fucai Ke",
+          "Zhixi Cai",
+          "Gholamreza Haffari",
+          "Lizhen Qu",
+          "Hamid Rezatofighi"
+        ],
+        "year": 2026,
+        "abstract": "Instruction granularity is an important yet poorly controlled variable in language-guided embodied AI. Existing benchmarks typically pair each task with a single static instruction, making it difficult to study how agent behavior changes when the same task is described at different levels of detail. We introduce Mini-BEHAVIOR-Gran, a new benchmark for controlled studies of instruction granularity that extends Mini-BEHAVIOR with multiple instruction variants per task, ranging from high-level goal descriptions to step-by-step guidance. Using this benchmark, we compare four candidate metrics for cross-task granularity quantification: token count, entity count, action-verb count, and planning-width, and find that width correlates most consistently with agent performance. Using width to organize training and evaluation further reveals a non-monotonic U-shaped relationship between instruction granularity and performance, with peaks at both fine and coarse extremes. Further analysis suggests that the coarse-granularity performance rebound is associated with shallow grounding, where agents learn vision-dominant policies.",
+        "url": "http://arxiv.org/abs/2604.17019v1",
+        "venue": "arXiv",
+        "citation_count": 0,
+        "publication_date": "2026-04-18",
+        "source": "arxiv",
+        "doi": null,
+        "arxiv_id": "2604.17019"
+      },
+      {
+        "title": "Demystifying Instruction Mixing for Fine-tuning Large Language Models",
+        "authors": [
+          "Renxi Wang",
+          "Haonan Li",
+          "Minghao Wu",
+          "Yuxia Wang",
+          "Xudong Han",
+          "Chiyu Zhang",
+          "Timothy Baldwin"
+        ],
+        "year": 2023,
+        "abstract": "Instruction tuning significantly enhances the performance of large language models (LLMs) across various tasks. However, the procedure to optimizing the mixing of instruction datasets for LLM fine-tuning is still poorly understood. This study categorizes instructions into three primary types: NLP downstream tasks, coding, and general chat. We explore the effects of instruction tuning on different combinations of datasets on LLM performance, and find that certain instruction types are more advantageous for specific applications but can negatively impact other areas. This work provides insights into instruction mixtures, laying the foundations for future research.",
+        "url": "http://arxiv.org/abs/2312.10793v3",
+        "venue": "arXiv",
+        "citation_count": 0,
+        "publication_date": "2023-12-17",
+        "source": "arxiv",
+        "doi": null,
+        "arxiv_id": "2312.10793"
+      },
+      {
+        "title": "WizardLM: Empowering large pre-trained language models to follow complex instructions",
+        "authors": [
+          "Can Xu",
+          "Qingfeng Sun",
+          "Kai Zheng",
+          "Xiubo Geng",
+          "Pu Zhao",
+          "Jiazhan Feng",
+          "Chongyang Tao",
+          "Qingwei Lin",
+          "Daxin Jiang"
+        ],
+        "year": 2023,
+        "abstract": "Training large language models (LLMs) with open-domain instruction following data brings colossal success. However, manually creating such instruction data is very time-consuming and labor-intensive. Moreover, humans may struggle to produce high-complexity instructions. In this paper, we show an avenue for creating large amounts of instruction data with varying levels of complexity using LLM instead of humans. Starting with an initial set of instructions, we use our proposed Evol-Instruct to rewrite them step by step into more complex instructions. Then, we mix all generated instruction data to fine-tune LLaMA. We call the resulting model WizardLM. Human evaluations on a complexity-balanced test bed and Vicuna's testset show that instructions from Evol-Instruct are superior to human-created ones. By analyzing the human evaluation results of the high complexity part, we demonstrate that outputs from our WizardLM are preferred to outputs from OpenAI ChatGPT. In GPT-4 automatic evaluation, WizardLM achieves more than 90\\% capacity of ChatGPT on 17 out of 29 skills. Even though WizardLM still lags behind ChatGPT in some aspects, our findings suggest that fine-tuning with AI-evolved instructions is a promising direction for enhancing LLMs. Our code and data are public at https://github.com/nlpxucan/WizardLM",
+        "url": "http://arxiv.org/abs/2304.12244v3",
+        "venue": "arXiv",
+        "citation_count": 0,
+        "publication_date": "2023-04-24",
+        "source": "arxiv",
+        "doi": null,
+        "arxiv_id": "2304.12244"
+      },
+      {
+        "title": "InstructVLA: Vision-Language-Action Instruction Tuning from Understanding to Manipulation",
+        "authors": [
+          "Shuai Yang",
+          "Hao Li",
+          "Bin Wang",
+          "Yilun Chen",
+          "Yang Tian",
+          "Tai Wang",
+          "Hanqing Wang",
+          "Feng Zhao",
+          "Yiyi Liao",
+          "Jiangmiao Pang"
+        ],
+        "year": 2025,
+        "abstract": "To operate effectively in the real world, robots should integrate multimodal reasoning with precise action generation. However, existing vision-language-action (VLA) models often sacrifice one for the other, narrow their abilities to task-specific manipulation data, and suffer catastrophic forgetting of pre-trained vision-language capabilities. To bridge this gap, we introduce InstructVLA, an end-to-end VLA model that preserves the flexible reasoning of large vision-language models (VLMs) while delivering leading manipulation performance with the help of embodied reasoning. InstructVLA introduces a novel training paradigm, Vision-Language-Action Instruction Tuning (VLA-IT), which employs multimodal training with mixture-of-experts adaptation to jointly optimize embodied reasoning and action generation on both standard VLM corpora and a curated 650K-sample VLA-IT dataset. On in-domain SimplerEnv tasks, InstructVLA achieves 33% improvement over SpatialVLA. To evaluate generalization, we introduce SimplerEnv-Instruct, an 80-task benchmark requiring closed-loop control and high-level instruction understanding, where it outperforms a fine-tuned OpenVLA by 96% and an action expert aided by GPT-4o by 29%. Additionally, InstructVLA surpasses baseline VLMs on multimodal tasks and exhibits inference-time scaling by leveraging textual reasoning to boost manipulation performance in both simulated and real-world settings. These results demonstrate InstructVLA's potential for bridging intuitive and steerable human-robot interaction with efficient policy learning.",
+        "url": "http://arxiv.org/abs/2507.17520v2",
+        "venue": "arXiv",
+        "citation_count": 0,
+        "publication_date": "2025-07-23",
+        "source": "arxiv",
+        "doi": null,
+        "arxiv_id": "2507.17520"
+      },
+      {
+        "title": "Evidence-Guided Counterfactual Learning for Long-Tailed Robotic Policies",
+        "authors": [
+          "Weiwei Chen",
+          "Chenghao Xu",
+          "Meiling Yu",
+          "Xu Yang",
+          "Cheng Deng"
+        ],
+        "year": 2026,
+        "abstract": "In the practical deployment of vision--language--action policies, handling long-tailed task distributions is a common challenge due to the highly imbalanced composition of robot demonstration datasets. To investigate this issue, we study the head-task action bias in shared robot policies, particularly focusing on its relationship with task-specific visual evidence. Our experimental analysis shows that, when the visual evidence required by a tail task is insufficient, the policy increasingly falls back on action patterns reinforced by data-rich head tasks, resulting in degraded performance on under-represented tasks. Motivated by this observation, we propose Evidence-Guided Counterfactual Learning, a training framework for long-tailed robot policies. Our method identifies decision-relevant visual evidence using instruction-related and action-related signals, and constructs counterfactual observations by removing the selected evidence. The resulting counterfactual predictions are used to strengthen the association among task instructions, visual evidence, and actions, with the supervision adaptively adjusted according to the number of demonstrations available for each task. The proposed framework requires neither additional training data nor region-level annotations and incurs no additional computation during deployment. Extensive experiments across simulated benchmarks, different VLA architectures, and real-world robot platforms demonstrate that our method robustly and consistently improves long-tailed robot policy learning, particularly for tail tasks, while maintaining reliable performance on head tasks.",
+        "url": "http://arxiv.org/abs/2610.12861v1",
+        "venue": "arXiv",
+        "citation_count": 0,
+        "publication_date": "2026-10-09",
+        "source": "arxiv",
+        "doi": null,
+        "arxiv_id": "2610.12861"
+      },
+      {
+        "title": "Budgeted Multi-Source Counterfactual Annotation for Off-Policy Evaluation",
+        "authors": [
+          "Biao Xiang",
+          "Ali Eshragh",
+          "Yuexing Li",
+          "Kai Wang"
+        ],
+        "year": 2026,
+        "abstract": "Off-policy evaluation (OPE) estimates the value of a target policy from logged data, but limited behavior-policy coverage can force high-variance reweighting or reward-model extrapolation. Counterfactual annotations can add evidence about unobserved actions, yet practical sources, including domain experts and large language models (LLMs), may be costly, biased, or noisy. We study budgeted acquisition of such annotations for contextual-bandit OPE. Given source-specific costs and error profiles, we formulate an integer allocation problem over context-action pairs and annotation sources to minimize the component of estimator variance that depends on the annotation plan. We characterize when annotations are valuable through a first-annotation threshold and local annotation-value regimes. For the coupled multi-source problem, we develop a majorization-minimization algorithm with dynamic-programming subroutines that monotonically improves the objective. Experiments in synthetic clinical and LLM-annotated education bandits show that our allocation method reduces fixed-profile mean squared error (MSE) by 20.58% and 10.77%, respectively, relative to no annotation.",
+        "url": "http://arxiv.org/abs/2610.10974v1",
+        "venue": "arXiv",
+        "citation_count": 0,
+        "publication_date": "2026-10-07",
+        "source": "arxiv",
+        "doi": null,
+        "arxiv_id": "2610.10974"
+      },
+      {
+        "title": "Gaze Behavior During a Long-Term, In-Home, Social Robot Intervention for Children with ASD",
+        "authors": [
+          "Rebecca Ramnauth",
+          "Frederick Shic",
+          "Brian Scassellati"
+        ],
+        "year": 2025,
+        "abstract": "Atypical gaze behavior is a diagnostic hallmark of Autism Spectrum Disorder (ASD), playing a substantial role in the social and communicative challenges that individuals with ASD face. This study explores the impacts of a month-long, in-home intervention designed to promote triadic interactions between a social robot, a child with ASD, and their caregiver. Our results indicate that the intervention successfully promoted appropriate gaze behavior, encouraging children with ASD to follow the robot's gaze, resulting in more frequent and prolonged instances of spontaneous eye contact and joint attention with their caregivers. Additionally, we observed specific timelines for behavioral variability and novelty effects among users. Furthermore, diagnostic measures for ASD emerged as strong predictors of gaze patterns for both caregivers and children. These results deepen our understanding of ASD gaze patterns and highlight the potential for clinical relevance of robot-assisted interventions.",
+        "url": "http://arxiv.org/abs/2501.02583v1",
+        "venue": "arXiv",
+        "citation_count": 0,
+        "publication_date": "2025-01-05",
+        "source": "arxiv",
+        "doi": "10.1109/HRI61500.2025.10973892",
+        "arxiv_id": "2501.02583"
+      },
+      {
+        "title": "Ethics-Based Auditing of Automated Decision-Making Systems: Intervention Points and Policy Implications",
+        "authors": [
+          "Jakob Mokander",
+          "Maria Axente"
+        ],
+        "year": 2021,
+        "abstract": "Organisations increasingly use automated decision-making systems (ADMS) to inform decisions that affect humans and their environment. While the use of ADMS can improve the accuracy and efficiency of decision-making processes, it is also coupled with ethical challenges. Unfortunately, the governance mechanisms currently used to oversee human decision-making often fail when applied to ADMS. In previous work, we proposed that ethics-based auditing (EBA), i.e. a structured process by which ADMS are assessed for consistency with relevant principles or norms, can (a) help organisations verify claims about their ADMS and (b) provide decision-subjects with justifications for the outputs produced by ADMS. In this article, we outline the conditions under which EBA procedures can be feasible and effective in practice. First, we argue that EBA is best understood as a 'soft' yet 'formal' governance mechanism. This implies that the main responsibility of auditors should be to spark ethical deliberation at key intervention points throughout the software development process and ensure that there is sufficient documentation to respond to potential inquiries. Second, we frame ADMS as parts of larger socio-technical systems to demonstrate that to be feasible and effective, EBA procedures must link to intervention points that span all levels of organisational governance and all phases of the software lifecycle. The main function of EBA should therefore be to inform, formalise, assess, and interlink existing governance structures. Finally, we discuss the policy implications of our findings. To support the emergence of feasible and effective EBA procedures, policymakers and regulators could provide standardised reporting formats, facilitate knowledge exchange, provide guidance on how to resolve normative tensions, and create an independent body to oversee EBA of ADMS.",
+        "url": "http://arxiv.org/abs/2111.04380v1",
+        "venue": "arXiv",
+        "citation_count": 0,
+        "publication_date": "2021-11-08",
+        "source": "arxiv",
+        "doi": "10.1007/s00146-021-01286-x",
+        "arxiv_id": "2111.04380"
+      },
+      {
+        "title": "Modeling Causal Mechanisms with Diffusion Models for Interventional and Counterfactual Queries",
+        "authors": [
+          "Patrick Chao",
+          "Patrick Blöbaum",
+          "Sapan Patel",
+          "Shiva Prasad Kasiviswanathan"
+        ],
+        "year": 2023,
+        "abstract": "We consider the problem of answering observational, interventional, and counterfactual queries in a causally sufficient setting where only observational data and the causal graph are available. Utilizing the recent developments in diffusion models, we introduce diffusion-based causal models (DCM) to learn causal mechanisms, that generate unique latent encodings. These encodings enable us to directly sample under interventions and perform abduction for counterfactuals. Diffusion models are a natural fit here, since they can encode each node to a latent representation that acts as a proxy for exogenous noise. Our empirical evaluations demonstrate significant improvements over existing state-of-the-art methods for answering causal queries. Furthermore, we provide theoretical results that offer a methodology for analyzing counterfactual estimation in general encoder-decoder models, which could be useful in settings beyond our proposed approach.",
+        "url": "http://arxiv.org/abs/2302.00860v3",
+        "venue": "arXiv",
+        "citation_count": 0,
+        "publication_date": "2023-02-02",
+        "source": "arxiv",
+        "doi": null,
+        "arxiv_id": "2302.00860"
+      },
+      {
+        "title": "Scene Retargeting: Learning Object Placement with Analogical Transfer",
+        "authors": [
+          "Minkwan Kim",
+          "Junho Kim",
+          "Seungmin Lee",
+          "Changwoon Choi",
+          "Young Min Kim"
+        ],
+        "year": 2026,
+        "abstract": "Interactive simulations of embodied AI or spatial computing applications build on realistic 3D scenes that support daily activities. However, sparse, irregular layout structures impose scene-specific physical constraints, making it hard to define a generalizable framework for generating similar functional context. We formalize Scene Retargeting as stably transferring the semantically coherent spatial organization across layouts, rather than relying on textual descriptions or pairwise relationships. Our cluster-wise transfer flexibly handles mismatched object instances and adapts to distinctive floor plans. We optimize to preserve the rich semantic context of individual clusters by respecting the spatial distribution of foundation features. We can then impose physical constraints to refine wall contacts, pairwise alignment, or clear passageways and openings. Our framework outperforms state-of-the-art methods on layout generation on the 3D-FRONT dataset, and demonstrates downstream applications including real-to-sim transfer, analogical trajectory transfer, and multi-reference composition.",
+        "url": "http://arxiv.org/abs/2609.36801v1",
+        "venue": "arXiv",
+        "citation_count": 0,
+        "publication_date": "2026-09-29",
+        "source": "arxiv",
+        "doi": null,
+        "arxiv_id": "2609.36801"
+      },
+      {
+        "title": "U-LAG: Uncertainty-Aware, Lag-Adaptive Goal Retargeting for Robotic Manipulation",
+        "authors": [
+          "Anamika J H",
+          "Anujith Muraleedharan"
+        ],
+        "year": 2025,
+        "abstract": "Robots manipulating in changing environments must act on percepts that are late, noisy, or stale. We present U-LAG, a mid-execution goal-retargeting layer that leaves the low-level controller unchanged while re-aiming task goals (pre-contact, contact, post) as new observations arrive. Unlike motion retargeting or generic visual servoing, U-LAG treats in-flight goal re-aiming as a first-class, pluggable module between perception and control. Our main technical contribution is UAR-PF, an uncertainty-aware retargeter that maintains a distribution over object pose under sensing lag and selects goals that maximize expected progress. We instantiate a reproducible Shift x Lag stress test in PyBullet/PandaGym for pick, push, stacking, and peg insertion, where the object undergoes abrupt in-plane shifts while synthetic perception lag is injected during approach. Across 0-10 cm shifts and 0-400 ms lags, UAR-PF and ICP degrade gracefully relative to a no-retarget baseline, achieving higher success with modest end-effector travel and fewer aborts; simple operational safeguards further improve stability. Contributions: (1) UAR-PF for lag-adaptive, uncertainty-aware goal retargeting; (2) a pluggable retargeting interface; and (3) a reproducible Shift x Lag benchmark with evaluation on pick, push, stacking, and peg insertion.",
+        "url": "http://arxiv.org/abs/2510.02526v1",
+        "venue": "arXiv",
+        "citation_count": 0,
+        "publication_date": "2025-10-02",
+        "source": "arxiv",
+        "doi": null,
+        "arxiv_id": "2510.02526"
+      },
+      {
+        "title": "Analyzing Key Objectives in Human-to-Robot Retargeting for Dexterous Manipulation",
+        "authors": [
+          "Chendong Xin",
+          "Mingrui Yu",
+          "Yongpeng Jiang",
+          "Zhefeng Zhang",
+          "Xiang Li"
+        ],
+        "year": 2025,
+        "abstract": "Kinematic retargeting from human hands to robot hands is essential for transferring dexterity from humans to robots in manipulation teleoperation and imitation learning. However, due to mechanical differences between human and robot hands, completely reproducing human motions on robot hands is impossible. Existing works on retargeting incorporate various optimization objectives, focusing on different aspects of hand configuration. However, the lack of experimental comparative studies leaves the significance and effectiveness of these objectives unclear. This work aims to analyze these retargeting objectives for dexterous manipulation through extensive real-world comparative experiments. Specifically, we propose a comprehensive retargeting objective formulation that integrates intuitively crucial factors appearing in recent approaches. The significance of each factor is evaluated through experimental ablation studies on the full objective in kinematic posture retargeting and real-world teleoperated manipulation tasks. Experimental results and conclusions provide valuable insights for designing more accurate and effective retargeting algorithms for real-world dexterous manipulation.",
+        "url": "http://arxiv.org/abs/2506.09384v2",
+        "venue": "arXiv",
+        "citation_count": 0,
+        "publication_date": "2025-06-11",
+        "source": "arxiv",
+        "doi": null,
+        "arxiv_id": "2506.09384"
+      },
+      {
+        "title": "Humanoid Whole-Body Manipulation via Active Spatial Brain and Generalizable Action Cerebellum",
+        "authors": [
+          "Zhizhao Liang",
+          "Yi-Lin Wei",
+          "Xuhang Chen",
+          "Mu Lin",
+          "Yi-Xiang He",
+          "Zhexi Luo",
+          "Jun-Hui Liu",
+          "Kun-Yu Lin",
+          "Wei-Shi Zheng"
+        ],
+        "year": 2026,
+        "abstract": "In this paper, we explore spatial-aware humanoid whole-body manipulation task. Compared with tabletop settings, this task poses two key challenges: 1) Spatial understanding is challenging in complex 3D environments with diverse spatial relations. 2) Action generation is difficult to generalize, as limited and costly real-robot data restricts data-driven models generalization. To address these challenges, we propose a generalizable humanoid loco-manipulation framework that leverages the spatial perception and action generation capabilities of multi-agent large models. Specifically, our framework includes two components: Active Spatial Brain for active spatial perception and decision-making, and Generalizable Action Cerebellum for executable robot action generation. The first component actively perceives the spatial scene and makes decisions on task planning and subtask decomposition. The second component generate executable robot actions based on the decisions made by the first module without needs of task-specific real robot data. To benchmark our framework, we design a set of spatial manipulation tasks from two perspectives: evaluating spatial perception and understanding, and assessing real-robot task performance. The results demonstrate strong performance on both aspects across diverse tasks and environments.",
+        "url": "http://arxiv.org/abs/2605.21133v2",
+        "venue": "arXiv",
+        "citation_count": 0,
+        "publication_date": "2026-05-20",
+        "source": "arxiv",
+        "doi": null,
+        "arxiv_id": "2605.21133"
+      },
+      {
+        "title": "Spatio-Temporal Motion Retargeting for Quadruped Robots",
+        "authors": [
+          "Taerim Yoon",
+          "Dongho Kang",
+          "Seungmin Kim",
+          "Jin Cheng",
+          "Minsung Ahn",
+          "Stelian Coros",
+          "Sungjoon Choi"
+        ],
+        "year": 2024,
+        "abstract": "This work presents a motion retargeting approach for legged robots, aimed at transferring the dynamic and agile movements to robots from source motions. In particular, we guide the imitation learning procedures by transferring motions from source to target, effectively bridging the morphological disparities while ensuring the physical feasibility of the target system. In the first stage, we focus on motion retargeting at the kinematic level by generating kinematically feasible whole-body motions from keypoint trajectories. Following this, we refine the motion at the dynamic level by adjusting it in the temporal domain while adhering to physical constraints. This process facilitates policy training via reinforcement learning, enabling precise and robust motion tracking. We demonstrate that our approach successfully transforms noisy motion sources, such as hand-held camera videos, into robot-specific motions that align with the morphology and physical properties of the target robots. Moreover, we demonstrate terrain-aware motion retargeting to perform BackFlip on top of a box. We successfully deployed these skills to four robots with different dimensions and physical properties in the real world through hardware experiments.",
+        "url": "http://arxiv.org/abs/2404.11557v3",
+        "venue": "arXiv",
+        "citation_count": 0,
+        "publication_date": "2024-04-17",
+        "source": "arxiv",
+        "doi": null,
+        "arxiv_id": "2404.11557"
+      }
+    ],
+    "dblp": [],
+    "open_alex": [],
+    "openreview": [],
+    "semantic_scholar": [],
+    "crossref": [
+      {
+        "title": "Grounding Hierarchical Vision-Language-Action Models Through Explicit Language-Action Alignment",
+        "authors": [],
+        "year": 2026,
+        "abstract": "",
+        "url": "https://doi.org/10.1109/cvprf71909.2026.00889",
+        "venue": "2026 IEEE/CVF Conference on Computer Vision and Pattern Recognition- FINDINGS Track (CVPRF)",
+        "citation_count": 1,
+        "publication_date": "2026-06",
+        "source": "crossref",
+        "doi": "10.1109/cvprf71909.2026.00889",
+        "arxiv_id": null
+      },
+      {
+        "title": "Vision-Language-Action and Vision Language Models for Robot Manipulation: A Comprehensive Review Towards Real-World Applications",
+        "authors": [
+          "Md Selim Sarowar",
+          "Sungho Kim"
+        ],
+        "year": null,
+        "abstract": "<jats:p>The convergence of vision, language, and action modeling has catalyzed a paradigm shift in robotic manipulation, enabling robots to interpret natural language commands and execute complex tasks through learned sensorimotor policies. This comprehensive review synthesizes recent advances in Vision-Language-Action (VLA) models and Vision-Language Models (VLMs) for robotic manipulation, establishing a systematic taxonomy spanning end-to-end transformer architectures, diffusion-based policies, and modular frameworks. We analyze foundational models including RT-1, RT-2, PaLM-E, Octo, and OpenVLA, examining their architectural innovations, training methodologies, and empirical performance across manipulation, grasping, and force control tasks. Quantitative analysis reveals that foundation model integration yields substantial generalization improvements (RT-2 achieves 85% success on novel objects compared to 60% for RT-1), while diffusion policies achieve state-of-the-art precision (over 95% success in insertion tasks compared to 70% for behavioral cloning). However, fundamental limitations persist: scaling laws exhibit diminishing returns (scaling exponent alpha approximately 0.15 to 0.25), distribution shift induces severe degradation (around 40% performance drop for novel geometries), temporal consistency degrades proportionally to the square root of the time horizon (sqrt(T)), and sample efficiency remains 100 to 1000 times worse than human learning. We identify critical research challenges in compositional generalization, long-horizon planning, safety verification, and multi-modal sensor fusion. Through systematic benchmark analysis revealing coverage gaps and evaluation inconsistencies, we propose standardized protocols incorporating robustness metrics beyond success rates. Our analysis of scaling relationships, failure modes, and action representation trade-offs provides concrete research directions, including physics-grounded world models, uncertainty-aware planning, hierarchical skill decomposition, and formal verification frameworks. This review establishes the current state of VLA research while identifying fundamental challenges that must be resolved for the deployment of general-purpose robotic manipulation systems in real-world environments.</jats:p>",
+        "url": "https://doi.org/10.20944/preprints202606.0400.v1",
+        "venue": "",
+        "citation_count": 0,
+        "publication_date": null,
+        "source": "crossref",
+        "doi": "10.20944/preprints202606.0400.v1",
+        "arxiv_id": null
+      },
+      {
+        "title": "CubeRobot: Grounding Language in Rubik's Cube Manipulation via Vision-Language Model",
+        "authors": [
+          "Feiyang Wang",
+          "Xiaomin Yu",
+          "Wangyu Wu"
+        ],
+        "year": 2025,
+        "abstract": "",
+        "url": "https://doi.org/10.1145/3701716.3717565",
+        "venue": "Companion Proceedings of the ACM on Web Conference 2025",
+        "citation_count": 5,
+        "publication_date": "2025-05-08",
+        "source": "crossref",
+        "doi": "10.1145/3701716.3717565",
+        "arxiv_id": null
+      },
+      {
+        "title": "Data-Driven Robotics: Vision–Language–Action Learning for Robust Manipulation and Autonomy",
+        "authors": [
+          "Murali Krishna Pasupuleti"
+        ],
+        "year": 2026,
+        "abstract": "<jats:p>Abstract:\nThis manuscript develops a rigorous academic framework for data-driven robotics with particular emphasis on vision-language-action learning for robust manipulation and autonomy. It brings together foundations of embodied intelligence, uncertainty management, statistical explanation, causal inference, machine learning, scalable analytics engineering, and governance-oriented deployment design. The book argues that reliable autonomy emerges not from isolated model performance, but from the disciplined alignment of task formalization, measurement validity, representation learning, policy design, reproducible data pipelines, and context-sensitive evaluation. Across five chapters, the manuscript advances a unified logic connecting research design to practical capability: foundational taxonomies for uncertainty and embodiment; statistical methods for explanatory and intervention-aware reasoning; machine learning approaches for prediction, generalization, calibration, and trust; big data engineering and MLOps practices for reproducibility and controlled model evolution; and applied sectoral pathways linking robotics to industry, healthcare, agriculture, public services, and global governance. Throughout, the text emphasizes research outputs that are useful beyond theory, including protocols, evaluation architectures, data contracts, monitoring frameworks, governance artifacts, and decision tools. The resulting contribution is a publisher-ready scholarly synthesis intended for researchers, practitioners, and policymakers seeking a robust, transferable, and responsible approach to robotic autonomy in diverse global settings.\nKeywords\ndata-driven robotics, vision-language-action learning, robust manipulation, embodied intelligence, uncertainty quantification, research design, causal inference, statistical modeling, representation learning, generalization, trustworthiness, calibration, MLOps, reproducibility, multimodal perception, autonomy governance, human-robot collaboration, scalable analytics</jats:p>",
+        "url": "https://doi.org/10.62311/nesx/rb-978-81-999716-2-2",
+        "venue": "",
+        "citation_count": 0,
+        "publication_date": "2026-02-28",
+        "source": "crossref",
+        "doi": "10.62311/nesx/rb-978-81-999716-2-2",
+        "arxiv_id": null
+      },
+      {
+        "title": "Visually Grounding Language Instruction for History-Dependent Manipulation",
+        "authors": [
+          "Hyemin Ahn",
+          "Obin Kwon",
+          "Kyungdo Kim",
+          "Jaeyeon Jeong",
+          "Howoong Jun",
+          "Hongjung Lee",
+          "Dongheui Lee",
+          "Songhwai Oh"
+        ],
+        "year": 2022,
+        "abstract": "",
+        "url": "https://doi.org/10.1109/icra46639.2022.9812279",
+        "venue": "2022 International Conference on Robotics and Automation (ICRA)",
+        "citation_count": 7,
+        "publication_date": "2022-05-23",
+        "source": "crossref",
+        "doi": "10.1109/icra46639.2022.9812279",
+        "arxiv_id": null
+      },
+      {
+        "title": "Counterfactual Causal-Effect Intervention for Interpretable Medical Visual Question Answering",
+        "authors": [
+          "Linqin Cai",
+          "Haodu Fang",
+          "Nuoying Xu",
+          "Bo Ren"
+        ],
+        "year": null,
+        "abstract": "<jats:p>Medical Visual Question Answering (VQA-Med) is a challenging task that involves answering clinical questions related to medical images. However, most current VQA-Med methods ignore the causal correlation between specific lesion or abnormality features and answers, while also failing to provide accurate explanations for their decisions. Moreover, VQA-Med methods suffer from the common language bias problem in generic VQA. To explore the interpretability and language bias of VQA-Med, this paper proposes a novel CCIS-MVQA model for VQA-Med based on a counterfactual causal-effect intervention strategy. This model consists of the modified ResNet for image feature extraction, a GloVe decoder for question feature extraction, a bilinear attention network for vision and language feature fusion, and an interpretability generator for producing the interpretability and prediction results. The proposed CCIS-MVQA introduces a layer-wise relevance propagation method to automatically generate counterfactual samples for improving interpretability and alleviating language bias. Additionally, CCIS-MVQA applies counterfactual causal reasoning throughout the training phase to enhance interpretability and generalization. Extensive experiments on three benchmark datasets show that the proposed CCIS-MVQA model outperforms the state-of-the-art methods. Enough visualization results are produced to analyze the interpretability and debasing performance of CCIS-MVQA.</jats:p>",
+        "url": "https://doi.org/10.36227/techrxiv.171440904.49751293/v1",
+        "venue": "",
+        "citation_count": 6,
+        "publication_date": null,
+        "source": "crossref",
+        "doi": "10.36227/techrxiv.171440904.49751293/v1",
+        "arxiv_id": null
+      },
+      {
+        "title": "Assessment of Intervention Effectiveness in Concurrent Multiple-Baseline Designs using Within-Series and Between-Series Counterfactual Evidence",
+        "authors": [
+          "Rumen Manolov",
+          "René Tanious"
+        ],
+        "year": null,
+        "abstract": "<p>The multiple-baseline design (MBD) is the most commonly used type of single-case experimental design (SCED) in the behavioral sciences. In the context of recent discussions regarding the usefulness and internal validity of concurrent and nonconcurrent MBDs, we suggest a data analytical and graphical approach for concurrent MBDs using counterfactuals, allowing for within- and between-series comparisons. The data analytical approach is linked to principles from the existing SCED literature: selecting a quantification of effect that represents the researchers’ expectations about the data pattern, focusing on tentative causal inference, and summarizing the results without losing sight of the variability across series (i.e., tiers). The approach is formalized as a series of four steps, highlighting counterfactuals and a proposed graphical representation. The steps and the suggested plot are illustrated in the context of real-world data and can easily be implemented using the R code developed for providing both the numerical results and graphs.</p>",
+        "url": "https://doi.org/10.31234/osf.io/d6un8_v1",
+        "venue": "",
+        "citation_count": 0,
+        "publication_date": null,
+        "source": "crossref",
+        "doi": "10.31234/osf.io/d6un8_v1",
+        "arxiv_id": null
+      },
+      {
+        "title": "Populism, rule of law, and the economy: counterfactual evidence from the Philippines",
+        "authors": [
+          "Sven Fischer"
+        ],
+        "year": 2026,
+        "abstract": "",
+        "url": "https://doi.org/10.1080/01442872.2026.2684755",
+        "venue": "Policy Studies",
+        "citation_count": 1,
+        "publication_date": "2026-06-12",
+        "source": "crossref",
+        "doi": "10.1080/01442872.2026.2684755",
+        "arxiv_id": null
+      },
+      {
+        "title": "A COUNTERFACTUAL APPROACH TO MEASURING IMPACT OF POLICY INTERVENTION ON EFFICIENCY – SYNTHETIC CONTROL METHOD AND DEA",
+        "authors": [
+          "OGNJEN NIKOLIĆ",
+          "SANDRO RADOVANOVIĆ",
+          "GORDANA SAVIĆ"
+        ],
+        "year": 2024,
+        "abstract": "",
+        "url": "https://doi.org/10.24867/symopis-2024-51-052",
+        "venue": "CONFERENCE PROCEEDINGS",
+        "citation_count": 0,
+        "publication_date": "2024",
+        "source": "crossref",
+        "doi": "10.24867/symopis-2024-51-052",
+        "arxiv_id": null
+      },
+      {
+        "title": "Beyond Revenue Foregone: Reassessing Preferential Tax Regimes with Counterfactual Evidence from Portugal’s Non-Habitual Resident Policy",
+        "authors": [
+          "Pedro Afonseca",
+          "Sofia Gomes"
+        ],
+        "year": null,
+        "abstract": "<jats:p>This paper assesses whether Portugal’s Non-Habitual Resident (NHR) tax regime and its successor Tax Incentive for Scientific Research and Innovation (IFICI/NHR2.0) should be interpreted as a “tax expenditure” (revenue foregone) or as incremental revenue once a realistic counterfactual (entry versus non-entry of high earners and mobile taxpayers) is considered. Focusing on employment income only, this study combines qualitative evidence with supporting quantitative calculations. Data were collected from 24 active NHR beneficiaries (foreign expats and returning Portuguese nationals) through semi-structured written interviews, complemented by prudent quantitative inputs. Findings indicate that tax incentives were decisive for relocation/return decisions for most participants who would likely have chosen alternative jurisdictions absent the regime. Findings suggest that interpreting this tax benefit as an effective revenue loss is misleading, and that assessments should incorporate behavioral responses, indirect and social contributions revenues, and an intertemporal perspective.</jats:p>",
+        "url": "https://doi.org/10.2139/ssrn.6353874",
+        "venue": "",
+        "citation_count": 0,
+        "publication_date": null,
+        "source": "crossref",
+        "doi": "10.2139/ssrn.6353874",
+        "arxiv_id": null
+      },
+      {
+        "title": "Instrucrobo: Object-Centric Multi-Instruction Decoupling Model for Explainable Robotic Manipulation",
+        "authors": [
+          "Panqi yang",
+          "Haodong Jing",
+          "Nanning Zheng",
+          "Yongqiang Ma"
+        ],
+        "year": null,
+        "abstract": "",
+        "url": "https://doi.org/10.2139/ssrn.5348264",
+        "venue": "",
+        "citation_count": 0,
+        "publication_date": null,
+        "source": "crossref",
+        "doi": "10.2139/ssrn.5348264",
+        "arxiv_id": null
+      },
+      {
+        "title": "“Push-That-There”: Tabletop Multi-robot Object Manipulation via Multimodal 'Object-level Instruction'",
+        "authors": [
+          "Keru Wang",
+          "Zhu Wang",
+          "Ken Nakagaki",
+          "Ken Perlin"
+        ],
+        "year": 2024,
+        "abstract": "",
+        "url": "https://doi.org/10.1145/3643834.3661542",
+        "venue": "Designing Interactive Systems Conference",
+        "citation_count": 17,
+        "publication_date": "2024-07",
+        "source": "crossref",
+        "doi": "10.1145/3643834.3661542",
+        "arxiv_id": null
+      },
+      {
+        "title": "Multi-Operator Image Retargeting Based on Saliency Object Ranking And Similarity Evaluation Metric",
+        "authors": [
+          "Yingchun Guo",
+          "Dan Wang",
+          "Ye Zhu",
+          "Gang Yan"
+        ],
+        "year": null,
+        "abstract": "<jats:p>Image Retargeting (IR) technology is proposed to flexibly display images on various display devices while protecting the important content of the images undistorted. IR methods mainly use Salient Object Detection (SOD) to obtain important content, however, most existing SOD methods treat multiple salient objects with the same saliency degrees, which makes IR methods assign the same retargeting ratios for different objects and leads to producing information-loss retargeted results. Multi-operator IR demonstrates better generalization than single operator by using multiple operators to find the optimal sequence of operators. Meanwhile, the tremendous processing time limits its practical use. To address these problems, we propose a multi-operator IR method based on Salient Object Ranking (SOR) and Similarity Evaluation Metric (SORSEM-IR), which includes two stages: importance map generation and multi-operator IR. In the first stage, a SOR module with context-aware semantic refinement (SORCSR) is proposed, which extracts the salient instances and infers their saliency ranks with a context-aware semantic refinement module, then the SOR map, face map, and gradient map are fused as the importance map. In the second stage, to speed up multiple operations, a similarity evaluation metric is proposed to measure the similarity between the original image and the seam-removal image by Seam Carving (SC) operation, and switch SC to uniform scaling to meet the aspect ratio when distortion caused by SC arrives at a certain extent. Experimental results validate the effectiveness of the proposed SOR module and SORSEM-IR, achieving state-of-the-art performance.</jats:p>",
+        "url": "https://doi.org/10.2139/ssrn.4313893",
+        "venue": "",
+        "citation_count": 0,
+        "publication_date": null,
+        "source": "crossref",
+        "doi": "10.2139/ssrn.4313893",
+        "arxiv_id": null
+      },
+      {
+        "title": "Multi-Operator Image Retargeting Based on Saliency Object Ranking and Similarity Evaluation Metric",
+        "authors": [
+          "Yingchun Guo",
+          "Dan Wang",
+          "Ye Zhu",
+          "Gang Yan"
+        ],
+        "year": null,
+        "abstract": "",
+        "url": "https://doi.org/10.2139/ssrn.4271175",
+        "venue": "SSRN Electronic Journal",
+        "citation_count": 0,
+        "publication_date": null,
+        "source": "crossref",
+        "doi": "10.2139/ssrn.4271175",
+        "arxiv_id": null
+      },
+      {
+        "title": "From Slots to Relations: Object-Centric Graph World-Action Models for Relational Robot Manipulation",
+        "authors": [
+          "Agasthya Anirudh Badampudi"
+        ],
+        "year": null,
+        "abstract": "<title>Abstract</title>\n                <p>World-action models (WAMs) couple policy prediction with future-state prediction, but object-centric variants often leave pairwise structure implicit. We study whether explicitly representing continuous geometry and typed object relations improves relational manipulation when capacity, data, and conditioning are controlled. Object-Centric Graph World-Action Models (OC-GWAM) encode object graphs with an edge-aware graph transformer, temporal encoder, and separate policy and world adapters. Three synthetic benchmarks progressively increase relational difficulty. On RelGraph-v3, geometry-only input gives the lowest direct-action error, whereas OC-GWAM gives the best relation-prediction F1. With target identity withheld in RelComp-v1A, OC-GWAM achieves the best three-seed mean action error (0.01437), future-position error (0.00562), and edge micro-F1 (0.93591), and is best across all tested relations and object counts. On RelComp-v1B, Slot-WAM remains strongest for the simple direct-action mapping, while OC-GWAM has the highest edge F1 in every regime and improves held-out-composition action error over geometry-only and type-only ablations in all three seeds. We further evaluate all ten LIBERO-Spatial tasks through a frozen oracle-state graph interface. On 5,323 validation windows from trajectories excluded from gradient training, OC-GWAM obtains the best Action L1 (0.083132), position error (0.003256), and edge F1 (0.993989); because this split also selects checkpoints, these are not independent test estimates. A 240-episode closed-loop pilot yields comparable success for Geom-WAM (53.3\\%) and OC-GWAM (51.7\\%). Overall, explicit relations most consistently improve world-model fidelity and held-out relational composition, while direct control can remain competitive with implicit object attention or geometry alone.</p>",
+        "url": "https://doi.org/10.21203/rs.3.rs-10847346/v1",
+        "venue": "",
+        "citation_count": 0,
+        "publication_date": null,
+        "source": "crossref",
+        "doi": "10.21203/rs.3.rs-10847346/v1",
+        "arxiv_id": null
+      }
+    ]
+  },
+  "known_errors_must_be_read_from_stderr_log": true
+}

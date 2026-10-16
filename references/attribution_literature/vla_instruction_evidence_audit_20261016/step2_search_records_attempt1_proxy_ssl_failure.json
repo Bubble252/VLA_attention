@@ -1,0 +1,20 @@
+{
+  "retrieved_at": "2026-10-16T12:40:02.824116+00:00",
+  "queries": [
+    "vision language action instruction target grounding manipulation",
+    "robot policy counterfactual visual evidence intervention",
+    "multi object manipulation instruction retargeting action"
+  ],
+  "start_year": 2021,
+  "end_year": 2026,
+  "max_results_per_query_per_source": 5,
+  "results": {
+    "arxiv": [],
+    "dblp": [],
+    "open_alex": [],
+    "openreview": [],
+    "semantic_scholar": [],
+    "crossref": []
+  },
+  "known_errors_must_be_read_from_stderr_log": true
+}

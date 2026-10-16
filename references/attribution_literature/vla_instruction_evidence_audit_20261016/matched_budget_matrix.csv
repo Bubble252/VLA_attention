@@ -1,0 +1,10 @@
+id,configuration,demonstrations_augmentation_budget,training_role,explanation_tested
+M0,native BC/B0,none,required,action baseline
+M1,B1 BlindVLA-style retention,same,required,visual retention
+M2,B1 + static semantic alignment,same,required,existing semantic regularizer
+M3,B1 + RS-CL/equivalent state contrastive,same,required,robot-state relation baseline
+M4,B1 + inverse dynamics,same,required,action-aware visual representation baseline
+M5,instruction-evidence binding candidate,same,diagnostic first,candidate
+M6,M5 wrong-map,same,diagnostic,semantic specificity control
+M7,M5 instruction shuffle,same,diagnostic,language pairing control
+M8,M5 target swap without legal action label,same,evaluation only,forbidden as training label

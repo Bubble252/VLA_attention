@@ -37,3 +37,11 @@
 - 审计边界：尚未发现逐项完全相同的方法；多源检索存在 arXiv SSL、DBLP 解析、OpenReview 依赖和 Semantic Scholar 429 失败，不能将未检出解释为不存在相关工作。
 - 原文核验：RS-CL、PSE、inverse-dynamics VLA、FOCAL-VLA、TCN、DBC，以及用户提供的 Copper-Policy。PDF 与全文提取保留为本地审计缓存，不进入 Git 或飞书。
 - 后续提出的“指令重定向 × 目标视觉干预”是独立新候选，尚未完成自己的创新性审计，不因原候选被否定而自动获得新颖性。
+
+## Instruction–Evidence 最终选题审计（2026-10-16）
+
+- 审计目录：[`vla_instruction_evidence_audit_20261016/`](vla_instruction_evidence_audit_20261016/)
+- 最终结论：**B — Freeze as diagnostic/mechanistic paper**。冻结问题为“VLA 的动作重定向是否真正依赖语言所指定 referent 的视觉证据”。不冻结新的训练 loss。
+- 创新性：宽泛候选为 **Level 2 — High Overlap**。ECL 已做 instruction/action evidence selection + counterfactual masking + action supervision；LIT 已分别做 visual/goal interventions；Robust Skills 已拆分 target selection 与 primitive execution。剩余差异是二因子 crossed interaction estimator，适合作为诊断测量。
+- 数据：解析官方 130 个 LIBERO task 和十个 scene-compatible pair；当前 432 条 RLDS 仅覆盖 Spatial。十个候选 pair 均没有 exact shared init state + 双端合法动作 inventory，因此只支持 diagnostic-only intervention。
+- 最小实验与否定条件：见 [`next_minimal_experiment.md`](vla_instruction_evidence_audit_20261016/next_minimal_experiment.md) 与 [`falsification_gate.md`](vla_instruction_evidence_audit_20261016/falsification_gate.md)。

@@ -33,6 +33,10 @@ paper_draft/.doc_sync_state.json
 **/.doc_sync_state.json
 references/recovered/*.pdf
 references/attribution_literature/vla_novelty_audit_*/papers/
+references/attribution_literature/vla_instruction_evidence_audit_*/papers/
+references/attribution_literature/vla_instruction_evidence_audit_*/search_*.log
+references/attribution_literature/vla_instruction_evidence_audit_*/__pycache__/
+references/attribution_literature/vla_instruction_evidence_audit_*/.doc_sync_state.json
 
 # Local secrets and machine configuration
 .env
