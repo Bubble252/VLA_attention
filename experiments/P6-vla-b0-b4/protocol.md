@@ -13,6 +13,8 @@
 1. **VLM + JEV 状态验证路线**：冻结 VLM 提取语言条件的状态、关系和空间证据；轻量统计 JEV 输出校准后的阶段、成功、进度和失败概率。它可以先在离线轨迹上证明 VLM 状态理解能力，再作为固定执行器的监督层，执行继续、停止、重试、回退或重规划，以检验不训练 VLA action head 时能否提升 manipulation task completion。
 2. **JEPA-inspired LC-PEA 动态表征路线**：利用 VLM 阶段已经验证和缓存的语言条件空间证据，选择需要建模的 source/target 视觉表征，再以短时未来 latent 作为训练目标，使共享视觉表征同时服务于目标识别、状态变化预测和动作学习。
 
+**2026-10-17 执行冻结：LC-PEA 路线为主要实验线。** VLM+JEV 仅保留为低成本旁线，不与 LC-PEA 共用主训练预算，也不作为 J0--J5 的必需前置。主执行顺序固定为 `J0/J2/J4 → C-J4 → J1/J3/J5 → full LIBERO → LIBERO-Plus → second backbone`。
+
 后文将 D0 containment 写成默认主方法的旧表述由这两条路线覆盖，但既有 B0--B4 工程结果保留。`L_contain`、`I_bind` 与 patch intervention 继续作为机制对照和诊断。
 
 当前边界如下：
@@ -148,6 +150,71 @@ StarVLA 源码已作为可选参考固定归档于 `references/repos/starvla`（
 **正式升级条件：** J4 必须在 held-out action 或正式 rollout 至少一项优于 J0 和 J2，J5 必须检验其相对 J1 的增量；正确语言证据必须优于 C-J4 负控；ID success 不得出现预注册范围外的退化。若只改善 latent loss、归因图或 `I_bind`，LC-PEA 只能报告为表征/机制结果，不能称为 VLA 能力提升。
 
 LC-PEA 没有理论或经验上的必涨保证。最小 smoke 同时记录 `L_action/L_pred/L_bind`、三个目标对 optimizer 参数的 gradient norm 与 pairwise cosine、correct-vs-counterfactual prediction gap、held-out action 和官方 rollout。语言图错误、动作/背景捷径、梯度冲突或基础 action head 失效任一出现，都可能抵消收益；辅助 loss 下降而 action/rollout 不升时停止扩大。
+
+### 2.0.1 路线 B 的证明链与执行批次
+
+路线 B 不以单个辅助损失或热力图为证明。预注册四个逐级假设：
+
+```text
+H1 referent：正确指令选择的 source/target evidence 优于错词、错对象和全图；
+H2 predictive：在相同 predictor/算力下，J4 比普通 J2 更准确预测目标相关 latent change；
+H3 policy：J4 相比 J0/J2 改善 held-out action、target selection 或 manipulation phase；
+H4 behavior：J4 在官方 rollout 上提高 success，并在 LIBERO-Plus 保持方向。
+```
+
+只有 H1→H4 依次通过，才形成完整能力主张。H1/H2 通过而 H3/H4 失败时，只报告表征机制；H3 通过而 H4 失败时，只报告离线动作结果。
+
+#### Batch A：数据与教师证据 gate，不训练长任务
+
+- 从真实 LIBERO trajectory 构建 `(x_t,w,s_t,a_{t:t+H},x_{t+k})`，首版 offsets 固定在原生 `H=8` 范围内的 `K={1,4,8}`；越过 episode 末尾的样本 mask，不复制末帧。
+- source 与 target 分开缓存 phrase map 和 pooled latent；公共表示为 `[z_src,z_tgt,z_global]`，不能先取二者并集后丢失角色。
+- 在 128--256 个冻结 validation frame 上，使用 simulator object/region mask **只评测、不训练** teacher map；比较 correct phrase、same-image wrong object、wrong phrase、random 和 full-image。
+- teacher gate：正确 map 的 pointing/mass/intervention response 必须优于三类负控；无效或消失目标样本必须显式 mask。未通过则先修 phrase/map，不启动 J4。
+- 审计 split：按 episode 隔离，连续相邻帧不能跨 train/validation/test；未来帧和统计量不得来自 test rollout。
+
+#### Batch B：单 batch 与 50-step 实现 gate
+
+- target encoder 冻结或 EMA 且 stop-gradient；在线分支只看当前及历史，未来帧只能出现在 loss target。
+- action-plan 条件使用 detached 的当前 policy latent/预测 chunk，主方法不读取专家未来 action；同时保存 no-action、action-shuffle 诊断。
+- 检查 `L_action/L_pred/L_bind` finite，J4 对允许训练参数有非零梯度，target encoder 无梯度，save/restore 后输出一致。
+- 记录三项梯度范数和 pairwise cosine；持续强负冲突时先用 prediction warm-up、较弱 `lambda` 或 alternating update，不能直接长训。
+- 50-step overfit 只要求 `L_pred` 下降且 correct-vs-counterfactual gap 拉开，不以训练集 action MAE 作为论文结果。
+
+#### Batch C：最小 falsification，决定是否扩大
+
+- 数据：优先使用 2--3 个具备多对象/目标歧义、且官方 positive-control 非零但未饱和的 LIBERO 任务；每任务使用完整可得 demonstrations，不再以旧 27-episode pilot 作为主训练集。
+- 方法：先跑 `J0/J2/J4`，相同 initialization、数据访问、optimizer updates、predictor 参数量和 seed；再跑 `J4-no-bind`、same-image wrong-object 和 future-shuffle。
+- 预算：先单 seed、约 1k--2k optimizer updates；每任务至少 20--25 个独立官方 rollout，rollout split 不参与超参选择。
+- Go：J4 必须同时满足 `prediction margin > J2`、至少一个预注册 action/phase 指标优于 J0/J2、官方 rollout 不劣且有方向性收益、正确配对优于负控。否则先定位 H1/H2/H3 的失败层，不进入 10k/三 seed。
+
+#### Batch D：强基线、正式训练与统计
+
+- 补齐 `J1` BlindVLA retention、`J3` 静态语义对齐和 `J5=J1+LC-PEA`；J5−J1 是“超过表征保持”的关键比较，J4−J2 是“超过普通 JEPA”的关键比较。
+- 冻结配置后执行至少 10k optimizer updates、seed `17/29/41`；保存 25/50/75/100% checkpoint 和训练曲线。
+- 标准 LIBERO 主指标为官方 task success；按 task/episode 做 cluster bootstrap，并报告多 seed 方向一致性。次指标包括 target selection、approach/grasp/transport/place、action MAE、gripper accuracy、完成步数和失败类型。
+- 同时报告参数量、训练显存、teacher/cache 时间和推理开销。辅助分支训练后移除时必须实测推理等价性。
+
+#### Batch E：OOD 与普适性
+
+- 在不重新调参的情况下运行 LIBERO-Plus：background/lighting/camera/distractor 属于 task-preserving OOD；object/layout/language change 单独报告 target retargeting。
+- 使用 `I_bind`、目标区域遮挡和语言 swap 检查 success 增益是否伴随正确证据依赖；这些是解释 H4 的机制证据，不替代 success。
+- 第二骨干优先 π0.5，复用相同相对矩阵 `J0/J2/J4`；每个骨干只比较相对 matched baseline 的增量，不横比绝对 success。
+- DROID 只报告 episode/scene/camera 分组的离线动作与 predictive evidence 迁移，不写成闭环 success；RoboTwin/MolmoAct2 后置。
+
+### 2.0.2 LC-PEA 的具体张量接口
+
+对 source/target 分别构造带泄漏的语言权重 $q_t^{src},q_t^{tgt}$，得到：
+
+```text
+z_t = concat(pool(H_t,q_src), pool(H_t,q_tgt), pool(H_t,uniform))
+u_t = stopgrad(native action-plan latent or encoded predicted action chunk)
+prediction = P(z_t, proprio_t, u_t, horizon_embedding)
+target = stopgrad(z*_{t+k} - z*_t)
+```
+
+首版 predictor 采用轻量 two-layer MLP 或单层 temporal transformer，J2/J4 完全同构。在线视觉/policy 分支的可训练范围沿用 OpenVLA/OFT adapter 的冻结配置；target encoder 不参加 optimizer。source/target phrase 无法可靠映射时，该样本仍可进入 J0/J2，但不进入 J4 的 `L_pred/L_bind`，并记录覆盖率，禁止把缺图当零图训练。
+
+首轮 target space 暂定复用 BlindVLA baseline 的冻结 `C-RADIOv3-L`，使 J1=current-frame retention、J2=global future-delta prediction、J4=language-routed future-delta prediction 使用同一视觉教师和预处理；DINOv2 只作 teacher-swap sensitivity。若 C-RADIO future delta 在 Batch A 中主要响应相机/机器人运动而非对象关系变化，再转为 EMA target encoder，并把更换作为新 protocol revision，不能在结果后偷偷换 teacher。`u_t` 默认 detach，故 `L_pred/L_bind` 的主梯度路径是 predictor→在线视觉 projector/允许训练的视觉-policy 参数；是否让辅助梯度进入 action-plan latent 只作为后续消融。
 
 ### 2.1 历史 B0--B4 矩阵
 

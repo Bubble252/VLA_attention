@@ -20,6 +20,8 @@ JEV 在本计划中是面向状态评估的统计分类器，不是 JEPA。该�
 
 ## 2026-10-16：LC-PEA 性能路线更新
 
+**2026-10-17 执行决定：LC-PEA/路线 B 是当前主要实验线。** VLM+JEV 保留为低成本旁线，不占用路线 B 的正式训练、rollout 和跨骨干预算。证明顺序固定为：teacher/referent gate → J0/J2/J4 最小 falsification → no-binding/wrong-object/future-shuffle controls → J1/J3/J5 强基线 → full LIBERO 与 LIBERO-Plus → π0.5 跨骨干。
+
 VLA 主线不再把静态 action-evidence containment 预设为最终涨点方法。新的性能候选是 **LC-PEA：语言条件预测证据对齐**，即把 VLM 阶段得到的语言条件空间证据用于选择 short-horizon future latent 的预测目标，再由共享视觉表征支持 manipulation action learning。原 D0、`I_bind`、归因图与 patch occlusion 继续承担 baseline、机制解释和反事实验证。
 
 首轮 matched matrix 使用新的 `J*` 编号，避免覆盖已经产生的 B0--B4 结果：
