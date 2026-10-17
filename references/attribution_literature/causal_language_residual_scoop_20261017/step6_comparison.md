@@ -18,5 +18,6 @@
 | Anchor-Align | partial | differ | match | match | 2 | Level 3 — Medium Overlap |
 | FineVLA | partial | differ | partial | match | 1 | Level 4 — Low Overlap |
 | VLA Grounder | partial | differ | partial | match | 1 | Level 4 — Low Overlap |
+| ProGAL-VLA | match | partial | match | match | 3 | Level 2 — High Overlap |
 
-The closest verified papers each cover three axes. No verified paper in this bounded audit performs the exact combination of causal-locus selection plus phrase-specific source/target spatial evidence injection plus LC-PEA future-change supervision.
+The closest verified papers each cover three axes. ProGAL-VLA further covers verified symbolic-to-entity grounding passed into an OpenVLA action policy. No verified paper in this bounded audit performs the exact combination of causal-locus selection plus phrase-specific source/target spatial evidence injection plus LC-PEA future-change supervision. The unresolved CASE 2026 RoVLA title prevents any broad “first action-conditioned temporal grounding” claim until its body is verified.

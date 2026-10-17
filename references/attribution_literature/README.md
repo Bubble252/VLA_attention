@@ -50,6 +50,6 @@
 
 - 审计入口：[`causal_language_residual_scoop_20261017/REPORT.md`](causal_language_residual_scoop_20261017/REPORT.md)
 - Verdict：**Level 2 — High Overlap**。语言“encoded but not in control”、VLA activation patching、latent action query/PMI、text-latent residual steering、空间图前向 gating 和 paired counterfactual training 均已有直接近邻。
-- 剩余候选差异：用合法同场景换指令的 exact activation patching 冻结 action-causal loci，再将 Bridge-0 的 phrase-specific source/target spatial evidence 以零初始化残差写入这些 loci，并与 LC-PEA 的 target-relative future-change 联训。
+- 剩余候选差异：用合法同场景换指令的 exact activation patching 冻结 action-causal loci，再将 Bridge-0 的 phrase-specific source/target spatial evidence 以零初始化残差写入这些 loci，并与 LC-PEA 的 target-relative future-change 联训。后续补检发现 ProGAL-VLA 已使用 symbolic sub-goal→3D entity verification、对比对齐和 verified-goal action conditioning，进一步限制宽泛 grounding/action 创新表述。
 - 决策：保持为 LC-PEA 后置的二级增强。只有相对 FiLM、随机层、全层、language-only、evidence-only、LangForce/ECT/PosA 等强对照仍提高 target selection 和官方 rollout，才升级为论文方法；否则 L0 只作诊断。
-- 检索边界：OpenAlex 在线检索成功；Semantic Scholar 429、arXiv rate limit、OpenReview 依赖缺失和部分慢源超时均有记录，不能把未召回解释为不存在相关工作。PDF 与全文提取仅作本地审计缓存，不进入 Git/飞书。
+- 检索边界：OpenAlex/Crossref 可用；arXiv 已通过单源 10 秒限速恢复；`openreview-py`/`feedparser` 已安装并验证 connector 可运行。Semantic Scholar 因没有 API key 持续匿名 429；DBLP 返回浏览器 anti-bot HTML challenge。两者使用 OpenAlex/Crossref/官方 PDF 替代召回并保留缺口。RoVLA temporal-grounding CASE 2026 只有 DOI 元数据、正文待核验。PDF 与全文提取仅作本地审计缓存，不进入 Git/飞书。

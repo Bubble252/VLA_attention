@@ -59,3 +59,17 @@ Date: 2026-10-17. Read scope: introduction, method, main experiments and limitat
 - FineVLA verifies that fine-grained language data can improve steerability; its contribution is data/annotation/training mixture, not a causal-locus module.
 - VLA Grounder optimizes a scene-aware command policy with rollout reward while freezing the VLA; it changes language input, not internal action loci.
 - Both are mandatory data/inference baselines but do not subsume the proposed mechanism.
+
+## ProGAL-VLA
+
+- Verified problem: monolithic VLAs treat language as weak conditioning and may act on unverified visual shortcuts or ambiguous referents.
+- Verified mechanism: a slow VLM planner outputs a symbolic sub-goal; a 3D entity-centric Grounded State Module constructs tracked entity embeddings; State Alignment Cross Attention binds the symbolic goal to an entity; only the verified goal embedding conditions the fast OpenVLA policy. A Grounding Alignment Contrastive loss aligns symbolic–entity pairs.
+- Evidence: §3 Eqs. 1–12 defines the verification bottleneck and `L_action + λL_GAC`; §4 formalizes language influence and an InfoNCE-style entity-information bound; LIBERO-Plus and a custom ambiguity benchmark evaluate language ignorance/entity retrieval.
+- Assumptions/scope: uses an external open-vocabulary detector, depth/3D entity graph, asynchronous slow planner and offline sub-goal/entity alignment pairs. It does not use activation-patching-selected action loci, a zero-init residual, or LC-PEA future-delta supervision.
+- Refined axes: problem match; core mechanism partial; key insight match; domain match → 3 axes, Level 2 — High Overlap.
+
+## Unresolved high-risk candidate: RoVLA temporal grounding
+
+- Crossref verifies the title `RoVLA: Action-Conditioned Temporal Grounding and Structured Conditioning for Vision–Language–Action Policies`, CASE 2026, DOI `10.1109/CASE69030.2026.11704424`.
+- Crossref/OpenAlex exposed no abstract; the arXiv title query returned a different RoVLA paper (`Multi-Consistency Constraints`). No body-level mechanism claim is made here.
+- Because the title directly overlaps action-conditioned temporal grounding, it remains a blocking item for any broad LC-PEA “first temporal grounding” claim. The proposed paper must avoid such a broad claim until the CASE PDF is obtained and verified.

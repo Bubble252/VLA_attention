@@ -4,7 +4,7 @@
 
 **Level 2 — High Overlap.**
 
-The problem and central insight are already explicit in Encoded but Not in Control, the mechanistic patching study, LangForce and ECT. Activation patching is not novel; residual text-latent intervention is not novel; language-specific action queries, FiLM/cross-attention, forward spatial gating and counterfactual training are not novel. The remaining defensible delta is the *binding of three elements*: exact action-causal locus selection, phrase-level source/target spatial evidence, and a zero-initialized action-token residual trained with target-relative future change.
+The problem and central insight are already explicit in Encoded but Not in Control, the mechanistic patching study, LangForce and ECT. ProGAL-VLA additionally binds symbolic sub-goals to 3D entities and conditions OpenVLA actions on a verified goal embedding. Activation patching is not novel; residual text-latent intervention is not novel; language-specific action queries, FiLM/cross-attention, verified entity bottlenecks, forward spatial gating and counterfactual training are not novel. The remaining defensible delta is the *binding of three elements*: exact action-causal locus selection, phrase-level source/target spatial evidence, and a zero-initialized action-token residual trained with target-relative future change.
 
 ## Delta
 
@@ -12,7 +12,7 @@ The problem and central insight are already explicit in Encoded but Not in Contr
 
 ## Reviewer-risk statement
 
-This delta is fragile. If random/all-layer residuals match causal-locus selection, if language-only residuals match spatial evidence residuals, or if ECT/LangForce wins under matched data/compute, the method contribution collapses to implementation. The paper must not claim first use of activation patching, language adapters, action queries, residual steering, spatial gating or counterfactual language-action training.
+This delta is fragile. If random/all-layer residuals match causal-locus selection, if language-only residuals match spatial evidence residuals, or if ECT/LangForce/ProGAL-VLA wins under matched data/compute, the method contribution collapses to implementation. The unresolved CASE 2026 RoVLA metadata also blocks a broad first-temporal-grounding claim. The paper must not claim first use of activation patching, language adapters, action queries, residual steering, verified grounding bottlenecks, spatial gating or counterfactual language-action training.
 
 ## Required matched baselines
 
@@ -25,6 +25,7 @@ This delta is fragile. If random/all-layer residuals match causal-locus selectio
 7. LangForce/PMI-LLR or an explicitly documented incompatibility.
 8. ECT paired-data baseline when legal counterfactual demonstrations are available.
 9. PosA-style forward gating and Anchor-Align/action→language auxiliary where comparable.
+10. ProGAL-VLA verified-goal conditioning where its runnable code/data permit, otherwise a clearly scoped architectural comparison.
 
 ## Go/No-Go
 

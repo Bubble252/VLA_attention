@@ -2,7 +2,7 @@
 
 ## Verdict
 
-**Level 2 — High Overlap.** No verified paper exactly combines causal-locus selection, phrase-specific source/target spatial evidence injection, zero-initialized action-token residuals and LC-PEA future-change supervision. However, each component and the encoded-but-not-in-control framing have strong direct prior work, so novelty rests on their precise binding and falsification.
+**Level 2 — High Overlap.** No verified paper exactly combines causal-locus selection, phrase-specific source/target spatial evidence injection, zero-initialized action-token residuals and LC-PEA future-change supervision. However, each component and the encoded-but-not-in-control framing have strong direct prior work. ProGAL-VLA additionally supplies a verified symbolic-to-3D-entity grounding bottleneck for OpenVLA. Novelty therefore rests on the precise causal-locus/evidence/future-change binding and its falsification.
 
 ## Delta
 
@@ -26,9 +26,12 @@
 | Text Latent Interpolation | residual text-latent injection and layer intervention | task-average latent, no causal selection or source/target maps |
 | PosA-VLA | language/EEF spatial maps gate action features | pose-supervised global gating, no causal action-locus selection |
 | Anchor-Align | layerwise anchoring and same-observation action→language loss | semantic consistency, no shared referent evidence |
+| ProGAL-VLA | symbolic sub-goal→3D entity verification, contrastive alignment and verified-goal action conditioning | no causal-locus selection, zero-init residual or LC-PEA future delta |
 
 ## Decision
 
 Keep the candidate as a **secondary enhancement**, not the primary LC-PEA claim. Run L0 as diagnosis first. Only promote S4 if matched baselines demonstrate that causal locus selection and spatial evidence content are both necessary for rollout gain.
+
+`RoVLA: Action-Conditioned Temporal Grounding and Structured Conditioning for Vision–Language–Action Policies` (CASE 2026, DOI `10.1109/CASE69030.2026.11704424`) remains an unresolved high-risk title because no abstract/PDF body was available from the searched sources. Avoid any broad “first temporal grounding” claim until it is verified.
 
 Full audit: `step1_claim_decomposition.md`, `step2_search_and_triage.md`, `step4_fulltext_verification.md`, `step6_comparison.md`, `step7_verdict.md`.

@@ -19,7 +19,8 @@ Six queries were issued through paper-search. OpenAlex returned relevant results
 | Anchor-Align (2607.13429) | action tuning forgets VLM semantics and language/action diverge | layerwise frozen-VLM anchoring + same-observation action-direction language CE | 2/4 |
 | FineVLA (2605.27284) | coarse goal language omits execution factors | fine-grained action-aligned language data/annotator/policy mixture | 1–2/4 |
 | VLA Grounder (2607.04517) | frozen VLA is brittle to phrasing | RL-trained upstream language-conditioning policy; downstream VLA frozen | 1–2/4 |
+| ProGAL-VLA (2604.09824) | language ignorance and ambiguous entity grounding | slow symbolic sub-goal planner + 3D entity graph + state-alignment cross-attention + verified goal bottleneck + GAC contrastive loss | 3/4 |
 
 ## Other retrieved candidates
 
-Online results also surfaced LangGap, Rephrase Before You Act, Learning What to Say to Your VLA, Paraphrase Consensus, Gaze2Act, Stage-Aware VLA, MoLe-VLA, CroSTAta and goal-representation interfaces. These establish a crowded language-control landscape but are not used for a stronger overlap verdict without equivalent full-text verification.
+Online results also surfaced LangGap, Rephrase Before You Act, Learning What to Say to Your VLA, Paraphrase Consensus, Gaze2Act, Stage-Aware VLA, MoLe-VLA, CroSTAta, RoVLA: Action-Conditioned Temporal Grounding and goal-representation interfaces. RoVLA is a high-risk unresolved candidate because only Crossref metadata was available; the others establish a crowded language-control landscape but are not used for a stronger overlap verdict without equivalent full-text verification.
