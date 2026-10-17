@@ -22,6 +22,25 @@ JEV 在本计划中是面向状态评估的统计分类器，不是 JEPA。该�
 
 **2026-10-17 执行决定：LC-PEA/路线 B 是当前主要实验线。** VLM+JEV 保留为低成本旁线，不占用路线 B 的正式训练、rollout 和跨骨干预算。证明顺序固定为：teacher/referent gate → J0/J2/J4 最小 falsification → no-binding/wrong-object/future-shuffle controls → J1/J3/J5 强基线 → full LIBERO 与 LIBERO-Plus → π0.5 跨骨干。
 
+### VLM→VLA Bridge-0：避免两阶段叙事割裂
+
+统一论文问题是：**语言条件视觉 evidence 能否从静态 VLM grounding 迁移到机器人域，进而预测目标相关未来变化并改善行为？** VLM、Bridge-0 和 VLA 分别对应静态 evidence、跨域 transfer、动态/行为作用，不能用任一层结果替代下一层。
+
+V4 的正确现状是：旧 500-step 退化由 gradient-clipping 缺陷和训练发散解释；修复后 V4 对 V2 已在 mass、common soft-IoU、部分 pointing 和 COCO CIDEr 上出现正向 pilot 信号，但正式 9952×3 epoch×3 seed 与官方 test 尚未完成。因此 LC-PEA 是对静态互补信号的动态扩展。
+
+Bridge-0A 在冻结 robot-domain validation frames 上比较：
+
+| 分支 | map | 主要问题 |
+|---|---|---|
+| Teacher | 冻结 diffusion `T_sem` | 上游语义图在机器人域是否有 oracle 价值 |
+| Student | 正式 V4/V3 VLM output attribution | 之前的 VLM 训练是否真正迁移 |
+| Native | 原始/匹配 VLA 的 phrase-conditioned attribution | VLA 内生 evidence 是否已足够 |
+| Random | wrong-word/object/image、area-random、uniform/full-image | 收益是否只是任意空间路由 |
+
+评测 source/target pointing、mass、same-image wrong-object separation、phrase coverage、agent/wrist camera consistency 与 patch intervention；simulator mask/box 不进入训练。
+
+Bridge-0B 固定 action policy、target encoder、predictor、数据、seed 和更新数，只替换 routing map，比较 `J4-Teacher/J4-Student/J4-Native/J4-Random` 与 J2。主 gate 是 correct-vs-counterfactual future-delta margin，以及 held-out target selection/action/短 rollout，而不是热力图美观。若 Teacher 有效但 Student 无效，结论是存在 robot-domain transfer gap；若 Native≥Student，主线改用 Native；若正确 evidence 都不优于 Random/J2，停止 LC-PEA 的语言路由主张。
+
 VLA 主线不再把静态 action-evidence containment 预设为最终涨点方法。新的性能候选是 **LC-PEA：语言条件预测证据对齐**，即把 VLM 阶段得到的语言条件空间证据用于选择 short-horizon future latent 的预测目标，再由共享视觉表征支持 manipulation action learning。原 D0、`I_bind`、归因图与 patch occlusion 继续承担 baseline、机制解释和反事实验证。
 
 首轮 matched matrix 使用新的 `J*` 编号，避免覆盖已经产生的 B0--B4 结果：

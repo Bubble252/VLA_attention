@@ -611,6 +611,13 @@ git push
 
 **执行优先级更新（2026-10-17）：路线 B 是当前主要执行线。** 路线 A 的 VLM+JEV 保留为低成本旁线和潜在独立课题，不占用路线 B 的主训练、正式 rollout 与跨骨干预算。路线 B 按“J0/J2/J4 最小判别 → C-J4 负控 → J1/J3/J5 强基线 → LIBERO 全量/OOD → 第二骨干”的顺序执行；任何后续复杂模块都不能跳过前一层 gate。
 
+**VLM→VLA 防割裂冻结（2026-10-17）**：论文主问题统一为“语言所指视觉证据能否从静态 grounding 迁移为机器人目标相关未来变化，并改善行为”。VLM 阶段验证 phrase evidence，机器人域 `Bridge-0` 验证 evidence transfer，LC-PEA 验证 future-state/action/rollout。V4 的当前定位是“旧实现退化由发散解释；修复后相对 V2 已在 mass、soft-IoU、部分 pointing 和 CIDEr 上出现正向 pilot 信号，但正式结论未完成”，LC-PEA 是动态扩展而不是失败修补。
+
+- [ ] `Bridge-0A`：在冻结 LIBERO validation frames 上比较 `Teacher/Student/Native/Random` 四类 source/target evidence；用 simulator mask/box 只评测 pointing、mass、wrong-object separation、coverage 和 intervention response；
+- [ ] `Bridge-0B`：固定 policy/predictor/target encoder/数据/预算，只替换 routing map，比较 `J4-Teacher/J4-Student/J4-Native/J4-Random` 与 J2；
+- [ ] 至少一个正确 evidence 分支在 future-delta margin 和 action/target-selection/短 rollout 上超过 J2 与 Random，才扩大 J4；
+- [ ] `Teacher>Random` 但 `Student≈Random` 时只声称 oracle evidence 有效并记录 robot-domain gap；`Native≥Student` 时主线优先 Native；所有正确图≈Random 时停止语言路由主张。
+
 P6 的研究目标从“让动作归因落入静态语言区域”调整为“让语言指定的视觉证据预测短时未来任务表征，从而提升 manipulation 动作学习与闭环泛化”。候选方法名为 **LC-PEA（Language-Conditioned Predictive Evidence Alignment）**。D0 containment、`I_bind` 与 patch intervention 保留为静态 baseline 和机制诊断，不再预设为最终主方法。
 
 首版执行边界：

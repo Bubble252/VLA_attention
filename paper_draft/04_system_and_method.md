@@ -271,6 +271,18 @@ JEV 的核心证据必须来自 E0 无 verifier、E1 VLM direct judge、E2 time/
 
 静态 `A_lang→A_act` containment 容易把语言实体区域误当成全部动作证据，也不能表达物体、夹爪和目标容器随动作变化的动态关系。为使 VLM 阶段的空间证据直接服务于 manipulation 能力，本文将主方法候选更新为 **LC-PEA（Language-Conditioned Predictive Evidence Alignment）**。它不要求语言热图直接规定动作，而是让语言指定的视觉证据负责预测短时未来的任务相关 latent，再由共享表征支持原生 action objective。
 
+方法叙事不把 VLM 与 VLA 分成两篇工作：VLM 的 V3/V4 建立 phrase-conditioned spatial evidence，机器人域 Bridge-0 比较外部 Teacher、训练后 Student 与 VLA Native evidence 的迁移，LC-PEA 再将通过 gate 的 evidence 作为未来变化预测的 routing interface。V4 的修复后 pilot 已出现相对 V2 的部分正向信号；LC-PEA 扩展其时间维度和行为用途，而不是以旧发散 checkpoint 的退化作为动机。
+
+对任一 source/target phrase，Bridge-0 冻结产生三个候选图：
+
+$$
+A^{T}_{\mathrm{lang}}=T_{\mathrm{sem}}(x,w),\qquad
+A^{S}_{\mathrm{lang}}=\operatorname{Attr}(\mathrm{VLM}_{V4};x,w),\qquad
+A^{N}_{\mathrm{lang}}=\operatorname{Attr}(\mathrm{VLA}_{0};x,w).
+$$
+
+Teacher/Student/Native 统一通过同一 token provenance 与公共图像坐标桥，随后分别构造 $q^T,q^S,q^N$。Random 分支使用错对象/错词/错图、面积匹配随机和 uniform/full-image。Bridge-0A 用 simulator region 只做 transfer evaluation；Bridge-0B 在冻结 policy 和完全匹配 predictor 下只替换 $q$，检验 evidence source 是否改变未来预测和动作行为。正式部署选择只依据 validation gate：若 Native 已不劣于 Student，则优先 Native；Teacher 只能作为 oracle/上界，不能在 Student 失败时被写成已完成的 VLM transfer。
+
 令在线视觉编码器输出当前多视角 token $H_t=\{h_{t,i}\}_{i=1}^{N}$，语言条件证据为 $A_{\mathrm{lang},t}(i)$。为保留非语言实体但对动作必需的上下文，定义带均匀泄漏的软权重：
 
 $$

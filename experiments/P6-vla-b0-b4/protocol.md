@@ -30,6 +30,27 @@
 
 LC-PEA 要回答的能力问题是：**语言指定的目标证据能否通过短时未来状态预测，改善 manipulation 的目标选择、闭环执行和 OOD 泛化，并在普通未来预测及视觉表征保持之外产生独立增量？**
 
+### 2026-10-17 统一叙事与 Bridge-0
+
+VLM 与 VLA 不作为两段松散实验。统一研究问题是：**语言所指的视觉证据，能否从静态视觉理解迁移为机器人目标相关状态变化的预测，并最终改善动作行为？** VLM 阶段回答“短语是否选择了正确区域”；Bridge-0 回答“这种 evidence 是否迁移到机器人图像”；LC-PEA 回答“这种 evidence 是否预测未来变化并提升 policy/rollout”。
+
+V4 的当前证据必须按版本解释：旧 500-step V4 的下降来自错误 gradient clipping 和训练发散；修复后 V4 相对 V2 在 mass、common soft-IoU、部分 pointing 以及 COCO CIDEr 上出现正向 pilot 信号。它支持继续检验静态 semantic+retention 的互补性，但尚未形成正式全量、官方 test、三 seed 的主结论。因此 LC-PEA 是对 V4 静态互补信号的动态扩展，不以“V4 已失败”为动机。
+
+Bridge-0 使用冻结的机器人域 validation frames，不做长训练，也不使用 rollout test 调超参。比较四种 evidence source：
+
+| 分支 | Evidence 来源 | 要回答的问题 |
+|---|---|---|
+| `B0-Teacher` | 冻结扩散 teacher `T_sem` 的 source/target phrase map | 理想上游语义图在机器人域是否可用 |
+| `B0-Student` | V4/V3 训练后 VLM student 的 output-conditioned `A_lang` | 前期 VLM 学到的 evidence 是否可迁移 |
+| `B0-Native` | 原生 VLA 对相同 phrase/score 的 `A_lang` adapter | 是否无需外部 VLM 就已有足够 evidence |
+| `B0-Random` | wrong-word、wrong-object、wrong-image、area-matched random、uniform/full-image | 正确 evidence 是否超过一般空间路由 |
+
+Bridge-0A 只评 evidence transfer：在同一 robot frame、phrase 和公共图像坐标上，报告 source/target pointing、mass-in-region、same-image wrong-object separation、phrase coverage、agent/wrist camera 一致性和 patch intervention response。Simulator object mask/box 只作评测真值，不进入任一 evidence map 或训练 loss。
+
+Bridge-0B 评 evidence 对 LC-PEA 的实际作用：使用同一 frozen action policy、target encoder、predictor、数据、seed 和 50--200 step 预算，仅替换 routing map，比较 `J4-Teacher/J4-Student/J4-Native/J4-Random`。主读数为 correct-vs-counterfactual future-delta margin、held-out action/target-selection 与短 rollout；不能只按热力图 IoU 选赢家。
+
+Bridge gate：至少一个正确 evidence 分支必须同时优于 `J2` 无语言路由和 `J4-Random`，才允许扩大 J4。若 `Teacher>Random` 但 `Student≈Random`，记录 VLM→robot domain gap，首轮可用 Teacher 证明 oracle/upper-bound 机制，但不能声称 VLM student transfer；若 `Native` 已匹配或超过 Student，主方法优先使用 Native 以减少外部依赖；若所有正确图≈Random，停止语言路由主张。
+
 ### 1.0 VLM + JEV：不训练 VLA action head 的能力路线
 
 JEV 不从 RGB 端到端学习动作。对时刻 $t$，冻结 VLM 从当前帧或短视频窗、任务指令和候选状态命题中提取特征：phrase attribution mass、source/target relation score、VLM log-prob/margin、跨帧变化、回答一致性和可选的非视觉元数据。统计分类器输出：
