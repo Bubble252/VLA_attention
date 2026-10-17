@@ -653,6 +653,12 @@ C-J4 = no-binding / wrong-word / wrong-image / random / uniform / future-shuffle
 
 **路线 B 任务冻结（2026-10-17）**：C0 用 `libero_spatial/task0`（两个同类黑碗，语言按空间关系选择 source）打通接口；C1 核心涨点任务用 `libero_90/task65↔66`（red mug→left/right plate，target swap）和 `task65↔67`（red/white mug→left plate，source swap）；C2 再加入 `task63↔64`（left/right bowl role swap）、`task73/74/75`（book→不同 caddy compartment）与 `task12/13/14`（front/back/middle black bowl）。当前只有 Spatial RLDS 已在服务器 inventory 中，LIBERO-90 任务虽有 BDDL/init，但须取得对应官方 demonstrations 并先跑 positive control；禁止以另一任务动作作为标签。第二 benchmark 优先 BlindVLA ManiSkill 的 shape/color/icon/arrow multi-target variants，再审计 Robust Skills multi-object picking；详细监督对象、可用性和回退条件见 P6 protocol §2.0.1--2.0.3。
 
+**二级语言增强顺序（2026-10-17）**：不与基础 J4 同时堆叠。仅当 Bridge-0 evidence 有效、J4 predictive 指标成立但语言仍未控制动作时，先做合法同场景换指令的 layer/head/token probe + activation patching，定位同时“编码语言且因果改变动作”的位置；再按 `S0 J4 → S1 FiLM → S2 随机层残差 → S3 全层残差 → S4 因果定位的零初始化 source/target evidence 残差` 执行。S4 通过后才补 evidence tokens、action→language 和 LangForce/PMI 强 baseline。普通 language adapter、action query、cross-attention、FiLM、Q-Former、PMI/LLR、text-latent intervention 与配对反事实训练均有直接近邻，不能单独包装为创新。完整公式、触发 gate 与 S0--S7 见 P6 protocol §2.0.4。
+
+二级增强 scoop-check 已于 2026-10-17 完成，verdict 为 **Level 2 — High Overlap**：问题分别与 `Encoded but Not in Control`、mechanistic language patching、LangForce、ECT、Text Latent Interpolation 和 PosA-VLA 高度相邻。S4 只保留“action-causal locus 选择 + phrase-specific source/target evidence residual + LC-PEA future-change”的组合差异，当前不替代 LC-PEA 主线。审计见 `references/attribution_literature/causal_language_residual_scoop_20261017/REPORT.md`。
+
+**有机融合冻结**：最终候选只共享一套 source/target evidence。LC-PEA 先让它承担 future-change prediction；仅当 evidence 有预测价值但未控制动作时，S4 再把同一 evidence 以零初始化残差接入 L0 冻结的 action-causal loci。顺序为 `Stage P: J4 → Stage L: 只读因果定位 → Stage R: S4 warm-up/联合微调 → Stage F: S0--S4 正式比较`。FiLM、evidence tokens、action→language、LangForce、ECT/FineVLA/VLA Grounder 都保持 baseline，不与主方法堆叠。完整边界见 P6 protocol §2.0.4。
+
 ### P6-0：历史 B0--B5 与 BlindVLA 强 baseline（LC-PEA 的前置对照）
 
 BlindVLA 是 VLA 微调阶段的 feature-retention 方法，不是 P4 VLM grounding 的前置方法。本阶段要检验：即使视觉表征已被 DB-style 方法保持，语言条件空间归因与动作证据约束是否仍有独立价值。

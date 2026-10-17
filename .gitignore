@@ -37,6 +37,7 @@ references/attribution_literature/vla_instruction_evidence_audit_*/papers/
 references/attribution_literature/vla_instruction_evidence_audit_*/search_*.log
 references/attribution_literature/vla_instruction_evidence_audit_*/__pycache__/
 references/attribution_literature/vla_instruction_evidence_audit_*/.doc_sync_state.json
+references/attribution_literature/causal_language_residual_scoop_*/papers/
 
 # Local secrets and machine configuration
 .env

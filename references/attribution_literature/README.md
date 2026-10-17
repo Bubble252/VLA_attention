@@ -45,3 +45,11 @@
 - 创新性：宽泛候选为 **Level 2 — High Overlap**。ECL 已做 instruction/action evidence selection + counterfactual masking + action supervision；LIT 已分别做 visual/goal interventions；Robust Skills 已拆分 target selection 与 primitive execution。剩余差异是二因子 crossed interaction estimator，适合作为诊断测量。
 - 数据：解析官方 130 个 LIBERO task 和十个 scene-compatible pair；当前 432 条 RLDS 仅覆盖 Spatial。十个候选 pair 均没有 exact shared init state + 双端合法动作 inventory，因此只支持 diagnostic-only intervention。
 - 最小实验与否定条件：见 [`next_minimal_experiment.md`](vla_instruction_evidence_audit_20261016/next_minimal_experiment.md) 与 [`falsification_gate.md`](vla_instruction_evidence_audit_20261016/falsification_gate.md)。
+
+## Causal-Locus Language-Evidence Residual 审计（2026-10-17）
+
+- 审计入口：[`causal_language_residual_scoop_20261017/REPORT.md`](causal_language_residual_scoop_20261017/REPORT.md)
+- Verdict：**Level 2 — High Overlap**。语言“encoded but not in control”、VLA activation patching、latent action query/PMI、text-latent residual steering、空间图前向 gating 和 paired counterfactual training 均已有直接近邻。
+- 剩余候选差异：用合法同场景换指令的 exact activation patching 冻结 action-causal loci，再将 Bridge-0 的 phrase-specific source/target spatial evidence 以零初始化残差写入这些 loci，并与 LC-PEA 的 target-relative future-change 联训。
+- 决策：保持为 LC-PEA 后置的二级增强。只有相对 FiLM、随机层、全层、language-only、evidence-only、LangForce/ECT/PosA 等强对照仍提高 target selection 和官方 rollout，才升级为论文方法；否则 L0 只作诊断。
+- 检索边界：OpenAlex 在线检索成功；Semantic Scholar 429、arXiv rate limit、OpenReview 依赖缺失和部分慢源超时均有记录，不能把未召回解释为不存在相关工作。PDF 与全文提取仅作本地审计缓存，不进入 Git/飞书。

@@ -267,6 +267,101 @@ target = stopgrad(z*_{t+k} - z*_t)
 
 所有 J0--J5 都保留原生 `L_action`；J2/J4/J5 的 future target 是**表征监督**，不是未来动作标签。`A_lang` 来自 VLM/扩散教师伪图，只决定 soft pooling/目标构造；LIBERO simulator 的 object mask、box 和 predicate 仅用于 teacher gate、阶段指标和官方 success 评测，不进入 J4 主训练 loss。目标帧必须与当前帧来自同一合法 demonstration 和同一 episode，任何跨任务 action/未来帧拼接都禁止。
 
+### 2.0.4 二级语言增强：先定位因果子空间，再插入专有模块
+
+二级增强不与基础 J4 同时启动。只有 Bridge-0 至少一个正确 evidence 分支优于 Random/J2，future predictor 已学到有效信号，但出现下列任一现象时才触发：`J4≈J2`、correct≈wrong-object、`I_bind≈0`、合法换指令不改变 target selection，或 predictive 指标改善而 action/rollout 不变。若 Bridge-0 本身失败，应停止修 teacher/domain gap，不能用更强语言模块掩盖无效 evidence。
+
+#### L0：模型内部语言因果位置审计
+
+对同一 robot observation/state/noise 构造两条合法目标指令 $I_A/I_B$，逐层保存 instruction phrase tokens、visual tokens 和 action tokens。审计分三步：
+
+1. **Frozen probe**：预测 source identity、target identity、relation/phase，回答“哪里编码语言”；
+2. **Activation patching**：把 $I_A$ 第 $l$ 层 phrase residual/head output 换成 $I_B$，测 action 是否向 $a_B$ 移动，回答“哪里控制动作”；
+3. **Attribution/ablation corroboration**：phrase-token dropout、head patch、direction/object swap、empty instruction 与 random patch，检查定位是否稳健。
+
+层级因果分数定义为：
+
+$$
+C_l=\frac{D(a_A,a_B)-D(a_{A\leftarrow B,l},a_B)}{D(a_A,a_B)+\epsilon}.
+$$
+
+候选位置必须同时满足 probe 可读、activation patching 对动作有方向性影响、随机/无关 token patch 无同等效果，并在至少两个任务/seed 复现。不能按 attention 最大或单个样本挑层。OpenVLA/OFT 首轮审计 instruction residual 与 action-placeholder hidden；π0.5/GR00T/MolmoAct2 后续按其 action-expert cross-attention 接口单独定位，不复用固定层号。
+
+#### 首选模块：Causal-Locus Language-Evidence Residual（工作名）
+
+只在 L0 选出的层 $l\in\mathcal L_c$ 读取 phrase hidden 和 source/target evidence pooling：
+
+$$
+e_l=\operatorname{Pool}(H_l^{lang}[span]),\qquad
+v_l^{src}=\sum_iA_{src}(i)H_{l,i}^{vis},\qquad
+v_l^{tgt}=\sum_iA_{tgt}(i)H_{l,i}^{vis},
+$$
+
+$$
+r_l=W_o\,\sigma(W_e[e_l;v_l^{src};v_l^{tgt}]),\qquad
+g_l=\sigma(W_g[e_l;s_t]),
+$$
+
+$$
+H'_{l,act}=H_{l,act}+\alpha_l g_l r_l,\qquad \alpha_l\big|_{init}=0.
+$$
+
+零初始化保证初始策略与原 checkpoint 等价；残差只写入 action-token/action-query 位置，原始视觉、global evidence、proprioception 和 action path 保留。模块推理时保留，须报告额外参数、延迟和显存。该模块的候选差异不是“存在一个语言 adapter”，而是**由合法换指令下的动作因果效应选择插入层，并把 VLM source/target 空间 evidence 接入这些 action loci**。
+
+#### S0--S7 执行顺序
+
+| 顺序 | 组 | 配置 | 作用 |
+|---:|---|---|---|
+| 0 | S0 | 基础 J4 | 二级增强起点 |
+| 1 | S1 | J4 + OpenVLA/OFT 原生 FiLM | 已有语言调制强 baseline；不当创新 |
+| 2 | S2 | J4 + 随机层、同参数残差 | 排除参数量/优化收益 |
+| 3 | S3 | J4 + 全层残差 | 检验因果选层是否必要 |
+| 4 | S4 | J4 + causal-locus language-evidence residual | 首选二级增强 |
+| 5 | S5 | J4 + `[SRC]/[TGT]` evidence tokens | token 接口替代方案 |
+| 6 | S6 | J4 + action-plan→language 辅助头 | Anchor-Align/FineVLA 类低成本语义 baseline |
+| 7 | S7 | LangForce/PMI-LLR 或架构匹配复现 | 语言—动作强竞争 baseline |
+
+先跑 S0--S4 的单 seed/1k--2k updates；只有 `S4>S0/S1/S2`、wrong-target 降低、`I_bind` 与 activation-patching mediation 增加且短 rollout 不退化，才补 S5--S7 和三 seed。S4 若只提高 probe/patching 而不提高 action/rollout，不能称能力增强。
+
+#### 其他候选的优先级与边界
+
+- language-evidence subspace LoRA：仅更新 L0 找到的低维语言方向，作为 S4 后的高潜力扩展；须防止 probe direction 不等于 causal direction。
+- action-query cross-attention、layer-wise Q-Former：适合 π/GR00T/Molmo/StarVLA 等显式 action expert，但已有强近邻，只作结构特定实现/基线。
+- language-conditioned hypernetwork 或 MoE/router：容易退化为 task-ID 查表，首轮不做。
+- paraphrase canonicalizer、VLA Grounder、language feedback policy：属于冻结 VLA 的 inference-time steering baseline，不与训练期 S4 混成一个方法。
+- paired counterfactual/ECT、FineVLA 细粒度语言：属于数据/监督 baseline；新增 demonstrations 必须等量提供给所有方法组。
+
+在线检索和本地源码显示，FiLM、latent action queries、Q-Former、layer-wise cross-attention、PMI/LLR、text-latent intervention、action→language supervision 和配对反事实训练均已有直接近邻。因此新增任一普通语言模块都不能单独作为论文创新；S4 仍须通过独立 scoop-check 后才能冻结主张。
+
+**2026-10-17 scoop-check 结果：Level 2 — High Overlap。** 完整报告见 `references/attribution_literature/causal_language_residual_scoop_20261017/REPORT.md`。`Encoded but Not in Control` 已覆盖“语言编码但不控制动作”的问题，mechanistic language study 已用 attribution+activation patching 定位 VLA action-expert 语言因果层，Text Latent Interpolation 已向 text residual stream 注入 task latent，LangForce 已用 latent action queries+PMI/LLR 强化语言控制，ECT 已通过 action-valid counterfactual pairs 修复 instruction-action binding，PosA-VLA 已用语言/EEF空间图门控动作视觉特征。当前剩余差异仅是：**用合法换指令的 exact action-causal locus 选择，把 Bridge-0 phrase-specific source/target spatial evidence 以零初始化残差写入对应 action loci，并与 LC-PEA future-change 联训。** 因此 S4 保持二级增强，不替代 LC-PEA 主线；其新颖性依赖 random/all-layer、language-only/evidence-only、FiLM、LangForce、ECT、text-latent/PosA 等 matched baselines。
+
+#### 有机融合：一个 evidence，两种职责，分阶段启用
+
+最终候选不把 S1--S7 全部叠加。统一核心变量始终是 Bridge-0 通过 gate 的 source/target evidence：
+
+```text
+instruction + robot observation
+          ↓
+source/target evidence q_src, q_tgt
+          ├─ predictive role: LC-PEA 预测 referent future change
+          └─ control role: 仅在 L0 证明“encoded but not in control”后，S4 写入 action-causal loci
+          ↓
+native action head + full visual/state path
+```
+
+技术上，LC-PEA predictor 与 S4 residual 共用同一 evidence extractor、phrase spans、token provenance、source/target pooling 和 counterfactual negative；不得各自训练一套不一致的语言图。LC-PEA 负责让 evidence 包含“对象将如何变化”的任务动态，S4 负责让已经有预测价值的 evidence 真正影响动作。S4 不新增长时 teacher 或新的人工标签，继续使用 `L_action+L_pred+L_bind`；可选的 mediation regularizer 只有在 exact activation patching 能稳定计算且独立 validation 显示必要时才单列，不作为默认组件。
+
+训练顺序固定为：
+
+1. **Stage P**：训练/验证基础 J4，冻结 evidence source 与 LC-PEA 配方；
+2. **Stage L**：在 J4 checkpoint 上只读执行 L0，冻结 causal loci，禁止用 test success 选层；
+3. **Stage R**：添加零初始化 S4 residual，从 J4 checkpoint 开始短 warm-up，再联合微调；
+4. **Stage F**：正式比较 S0/S1/S2/S3/S4；S4 通过后才做三 seed/OOD/第二骨干。
+
+论文叙事相应统一为：**VLM 提供 referent evidence，LC-PEA 使其具有动态预测意义，causal-locus residual 在必要时使其成为动作控制信号。** 这比“添加更多语言模块”更紧凑，也允许在 J4 已经成功时完全省略 S4。若 S4 无额外 rollout 增益，主方法保持 LC-PEA，L0 只作为解释为什么不需要二级增强的诊断。
+
+S1 FiLM、S5 evidence tokens、S6 action→language、S7 LangForce/PMI，以及 ECT/FineVLA/VLA Grounder 都保持独立 baseline，不进入最终方法联合体。否则即使成功率上涨，也无法识别是 evidence dynamics、语言调制、数据配对还是 prompt steering 起作用。
+
 ### 2.1 历史 B0--B4 矩阵
 
 所有组必须使用同一个模型初始化、LIBERO episode manifest、语言模板、图像预处理、动作归一化、H、optimizer、训练 steps、seed 和 evaluator。只有下表中标出的损失或 teacher 开关可以变化。
