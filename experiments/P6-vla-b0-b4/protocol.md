@@ -187,6 +187,23 @@ H4 behavior：J4 在官方 rollout 上提高 success，并在 LIBERO-Plus 保持
 - 预算：先单 seed、约 1k--2k optimizer updates；每任务至少 20--25 个独立官方 rollout，rollout split 不参与超参选择。
 - Go：J4 必须同时满足 `prediction margin > J2`、至少一个预注册 action/phase 指标优于 J0/J2、官方 rollout 不劣且有方向性收益、正确配对优于负控。否则先定位 H1/H2/H3 的失败层，不进入 10k/三 seed。
 
+首轮任务顺序冻结为以下候选阶梯；任务 ID 均来自当前本地 LIBERO task inventory，正式启动前仍须下载/核验对应官方 demonstrations、positive-control checkpoint 和 evaluator：
+
+| 阶段 | suite/task | 语言歧义 | 用途 | 当前可用性 |
+|---|---|---|---|---|
+| C0 接口 | `libero_spatial/task0`：between plate and ramekin 的黑碗→plate | 两只同类黑碗，按空间关系选 source | 打通 source evidence、future pair、rollout；ID 已饱和时不作为主涨点 | 当前 432 RLDS 覆盖 Spatial；官方 checkpoint task0 已有 5/5 positive control |
+| C1 target swap | `libero_90/task65↔66`：red mug→left/right plate | source 固定，target 左右切换 | J4 的首要 target-retargeting 任务 | BDDL/init 已有；官方 demos 尚未在当前 inventory 中 |
+| C1 source swap | `libero_90/task65↔67`：red/white mug→left plate | target 固定，source 颜色切换 | same-image wrong-object 与 wrong-target rate | BDDL/init 已有；官方 demos 尚未在当前 inventory 中 |
+| C2 role swap | `libero_90/task63↔64`：left/right bowl 互相堆叠后入 tray | 同类物体 source/target 角色互换 | 最强 `L_bind`/`I_bind` 机制任务，但 primitive 更难 | BDDL/init 已有；官方 demos 尚未在当前 inventory 中 |
+| C2 region | `libero_90/task73/74/75`：book→front/left/right caddy compartment | source 固定，细粒度 target region | place 阶段与目标区域选择 | BDDL/init 已有；官方 demos 尚未在当前 inventory 中 |
+| C2 source spatial | `libero_90/task12/13/14`：back/front/middle black bowl→plate | 同类 source 的位置指代 | source grounding 与布局泛化 | BDDL/init 已有；官方 demos 尚未在当前 inventory 中 |
+
+最小 J0/J2/J4 首轮采用 `task0 + task65/66 + task65/67`；若 task65--67 无合法 demonstrations 或 positive control 为零，不能用伪动作标签替代，退回 task0 做工程与机制验证，同时下载/生成官方成功轨迹后再进入涨点实验。task63/64 和 compartment 任务只在 C1 至少一个任务出现非零、未饱和 baseline 后加入。
+
+第二 benchmark 优先采用 BlindVLA/ManiSkill 的 `PutOnShapeInSceneMulti`、`PutOnColorInSceneMulti` 与 icon/arrow variants：同场景三个候选 target，源码提供 `get_language_instruction/get_target_name/where_target` 和 success predicate，适合测试 shape/color/symbol 与位置捷径。Robust Skills 的 multi-object ManiSkill task ladder（Success/Grasp-anything/Reach）是更干净的 grounding-vs-execution 验证；在作者代码与数据完成 provenance 审计前，只借鉴协议，不称官方复现。
+
+LIBERO-Plus 用于冻结配置后的 task-preserving OOD；LIBERO-PRO 用于语言改写/目标指代扩展。二者当前尚无本地 runnable implementation/data audit，不阻塞 C0/C1，也不得只凭论文描述写成已完成 benchmark。
+
 #### Batch D：强基线、正式训练与统计
 
 - 补齐 `J1` BlindVLA retention、`J3` 静态语义对齐和 `J5=J1+LC-PEA`；J5−J1 是“超过表征保持”的关键比较，J4−J2 是“超过普通 JEPA”的关键比较。
@@ -215,6 +232,19 @@ target = stopgrad(z*_{t+k} - z*_t)
 首版 predictor 采用轻量 two-layer MLP 或单层 temporal transformer，J2/J4 完全同构。在线视觉/policy 分支的可训练范围沿用 OpenVLA/OFT adapter 的冻结配置；target encoder 不参加 optimizer。source/target phrase 无法可靠映射时，该样本仍可进入 J0/J2，但不进入 J4 的 `L_pred/L_bind`，并记录覆盖率，禁止把缺图当零图训练。
 
 首轮 target space 暂定复用 BlindVLA baseline 的冻结 `C-RADIOv3-L`，使 J1=current-frame retention、J2=global future-delta prediction、J4=language-routed future-delta prediction 使用同一视觉教师和预处理；DINOv2 只作 teacher-swap sensitivity。若 C-RADIO future delta 在 Batch A 中主要响应相机/机器人运动而非对象关系变化，再转为 EMA target encoder，并把更换作为新 protocol revision，不能在结果后偷偷换 teacher。`u_t` 默认 detach，故 `L_pred/L_bind` 的主梯度路径是 predictor→在线视觉 projector/允许训练的视觉-policy 参数；是否让辅助梯度进入 action-plan latent 只作为后续消融。
+
+### 2.0.3 每个实验真正监督什么
+
+| 组 | 学生可训练输出/表示 | 监督目标 | 目标来源 | 不属于训练监督的内容 |
+|---|---|---|---|---|
+| J0 | 原生 `H×7` action chunk | expert action chunk | 该 exact task 的官方 successful demonstration | object box/mask、teacher map、未来帧 |
+| J1 | 当前视觉中间 patch feature/projector | 同帧冻结 C-RADIO patch feature | 当前 RGB 的 frozen teacher forward/cache | 语言目标、未来变化、动作归因 |
+| J2 | global future-delta predictor + 允许训练的在线视觉/projector | `z*_{t+k,global}-z*_{t,global}` | 同一 demonstration 的真实未来 RGB 经 frozen target encoder | 语言 map、box、test rollout future |
+| J3 | 学生 `A_lang`/语义 projector | 当前帧 source/target semantic map | 已冻结 `T_sem` 离线伪图 | future latent、人工 box（box 只评测） |
+| J4 | source/target future-delta predictor + 在线视觉/projector，同时保留 action head | `Δz*_{src/tgt}` 与 correct-vs-counterfactual ranking | 当前/未来真实 RGB 的 frozen target features，由 `A_lang` soft-route；同图合法错对象作负样本 | GT box/mask、另一任务的 action、测试数据、专家 action 作为 predictor 输入 |
+| J5 | J4 表示 + J1 retention 分支 | J4 targets + current-frame retention target | 同一数据、同一 C-RADIO teacher | 新增 demonstrations 或不同训练预算 |
+
+所有 J0--J5 都保留原生 `L_action`；J2/J4/J5 的 future target 是**表征监督**，不是未来动作标签。`A_lang` 来自 VLM/扩散教师伪图，只决定 soft pooling/目标构造；LIBERO simulator 的 object mask、box 和 predicate 仅用于 teacher gate、阶段指标和官方 success 评测，不进入 J4 主训练 loss。目标帧必须与当前帧来自同一合法 demonstration 和同一 episode，任何跨任务 action/未来帧拼接都禁止。
 
 ### 2.1 历史 B0--B4 矩阵
 

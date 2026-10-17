@@ -644,6 +644,8 @@ C-J4 = no-binding / wrong-word / wrong-image / random / uniform / future-shuffle
 
 首轮 benchmark 顺序仍为标准 LIBERO pick-place → LIBERO-Plus task-preserving/goal-changing OOD → DROID offline；π0.5 用于跨动作结构复核，MolmoAct2/LingBot-VLA/RoboTwin 后置。当前 OpenVLA/OFT action-interface 与 positive-control 边界仍然有效，LC-PEA 不能绕过基础 B0/官方 checkpoint rollout gate。
 
+**路线 B 任务冻结（2026-10-17）**：C0 用 `libero_spatial/task0`（两个同类黑碗，语言按空间关系选择 source）打通接口；C1 核心涨点任务用 `libero_90/task65↔66`（red mug→left/right plate，target swap）和 `task65↔67`（red/white mug→left plate，source swap）；C2 再加入 `task63↔64`（left/right bowl role swap）、`task73/74/75`（book→不同 caddy compartment）与 `task12/13/14`（front/back/middle black bowl）。当前只有 Spatial RLDS 已在服务器 inventory 中，LIBERO-90 任务虽有 BDDL/init，但须取得对应官方 demonstrations 并先跑 positive control；禁止以另一任务动作作为标签。第二 benchmark 优先 BlindVLA ManiSkill 的 shape/color/icon/arrow multi-target variants，再审计 Robust Skills multi-object picking；详细监督对象、可用性和回退条件见 P6 protocol §2.0.1--2.0.3。
+
 ### P6-0：历史 B0--B5 与 BlindVLA 强 baseline（LC-PEA 的前置对照）
 
 BlindVLA 是 VLA 微调阶段的 feature-retention 方法，不是 P4 VLM grounding 的前置方法。本阶段要检验：即使视觉表征已被 DB-style 方法保持，语言条件空间归因与动作证据约束是否仍有独立价值。
