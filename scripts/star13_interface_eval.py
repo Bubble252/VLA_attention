@@ -202,6 +202,8 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--validation-root", type=Path, required=True)
     parser.add_argument("--validation-whitelist", type=Path, required=True)
     parser.add_argument("--train-root", type=Path, required=True)
+    parser.add_argument("--point-manifest", type=Path, default=None)
+    parser.add_argument("--point-manifest-sha256", default=None)
     parser.add_argument("--output", type=Path, required=True)
     parser.add_argument("--arm", required=True)
     parser.add_argument("--batch-size", type=int, default=4)
@@ -275,6 +277,30 @@ def main() -> int:
             raise ValueError(f"validation episode mapping row is incomplete: {row}")
         episode_to_index[str(episode_id)] = int(episode_index)
     sidecar_rows = read_rows(args.sidecar)
+    point_lookup: dict[tuple[str, int, str], dict[str, Any]] = {}
+    if args.point_ablation != "none":
+        if args.point_manifest is None:
+            raise ValueError("point ablation requires --point-manifest")
+        if not args.point_manifest.is_file():
+            raise FileNotFoundError(args.point_manifest)
+        if args.point_manifest_sha256 is not None:
+            actual_sha = sha256_file(args.point_manifest)
+            if actual_sha != args.point_manifest_sha256:
+                raise ValueError(
+                    "point manifest SHA mismatch: "
+                    f"{actual_sha} != {args.point_manifest_sha256}"
+                )
+        for point_row in read_rows(args.point_manifest):
+            point_key = (
+                str(point_row["episode_id"]),
+                int(point_row.get("state_index", point_row.get("frame_index"))),
+                str(point_row["language"]),
+            )
+            if point_key in point_lookup:
+                raise ValueError(f"duplicate point manifest row: {point_key}")
+            if "object_point" not in point_row or "destination_point" not in point_row:
+                raise ValueError(f"point manifest row missing points: {point_key}")
+            point_lookup[point_key] = point_row
     groups: dict[tuple[str, int], dict[str, dict[str, Any]]] = defaultdict(dict)
     for row in sidecar_rows:
         language = str(row["language"])
@@ -284,6 +310,18 @@ def main() -> int:
             str(row["episode_id"]),
             int(row.get("state_index", row.get("frame_index"))),
         )
+        if args.point_ablation != "none":
+            point_row = point_lookup.get((key[0], key[1], language))
+            if point_row is None:
+                raise KeyError(f"point manifest missing row: {key + (language,)}")
+            row = {
+                **row,
+                "object_point": point_row["object_point"],
+                "destination_point": point_row["destination_point"],
+                "policy_image_size": point_row.get(
+                    "policy_image_size", row.get("policy_image_size")
+                ),
+            }
         groups[key][language] = row
     group_items = list(groups.items())
     if args.limit > 0:
@@ -406,11 +444,29 @@ def main() -> int:
                 }
                 for index in index_chunk
             ]
+            oracle = (
+                np.stack(
+                    [
+                        oracle_points_from_row(samples[index]["_region_row"])
+                        for index in index_chunk
+                    ]
+                )
+                if point_ablation == "oracle"
+                else None
+            )
             correct_all.extend(
-                predict(correct_batch, args.seed + start)["normalized_actions"]
+                predict(
+                    correct_batch,
+                    args.seed + start,
+                    oracle_points=oracle,
+                )["normalized_actions"]
             )
             wrong_all.extend(
-                predict(wrong_batch, args.seed + start)["normalized_actions"]
+                predict(
+                    wrong_batch,
+                    args.seed + start,
+                    oracle_points=oracle,
+                )["normalized_actions"]
             )
             target_all.extend(
                 np.asarray(samples[index]["action"], dtype=np.float32) for index in index_chunk
@@ -648,6 +704,11 @@ def main() -> int:
         "checkpoint": {"path": str(args.checkpoint), "sha256": sha256_file(args.checkpoint)},
         "config": {"path": str(args.config), "sha256": sha256_file(args.config)},
         "sidecar": {"path": str(args.sidecar), "sha256": sha256_file(args.sidecar)},
+        "point_manifest": (
+            {"path": str(args.point_manifest), "sha256": sha256_file(args.point_manifest)}
+            if args.point_manifest is not None
+            else None
+        ),
         "seed": args.seed,
         "num_groups": len(samples),
         "pair_results": pair_results,

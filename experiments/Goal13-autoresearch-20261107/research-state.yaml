@@ -11,11 +11,21 @@ key_metrics:
   I0_offline_limit2_contract: SMOKE_PASS
   I0_destination_margin: 0.008456530049443245
   I0_object_margin: 0.02204115316271782
+  I2_postrun: PASS
+  I1_offline_limit2_contract: SMOKE_PASS
+  I2_offline_limit2_contract: SMOKE_PASS
+  I3_offline_limit2_contract: SMOKE_PASS
+  I1_point_results_present: true
+  I2_point_results_present: true
+  I3_point_results_present: true
+  point_predicted_minus_none_limit2: -0.0005943886935710907
+  point_predicted_minus_shuffle_limit2: -0.0006903968751430511
 budget_used:
-  training_arms: 1
-  interface_training_arms_completed: 1
-  interface_training_arms_pending: 1
-next_action: "完成 I2 500-step，并跑 I1/I2/I3 limit=2 smoke"
+  training_arms: 2
+  interface_training_arms_completed: 2
+  interface_eval_smokes_completed: 3
+  interface_full_evals_completed: 0
+next_action: "跑 I1/I2/I3 完整 118 groups，判定接口 Gate"
 blockers: []
 open_literature_questions:
   - "若 I1 > I0 但 I2 <= I3，优先修 point head 还是 marker 注入位置"

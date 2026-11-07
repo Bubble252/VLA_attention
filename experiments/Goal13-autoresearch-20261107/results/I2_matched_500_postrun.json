@@ -1,0 +1,263 @@
+{
+  "arm": "I2",
+  "arm_status": "RUN_PASS",
+  "checkpoint": "/vepfs-mlp2/c20250405/400040/transfer/vla_attention/results/star105_goal13_20261107/checkpoints/star13_i2_matched_500/final_model/model.safetensors",
+  "checkpoint_health": {
+    "all_finite": true,
+    "checkpoint": "/vepfs-mlp2/c20250405/400040/transfer/vla_attention/results/star105_goal13_20261107/checkpoints/star13_i2_matched_500/final_model/model.safetensors",
+    "created_at": "2026-11-07T10:32:38.473448+00:00",
+    "elapsed_seconds": 1.469,
+    "float_tensor_count": 255,
+    "nonfinite_tensors": [],
+    "numel": 174486024,
+    "schema": "goal13-checkpoint-health-v1",
+    "sha256": "1112960e559964e1f81639d01bfc4e403f795f0262e6051a45b3092c1c1d13e6",
+    "size_bytes": 697976624,
+    "tensor_count": 255
+  },
+  "checkpoint_sha256": "1112960e559964e1f81639d01bfc4e403f795f0262e6051a45b3092c1c1d13e6",
+  "checkpoint_size_bytes": 697976624,
+  "checks": {
+    "checkpoint_copy_identical": {
+      "actual": "1112960e559964e1f81639d01bfc4e403f795f0262e6051a45b3092c1c1d13e6",
+      "detail": "",
+      "expected": "1112960e559964e1f81639d01bfc4e403f795f0262e6051a45b3092c1c1d13e6",
+      "passed": true
+    },
+    "checkpoint_health_all_finite": {
+      "actual": true,
+      "detail": "",
+      "expected": true,
+      "passed": true
+    },
+    "checkpoint_health_nonfinite_empty": {
+      "actual": [],
+      "detail": "",
+      "expected": [],
+      "passed": true
+    },
+    "checkpoint_health_path": {
+      "actual": "/vepfs-mlp2/c20250405/400040/transfer/vla_attention/results/star105_goal13_20261107/checkpoints/star13_i2_matched_500/final_model/model.safetensors",
+      "detail": "",
+      "expected": "/vepfs-mlp2/c20250405/400040/transfer/vla_attention/results/star105_goal13_20261107/checkpoints/star13_i2_matched_500/final_model/model.safetensors",
+      "passed": true
+    },
+    "checkpoint_health_present": {
+      "actual": true,
+      "detail": "",
+      "expected": true,
+      "passed": true
+    },
+    "checkpoint_health_sha256": {
+      "actual": "1112960e559964e1f81639d01bfc4e403f795f0262e6051a45b3092c1c1d13e6",
+      "detail": "",
+      "expected": "1112960e559964e1f81639d01bfc4e403f795f0262e6051a45b3092c1c1d13e6",
+      "passed": true
+    },
+    "checkpoint_health_tensor_count": {
+      "actual": 255,
+      "detail": "",
+      "expected": ">0",
+      "passed": true
+    },
+    "code_commit": {
+      "actual": "4507931a625c844404c4a76128fb116536d8ca7c",
+      "detail": "",
+      "expected": "4507931a625c844404c4a76128fb116536d8ca7c",
+      "passed": true
+    },
+    "config_effective_batch": {
+      "actual": 4,
+      "detail": "",
+      "expected": 4,
+      "passed": true
+    },
+    "config_grad_accum": {
+      "actual": 1,
+      "detail": "",
+      "expected": 1,
+      "passed": true
+    },
+    "config_max_train_steps": {
+      "actual": 500,
+      "detail": "",
+      "expected": 500,
+      "passed": true
+    },
+    "config_output_dir": {
+      "actual": "/vepfs-mlp2/c20250405/400040/transfer/vla_attention/results/star105_goal13_20261107/checkpoints/star13_i2_matched_500",
+      "detail": "",
+      "expected": "/vepfs-mlp2/c20250405/400040/transfer/vla_attention/results/star105_goal13_20261107/checkpoints/star13_i2_matched_500",
+      "passed": true
+    },
+    "config_per_device_batch": {
+      "actual": 4,
+      "detail": "",
+      "expected": 4,
+      "passed": true
+    },
+    "config_seed": {
+      "actual": 17,
+      "detail": "",
+      "expected": 17,
+      "passed": true
+    },
+    "config_snapshot_sha256": {
+      "actual": "4fca007051367ad6e916f9881974e1701ee78c5a6cd982bd8d8e78d0a68e9e3f",
+      "detail": "",
+      "expected": "4fca007051367ad6e916f9881974e1701ee78c5a6cd982bd8d8e78d0a68e9e3f",
+      "passed": true
+    },
+    "config_yaml_snapshot": {
+      "actual": "/vepfs-mlp2/c20250405/400040/transfer/vla_attention/results/star105_goal13_20261107/configs/goal13_i2_matched_500_snapshot.yaml",
+      "detail": "",
+      "expected": "/vepfs-mlp2/c20250405/400040/transfer/vla_attention/results/star105_goal13_20261107/configs/goal13_i2_matched_500_snapshot.yaml",
+      "passed": true
+    },
+    "contract_arm": {
+      "actual": "I2",
+      "detail": "",
+      "expected": "I2",
+      "passed": true
+    },
+    "contract_counterfactual_none": {
+      "actual": "none",
+      "detail": "",
+      "expected": "none",
+      "passed": true
+    },
+    "contract_marker_mode": {
+      "actual": "predicted",
+      "detail": "",
+      "expected": "predicted",
+      "passed": true
+    },
+    "contract_status": {
+      "actual": "PASS",
+      "detail": "",
+      "expected": "PASS",
+      "passed": true
+    },
+    "dataset_statistics_trajectories": {
+      "actual": 96,
+      "detail": "",
+      "expected": 96,
+      "passed": true
+    },
+    "dataset_statistics_transitions": {
+      "actual": 12302,
+      "detail": "",
+      "expected": 12302,
+      "passed": true
+    },
+    "final_checkpoint_exists": {
+      "actual": true,
+      "detail": "",
+      "expected": true,
+      "passed": true
+    },
+    "log_dataset_lengths": {
+      "actual": {
+        "effective": [
+          11630
+        ],
+        "raw": [
+          11630
+        ]
+      },
+      "detail": "",
+      "expected": [
+        11630
+      ],
+      "passed": true
+    },
+    "log_effective_batch": {
+      "actual": 4,
+      "detail": "",
+      "expected": 4,
+      "passed": true
+    },
+    "log_grad_accum": {
+      "actual": 1,
+      "detail": "",
+      "expected": 1,
+      "passed": true
+    },
+    "log_no_fatal_errors": {
+      "actual": [],
+      "detail": "",
+      "expected": [],
+      "passed": true
+    },
+    "log_optimization_steps": {
+      "actual": 500,
+      "detail": "",
+      "expected": 500,
+      "passed": true
+    },
+    "log_per_device_batch": {
+      "actual": 4,
+      "detail": "",
+      "expected": 4,
+      "passed": true
+    },
+    "log_runtime_batch_marker": {
+      "actual": true,
+      "detail": "",
+      "expected": "STAR105_RUNTIME_BATCH_CONTRACT accum=1 total_batch=4",
+      "passed": true
+    },
+    "log_runtime_config_sha": {
+      "actual": true,
+      "detail": "",
+      "expected": "STAR105_RUNTIME_CONFIG_SHA 4fca007051367ad6e916f9881974e1701ee78c5a6cd982bd8d8e78d0a68e9e3f",
+      "passed": true
+    },
+    "log_runtime_dataset_marker": {
+      "actual": true,
+      "detail": "",
+      "expected": "STAR105_RUNTIME_DATASET_CONTRACT libero_90_gate_lerobot:length=11630:weight=1.000000",
+      "passed": true
+    },
+    "log_training_complete": {
+      "actual": {
+        "final_model_saved": true,
+        "training_complete": true
+      },
+      "detail": "",
+      "expected": true,
+      "passed": true
+    },
+    "step_checkpoint_exists": {
+      "actual": true,
+      "detail": "",
+      "expected": true,
+      "passed": true
+    },
+    "summary_steps": {
+      "actual": 500,
+      "detail": "",
+      "expected": 500,
+      "passed": true
+    }
+  },
+  "config_full_sha256": "2d4d3427d0a6b87a7647873c7cd7c7303f4ea7d25f47eac5e0b0a9320050a741",
+  "config_snapshot": "/vepfs-mlp2/c20250405/400040/transfer/vla_attention/results/star105_goal13_20261107/configs/goal13_i2_matched_500_snapshot.yaml",
+  "config_snapshot_sha256": "4fca007051367ad6e916f9881974e1701ee78c5a6cd982bd8d8e78d0a68e9e3f",
+  "contract_path": "/vepfs-mlp2/c20250405/400040/transfer/vla_attention/results/star105_goal13_20261107/contracts/I2_matched_500_contract.json",
+  "contract_sha256": "9b2c99d0401cdaf95b7bd5e5fa9099b0dfb2503f7078d6e30e31744205f078cc",
+  "created_at": "2026-11-07T10:32:40.560825+00:00",
+  "expected_marker_mode": "predicted",
+  "expected_steps": 500,
+  "failures": [],
+  "finite_evidence": "checkpoint_health",
+  "gate_status": "NOT_EVALUATED",
+  "loss_logged": false,
+  "marker_mode": "predicted",
+  "postrun_status": "PASS",
+  "schema": "goal13-postrun-contract-v1",
+  "summary": "/vepfs-mlp2/c20250405/400040/transfer/vla_attention/results/star105_goal13_20261107/checkpoints/star13_i2_matched_500/summary.jsonl",
+  "summary_sha256": "6242b2a832fb0c588aac7298a3f3890f8e4dc34060885aa24532a1fe3600a033",
+  "train_log": "/vepfs-mlp2/c20250405/400040/transfer/vla_attention/results/star105_goal13_20261107/logs/star13_i2_matched_500.log",
+  "train_log_sha256": "c9f1f5786e4099349b764ea37450a8b3c2fc337637b726c04ce06b66a312c749"
+}

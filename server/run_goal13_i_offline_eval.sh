@@ -40,6 +40,8 @@ PY
 )
 readonly RUN_ID CHECKPOINT CONFIG
 readonly SIDECAR="$W/vla_workspace/results/K4_lite/T2_future/validation_sidecar_v1/manifest.jsonl"
+readonly POINT_MANIFEST="$W/results/star105_goal10p5_20261105/point_manifests/validation_sidecar_v1/point_manifest.jsonl"
+readonly POINT_MANIFEST_SHA=9a3a508d063b36a11cda9331753513f5019ada62a19ba2de6ab96f20fab068bf
 readonly TRAIN_ROOT="$W/results/star105_goal10p5_20261105/data/LEROBOT_LIBERO_DATA"
 readonly VAL_ROOT="$G12/data/LEROBOT_LIBERO_DATA"
 readonly VAL_EPISODES="$VAL_ROOT/libero_90_gate_validation_lerobot/meta/c1_source_episodes.jsonl"
@@ -53,7 +55,14 @@ else
 fi
 readonly CONTRACT_OUTPUT="${OUTPUT%.json}_contract.json"
 
-for path in "$POSTRUN" "$CONFIG" "$CHECKPOINT" "$SIDECAR" "$VAL_EPISODES" "$VAL_WHITELIST"; do
+POINT_ARGS=()
+required_paths=("$POSTRUN" "$CONFIG" "$CHECKPOINT" "$SIDECAR" "$VAL_EPISODES" "$VAL_WHITELIST")
+if [[ "$EVAL_ARM" != "I0" ]]; then
+  POINT_ARGS=(--point-manifest "$POINT_MANIFEST" --point-manifest-sha256 "$POINT_MANIFEST_SHA")
+  required_paths+=("$POINT_MANIFEST")
+fi
+
+for path in "${required_paths[@]}"; do
   [[ -f "$path" ]] || { echo "missing required file: $path" >&2; exit 2; }
 done
 
@@ -132,6 +141,7 @@ export LIBERO_CONFIG_PATH=/root/code/LIBERO/libero
   --validation-root "$VAL_ROOT" \
   --validation-whitelist "$VAL_WHITELIST" \
   --train-root "$TRAIN_ROOT" \
+  "${POINT_ARGS[@]}" \
   --output "$OUTPUT" \
   --arm "$EVAL_ARM" \
   --point-ablation "$POINT_MODE" \

@@ -1,0 +1,225 @@
+{
+  "arm": "I1",
+  "checks": {
+    "all_metrics_finite": {
+      "actual": [],
+      "detail": "",
+      "expected": [],
+      "passed": true
+    },
+    "checkpoint_path": {
+      "actual": "/vepfs-mlp2/c20250405/400040/transfer/vla_attention/results/star105_goal13_20261107/checkpoints/star13_i2_matched_500/final_model/model.safetensors",
+      "detail": "",
+      "expected": "/vepfs-mlp2/c20250405/400040/transfer/vla_attention/results/star105_goal13_20261107/checkpoints/star13_i2_matched_500/final_model/model.safetensors",
+      "passed": true
+    },
+    "checkpoint_sha256": {
+      "actual": "1112960e559964e1f81639d01bfc4e403f795f0262e6051a45b3092c1c1d13e6",
+      "detail": "",
+      "expected": "1112960e559964e1f81639d01bfc4e403f795f0262e6051a45b3092c1c1d13e6",
+      "passed": true
+    },
+    "config_path": {
+      "actual": "/vepfs-mlp2/c20250405/400040/transfer/vla_attention/results/star105_goal13_20261107/configs/goal13_i2_matched_500_snapshot.yaml",
+      "detail": "",
+      "expected": "/vepfs-mlp2/c20250405/400040/transfer/vla_attention/results/star105_goal13_20261107/configs/goal13_i2_matched_500_snapshot.yaml",
+      "passed": true
+    },
+    "config_sha256": {
+      "actual": "4fca007051367ad6e916f9881974e1701ee78c5a6cd982bd8d8e78d0a68e9e3f",
+      "detail": "",
+      "expected": "4fca007051367ad6e916f9881974e1701ee78c5a6cd982bd8d8e78d0a68e9e3f",
+      "passed": true
+    },
+    "destination_action_amplitude_ratio_present": {
+      "actual": 1.1643733978271484,
+      "detail": "",
+      "expected": "number",
+      "passed": true
+    },
+    "destination_correct_mae_present": {
+      "actual": 0.07463245838880539,
+      "detail": "",
+      "expected": "number",
+      "passed": true
+    },
+    "destination_gripper_amplitude_ratio_present": {
+      "actual": 1.0333237648010254,
+      "detail": "",
+      "expected": "number",
+      "passed": true
+    },
+    "destination_margin_mean_present": {
+      "actual": 0.007478624582290649,
+      "detail": "",
+      "expected": "number",
+      "passed": true
+    },
+    "destination_pair_count_positive": {
+      "actual": 2,
+      "detail": "",
+      "expected": ">0",
+      "passed": true
+    },
+    "destination_pair_count_present": {
+      "actual": 2,
+      "detail": "",
+      "expected": "number",
+      "passed": true
+    },
+    "destination_pairs_present": {
+      "actual": [
+        "destination",
+        "object"
+      ],
+      "detail": "",
+      "expected": true,
+      "passed": true
+    },
+    "destination_rotation_amplitude_ratio_present": {
+      "actual": 1.203418254852295,
+      "detail": "",
+      "expected": "number",
+      "passed": true
+    },
+    "destination_translation_amplitude_ratio_present": {
+      "actual": 1.3180285692214966,
+      "detail": "",
+      "expected": "number",
+      "passed": true
+    },
+    "num_groups": {
+      "actual": 2,
+      "detail": "",
+      "expected": 2,
+      "passed": true
+    },
+    "object_action_amplitude_ratio_present": {
+      "actual": 1.1643733978271484,
+      "detail": "",
+      "expected": "number",
+      "passed": true
+    },
+    "object_correct_mae_present": {
+      "actual": 0.07463245838880539,
+      "detail": "",
+      "expected": "number",
+      "passed": true
+    },
+    "object_gripper_amplitude_ratio_present": {
+      "actual": 1.0333237648010254,
+      "detail": "",
+      "expected": "number",
+      "passed": true
+    },
+    "object_margin_mean_present": {
+      "actual": 0.03493201732635498,
+      "detail": "",
+      "expected": "number",
+      "passed": true
+    },
+    "object_pair_count_positive": {
+      "actual": 2,
+      "detail": "",
+      "expected": ">0",
+      "passed": true
+    },
+    "object_pair_count_present": {
+      "actual": 2,
+      "detail": "",
+      "expected": "number",
+      "passed": true
+    },
+    "object_pairs_present": {
+      "actual": [
+        "destination",
+        "object"
+      ],
+      "detail": "",
+      "expected": true,
+      "passed": true
+    },
+    "object_rotation_amplitude_ratio_present": {
+      "actual": 1.203418254852295,
+      "detail": "",
+      "expected": "number",
+      "passed": true
+    },
+    "object_translation_amplitude_ratio_present": {
+      "actual": 1.3180285692214966,
+      "detail": "",
+      "expected": "number",
+      "passed": true
+    },
+    "offline_arm": {
+      "actual": "I1",
+      "detail": "",
+      "expected": "I1",
+      "passed": true
+    },
+    "offline_schema": {
+      "actual": "goal12-c1-counterfactual-offline-v1",
+      "detail": "",
+      "expected": "goal12-c1-counterfactual-offline-v1",
+      "passed": true
+    },
+    "postrun_arm": {
+      "actual": "I2",
+      "detail": "",
+      "expected": "I2",
+      "passed": true
+    },
+    "postrun_status": {
+      "actual": "PASS",
+      "detail": "",
+      "expected": "PASS",
+      "passed": true
+    },
+    "region_results_absent": {
+      "actual": null,
+      "detail": "",
+      "expected": null,
+      "passed": true
+    }
+  },
+  "created_at": "2026-11-07T10:39:26.817878+00:00",
+  "expected_limit_groups": 2,
+  "failures": [],
+  "gate_status": "NOT_EVALUATED",
+  "interpretation": "Evaluator/checkpoint/config path is valid. Two groups and an intentionally short smoke checkpoint are not evidence for action quality or method efficacy.",
+  "metrics": {
+    "destination": {
+      "action_amplitude_ratio": 1.1643733978271484,
+      "correct_mae": 0.07463245838880539,
+      "gripper_amplitude_ratio": 1.0333237648010254,
+      "margin_mean": 0.007478624582290649,
+      "pair_count": 2,
+      "rotation_amplitude_ratio": 1.203418254852295,
+      "translation_amplitude_ratio": 1.3180285692214966
+    },
+    "object": {
+      "action_amplitude_ratio": 1.1643733978271484,
+      "correct_mae": 0.07463245838880539,
+      "gripper_amplitude_ratio": 1.0333237648010254,
+      "margin_mean": 0.03493201732635498,
+      "pair_count": 2,
+      "rotation_amplitude_ratio": 1.203418254852295,
+      "translation_amplitude_ratio": 1.3180285692214966
+    }
+  },
+  "num_groups": 2,
+  "num_pairs": {
+    "destination": 2,
+    "object": 2
+  },
+  "offline": {
+    "path": "/vepfs-mlp2/c20250405/400040/transfer/vla_attention/results/star105_goal13_20261107/evals/star13_i2_matched_500_I1_offline_limit2.json",
+    "sha256": "32280870abc11bde7193ac6d6659232dfaf3ff59d7c566c48722aac13993b787"
+  },
+  "postrun": {
+    "path": "/vepfs-mlp2/c20250405/400040/transfer/vla_attention/results/star105_goal13_20261107/contracts/I2_matched_500_postrun.json",
+    "sha256": "8d864f011b17a7f03b0ab6f0274058789bbae2fa3459779573e583201199683d"
+  },
+  "postrun_status": "SMOKE_PASS",
+  "schema": "goal13-offline-smoke-contract-v1"
+}
