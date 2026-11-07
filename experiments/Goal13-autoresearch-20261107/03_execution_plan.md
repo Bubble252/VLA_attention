@@ -13,7 +13,7 @@
 - [x] 实现纯 Python RLDS 审计脚本；
 - [x] 实现契约构建器；
 - [x] 写并通过单元测试；
-- [ ] 提交本地 git；
+- [x] 提交本地 git；
 - [x] 同步审计脚本到远端临时目录（不覆盖远端 repo）。
 
 ### 0b 远端只读审计
@@ -40,18 +40,18 @@ $W/results/star105_goal13_20261107/audit/
 - [x] 读取 audit + `c1_split_manifest_v1.json`；
 - [x] 写 `D0` arm contract（PASS）；
 - [ ] 写 `D1`、`D2` arm contract（等待 carrier LeRobot 转换后的 observed contract）；
-- [ ] 检查 `train_language_counts`、`heldout_prompt_train_count`、交集、carrier 数量；
-- [ ] 检查实际 sampling weights（从训练 config/launcher 读取，不从 YAML 猜测）；
-- [ ] 检查 effective batch、grad accumulation、seed、code/config SHA；
+- [x] 检查 `train_language_counts`、`heldout_prompt_train_count`、交集、carrier 数量（D0）；
+- [x] 检查实际 sampling weights（从训练 config/launcher 读取，不从 YAML 猜测）（D0）；
+- [x] 检查 effective batch、grad accumulation、seed、code/config SHA（D0）；
 - [ ] 任一失败标 `contract_status=INVALID` 并停止；
-- [ ] 全通过才标 `PASS`，进入 G0。
+- [x] 全通过才标 `PASS`，进入 G0（D0）。
 
 ### G0 数据 Gate
 
 - [x] C1 三 prompt 计数与历史一致（37 / 44 / 45）；
 - [x] `white_right` 训练计数 = 0；
 - [x] carrier 至少 40 episodes；
-- [ ] 100 帧人工抽检语言与画面一致；
+- [x] 100 帧人工抽检语言与画面一致；
 - [x] train/validation/rollout init 交集 = 0；
 - [x] 实际采样权重与计划一致（D0 = 1.0）；
 - [x] HDF5/GT mask 状态明确，缺失时 `weak_sidecar=true`。
@@ -59,6 +59,8 @@ $W/results/star105_goal13_20261107/audit/
 
 ## 2. Stage 1a：D0 vs D1
 
+- [x] D0 2-step training smoke 跑通；
+- [x] D0 smoke postrun contract PASS（见 [05_d0_smoke_result.md](05_d0_smoke_result.md)）；
 - [ ] 先跑 D0 offline `limit=2` smoke；
 - [ ] D0 matched 复现 `white_right = 0/15` 或解释差异；
 - [ ] D0 seen group-any / wrong-destination 与历史一致；

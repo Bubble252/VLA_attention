@@ -115,8 +115,8 @@ split：
 
 ## 7. 下一步
 
-1. 完成 100 帧语言/画面抽检；
-2. 为 D1 carrier 转换 LeRobot 数据并生成 observed dataset contract；
-3. 跑 D0 offline `limit=2` smoke，再跑 D0 matched pilot；
-4. 只有 D0 复现或解释 `white_right=0/15` 后，才比较 D1；
+1. D0 2-step training smoke 已跑通并通过 postrun contract，见 [05_d0_smoke_result.md](05_d0_smoke_result.md)；
+2. 跑 D0 offline `limit=2` eval smoke；
+3. 为 D1 carrier 转换 LeRobot 数据并生成 observed dataset contract；
+4. 跑 D0 matched pilot，只有复现或解释 `white_right=0/15` 后，才比较 D1；
 5. 不启动 A2，不合并 F0。

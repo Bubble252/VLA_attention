@@ -106,7 +106,10 @@ $W/vla_workspace/data/libero_90_hdf5/task65_67
 scripts/audit_goal13_rlds.py       # 只读扫描 RLDS，输出语言计数和 episode 清单
 scripts/build_goal13_contract.py   # 合并 audit + split manifest，生成 Run Contract
 scripts/build_goal13_g0_visual_sample.py  # 100 帧 contact sheet 与最终位置抽检
+scripts/check_goal13_checkpoint_health.py  # safetensors SHA + finite-value 证据
+scripts/verify_goal13_postrun.py   # 日志/config/summary/checkpoint 的 postrun contract
 tests/test_goal13_contract.py      # 纯 CPU 单元测试
+tests/test_goal13_postrun.py       # postrun 解析与 fail-closed 单元测试
 configs/vla/goal13_data_arms.json  # 可选；固定 D0/D1/D2 数据臂定义
 ```
 

@@ -1,0 +1,243 @@
+{
+  "arm": "D0",
+  "arm_status": "SMOKE_PASS",
+  "checkpoint": "/vepfs-mlp2/c20250405/400040/transfer/vla_attention/results/star105_goal13_20261107/checkpoints/star13_d0_smoke_2/final_model/model.safetensors",
+  "checkpoint_health": {
+    "all_finite": true,
+    "checkpoint": "/vepfs-mlp2/c20250405/400040/transfer/vla_attention/results/star105_goal13_20261107/checkpoints/star13_d0_smoke_2/final_model/model.safetensors",
+    "created_at": "2026-11-07T08:29:59.655874+00:00",
+    "elapsed_seconds": 1.087,
+    "float_tensor_count": 248,
+    "nonfinite_tensors": [],
+    "numel": 174055687,
+    "schema": "goal13-checkpoint-health-v1",
+    "sha256": "a20e983c1833a1233675927827a5632ec230def93549063cfbb4e486645bd41e",
+    "size_bytes": 696254492,
+    "tensor_count": 248
+  },
+  "checkpoint_sha256": "a20e983c1833a1233675927827a5632ec230def93549063cfbb4e486645bd41e",
+  "checkpoint_size_bytes": 696254492,
+  "checks": {
+    "checkpoint_copy_identical": {
+      "actual": "a20e983c1833a1233675927827a5632ec230def93549063cfbb4e486645bd41e",
+      "detail": "",
+      "expected": "a20e983c1833a1233675927827a5632ec230def93549063cfbb4e486645bd41e",
+      "passed": true
+    },
+    "checkpoint_health_all_finite": {
+      "actual": true,
+      "detail": "",
+      "expected": true,
+      "passed": true
+    },
+    "checkpoint_health_nonfinite_empty": {
+      "actual": [],
+      "detail": "",
+      "expected": [],
+      "passed": true
+    },
+    "checkpoint_health_path": {
+      "actual": "/vepfs-mlp2/c20250405/400040/transfer/vla_attention/results/star105_goal13_20261107/checkpoints/star13_d0_smoke_2/final_model/model.safetensors",
+      "detail": "",
+      "expected": "/vepfs-mlp2/c20250405/400040/transfer/vla_attention/results/star105_goal13_20261107/checkpoints/star13_d0_smoke_2/final_model/model.safetensors",
+      "passed": true
+    },
+    "checkpoint_health_present": {
+      "actual": true,
+      "detail": "",
+      "expected": true,
+      "passed": true
+    },
+    "checkpoint_health_sha256": {
+      "actual": "a20e983c1833a1233675927827a5632ec230def93549063cfbb4e486645bd41e",
+      "detail": "",
+      "expected": "a20e983c1833a1233675927827a5632ec230def93549063cfbb4e486645bd41e",
+      "passed": true
+    },
+    "checkpoint_health_tensor_count": {
+      "actual": 248,
+      "detail": "",
+      "expected": ">0",
+      "passed": true
+    },
+    "code_commit": {
+      "actual": "4507931a625c844404c4a76128fb116536d8ca7c",
+      "detail": "",
+      "expected": "4507931a625c844404c4a76128fb116536d8ca7c",
+      "passed": true
+    },
+    "config_effective_batch": {
+      "actual": 4,
+      "detail": "",
+      "expected": 4,
+      "passed": true
+    },
+    "config_grad_accum": {
+      "actual": 1,
+      "detail": "",
+      "expected": 1,
+      "passed": true
+    },
+    "config_max_train_steps": {
+      "actual": 2,
+      "detail": "",
+      "expected": 2,
+      "passed": true
+    },
+    "config_output_dir": {
+      "actual": "/vepfs-mlp2/c20250405/400040/transfer/vla_attention/results/star105_goal13_20261107/checkpoints/star13_d0_smoke_2",
+      "detail": "",
+      "expected": "/vepfs-mlp2/c20250405/400040/transfer/vla_attention/results/star105_goal13_20261107/checkpoints/star13_d0_smoke_2",
+      "passed": true
+    },
+    "config_per_device_batch": {
+      "actual": 4,
+      "detail": "",
+      "expected": 4,
+      "passed": true
+    },
+    "config_seed": {
+      "actual": 17,
+      "detail": "",
+      "expected": 17,
+      "passed": true
+    },
+    "config_snapshot_sha256": {
+      "actual": "61cbe071a8ca21d5e1d603b03c6a17e552a55ea00ca72aadc32133f12c23b252",
+      "detail": "",
+      "expected": "61cbe071a8ca21d5e1d603b03c6a17e552a55ea00ca72aadc32133f12c23b252",
+      "passed": true
+    },
+    "config_yaml_snapshot": {
+      "actual": "/vepfs-mlp2/c20250405/400040/transfer/vla_attention/results/star105_goal13_20261107/configs/goal13_d0_snapshot.yaml",
+      "detail": "",
+      "expected": "/vepfs-mlp2/c20250405/400040/transfer/vla_attention/results/star105_goal13_20261107/configs/goal13_d0_snapshot.yaml",
+      "passed": true
+    },
+    "contract_arm": {
+      "actual": "D0",
+      "detail": "",
+      "expected": "D0",
+      "passed": true
+    },
+    "contract_counterfactual_none": {
+      "actual": "none",
+      "detail": "",
+      "expected": "none",
+      "passed": true
+    },
+    "contract_marker_none": {
+      "actual": "none",
+      "detail": "",
+      "expected": "none",
+      "passed": true
+    },
+    "contract_status": {
+      "actual": "PASS",
+      "detail": "",
+      "expected": "PASS",
+      "passed": true
+    },
+    "dataset_statistics_trajectories": {
+      "actual": 96,
+      "detail": "",
+      "expected": 96,
+      "passed": true
+    },
+    "dataset_statistics_transitions": {
+      "actual": 12302,
+      "detail": "",
+      "expected": 12302,
+      "passed": true
+    },
+    "final_checkpoint_exists": {
+      "actual": true,
+      "detail": "",
+      "expected": true,
+      "passed": true
+    },
+    "log_dataset_lengths": {
+      "actual": {
+        "effective": [
+          11630
+        ],
+        "raw": [
+          11630
+        ]
+      },
+      "detail": "",
+      "expected": [
+        11630
+      ],
+      "passed": true
+    },
+    "log_effective_batch": {
+      "actual": 4,
+      "detail": "",
+      "expected": 4,
+      "passed": true
+    },
+    "log_grad_accum": {
+      "actual": 1,
+      "detail": "",
+      "expected": 1,
+      "passed": true
+    },
+    "log_no_fatal_errors": {
+      "actual": [],
+      "detail": "",
+      "expected": [],
+      "passed": true
+    },
+    "log_optimization_steps": {
+      "actual": 2,
+      "detail": "",
+      "expected": 2,
+      "passed": true
+    },
+    "log_per_device_batch": {
+      "actual": 4,
+      "detail": "",
+      "expected": 4,
+      "passed": true
+    },
+    "log_training_complete": {
+      "actual": {
+        "final_model_saved": true,
+        "training_complete": true
+      },
+      "detail": "",
+      "expected": true,
+      "passed": true
+    },
+    "step_checkpoint_exists": {
+      "actual": true,
+      "detail": "",
+      "expected": true,
+      "passed": true
+    },
+    "summary_steps": {
+      "actual": 2,
+      "detail": "",
+      "expected": 2,
+      "passed": true
+    }
+  },
+  "config_full_sha256": "b04140c69b84ec7da2ccd60f0425797e83c52da35aff90dd42da3a61eb4a56ce",
+  "config_snapshot": "/vepfs-mlp2/c20250405/400040/transfer/vla_attention/results/star105_goal13_20261107/configs/goal13_d0_snapshot.yaml",
+  "config_snapshot_sha256": "61cbe071a8ca21d5e1d603b03c6a17e552a55ea00ca72aadc32133f12c23b252",
+  "contract_path": "/vepfs-mlp2/c20250405/400040/transfer/vla_attention/results/star105_goal13_20261107/contracts/D0_contract.json",
+  "contract_sha256": "d3d9a356d7a6c3eeac4196e3b7bcf9e3ec21b275e93118ba3c24f8a65b328fe4",
+  "created_at": "2026-11-07T08:30:39.540395+00:00",
+  "expected_steps": 2,
+  "failures": [],
+  "finite_evidence": "checkpoint_health",
+  "gate_status": "NOT_EVALUATED",
+  "loss_logged": false,
+  "postrun_status": "PASS",
+  "schema": "goal13-postrun-contract-v1",
+  "summary": "/vepfs-mlp2/c20250405/400040/transfer/vla_attention/results/star105_goal13_20261107/checkpoints/star13_d0_smoke_2/summary.jsonl",
+  "summary_sha256": "351b277522bc6d6497dd2e92e018f3d80b1de2eb478e58545c6a6924f58d6e45",
+  "train_log": "/vepfs-mlp2/c20250405/400040/transfer/vla_attention/results/star105_goal13_20261107/logs/star13_d0_smoke_2.log",
+  "train_log_sha256": "c34259554c9db84e8a7bf89ad9c827e68f9f99588a44cee2cdac1ee1ae4308a8"
+}

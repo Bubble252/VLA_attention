@@ -101,3 +101,29 @@ python scripts/build_goal13_contract.py \
 - 配置文件 SHA 在启动前后一致；
 - 训练后补 `grad_norm_ratios` 和 checkpoint SHA；
 - 未通过上述检查，状态只能是 `INVALID`。
+
+## 7. Postrun 验证
+
+训练结束后，必须用 checkpoint health 和 postrun verifier 复核，不把“日志没报错”当作 loss 正常：
+
+```bash
+/root/starvla_cu124/bin/python /tmp/goal13_tools/check_goal13_checkpoint_health.py \
+  --checkpoint "$RUN/final_model/model.safetensors" \
+  --output "$G13/contracts/${ARM}_smoke_checkpoint_health.json"
+
+/root/starvla_cu124/bin/python /tmp/goal13_tools/verify_goal13_postrun.py \
+  --contract "$G13/contracts/${ARM}_contract.json" \
+  --run-dir "$RUN" \
+  --train-log "$G13/logs/${RUN_ID}.log" \
+  --config-snapshot "$G13/configs/${ARM}_snapshot.yaml" \
+  --checkpoint-health "$G13/contracts/${ARM}_smoke_checkpoint_health.json" \
+  --output "$G13/contracts/${ARM}_smoke_postrun.json" \
+  --expected-steps 2 \
+  --repo "$R"
+```
+
+状态约定：
+
+- `postrun_status=PASS` 且 `arm_status=SMOKE_PASS`：只说明 smoke 链路可解释；
+- `gate_status=NOT_EVALUATED`：不能写成方法有效；
+- 任一字段缺失或 checkpoint 非有限：`postrun_status=INVALID`，先修链路。
