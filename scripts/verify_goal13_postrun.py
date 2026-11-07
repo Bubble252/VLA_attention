@@ -217,7 +217,7 @@ def evaluate_postrun(
     log_steps = first_int(r"optimization steps\s*=\s*(\d+)", log_text)
     log_per_device_batch = first_int(r"Per device batch[\s\S]{0,100}?size\s*=\s*(\d+)", log_text)
     log_grad_accum = first_int(r"Gradient[\s\S]{0,100}?accumulation steps\s*=\s*(\d+)", log_text)
-    log_total_batch = first_int(r"Total batch size\s*=\s*(\d+)", log_text)
+    log_total_batch = first_int(r"Total batch size[\s\S]{0,120}?=\s*(\d+)", log_text)
     effective_lengths = first_int_list(r"effective dataset lengths:\s*\[([0-9,\s]+)\]", log_text)
     dataset_lengths = first_int_list(r"Dataset lengths:\s*\[([0-9,\s]+)\]", log_text)
     expected_lengths = list(contract.get("data", {}).get("dataset_lengths", {}).values())
