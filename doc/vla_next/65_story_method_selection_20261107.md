@@ -1,7 +1,7 @@
 # 65 故事、主任务与方法选择
 
 **日期**：2026-11-07<br>
-**状态**：升级规则与外部论文准入规范已落盘；Goal13 三种接口注入均 FAIL，`W-I` 永久关闭，`A2/F0` 不启动；Goal14 P0 authority release 已 PASS（`A10` total `7/15`、released `4/15`、confirmation `6/12`），Goal15 P1 协议已冻结但未训练；当前只能按 P1-A→P1-D 推进，不能升级任何论文近似组件。<br>
+**状态**：升级规则与外部论文准入规范已落盘；Goal13 三种接口注入均 FAIL，`W-I` 永久关闭，`A2/F0` 不启动；Goal14 P0 authority release 已 PASS（`A10` total `7/15`、released `4/15`、confirmation `6/12`），Goal15 P1-A 已 PASS（evidence 固定为 `route_centroid`，学生臂必须命名为 `R2-ROUTE`），P1-B 只完成 2-episode smoke、完整教师缓存尚未生成；当前只能按 P1-B→P1-D 推进，不能升级任何论文近似组件。<br>
 **输入**：61–64 的审计、C1/J4.1/Goal11/Goal12/G2 的已有结果、2026 年近邻论文<br>
 **一句话**：主任务继续用 C1，但论文故事必须是 **“证据为什么没有控制动作”**，而不是再讲一次 “我们的 grounding 更准”。方法采用 **Data → Interface → Control 三级因果阶梯**；FAI-VLA 只有在第三级成立时才能作为主方法。
 
@@ -636,6 +636,8 @@ F4 消融成立 -> 才允许升级 AC-VLA-lite 的 phase 机制
 
 **现在能否升级为论文近似版（2026-11-07）**
 
+Goal15 的当前补充：P1-A 已 PASS，说明 `cache_train_v2` 可以用 **predicted route centroid** 作为学生证据输入；但 P1-B 仍只是 2-episode smoke（250 transitions，release positive transitions/episodes 均为 2，`status=INVALID` 属于预期），完整 96 episodes 的教师标签尚未生成。因此 P1-A PASS 只解锁 P1-B，**不解锁任何 `D/I/A/F0` 组件升级**，也不能把 `R2-ROUTE` 写成已经验证过的 residual 方法。
+
 | 组件 | 当前层级 | Gate 状态 | 现在能否升级 | 解锁条件 |
 |---|---|---|---|---|
 | 数据配方 | `D0` lite | `W-D` 关闭 | 否 | `D1` 需在 held-out 或因子可辨识指标上优于 `D0`，且 seen 不退化 |
@@ -713,8 +715,8 @@ Stage 0: D0 Run Contract PASS
 | 顺序 | 当前状态 | 最早解锁什么 | 仍然禁止什么 |
 |---|---|---|---|
 | Goal14 `P0` authority release | **PASS，但只刚过线**：`A10` total `7/15`、released `4/15`、confirmation `6/12`；`A20` 没有更好 | 只允许写 P1 协议，并启动 P1-A | 不能把 P0 写成 residual 方法成功；不能据此升级任何组件 |
-| P1-A evidence adapter qualification | 未启动 | 若 PASS，确定使用 `R2-PRED` 或 `R2-ROUTE`；若 `INVALID`，停止 P1 | 不能训练；不能用 GT mask/point 做 fallback；旧 Qwen point head 不能直接冒充 J2 资产 |
-| P1-B teacher label cache | 未启动；必须先确认 `cache_train_v2` 的 96 个 training episodes 能重放到 LIBERO，且能取得 A10 所需的 object/plate 特权位置 | 生成 A10 的 `teacher_delta_xy` 和 release 标签；release 正样本 `>=50` | 不能用 expert `target_action` 或 route centroid 冒充 A10 教师；数据不可重放时只能标 `INVALID`，不能判 `H-DISTILL` 失败 |
+| P1-A evidence adapter qualification | **PASS**：evidence 固定为 `route_centroid`，学生臂名固定为 `R2-ROUTE`；train 11,630 transitions / 96 episodes，validation 1,824 / 15，coverage `1.000`，`white_right` 训练与 validation 均为 0 | 只允许启动完整 P1-B；可以使用 predicted route 作为学生证据 | 不能训练学生策略；不能用 GT mask/point 做 fallback；不能把旧 Qwen point head 当成 J2 资产；不能把 `R2-ROUTE` 写成 `R2-PRED` |
+| P1-B teacher label cache | **仅 2-episode smoke**：250 transitions，release positive transitions/episodes 均为 2，release active transitions 17，`status=INVALID`（样本不足，预期）；完整 96 episodes 尚未跑 | 完整跑完后，若 transitions=`11,630`、episodes=`96`、release 正样本达到协议阈值且 delta 合法，才允许写 P1-B 结果并进入 P1-C | 不能拿 smoke 判 `H-DISTILL` 失败；不能把 HDF5 expert state 说成 base-policy closed-loop 状态；不能用 expert `target_action` 或 route centroid 冒充 A10 教师；state source 与 release 阈值必须先写进协议 |
 | P1-C offline student | 未启动 | 500-step smoke + 2000-step pilot；通过 cosine、dominant-axis sign、magnitude ratio、release precision/recall Gate | offline 不过不能进闭环；不能靠加容量跳过 |
 | P1-D 15-init closed-loop | 未启动 | `R2` official `>=3/15`、confirmation `>=2/12`、`R2 - R1-CAP >=2/15`、released `>=2/15` 后，才允许扩确认实验 | 15 条 pilot 只作筛选；不能写论文级结论；P1-D PASS 也不等于 `A2` PASS |
 | 30/50 条 + 3 seeds | 未启动，只有 P1-D PASS 后才允许 | 把 pilot 变成确认性结果 | 仍不能替代第二场景/外部 benchmark |
@@ -727,6 +729,33 @@ Stage 0: D0 Run Contract PASS
 - **P1-D PASS 只说明 residual/authority 方向值得扩 30/50 + 3 seeds，不等于 `A2`、CompoSlot、AC-VLA phase 或完整 `F0` 成立。**
 - **P1-B 是当前最容易被流程掩盖的一步**：教师标签必须来自可执行的 A10 控制器，不能拿数据里已有的动作字段替代；无法重放就先修数据契约，Run Contract 记 `INVALID`。
 - 任何升级 arm 启动前，必须按第 13.6 节完成论文与代码准入：下载 PDF/TXT、在正文/脚注/附录/补充材料/OpenReview 中找仓库链接、clone 实际仓库并 pin commit、记录 license、写完 `paper_reading/{slug}.md`。缺任何一项，该 arm 为 `INVALID`，不能进入 Gate。
+
+#### 11.4.7 方法组件升级的明确时间线（实验时钟）
+
+这里的“升级到更像论文”有两个独立时钟，不能混用：
+
+1. **实验时钟**：只有本层 Gate PASS，才允许把 lite 版替换成论文近似版；
+2. **材料时钟**：论文 PDF/TXT、代码仓库、pin commit、阅读笔记四件套齐全，才允许该 arm 进入 Run Contract。
+
+当前最短路径如下：
+
+| 阶段 | 完成条件 | 完成后最多可以做什么 | 仍然不能做什么 |
+|---|---|---|---|
+| 现在 | P1-A PASS，P1-B 只有 smoke | 只跑完整 P1-B 教师缓存 | 不训练学生、不升级组件、不写方法论文 |
+| P1-B | 完整 96 episodes、11,630 transitions、release 与 delta 阈值满足 | 只写教师缓存结果，进入 P1-C | 不能把 teacher cache 当成 residual 方法已经成立 |
+| P1-C | offline student 通过 cosine、方向、幅度、release Gate | 只进入 P1-D 15-init 闭环 pilot | 不能扩 30/50，不能升级 `D/I/A/F0` |
+| P1-D | 15-init 达到 official `>=3/15`、confirmation `>=2/12`、相对 `R1-CAP` `>=2/15` | 只允许扩 30/50 条确认实验 | 不能写 L3，不能把 pilot 当论文级证据 |
+| 30/50 + 3 seeds | 结果同向且不依赖单 seed | 可把 residual/authority 写成 L2 方法候选 | 仍不能替代第二场景/外部 benchmark |
+| 第二场景同向 | caddy 或外部 benchmark 同向，且四件套齐全 | 才允许讨论完整 `F0`/L3；若回到 D/I/A 路线，仍须分别打开 `W-D/W-I/W-A/W-F` | 不能因为 P1 成功就自动升级 CompoSlot、AC-VLA phase 或 `A2` |
+
+因此，**论文近似组件的真正解锁点不是某个日期，而是对应的 `W-D/W-I/W-A/W-F` Gate**：
+
+- 数据组件：只在 `D1 > D0`、seen 不退化且 `white_right` 训练计数为 0 后升级；当前 `W-D` 关闭。
+- 接口/marker 组件：只在 `I1 > I0` 且 `I2 > I3` 后升级；当前 `W-I` 永久关闭，不再加第三种注入。
+- 动作组件：只在 `A1 > A0`、随后 `A2` 的 held-out 与 suff/nec margin 同向后升级；当前未启动。
+- 完整 `F0`：只在 `A2` PASS、`F0 > F1/F2/F3` 至少两个、`F4` 消融成立且第二场景同向后升级；当前未进入。
+
+如果 P1 线最终 PASS，它只说明 **lateral residual/authority 的离线蒸馏与闭环 pilot 值得继续**，不等于 D/I/A 阶梯自动通过。任何把 P1 结果直接包装成 CompoSlot/AC-VLA/CRAFT 论文近似版的写法，都按“证据边界越界”处理。
 
 ---
 
@@ -978,6 +1007,8 @@ D0 vs D1
 ### 13.0 适用范围与不可协商的红线
 
 这条规则适用于“直接移植”和“只借一个思想”两种情况；只要某个设计来自某篇论文，就必须留下可追溯材料，不能凭记忆实现。
+
+**升级 arm 的硬性凭证**：论文和代码仓库不是“有空再补”的参考文献，而是该 arm 的启动材料。只要准备把 `D/I/A/F0` 或 residual/authority 组件升级为论文近似版，就必须先在本地同时找到论文全文和对应代码仓库；论文正文的方法段、实验设置、脚注、附录、补充材料、OpenReview 附件以及项目页都可能给出仓库链接，不能只看摘要或论文首页就下结论。
 
 - 论文必须实际下载到本地，至少保留 `papers/{slug}.pdf` 和抽取出的 `papers/{slug}.txt`；只保存网页链接、摘要或聊天记录不算完成。
 - 必须找到并下载对应代码仓库到 `references/repos/{slug}`；仓库链接可能出现在论文正文的方法段、实验设置、脚注、附录、补充材料或 OpenReview 附件中，**不能只搜论文首页就下结论说“没有代码”**。
