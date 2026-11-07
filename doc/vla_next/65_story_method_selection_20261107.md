@@ -675,10 +675,12 @@ Stage 0: D0 Run Contract PASS
 
 下面的“批次”是执行顺序，不是日历承诺。只有上一批的 Gate 已经 PASS，且该批组件的外部材料包已经完整落盘，下一批才允许启动。当前（2026-11-07）`P0` 已经关闭：三种接口注入全部失败，`W-I` 永久关闭，不允许再做接口变体或把任何组件换成“论文近似版”。
 
+当前升级链的实际状态是：`P1` **不可达**，`P2–P4` **全部阻塞**。`P1` 不是“再修一次接口”就会自动打开；只有 outer-loop PIVOT 重新提出一个与现有 marker/action-query 不同的接口假设，并把它作为新的窗口（记为 `W-I'`）重新预注册——新 protocol、matched baseline、参数/容量控制、`I1 > I0` 与 `I2 > I3` Gate 全部重新登记——才允许启动。旧 `W-I` 的失败记录不得被覆盖、改名或复用为 PASS。`P2/P3/P4` 分别继续等待 `A1 > A0`、`A2` 和 `L2` 证据，当前均未满足。因此截至今天，没有任何组件可以从 lite 版升级为“论文近似版”。
+
 | 批次 | 触发条件 | 允许升级的组件 | 启动前必须完成的材料检查 |
 |---|---|---|---|
 | `P0` 已关闭 | `I2-XATTN` 与 `I2-ETOKEN` 均 FAIL；`W-I` 永久关闭 | 无；禁止继续做接口注入变体 | 不再为新接口修补启动 arm；下一步必须先写 outer-loop PIVOT protocol |
-| `P1` 接口 | 注入修复后重新满足 `I1 > I0` 和 `I2 > I3`，且 point-in-mask 抽检通过 | `I2` marker -> AnySlot/CompoSlot 式 slot marker、区域/HSV 提取、slot-level spatial token | AnySlot/CompoSlot 论文 PDF/TXT 已下载；全文搜索到仓库链接或明确记录 `official_code_missing=true`；官方仓库已 clone、pin commit、记录 license 和入口文件 |
+| `P1` 接口（当前不可达） | 只有新 outer-loop PIVOT 立项并重新预注册 `W-I'` 后，才允许检查 `I1 > I0`、`I2 > I3` 和 point-in-mask 抽检；旧 `W-I` 不允许重开 | `I2` marker -> AnySlot/CompoSlot 式 slot marker、区域/HSV 提取、slot-level spatial token | AnySlot/CompoSlot 论文 PDF/TXT 已下载；全文搜索到仓库链接或明确记录 `official_code_missing=true`；官方仓库已 clone、pin commit、记录 license 和入口文件 |
 | `P2` 动作 | 固定 best interface arm 后，`A1 > A0`，且 `A2` 的 held-out 指标与 suff/nec margin 同向 | `A1/A2` -> CRAFT/CounterAlign/CAST 式配对构造、negative mining、discriminator/AWR | 每引入一个外部 loss 或 pair 构造，都要单独下载对应论文和官方代码；`paper_reading` 必须逐项写出“原文做法 / 我们做法 / 差异 / 风险” |
 | `P3` 完整方法 | `A2` PASS，且 `F0` 至少优于 `F1/F2/F3` 中两个，`F4` 消融显示 phase 有贡献 | `AC-VLA-lite` phase + `CompoSlot` + factor constraints 合并为 `F0` | AC-VLA、CompoSlot 及其他被合并组件的材料包全部齐全；每个升级 arm 登记 `parent_arm`、config SHA、论文来源、仓库 URL、pin commit |
 | `P4` 论文级 | `L2` 成立，并完成 30/50 条确认、3 seeds、第二场景/外部 benchmark | 不再新增组件；只做复现、消融和证据补强 | 所有 baseline、消融和外部方法都能追到论文、仓库 commit 和运行命令；缺材料的 arm 只能标 `INVALID` |
