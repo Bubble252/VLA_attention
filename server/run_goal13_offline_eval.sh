@@ -22,7 +22,9 @@ readonly VAL_EPISODES="$VAL_ROOT/libero_90_gate_validation_lerobot/meta/c1_sourc
 readonly VAL_WHITELIST="$G12/manifests/c1_validation_episodes.json"
 readonly OUTPUT="$G13/evals/star13_d0_offline_smoke_limit${LIMIT}.json"
 readonly LOG="$G13/evals/star13_d0_offline_smoke_limit${LIMIT}.log"
+readonly CONTRACT_OUTPUT="${OUTPUT%.json}_contract.json"
 readonly E="/root/starvla_cu124/bin/python"
+readonly TOOLS_DIR="${GOAL13_TOOLS:-/tmp/goal13_tools}"
 
 for path in "$POSTRUN" "$CONFIG" "$CHECKPOINT" "$SIDECAR" "$VAL_EPISODES" "$VAL_WHITELIST"; do
   [[ -f "$path" ]] || { echo "missing required file: $path" >&2; exit 2; }
@@ -102,4 +104,10 @@ export LIBERO_CONFIG_PATH=/root/code/LIBERO/libero
   --bootstrap-samples 200 \
   2>&1 | tee "$LOG"
 
-echo "D0_OFFLINE_SMOKE_OK output=$OUTPUT log=$LOG"
+"$E" "$TOOLS_DIR/verify_goal13_offline_smoke.py" \
+  --postrun "$POSTRUN" \
+  --offline "$OUTPUT" \
+  --output "$CONTRACT_OUTPUT" \
+  --expected-limit-groups "$LIMIT"
+
+echo "D0_OFFLINE_SMOKE_OK output=$OUTPUT contract=$CONTRACT_OUTPUT log=$LOG"
