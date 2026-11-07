@@ -1,7 +1,7 @@
 # 65 故事、主任务与方法选择
 
 **日期**：2026-11-07<br>
-**状态**：升级规则与外部论文准入规范已落盘；截至 2026-11-07，Goal13 三种接口注入均 FAIL，`W-I` 永久关闭，不启动 `A2/F0`，进入 outer-loop PIVOT<br>
+**状态**：升级规则与外部论文准入规范已落盘；截至 2026-11-07，Goal13 三种接口注入均 FAIL，`W-I` 永久关闭，不启动 `A2/F0`，进入 outer-loop PIVOT；PIVOT 协议见 [66_outer_loop_pivot_after_interface_failure_20261107.md](66_outer_loop_pivot_after_interface_failure_20261107.md)<br>
 **输入**：61–64 的审计、C1/J4.1/Goal11/Goal12/G2 的已有结果、2026 年近邻论文<br>
 **一句话**：主任务继续用 C1，但论文故事必须是 **“证据为什么没有控制动作”**，而不是再讲一次 “我们的 grounding 更准”。方法采用 **Data → Interface → Control 三级因果阶梯**；FAI-VLA 只有在第三级成立时才能作为主方法。
 
@@ -679,7 +679,7 @@ Stage 0: D0 Run Contract PASS
 
 | 批次 | 触发条件 | 允许升级的组件 | 启动前必须完成的材料检查 |
 |---|---|---|---|
-| `P0` 已关闭 | `I2-XATTN` 与 `I2-ETOKEN` 均 FAIL；`W-I` 永久关闭 | 无；禁止继续做接口注入变体 | 不再为新接口修补启动 arm；下一步必须先写 outer-loop PIVOT protocol |
+| `P0` 已关闭 | `I2-XATTN` 与 `I2-ETOKEN` 均 FAIL；`W-I` 永久关闭 | 无；禁止继续做接口注入变体 | 不再为新接口修补启动 arm；outer-loop PIVOT protocol 已写入 `66`，先做 P0 authority 上界复现，不训练 |
 | `P1` 接口（当前不可达） | 只有新 outer-loop PIVOT 立项并重新预注册 `W-I'` 后，才允许检查 `I1 > I0`、`I2 > I3` 和 point-in-mask 抽检；旧 `W-I` 不允许重开 | `I2` marker -> AnySlot/CompoSlot 式 slot marker、区域/HSV 提取、slot-level spatial token | AnySlot/CompoSlot 论文 PDF/TXT 已下载；全文搜索到仓库链接或明确记录 `official_code_missing=true`；官方仓库已 clone、pin commit、记录 license 和入口文件 |
 | `P2` 动作 | 固定 best interface arm 后，`A1 > A0`，且 `A2` 的 held-out 指标与 suff/nec margin 同向 | `A1/A2` -> CRAFT/CounterAlign/CAST 式配对构造、negative mining、discriminator/AWR | 每引入一个外部 loss 或 pair 构造，都要单独下载对应论文和官方代码；`paper_reading` 必须逐项写出“原文做法 / 我们做法 / 差异 / 风险” |
 | `P3` 完整方法 | `A2` PASS，且 `F0` 至少优于 `F1/F2/F3` 中两个，`F4` 消融显示 phase 有贡献 | `AC-VLA-lite` phase + `CompoSlot` + factor constraints 合并为 `F0` | AC-VLA、CompoSlot 及其他被合并组件的材料包全部齐全；每个升级 arm 登记 `parent_arm`、config SHA、论文来源、仓库 URL、pin commit |
@@ -709,6 +709,8 @@ Stage 0: D0 Run Contract PASS
 ---
 
 ## 12. 下一阶段 Goal 提示词
+
+**当前入口已切换**：Goal13 已关闭，`12.1/12.2` 只保留为历史阶梯模板，不能直接重新启动 D/I/A 全阶梯。当前应使用 [66](66_outer_loop_pivot_after_interface_failure_20261107.md) 第 12 节的 outer-loop PIVOT 提示词：先做 15-init 横向 authority 上界复现，不训练；P0 PASS 后才允许写 P1 蒸馏协议。
 
 ### 12.1 固定阶梯版（默认）
 
@@ -1135,6 +1137,7 @@ git -C "references/repos/${SLUG}" log -1 --format='%H %ad %s' --date=iso
 
 ## 14. 证据索引
 
+- [接口路线失败后的 outer-loop PIVOT](66_outer_loop_pivot_after_interface_failure_20261107.md)
 - [现有 idea 可行性审计](61_vla_idea_viability_audit_and_pivot_20261107.md)
 - [FAI-VLA 融合方案](62_fai_vla_fusion_plan_20261107.md)
 - [Result-First 分阶段规划](63_result_first_fai_staged_plan_20261107.md)
