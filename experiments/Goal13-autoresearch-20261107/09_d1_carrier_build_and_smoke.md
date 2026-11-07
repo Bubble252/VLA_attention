@@ -121,6 +121,18 @@ postrun 解析到 `max_train_steps=2`、per-device batch `4`、accumulation `1`�
 - [D1_smoke_postrun.json](results/D1_smoke_postrun.json)
 - [D1_smoke_checkpoint_health.json](results/D1_smoke_checkpoint_health.json)
 
+### 6.1 离线 evaluator 的归一化一致性修复
+
+D1 训练使用 C1+carrier 的 merged dataset statistics，而旧离线 evaluator 只用 C1-only dataset 的 statistics 做反归一化。D0 是单数据集，所以历史结果不受影响；D1 若继续沿用旧路径，会把预测动作按错误统计解释。
+
+因此 D1 评测前增加了：
+
+- 当 `data_mix` 包含多个 dataset 时，用与训练相同的 `get_vla_dataset` 构造 mixture；
+- 从 mixture 的 `merged_metadata` 读取训练归一化统计；
+- 单数据集路径保持原行为，避免改变 D0 口径。
+
+远端补丁记录在 `server/patches/goal13_d1_eval_mixture_metadata_20261107.patch`。D1 offline smoke 必须先验证该路径确实加载 mixture metadata，再跑完整评测。
+
 ## 7. 下一步
 
 1. 完成 D1 2.5K matched training，并重新过 postrun；

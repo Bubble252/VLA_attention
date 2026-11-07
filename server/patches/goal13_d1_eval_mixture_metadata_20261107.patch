@@ -1,0 +1,56 @@
+--- a/scripts/star12_counterfactual_eval.py
++++ b/scripts/star12_counterfactual_eval.py
+@@ -24,7 +24,8 @@
+ from omegaconf import OmegaConf
+ from safetensors.torch import load_file
+ 
+-from starVLA.dataloader.lerobot_datasets import make_LeRobotSingleDataset
++from starVLA.dataloader.gr00t_lerobot.registry import DATASET_NAMED_MIXTURES
++from starVLA.dataloader.lerobot_datasets import get_vla_dataset, make_LeRobotSingleDataset
+ from starVLA.model.framework.base_framework import build_framework
+ from starVLA.model.framework.share_tools import apply_config_compat
+ from starVLA.model.modules.counterfactual_binding import (
+@@ -176,12 +177,28 @@
+     train_cfg.datasets.vla_data.data_root_dir = args.train_root
+     train_cfg.datasets.vla_data.episode_whitelist_path = None
+     train_cfg.datasets.vla_data.episode_whitelist_by_dataset = None
+-    train_dataset = make_LeRobotSingleDataset(
+-        args.train_root,
+-        TRAIN_DATASET,
+-        "libero_franka",
+-        data_cfg=train_cfg.datasets.vla_data,
+-    )
++    train_mix = str(train_cfg.datasets.vla_data.data_mix)
++    if train_mix not in DATASET_NAMED_MIXTURES:
++        raise KeyError(f"unknown training data_mix: {train_mix}")
++    if len(DATASET_NAMED_MIXTURES[train_mix]) > 1:
++        train_dataset = get_vla_dataset(
++            data_cfg=train_cfg.datasets.vla_data,
++            balance_dataset_weights=bool(
++                train_cfg.datasets.vla_data.get("balance_dataset_weights", False)
++            ),
++            balance_trajectory_weights=bool(
++                train_cfg.datasets.vla_data.get("balance_trajectory_weights", False)
++            ),
++        )
++        train_metadata = train_dataset.merged_metadata[train_dataset.datasets[0].tag]
++    else:
++        train_dataset = make_LeRobotSingleDataset(
++            args.train_root,
++            TRAIN_DATASET,
++            "libero_franka",
++            data_cfg=train_cfg.datasets.vla_data,
++        )
++        train_metadata = train_dataset.metadata
+ 
+     val_cfg = OmegaConf.create(OmegaConf.to_container(cfg, resolve=True))
+     val_cfg.datasets.vla_data.data_root_dir = args.validation_root
+@@ -195,7 +212,7 @@
+     )
+     # Normalization must be inherited from the training export, not recomputed
+     # on the 15 validation episodes.
+-    val_dataset.set_transforms_metadata(train_dataset.metadata)
++    val_dataset.set_transforms_metadata(train_metadata)
+ 
+     validation_rows = read_rows(args.validation_episodes)
+     episode_to_index: dict[str, int] = {}
