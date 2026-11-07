@@ -97,7 +97,7 @@ git push origin main
 - [ ] 计算 config SHA 并写入 runner 常量；
 - [ ] 新增 `scripts/audit_k4_lite_t4b_v12_p0_authority_release.py`；
 - [ ] 新增 `tests/test_k4_lite_t4b_v12.py`；
-- [ ] `pytest -q tests/test_k4_lite_t4b_v12.py` 通过；
+- [ ] `PYTHONPATH=. pytest -q tests/test_k4_lite_t4b_v12.py` 通过；
 - [ ] `python -m py_compile` 通过；
 - [ ] 检查 config 不允许被静默篡改。
 
