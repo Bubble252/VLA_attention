@@ -7,9 +7,10 @@ readonly PY="$W/envs/oft/bin/python"
 readonly OUT_ROOT="$W/results/K4_lite/T4b/p1_lateral_distill_20261107"
 readonly CONFIG="$R/configs/vla/p1_lateral_distill_v3.json"
 
-run_name="${1:?usage: run_p1c_lateral_distill.sh RUN_NAME ARM STEPS}"
-arm="${2:?usage: run_p1c_lateral_distill.sh RUN_NAME ARM STEPS}"
-steps="${3:?usage: run_p1c_lateral_distill.sh RUN_NAME ARM STEPS}"
+run_name="${1:?usage: run_p1c_lateral_distill.sh RUN_NAME ARM STEPS [SEED]}"
+arm="${2:?usage: run_p1c_lateral_distill.sh RUN_NAME ARM STEPS [SEED]}"
+steps="${3:?usage: run_p1c_lateral_distill.sh RUN_NAME ARM STEPS [SEED]}"
+seed="${4:-17}"
 
 case "$arm" in
   R1-CAP|R2-ROUTE|R3-GEO) ;;
@@ -35,5 +36,6 @@ cd "$R"
   --arm "$arm" \
   --output "$OUT_ROOT/$run_name/$arm" \
   --max-steps "$steps" \
+  --seed "$seed" \
   --log-every 100 \
   2>&1 | tee "$OUT_ROOT/${run_name}_${arm}.log"
