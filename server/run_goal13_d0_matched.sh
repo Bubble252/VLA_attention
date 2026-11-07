@@ -125,7 +125,7 @@ accelerate launch \
 grep -q "STAR105_RUNTIME_BATCH_CONTRACT accum=${ACCUM} total_batch=${TOTAL_BATCH}" "$LOG" || { echo "runtime batch marker missing" >&2; exit 7; }
 grep -q "STAR105_RUNTIME_DATASET_CONTRACT libero_90_gate_lerobot:length=11630:weight=1.000000" "$LOG" || { echo "runtime dataset marker missing" >&2; exit 8; }
 grep -q "STAR105_RUNTIME_CONFIG_SHA ${CONFIG_SHA}" "$LOG" || { echo "runtime config marker missing" >&2; exit 9; }
-grep -q "$A3" "$LOG" || { echo "A3 pretrained checkpoint path missing from log" >&2; exit 10; }
+tr '\n' ' ' < "$LOG" | grep -q "$A3" || { echo "A3 pretrained checkpoint path missing from log" >&2; exit 10; }
 
 "$E" "$TOOLS_DIR/check_goal13_checkpoint_health.py" \
   --checkpoint "$CKPT" \
