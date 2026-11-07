@@ -48,6 +48,9 @@ class Goal13PostrunTests(unittest.TestCase):
                     "Gradient accumulation steps = 1",
                     "Total batch size  train_starvla.py:619",
                     "= 4",
+                    "STAR105_RUNTIME_BATCH_CONTRACT accum=1 total_batch=4",
+                    "STAR105_RUNTIME_DATASET_CONTRACT libero_90_gate_lerobot:length=11630:weight=1.000000",
+                    f"STAR105_RUNTIME_CONFIG_SHA {snapshot_sha}",
                     "Training complete.",
                     "Final model saved at final_model",
                     "",
@@ -100,7 +103,10 @@ class Goal13PostrunTests(unittest.TestCase):
                         "effective_batch": 4,
                         "seed": 17,
                     },
-                    "data": {"dataset_lengths": {"libero_90_gate_lerobot": 11630}},
+                    "data": {
+                        "dataset_lengths": {"libero_90_gate_lerobot": 11630},
+                        "sampling_weights": {"libero_90_gate_lerobot": 1.0},
+                    },
                 }
             )
         )
@@ -126,6 +132,23 @@ class Goal13PostrunTests(unittest.TestCase):
         self.assertEqual(report["postrun_status"], "PASS")
         self.assertEqual(report["arm_status"], "SMOKE_PASS")
         self.assertEqual(report["failures"], [])
+
+    def test_runtime_markers_required(self):
+        with tempfile.TemporaryDirectory() as directory:
+            fixture = self.make_fixture(Path(directory))
+            report = evaluate_postrun(
+                contract_path=fixture["contract"],
+                run_dir=fixture["run_dir"],
+                train_log=fixture["train_log"],
+                config_snapshot=fixture["snapshot"],
+                checkpoint_health_path=fixture["health"],
+                expected_steps=2,
+                require_runtime_markers=True,
+            )
+        self.assertEqual(report["postrun_status"], "PASS")
+        self.assertTrue(report["checks"]["log_runtime_batch_marker"]["passed"])
+        self.assertTrue(report["checks"]["log_runtime_dataset_marker"]["passed"])
+        self.assertTrue(report["checks"]["log_runtime_config_sha"]["passed"])
 
     def test_nonfinite_checkpoint_is_invalid(self):
         with tempfile.TemporaryDirectory() as directory:

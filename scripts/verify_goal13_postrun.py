@@ -117,6 +117,7 @@ def evaluate_postrun(
     checkpoint_health_path: Path,
     expected_steps: int,
     repo: Path | None = None,
+    require_runtime_markers: bool = False,
 ) -> dict[str, Any]:
     contract = load_json(contract_path)
     checks: dict[str, dict[str, Any]] = {}
@@ -259,6 +260,33 @@ def evaluate_postrun(
         },
     )
 
+    if require_runtime_markers:
+        runtime_batch_marker = (
+            f"STAR105_RUNTIME_BATCH_CONTRACT accum={int(runtime.get('grad_accum', -1))} "
+            f"total_batch={expected_effective_batch}"
+        )
+        dataset_lengths = contract.get("data", {}).get("dataset_lengths", {})
+        sampling_weights = contract.get("data", {}).get("sampling_weights", {})
+        marker_available = bool(dataset_lengths) and all(name in sampling_weights for name in dataset_lengths)
+        dataset_marker = (
+            "STAR105_RUNTIME_DATASET_CONTRACT "
+            + " ".join(
+                f"{name}:length={int(dataset_lengths[name])}:weight={float(sampling_weights[name]):.6f}"
+                for name in sorted(dataset_lengths)
+            )
+            if marker_available
+            else "STAR105_RUNTIME_DATASET_CONTRACT <contract lacks lengths/weights>"
+        )
+        config_marker = f"STAR105_RUNTIME_CONFIG_SHA {contract.get('config_sha256')}"
+        check("log_runtime_batch_marker", runtime_batch_marker in log_text, runtime_batch_marker, runtime_batch_marker in log_text)
+        check(
+            "log_runtime_dataset_marker",
+            marker_available and dataset_marker in log_text,
+            dataset_marker,
+            dataset_marker in log_text,
+        )
+        check("log_runtime_config_sha", config_marker in log_text, config_marker, config_marker in log_text)
+
     dataset_stats_path = run_dir / "dataset_statistics.json"
     dataset_stats = load_json(dataset_stats_path) if dataset_stats_path.is_file() else {}
     franka = dataset_stats.get("franka", {}) if isinstance(dataset_stats.get("franka"), dict) else {}
@@ -345,6 +373,7 @@ def main() -> int:
     parser.add_argument("--output", type=Path, required=True)
     parser.add_argument("--expected-steps", type=int, default=2)
     parser.add_argument("--repo", type=Path, default=None)
+    parser.add_argument("--require-runtime-markers", action="store_true")
     args = parser.parse_args()
 
     report = evaluate_postrun(
@@ -355,6 +384,7 @@ def main() -> int:
         checkpoint_health_path=args.checkpoint_health,
         expected_steps=args.expected_steps,
         repo=args.repo,
+        require_runtime_markers=args.require_runtime_markers,
     )
     atomic_json_write(args.output, report)
     print(
