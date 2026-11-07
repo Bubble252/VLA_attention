@@ -2,7 +2,7 @@
 
 本目录执行 [65_story_method_selection_20261107.md](../../doc/vla_next/65_story_method_selection_20261107.md) 的 `Data -> Interface -> Control` 三级阶梯。
 
-当前状态：**Stage 0 数据审计与 D0 Run Contract 已 PASS；G0 视觉抽检和 D1/D2 仍待完成。**
+当前状态：**Stage 0 数据审计、G0 视觉抽检和 D0 Run Contract 已 PASS；D1/D2 仍待完成。**
 
 阅读顺序：
 

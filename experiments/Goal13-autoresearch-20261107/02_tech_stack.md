@@ -105,6 +105,7 @@ $W/vla_workspace/data/libero_90_hdf5/task65_67
 ```text
 scripts/audit_goal13_rlds.py       # 只读扫描 RLDS，输出语言计数和 episode 清单
 scripts/build_goal13_contract.py   # 合并 audit + split manifest，生成 Run Contract
+scripts/build_goal13_g0_visual_sample.py  # 100 帧 contact sheet 与最终位置抽检
 tests/test_goal13_contract.py      # 纯 CPU 单元测试
 configs/vla/goal13_data_arms.json  # 可选；固定 D0/D1/D2 数据臂定义
 ```

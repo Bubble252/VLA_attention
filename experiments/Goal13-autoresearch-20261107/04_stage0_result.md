@@ -88,11 +88,32 @@ split：
 | train/validation/rollout 交集 0 | PASS |
 | 实际 sampling weights 1.0 | PASS |
 | HDF5 / sidecar 状态明确 | PASS（carrier 缺失，标记 weak sidecar） |
-| 100 帧语言与画面人工抽检 | **未完成** |
+| 100 帧语言与画面人工抽检 | PASS |
 
-所以 G0 还不能整体标记 PASS；当前只能标记为 **数据契约 PASS，视觉抽检 pending**。
+因此 G0 的数据部分已经 PASS。carrier 侧没有 GT mask，仍保留 `weak_sidecar=true`。
 
-## 6. 下一步
+## 6. 100 帧视觉抽检
+
+抽检方式：C1 三任务各取 17 个 demo，每个 demo 取首帧和末帧，共 100 帧。
+
+证据：
+
+- contact sheet：[goal13_g0_contact_sheet.png](results/goal13_g0_contact_sheet.png)；
+- 采样清单：[goal13_g0_visual_sample.json](results/goal13_g0_visual_sample.json)；
+- 放大对照：[goal13_g0_task_panels.png](results/goal13_g0_task_panels.png)；
+- 自动一致性检查：[goal13_g0_placement_check.json](results/goal13_g0_placement_check.json)。
+
+最终帧红色杯像素质心 x 中位数：
+
+| task | red centroid x median | 解释 |
+|---|---:|---|
+| `red_left` | 0.319 | 红杯最终在画面左侧 |
+| `red_right` | 0.885 | 红杯最终在画面右侧 |
+| `white_left` | 0.636 | 红杯不是被移动对象，位置与红杯任务不同 |
+
+`red_left` 与 `red_right` 的最终红杯位置方向相反，和语言一致。100 帧抽检 PASS。
+
+## 7. 下一步
 
 1. 完成 100 帧语言/画面抽检；
 2. 为 D1 carrier 转换 LeRobot 数据并生成 observed dataset contract；

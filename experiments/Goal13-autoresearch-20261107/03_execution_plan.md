@@ -25,6 +25,7 @@
 - [x] 记录 carrier 和 `white_bowl_right` 计数；
 - [x] 检查 carrier HDF5/GT mask 是否存在；
 - [x] 产生 `goal13_audit.json`。
+- [x] 生成 100 帧 contact sheet 和最终位置一致性检查。
 
 建议输出目录：
 
@@ -54,6 +55,7 @@ $W/results/star105_goal13_20261107/audit/
 - [x] train/validation/rollout init 交集 = 0；
 - [x] 实际采样权重与计划一致（D0 = 1.0）；
 - [x] HDF5/GT mask 状态明确，缺失时 `weak_sidecar=true`。
+- [x] 100 帧语言与画面抽检 PASS（red_left / red_right 最终红杯位置方向相反）。
 
 ## 2. Stage 1a：D0 vs D1
 

@@ -1,0 +1,83 @@
+{
+  "red_left": {
+    "red_centroid_x_median": 0.3192247263326411,
+    "red_centroid_y_median": 0.2864414881993007,
+    "ee_x_median": 0.01079094241148526,
+    "red_pixels_median": 107.5,
+    "n": 50,
+    "samples": [
+      {
+        "demo": "demo_0",
+        "red_centroid_x": 0.29720886752136755,
+        "red_centroid_y": 0.2942708333333333,
+        "red_pixels": 117
+      },
+      {
+        "demo": "demo_1",
+        "red_centroid_x": 0.5443135245901639,
+        "red_centroid_y": 0.22912397540983606,
+        "red_pixels": 61
+      },
+      {
+        "demo": "demo_2",
+        "red_centroid_x": 0.3963721264367816,
+        "red_centroid_y": 0.26068606321839083,
+        "red_pixels": 87
+      }
+    ]
+  },
+  "red_right": {
+    "red_centroid_x_median": 0.8846153846153846,
+    "red_centroid_y_median": 0.29731514084507044,
+    "ee_x_median": -0.00037324213273522795,
+    "red_pixels_median": 79.0,
+    "n": 50,
+    "samples": [
+      {
+        "demo": "demo_0",
+        "red_centroid_x": 0.9051011029411765,
+        "red_centroid_y": 0.3091299019607843,
+        "red_pixels": 102
+      },
+      {
+        "demo": "demo_1",
+        "red_centroid_x": 0.8469410211267606,
+        "red_centroid_y": 0.2835607394366197,
+        "red_pixels": 71
+      },
+      {
+        "demo": "demo_2",
+        "red_centroid_x": 0.8946981837606838,
+        "red_centroid_y": 0.31750801282051283,
+        "red_pixels": 117
+      }
+    ]
+  },
+  "white_left": {
+    "red_centroid_x_median": 0.6358964679621848,
+    "red_centroid_y_median": 0.4318555724684124,
+    "ee_x_median": 0.006233501149821962,
+    "red_pixels_median": 133.0,
+    "n": 50,
+    "samples": [
+      {
+        "demo": "demo_0",
+        "red_centroid_x": 0.6608231707317073,
+        "red_centroid_y": 0.42860772357723576,
+        "red_pixels": 123
+      },
+      {
+        "demo": "demo_1",
+        "red_centroid_x": 0.6220181297709924,
+        "red_centroid_y": 0.4417342557251908,
+        "red_pixels": 131
+      },
+      {
+        "demo": "demo_2",
+        "red_centroid_x": 0.6310051305970149,
+        "red_centroid_y": 0.439540578358209,
+        "red_pixels": 134
+      }
+    ]
+  }
+}
