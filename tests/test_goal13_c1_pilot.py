@@ -60,6 +60,21 @@ class Goal13C1PilotTests(unittest.TestCase):
         self.assertEqual(report["failures"], [])
         self.assertEqual(report["white_right"]["strict_destination_successes"], 0)
 
+    def test_valid_d1_pilot_passes_with_expected_arm(self):
+        with tempfile.TemporaryDirectory() as directory:
+            postrun, summary = self.make_fixture(Path(directory))
+            payload = json.loads(postrun.read_text())
+            payload["arm"] = "D1"
+            postrun.write_text(json.dumps(payload))
+            report = evaluate_c1_pilot(
+                postrun_path=postrun,
+                summary_path=summary,
+                expected_groups=15,
+                expected_arm="D1",
+            )
+        self.assertEqual(report["contract_status"], "PASS")
+        self.assertEqual(report["failures"], [])
+
     def test_missing_groups_is_invalid(self):
         with tempfile.TemporaryDirectory() as directory:
             postrun, summary = self.make_fixture(Path(directory))

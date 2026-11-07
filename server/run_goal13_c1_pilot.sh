@@ -71,13 +71,21 @@ if gate.get("gate_status") != "complete" or gate.get("passed") is not True:
 PY
 
 free_mib=$(nvidia-smi --query-gpu=memory.free --format=csv,noheader,nounits -i 1)
-compute=$(nvidia-smi --query-compute-apps=pid --format=csv,noheader -i 1 2>/dev/null || true)
+compute_pids=$(nvidia-smi --query-compute-apps=pid --format=csv,noheader -i 1 2>/dev/null || true)
+live_compute=()
+for pid in $compute_pids; do
+  [[ "$pid" =~ ^[0-9]+$ ]] || continue
+  [[ -r "/proc/$pid/status" ]] || continue
+  state=$(awk '/^State:/ {print $2}' "/proc/$pid/status")
+  [[ "$state" == "Z" ]] && continue
+  live_compute+=("$pid")
+done
 if (( free_mib < 30000 )); then
   echo "GPU1 free=${free_mib}MiB < 30000MiB; refusing to start" >&2
   exit 4
 fi
-if [[ -n "$compute" ]]; then
-  echo "GPU1 has compute processes: $compute" >&2
+if (( ${#live_compute[@]} > 0 )); then
+  echo "GPU1 has live compute processes: ${live_compute[*]}" >&2
   exit 5
 fi
 if [[ -e "$OUTPUT" ]]; then
