@@ -1,0 +1,153 @@
+[registry] DataConfig for robot_type='ur5_robochallenge' has no `embodiment_tag` classvar; defaulting to EmbodimentTag.NEW_EMBODIMENT.
+[registry] DataConfig for robot_type='arx5_robochallenge' has no `embodiment_tag` classvar; defaulting to EmbodimentTag.NEW_EMBODIMENT.
+[registry] DataConfig for robot_type='dosw1_robochallenge' has no `embodiment_tag` classvar; defaulting to EmbodimentTag.NEW_EMBODIMENT.
+Initialized dataset libero_90_gate_lerobot with EmbodimentTag.FRANKA
+Getting All Step:   0%|          | 0/15 [00:00<?, ?it/s]Getting All Step:  73%|███████▎  | 11/15 [00:00<00:00, 104.88it/s]Getting All Step: 100%|██████████| 15/15 [00:00<00:00, 118.89it/s]
+Single-process summary: Processed 15 trajectories, skipped 0 empty trajectories
+Total steps: 1929 from 15 trajectories
+Initialized dataset libero_90_gate_validation_lerobot with EmbodimentTag.FRANKA
+11/07 [08:33:58] WARNING  | >> [*] [StarVLA]               base_framework.py:110
+                          Reproducibility notice: this                          
+                          repository is under active                            
+                          development. The latest code may                      
+                          not exactly reproduce every                           
+                          previously released HF                                
+                          checkpoint because code,                              
+                          configs, preprocessing, and                           
+                          evaluation behavior can change                        
+                          over time. For exact                                  
+                          reproduction, checkout the                            
+                          repository revision from the                          
+                          checkpoint's release/training                         
+                          time and use its own config.                          
+`torch_dtype` is deprecated! Use `dtype` instead!
+You are attempting to use Flash Attention 2 without specifying a torch dtype. This might lead to unexpected behaviour
+Loading checkpoint shards:   0%|          | 0/5 [00:00<?, ?it/s]Loading checkpoint shards: 100%|██████████| 5/5 [00:00<00:00, 57.76it/s]
+[INFO] loaded frozen PEFT adapter from /vepfs-mlp2/c20250405/400040/transfer/vla_attention/checkpoints/P4_vlm_formal_9952x3_20261016/V4_seed17/final
+Total number of DiT parameters:  169615360
+{
+  "arm": "D0",
+  "checkpoint": {
+    "path": "/vepfs-mlp2/c20250405/400040/transfer/vla_attention/results/star105_goal13_20261107/checkpoints/star13_d0_smoke_2/final_model/model.safetensors",
+    "sha256": "a20e983c1833a1233675927827a5632ec230def93549063cfbb4e486645bd41e"
+  },
+  "config": {
+    "path": "/vepfs-mlp2/c20250405/400040/transfer/vla_attention/results/star105_goal13_20261107/configs/goal13_d0_snapshot.yaml",
+    "sha256": "61cbe071a8ca21d5e1d603b03c6a17e552a55ea00ca72aadc32133f12c23b252"
+  },
+  "gate": {
+    "destination_margin_positive_with_ci": false,
+    "object_margin_positive": false,
+    "region_predicted_action_beats_none": false,
+    "region_predicted_action_beats_shuffle": false,
+    "region_predicted_mask_beats_constant": false,
+    "region_predicted_mask_beats_shuffle": false
+  },
+  "notes": [
+    "Pairs use the same image, frame and expert action chunk; only language changes.",
+    "Correct and wrong calls for each subset use the same seed and batch order.",
+    "white_right is not evaluated here because it has no expert action labels."
+  ],
+  "num_groups": 2,
+  "pair_results": {
+    "destination": {
+      "action_amplitude_ratio": 2.286771535873413,
+      "action_delta": 0.004348863381892443,
+      "by_language": {
+        "put the red mug on the left plate": {
+          "correct_mae": 0.8938001990318298,
+          "margin_bootstrap_95ci": [
+            -0.001673281192779541,
+            0.0013956427574157715
+          ],
+          "margin_mean": -0.00013881921768188477,
+          "pair_count": 2,
+          "wrong_mae": 0.893661379814148
+        }
+      },
+      "correct_gripper_mae": 1.1930595636367798,
+      "correct_mae": 0.8938001990318298,
+      "correct_rotation_mae": 0.8359131217002869,
+      "correct_translation_mae": 0.851934015750885,
+      "gripper_amplitude_ratio": 0.7332256436347961,
+      "margin_bootstrap_95ci": [
+        -0.001673281192779541,
+        0.0013956427574157715
+      ],
+      "margin_mean": -0.00013881921768188477,
+      "margin_median": -0.00013881921768188477,
+      "margin_positive_fraction": 0.5,
+      "pair_count": 2,
+      "per_dimension_amplitude_ratio": [
+        1.778994083404541,
+        4.662440299987793,
+        3.429694652557373,
+        7.214969635009766,
+        15.177693367004395,
+        2.000009536743164,
+        0.7332256436347961
+      ],
+      "predicted_action_abs_mean": 0.7865026593208313,
+      "rotation_amplitude_ratio": 8.130890846252441,
+      "target_action_abs_mean": 0.3439358174800873,
+      "translation_amplitude_ratio": 3.2903764247894287,
+      "wrong_gripper_mae": 1.1927423477172852,
+      "wrong_mae": 0.893661379814148,
+      "wrong_rotation_mae": 0.8359723687171936,
+      "wrong_translation_mae": 0.8516567349433899
+    },
+    "object": {
+      "action_amplitude_ratio": 2.286771535873413,
+      "action_delta": 0.0147129250690341,
+      "by_language": {
+        "put the red mug on the left plate": {
+          "correct_mae": 0.8938001990318298,
+          "margin_bootstrap_95ci": [
+            -0.0023488998413085938,
+            -8.094310760498047e-05
+          ],
+          "margin_mean": -0.0012149214744567871,
+          "pair_count": 2,
+          "wrong_mae": 0.892585277557373
+        }
+      },
+      "correct_gripper_mae": 1.1930595636367798,
+      "correct_mae": 0.8938001990318298,
+      "correct_rotation_mae": 0.8359131217002869,
+      "correct_translation_mae": 0.851934015750885,
+      "gripper_amplitude_ratio": 0.7332256436347961,
+      "margin_bootstrap_95ci": [
+        -0.0023488998413085938,
+        -8.094310760498047e-05
+      ],
+      "margin_mean": -0.0012149214744567871,
+      "margin_median": -0.0012149214744567871,
+      "margin_positive_fraction": 0.0,
+      "pair_count": 2,
+      "per_dimension_amplitude_ratio": [
+        1.778994083404541,
+        4.662440299987793,
+        3.429694652557373,
+        7.214969635009766,
+        15.177693367004395,
+        2.000009536743164,
+        0.7332256436347961
+      ],
+      "predicted_action_abs_mean": 0.7865026593208313,
+      "rotation_amplitude_ratio": 8.130890846252441,
+      "target_action_abs_mean": 0.3439358174800873,
+      "translation_amplitude_ratio": 3.2903764247894287,
+      "wrong_gripper_mae": 1.183397889137268,
+      "wrong_mae": 0.892585277557373,
+      "wrong_rotation_mae": 0.835686981678009,
+      "wrong_translation_mae": 0.8525460362434387
+    }
+  },
+  "region_results": null,
+  "schema": "goal12-c1-counterfactual-offline-v1",
+  "seed": 17,
+  "sidecar": {
+    "path": "/vepfs-mlp2/c20250405/400040/transfer/vla_attention/vla_workspace/results/K4_lite/T2_future/validation_sidecar_v1/manifest.jsonl",
+    "sha256": "510fe44dee0c0deb408563c3fbaaefc780bf7b8c22f149bced93f05d857880e7"
+  }
+}
