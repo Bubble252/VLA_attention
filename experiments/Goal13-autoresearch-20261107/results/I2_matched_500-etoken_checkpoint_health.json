@@ -1,0 +1,13 @@
+{
+  "all_finite": true,
+  "checkpoint": "/vepfs-mlp2/c20250405/400040/transfer/vla_attention/results/star105_goal13_20261107/checkpoints/star13_i2_matched_500-etoken/final_model/model.safetensors",
+  "created_at": "2026-11-07T12:00:36.068065+00:00",
+  "elapsed_seconds": 1.449,
+  "float_tensor_count": 255,
+  "nonfinite_tensors": [],
+  "numel": 174486024,
+  "schema": "goal13-checkpoint-health-v1",
+  "sha256": "08f88cf48ef893de29f9c65aee233a9d6def94a585f97f0eddb4202f755cee94",
+  "size_bytes": 697976624,
+  "tensor_count": 255
+}

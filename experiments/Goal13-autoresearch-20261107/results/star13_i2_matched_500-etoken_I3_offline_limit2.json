@@ -1,0 +1,247 @@
+{
+  "arm": "I3",
+  "checkpoint": {
+    "path": "/vepfs-mlp2/c20250405/400040/transfer/vla_attention/results/star105_goal13_20261107/checkpoints/star13_i2_matched_500-etoken/final_model/model.safetensors",
+    "sha256": "08f88cf48ef893de29f9c65aee233a9d6def94a585f97f0eddb4202f755cee94"
+  },
+  "config": {
+    "path": "/vepfs-mlp2/c20250405/400040/transfer/vla_attention/results/star105_goal13_20261107/configs/goal13_i2_matched_500-etoken_snapshot.yaml",
+    "sha256": "5887bcb7dcf3b4216337aa9f7448dd1571399cbd9599ef340e8fa79340fa52a6"
+  },
+  "gate": {
+    "destination_margin_positive_with_ci": true,
+    "object_margin_positive": true,
+    "point_oracle_beats_none": false,
+    "point_predicted_beats_none": false,
+    "point_predicted_beats_shuffle": true,
+    "region_predicted_action_beats_none": false,
+    "region_predicted_action_beats_shuffle": false,
+    "region_predicted_mask_beats_constant": false,
+    "region_predicted_mask_beats_shuffle": false
+  },
+  "notes": [
+    "Pairs use the same image, frame and expert action chunk; only language changes.",
+    "Correct and wrong calls for each subset use the same seed and batch order.",
+    "white_right is not evaluated here because it has no expert action labels.",
+    "Oracle point markers are diagnostic only and never enter deployment inputs."
+  ],
+  "num_groups": 2,
+  "pair_results": {
+    "destination": {
+      "action_amplitude_ratio": 1.135720133781433,
+      "action_delta": 0.017563438042998314,
+      "by_language": {
+        "put the red mug on the left plate": {
+          "correct_mae": 0.07232531160116196,
+          "margin_bootstrap_95ci": [
+            0.0027372129261493683,
+            0.011316485702991486
+          ],
+          "margin_mean": 0.007026849314570427,
+          "pair_count": 2,
+          "wrong_mae": 0.07935216277837753
+        }
+      },
+      "correct_gripper_mae": 0.02674628049135208,
+      "correct_mae": 0.07232531160116196,
+      "correct_rotation_mae": 0.04031205177307129,
+      "correct_translation_mae": 0.11953157186508179,
+      "gripper_amplitude_ratio": 1.0224907398223877,
+      "margin_bootstrap_95ci": [
+        0.0027372129261493683,
+        0.011316485702991486
+      ],
+      "margin_mean": 0.007026849314570427,
+      "margin_median": 0.007026849314570427,
+      "margin_positive_fraction": 1.0,
+      "pair_count": 2,
+      "per_dimension_amplitude_ratio": [
+        1.2688201665878296,
+        1.5161250829696655,
+        1.1727372407913208,
+        1.2956699132919312,
+        1.0035741329193115,
+        1.0717103481292725,
+        1.0224907398223877
+      ],
+      "predicted_action_abs_mean": 0.3906148374080658,
+      "rotation_amplitude_ratio": 1.123651385307312,
+      "target_action_abs_mean": 0.3439358174800873,
+      "translation_amplitude_ratio": 1.3192275762557983,
+      "wrong_gripper_mae": 0.0268673375248909,
+      "wrong_mae": 0.07935216277837753,
+      "wrong_rotation_mae": 0.03659265488386154,
+      "wrong_translation_mae": 0.13960660994052887
+    },
+    "object": {
+      "action_amplitude_ratio": 1.135720133781433,
+      "action_delta": 0.08295614272356033,
+      "by_language": {
+        "put the red mug on the left plate": {
+          "correct_mae": 0.07232531160116196,
+          "margin_bootstrap_95ci": [
+            0.020431336015462875,
+            0.030284002423286438
+          ],
+          "margin_mean": 0.025357669219374657,
+          "pair_count": 2,
+          "wrong_mae": 0.09768298268318176
+        }
+      },
+      "correct_gripper_mae": 0.02674628049135208,
+      "correct_mae": 0.07232531160116196,
+      "correct_rotation_mae": 0.04031205177307129,
+      "correct_translation_mae": 0.11953157186508179,
+      "gripper_amplitude_ratio": 1.0224907398223877,
+      "margin_bootstrap_95ci": [
+        0.020431336015462875,
+        0.030284002423286438
+      ],
+      "margin_mean": 0.025357669219374657,
+      "margin_median": 0.025357669219374657,
+      "margin_positive_fraction": 1.0,
+      "pair_count": 2,
+      "per_dimension_amplitude_ratio": [
+        1.2688201665878296,
+        1.5161250829696655,
+        1.1727372407913208,
+        1.2956699132919312,
+        1.0035741329193115,
+        1.0717103481292725,
+        1.0224907398223877
+      ],
+      "predicted_action_abs_mean": 0.3906148374080658,
+      "rotation_amplitude_ratio": 1.123651385307312,
+      "target_action_abs_mean": 0.3439358174800873,
+      "translation_amplitude_ratio": 1.3192275762557983,
+      "wrong_gripper_mae": 0.015914693474769592,
+      "wrong_mae": 0.09768298268318176,
+      "wrong_rotation_mae": 0.05608375743031502,
+      "wrong_translation_mae": 0.1665383130311966
+    }
+  },
+  "point_manifest": {
+    "path": "/vepfs-mlp2/c20250405/400040/transfer/vla_attention/results/star105_goal10p5_20261105/point_manifests/validation_sidecar_v1/point_manifest.jsonl",
+    "sha256": "9a3a508d063b36a11cda9331753513f5019ada62a19ba2de6ab96f20fab068bf"
+  },
+  "point_results": {
+    "action_comparison": {
+      "none_mae": 0.0720699280500412,
+      "oracle_mae": 0.07216446101665497,
+      "oracle_minus_predicted": -3.914162516593933e-05,
+      "predicted_mae": 0.07212532311677933,
+      "predicted_minus_none": -5.539506673812866e-05,
+      "predicted_minus_none_bootstrap_95ci": [
+        -8.895993232727051e-05,
+        -2.1830201148986816e-05
+      ],
+      "predicted_minus_shuffle": 0.00019999220967292786,
+      "predicted_minus_shuffle_bootstrap_95ci": [
+        -1.3247132301330566e-05,
+        0.0004132315516471863
+      ],
+      "shuffle_mae": 0.07232531160116196
+    },
+    "amplitude": {
+      "none": {
+        "action_amplitude_ratio": 1.1343121528625488,
+        "gripper_amplitude_ratio": 1.022148847579956,
+        "per_dimension_amplitude_ratio": [
+          1.2645593881607056,
+          1.5165537595748901,
+          1.1740273237228394,
+          1.2937734127044678,
+          1.004944086074829,
+          1.0682255029678345,
+          1.022148847579956
+        ],
+        "predicted_action_abs_mean": 0.39013057947158813,
+        "rotation_amplitude_ratio": 1.1223143339157104,
+        "target_action_abs_mean": 0.3439358174800873,
+        "translation_amplitude_ratio": 1.3183802366256714
+      },
+      "oracle": {
+        "action_amplitude_ratio": 1.134470820426941,
+        "gripper_amplitude_ratio": 1.0222766399383545,
+        "per_dimension_amplitude_ratio": [
+          1.26628839969635,
+          1.519187569618225,
+          1.1679219007492065,
+          1.2926772832870483,
+          1.0058437585830688,
+          1.0698297023773193,
+          1.0222766399383545
+        ],
+        "predicted_action_abs_mean": 0.39018514752388,
+        "rotation_amplitude_ratio": 1.1227835416793823,
+        "target_action_abs_mean": 0.3439358174800873,
+        "translation_amplitude_ratio": 1.3177992105484009
+      },
+      "predicted": {
+        "action_amplitude_ratio": 1.1351922750473022,
+        "gripper_amplitude_ratio": 1.022325038909912,
+        "per_dimension_amplitude_ratio": [
+          1.2674763202667236,
+          1.5133708715438843,
+          1.171658992767334,
+          1.295549750328064,
+          1.0042364597320557,
+          1.0721381902694702,
+          1.022325038909912
+        ],
+        "predicted_action_abs_mean": 0.39043328166007996,
+        "rotation_amplitude_ratio": 1.1239748001098633,
+        "target_action_abs_mean": 0.3439358174800873,
+        "translation_amplitude_ratio": 1.3175020217895508
+      },
+      "shuffle": {
+        "action_amplitude_ratio": 1.135720133781433,
+        "gripper_amplitude_ratio": 1.0224907398223877,
+        "per_dimension_amplitude_ratio": [
+          1.2688201665878296,
+          1.5161250829696655,
+          1.1727372407913208,
+          1.2956699132919312,
+          1.0035741329193115,
+          1.0717103481292725,
+          1.0224907398223877
+        ],
+        "predicted_action_abs_mean": 0.3906148374080658,
+        "rotation_amplitude_ratio": 1.123651385307312,
+        "target_action_abs_mean": 0.3439358174800873,
+        "translation_amplitude_ratio": 1.3192275762557983
+      }
+    },
+    "num_groups": 2,
+    "point_ablation": "shuffle",
+    "point_in_mask": {
+      "oracle": 1.0,
+      "predicted": 1.0,
+      "shuffle": 1.0
+    },
+    "point_l1_px": {
+      "oracle": {
+        "all": 0.0,
+        "destination": 0.0,
+        "object": 0.0
+      },
+      "predicted": {
+        "all": 1.9434207677841187,
+        "destination": 2.9757094383239746,
+        "object": 0.9111320972442627
+      },
+      "shuffle": {
+        "all": 1.9434208869934082,
+        "destination": 2.9757094383239746,
+        "object": 0.9111320972442627
+      }
+    }
+  },
+  "region_results": null,
+  "schema": "goal12-c1-counterfactual-offline-v1",
+  "seed": 17,
+  "sidecar": {
+    "path": "/vepfs-mlp2/c20250405/400040/transfer/vla_attention/vla_workspace/results/K4_lite/T2_future/validation_sidecar_v1/manifest.jsonl",
+    "sha256": "510fe44dee0c0deb408563c3fbaaefc780bf7b8c22f149bced93f05d857880e7"
+  }
+}

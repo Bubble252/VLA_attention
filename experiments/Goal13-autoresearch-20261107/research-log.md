@@ -21,3 +21,6 @@
 - 完成 `I2-XATTN` 2-step smoke：preflight PASS、postrun `SMOKE_PASS`、7 个 cross-attention 参数进入 checkpoint、`all_finite=true`。
 - 完成 `I2-XATTN` 500-step matched pilot 及完整 118 groups：`I1` non-gripper MAE 比 `I0` 差 `+3.162%`，`I2` 比 `I3` 差约 `0.188%`，`I2` destination margin 也低于 `I3`；动作幅度未塌缩。
 - 裁决：`I2-XATTN` FAIL；W-I 保持关闭；按协议只允许最后一次 `evidence_token=true` 注入修复，随后无论结果如何都不再增加第三个注入变体。
+- 完成 `I2-ETOKEN` 2-step smoke：preflight PASS、`evidence_token=true`、cross-attention 关闭、checkpoint 255 tensors、trainable `174.486M`、`all_finite=true`。
+- 完成 `I2-ETOKEN` 500-step matched pilot 及完整 118 groups：`I1` 相对 `I0` 仅改善 `0.012%`，`I2` 相对 `I3` 的 MAE 优势只有约 `0.002%` 且 destination margin 更低；动作幅度未塌缩。
+- 裁决：`I2-ETOKEN` FAIL；三次接口注入均无正信号，W-I 永久关闭；不进入 A2/A3/F0，下一步只做 outer-loop PIVOT 协议。

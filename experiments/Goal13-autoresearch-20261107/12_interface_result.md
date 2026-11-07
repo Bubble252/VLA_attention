@@ -162,3 +162,5 @@ point head 本身并不差：
 在注入修复通过前，不启动 A2，不启动 F0，不把接口组件升级为 AnySlot/CompoSlot 式实现。详细历史结果文件在 `results/star13_i*_offline_full*.json`，接口阈值见 [11_i_interface_protocol.md](11_i_interface_protocol.md)。
 
 `I2-XATTN` 已执行并失败：完整 118 groups 中 `I1` 比 `I0` 差 `+3.162%`，`I2` 比 `I3` 差约 `0.188%`。结果和解释见 [14_i2x_injection_result.md](14_i2x_injection_result.md)。按协议只剩最后一次 `evidence_token=true` 注入修复。
+
+`I2-ETOKEN` 也已完成并失败：完整 118 groups 中 `I1` 相对 `I0` 仅改善 `0.012%`，`I2` 相对 `I3` 的 MAE 优势只有约 `0.002%`，且 destination margin 更低。结果见 [16_i2e_token_result.md](16_i2e_token_result.md)。三次接口注入均无正信号，`W-I` 永久关闭，禁止继续做接口变体。

@@ -1,7 +1,7 @@
 # 65 故事、主任务与方法选择
 
 **日期**：2026-11-07<br>
-**状态**：升级规则与外部论文准入规范已落盘；截至 2026-11-07，Goal13 接口 Gate 为 FAIL，`W-I` 关闭，不启动 `A2/F0`<br>
+**状态**：升级规则与外部论文准入规范已落盘；截至 2026-11-07，Goal13 三种接口注入均 FAIL，`W-I` 永久关闭，不启动 `A2/F0`，进入 outer-loop PIVOT<br>
 **输入**：61–64 的审计、C1/J4.1/Goal11/Goal12/G2 的已有结果、2026 年近邻论文<br>
 **一句话**：主任务继续用 C1，但论文故事必须是 **“证据为什么没有控制动作”**，而不是再讲一次 “我们的 grounding 更准”。方法采用 **Data → Interface → Control 三级因果阶梯**；FAI-VLA 只有在第三级成立时才能作为主方法。
 
@@ -614,7 +614,7 @@ F4 消融成立 -> 才允许升级 AC-VLA-lite 的 phase 机制
 | `W-A` 动作组件 | 固定 best interface arm；`A1 > A0`；随后 `A2` 在 held-out 和 suff/nec margin 上同向 | CRAFT/CounterAlign/CAST 式配对构造、negative mining、discriminator/AWR（逐项按原文核对） | `A2` 未过就合并 phase；用更多参数或更长训练冒充因果增益 |
 | `W-F` 完整方法 | `A2` PASS；`F0` 至少优于 `F1/F2/F3` 中两个；`F4` 消融显示 phase 有贡献；第 13.1/13.6 节论文/代码检查完成 | 完整 `F0`、AC-VLA phase、CompoSlot 组合版 | 在 3 seeds + 第二场景前写“L3/主会方法论文已成立” |
 
-**当前执行状态（2026-11-07，Goal13；接口层已完成判读）**：
+**当前执行状态（2026-11-07，Goal13；接口路线已关闭）**：
 
 - `D0` 契约 PASS，固定为 best data arm；`D1` 契约也 PASS，但结果方向为负，`white_right` 仍为 `0/15`，C1 seen group-any 从 `13/15` 降到 `9/15`。`W-D` 关闭，`D2` 跳过，数据组件保持 lite 版。
 - 接口层已完成 `I0/I2` 的 500-step continuation 和 `I1/I2/I3` 的完整 118 groups 离线评测；所有 arm 的 Run Contract 为 PASS，但 `gate_status=DESCRIPTIVE` 只表示结果可描述，不表示 Gate 通过。
@@ -630,7 +630,8 @@ F4 消融成立 -> 才允许升级 AC-VLA-lite 的 phase 机制
 - point head 本身不是主要瓶颈：predicted point 的 destination L1 约 `2.645 px`、object L1 约 `7.807 px`，point-in-mask 为 `0.8008`；但 point ablation 中 oracle 的 MAE 比 none 差 `0.000384`，predicted 的 MAE 比 shuffle 差 `0.000237`（JSON 字段 `predicted_minus_shuffle=-0.000237` 的实际定义是 `shuffle_mae - predicted_mae`，正数才表示 predicted 更好），完美 oracle marker 也没有改善动作。因此当前结论是“marker 没有被 action expert 有效读取”，不是“point 预测太差”。
 - `W-I` **不开启**，接口组件冻结在 lite 版；`W-A`、`W-F` 以及 `A2/A3/F0` 均不得启动。不能因为论文里使用 cross-attention、slot 或 factor loss，就跳过 `I1 > I0` 直接升级。
 - `I2-XATTN` 已完成：保持 `I2` 的 D0 数据、初始化、500 steps、batch 4、seed 17，只增加 `action_model.evidence_cross_attention: true`。完整 118 groups 仍为 **FAIL**：`I1` non-gripper MAE 比 `I0` 差 `+3.162%`，`I2` 比 `I3` 差约 `0.188%`，destination margin 也更低；动作幅度未塌缩。详见 `experiments/Goal13-autoresearch-20261107/14_i2x_injection_result.md`。
-- 因此只剩最后一次 `evidence_token=true` 的 query-token 注入修复；若它也失败，接口路线停止，不再做第三个注入变体，也不进入 `A2/A3/F0`。
+- `I2-ETOKEN` 已完成：保持 `I2` 的 D0 数据、初始化、500 steps、batch 4、seed 17，只设置 `evidence_token: true` 且关闭 cross-attention。完整 118 groups 仍为 **FAIL**：`I1` 相对 `I0` 仅改善 `0.012%`，`I2` 相对 `I3` 仅低约 `0.002%`，但 destination margin 反而更低；动作幅度未塌缩。详见 `experiments/Goal13-autoresearch-20261107/16_i2e_token_result.md`。
+- 至此 common-mode、cross-attention、query-token 三种接口注入都没有 `I1 > I0` / `I2 > I3`。`W-I` **永久关闭**，不再做第三个注入变体，不进入 `A2/A3/F0`；后续只能进入 outer-loop PIVOT，并先写新 protocol 再训练。
 - `D1` 的负结果必须保留为解释材料，不能因为流程上 PASS 就改写成“方法失败”或“数据无用”。接口数字见 `experiments/Goal13-autoresearch-20261107/12_interface_result.md`，数据数字见 `10_d1_matched_result.md`。
 
 **现在能否升级为论文近似版（2026-11-07）**
@@ -638,7 +639,7 @@ F4 消融成立 -> 才允许升级 AC-VLA-lite 的 phase 机制
 | 组件 | 当前层级 | Gate 状态 | 现在能否升级 | 解锁条件 |
 |---|---|---|---|---|
 | 数据配方 | `D0` lite | `W-D` 关闭 | 否 | `D1` 需在 held-out 或因子可辨识指标上优于 `D0`，且 seen 不退化 |
-| point/marker 接口 | `I0/I1/I2/I3` lite | `W-I` 关闭；`G-I1/G-I2 FAIL`；`I2-XATTN FAIL` | 否 | 只剩最后一次 `evidence_token` 注入并重新通过 `I1 > I0`、`I2 > I3`；否则永久关闭接口路线 |
+| point/marker 接口 | `I0/I1/I2/I3` lite | `W-I` 永久关闭；`G-I1/G-I2 FAIL`；`I2-XATTN FAIL`；`I2-ETOKEN FAIL` | 否 | 三种注入都没有正信号；不再修补接口，转 outer-loop action-query / 第二任务裁决 |
 | 反事实动作 | 未启动 | `W-A` 关闭 | 否 | 接口 Gate PASS 后，先证明 `A1 > A0` |
 | `AC-VLA-lite` phase | 未合并 | `W-F` 关闭 | 否 | `A2` PASS，且 `F4` 消融证明 phase 有贡献 |
 | `CompoSlot` | 未升级 | `W-I` 关闭 | 否 | `I2` 相对 `I0/I3` 稳定有增益，slot 不塌缩 |
@@ -672,11 +673,11 @@ Stage 0: D0 Run Contract PASS
 
 #### 11.4.5 升级批次与材料门槛
 
-下面的“批次”是执行顺序，不是日历承诺。只有上一批的 Gate 已经 PASS，且该批组件的外部材料包已经完整落盘，下一批才允许启动。当前（2026-11-07）处于 `P0`：`W-I` 关闭，只允许做一次接口注入修复，不允许把任何组件换成“论文近似版”。
+下面的“批次”是执行顺序，不是日历承诺。只有上一批的 Gate 已经 PASS，且该批组件的外部材料包已经完整落盘，下一批才允许启动。当前（2026-11-07）`P0` 已经关闭：三种接口注入全部失败，`W-I` 永久关闭，不允许再做接口变体或把任何组件换成“论文近似版”。
 
 | 批次 | 触发条件 | 允许升级的组件 | 启动前必须完成的材料检查 |
 |---|---|---|---|
-| `P0` 当前 | `G-I1/G-I2 FAIL`；`W-I` 关闭 | 无；只允许 `I2-XATTN` 或 `evidence_token` 注入修复 | 修复本身如果借用外部 cross-attention/query-token 设计，也要先下载对应论文 PDF/TXT、追到正文中的仓库链接、clone 并 pin commit，再写 `paper_reading` |
+| `P0` 已关闭 | `I2-XATTN` 与 `I2-ETOKEN` 均 FAIL；`W-I` 永久关闭 | 无；禁止继续做接口注入变体 | 不再为新接口修补启动 arm；下一步必须先写 outer-loop PIVOT protocol |
 | `P1` 接口 | 注入修复后重新满足 `I1 > I0` 和 `I2 > I3`，且 point-in-mask 抽检通过 | `I2` marker -> AnySlot/CompoSlot 式 slot marker、区域/HSV 提取、slot-level spatial token | AnySlot/CompoSlot 论文 PDF/TXT 已下载；全文搜索到仓库链接或明确记录 `official_code_missing=true`；官方仓库已 clone、pin commit、记录 license 和入口文件 |
 | `P2` 动作 | 固定 best interface arm 后，`A1 > A0`，且 `A2` 的 held-out 指标与 suff/nec margin 同向 | `A1/A2` -> CRAFT/CounterAlign/CAST 式配对构造、negative mining、discriminator/AWR | 每引入一个外部 loss 或 pair 构造，都要单独下载对应论文和官方代码；`paper_reading` 必须逐项写出“原文做法 / 我们做法 / 差异 / 风险” |
 | `P3` 完整方法 | `A2` PASS，且 `F0` 至少优于 `F1/F2/F3` 中两个，`F4` 消融显示 phase 有贡献 | `AC-VLA-lite` phase + `CompoSlot` + factor constraints 合并为 `F0` | AC-VLA、CompoSlot 及其他被合并组件的材料包全部齐全；每个升级 arm 登记 `parent_arm`、config SHA、论文来源、仓库 URL、pin commit |

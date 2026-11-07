@@ -1,5 +1,5 @@
-current_stage: I_interface_repair_final
-current_hypothesis: "cross-attention 注入没有让 action expert 读取 marker；最后一次 evidence_token query-token 注入能否产生可检测控制增益"
+current_stage: I_interface_closed
+current_hypothesis: "三种 marker 注入均无正信号；接口路线关闭，下一步做 outer-loop action-query / 第二任务裁决"
 best_arm: D0
 parent_arm: D0
 contract_status: PASS
@@ -42,6 +42,15 @@ key_metrics:
   I2_destination_margin_xattn: 0.011738941
   I3_destination_margin_xattn: 0.012078720
   I2_xattn_checkpoint_sha256: c9898baf54899eba88b5e0b73bee6d8a60f6fe89e6d263dc9fb52351d085d601
+  I0_non_gripper_mae_etoken_comparison: 0.14919899155696234
+  I1_non_gripper_mae_etoken: 0.149181223
+  I2_non_gripper_mae_etoken: 0.149163755
+  I3_non_gripper_mae_etoken: 0.149166492
+  I1_vs_I0_etoken: -0.000119
+  I2_vs_I3_etoken: -0.000018
+  I2_destination_margin_etoken: 0.012110597
+  I3_destination_margin_etoken: 0.012124856
+  I2_etoken_checkpoint_sha256: 08f88cf48ef893de29f9c65aee233a9d6def94a585f97f0eddb4202f755cee94
   point_oracle_mae_minus_none_mae_full: 0.00038389861583709717
   point_none_mae_minus_predicted_mae_full: -0.0004998192889615893
   point_shuffle_mae_minus_predicted_mae_full: -0.00023686778149567544
@@ -50,11 +59,11 @@ key_metrics:
   point_predicted_in_mask: 0.8008474576271186
 budget_used:
   training_arms: 2
-  interface_training_arms_completed: 3
-  interface_eval_smokes_completed: 6
-  interface_full_evals_completed: 7
-next_action: "只做最后一次 I2 evidence_token query-token 注入修复；失败则永久关闭接口路线"
+  interface_training_arms_completed: 4
+  interface_eval_smokes_completed: 9
+  interface_full_evals_completed: 10
+next_action: "W-I 永久关闭；先写 outer-loop PIVOT protocol，再决定 action-query 或 caddy 第二任务"
 blockers: []
 open_literature_questions:
-  - "evidence_token 的独立 query-token 是否比 common-mode addition 和 cross-attention 更能保留 marker 的选择性"
-  - "若最后一次注入仍失败，是关闭接口路线并转诊断/第二任务，还是重新审视动作头的 query 设计"
+  - "三次注入失败后，action-query/action-head 是否是比继续改 marker 更值得验证的断点"
+  - "第二任务 caddy 是否能区分单任务特例与接口设计问题"
