@@ -65,6 +65,7 @@ def evaluate_offline_eval(
     expected_destination_pairs: int,
     expected_object_pairs: int,
     expected_arm: str = "D0",
+    expected_postrun_arm: str | None = None,
 ) -> dict[str, Any]:
     postrun = load_json(postrun_path)
     offline = load_json(offline_path)
@@ -95,8 +96,8 @@ def evaluate_offline_eval(
     )
     check(
         "postrun_arm",
-        postrun.get("arm") == expected_arm,
-        expected_arm,
+        postrun.get("arm") == (expected_postrun_arm or expected_arm),
+        expected_postrun_arm or expected_arm,
         postrun.get("arm"),
     )
     check(
@@ -204,6 +205,7 @@ def evaluate_offline_eval(
             "Offline gate booleans are descriptive; closed-loop destination evidence "
             "is still required before any method claim."
         ),
+        "expected_postrun_arm": expected_postrun_arm or expected_arm,
     }
 
 
@@ -216,6 +218,7 @@ def main() -> int:
     parser.add_argument("--expected-destination-pairs", type=int, required=True)
     parser.add_argument("--expected-object-pairs", type=int, required=True)
     parser.add_argument("--expected-arm", default="D0")
+    parser.add_argument("--expected-postrun-arm", default=None)
     args = parser.parse_args()
     report = evaluate_offline_eval(
         postrun_path=args.postrun,
@@ -224,6 +227,7 @@ def main() -> int:
         expected_destination_pairs=args.expected_destination_pairs,
         expected_object_pairs=args.expected_object_pairs,
         expected_arm=args.expected_arm,
+        expected_postrun_arm=args.expected_postrun_arm,
     )
     atomic_json_write(args.output, report)
     print(
