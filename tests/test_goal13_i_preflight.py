@@ -17,6 +17,7 @@ def make_config(
     init_checkpoint: Path,
     point_checkpoint: Path | None = None,
     evidence_cross_attention: bool = False,
+    evidence_token: bool = False,
 ):
     point = {}
     freeze = "qwen_vl_interface"
@@ -35,7 +36,10 @@ def make_config(
         "seed": 17,
         "framework": {
             "point_condition": point,
-            "action_model": {"evidence_cross_attention": evidence_cross_attention},
+            "action_model": {
+                "evidence_cross_attention": evidence_cross_attention,
+                "evidence_token": evidence_token,
+            },
         },
         "datasets": {"vla_data": {"data_mix": "libero_c1_gate", "per_device_batch_size": 4}},
         "trainer": {
@@ -166,6 +170,50 @@ class Goal13IPreflightTests(unittest.TestCase):
             )
         self.assertEqual(report["status"], "INVALID")
         self.assertIn("i2_evidence_cross_attention", report["failures"])
+
+    def test_i2_evidence_token_preflight_requires_enabled_flag(self):
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            init = root / "d0.safetensors"
+            point = root / "point_head.pt"
+            init.write_bytes(b"d0")
+            point.write_bytes(b"point")
+            point_sha = hashlib.sha256(point.read_bytes()).hexdigest()
+            config = make_config(
+                root,
+                arm="I2",
+                init_checkpoint=init,
+                point_checkpoint=point,
+                evidence_cross_attention=False,
+                evidence_token=True,
+            )
+            report = evaluate(
+                config_path=config,
+                arm="I2",
+                init_checkpoint=init,
+                point_checkpoint=point,
+                trainable_modules=["action_model", "point_evidence_projector"],
+                point_checkpoint_sha256=point_sha,
+                expected_evidence_cross_attention=False,
+                expected_evidence_token=True,
+            )
+            self.assertEqual(report["status"], "PASS", report["failures"])
+
+            payload = yaml.safe_load(config.read_text())
+            payload["framework"]["action_model"]["evidence_token"] = False
+            config.write_text(yaml.safe_dump(payload))
+            report = evaluate(
+                config_path=config,
+                arm="I2",
+                init_checkpoint=init,
+                point_checkpoint=point,
+                trainable_modules=["action_model", "point_evidence_projector"],
+                point_checkpoint_sha256=point_sha,
+                expected_evidence_cross_attention=False,
+                expected_evidence_token=True,
+            )
+        self.assertEqual(report["status"], "INVALID")
+        self.assertIn("i2_evidence_token", report["failures"])
 
 
 if __name__ == "__main__":

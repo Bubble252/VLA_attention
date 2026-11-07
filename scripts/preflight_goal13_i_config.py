@@ -50,6 +50,7 @@ def evaluate(
     trainable_modules: list[str],
     point_checkpoint_sha256: str | None = None,
     expected_evidence_cross_attention: bool | None = None,
+    expected_evidence_token: bool | None = None,
 ) -> dict[str, Any]:
     config = load_yaml(config_path)
     framework = config.get("framework", {}) if isinstance(config.get("framework"), dict) else {}
@@ -143,6 +144,16 @@ def evaluate(
                 expected_evidence_cross_attention,
                 actual_cross_attention,
             )
+        if expected_evidence_token is not None:
+            actual_evidence_token = bool(action_model.get("evidence_token", False))
+            add(
+                checks,
+                failures,
+                "i2_evidence_token",
+                actual_evidence_token is expected_evidence_token,
+                expected_evidence_token,
+                actual_evidence_token,
+            )
 
     status = "PASS" if not failures else "INVALID"
     return {
@@ -165,6 +176,8 @@ def main() -> int:
     parser.add_argument("--point-checkpoint-sha256", default=None)
     parser.add_argument("--trainable-modules", required=True)
     parser.add_argument("--expect-evidence-cross-attention", action="store_true")
+    parser.add_argument("--forbid-evidence-cross-attention", action="store_true")
+    parser.add_argument("--expect-evidence-token", action="store_true")
     parser.add_argument("--output", type=Path, required=True)
     args = parser.parse_args()
     modules = [item.strip() for item in args.trainable_modules.split(",") if item.strip()]
@@ -175,7 +188,12 @@ def main() -> int:
         point_checkpoint=args.point_checkpoint,
         trainable_modules=modules,
         point_checkpoint_sha256=args.point_checkpoint_sha256,
-        expected_evidence_cross_attention=True if args.expect_evidence_cross_attention else None,
+        expected_evidence_cross_attention=(
+            False
+            if args.forbid_evidence_cross_attention
+            else True if args.expect_evidence_cross_attention else None
+        ),
+        expected_evidence_token=True if args.expect_evidence_token else None,
     )
     args.output.parent.mkdir(parents=True, exist_ok=True)
     args.output.write_text(json.dumps(report, indent=2, sort_keys=True) + "\n")

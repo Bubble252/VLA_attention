@@ -9,6 +9,8 @@ set -euo pipefail
 # Optional environment:
 #   GOAL13_RUN_TAG=xattn                    unique run/config/contract suffix
 #   GOAL13_EXPECT_EVIDENCE_CROSS_ATTENTION=1 require cross-attention in I2 preflight
+#   GOAL13_FORBID_EVIDENCE_CROSS_ATTENTION=1 require cross-attention disabled
+#   GOAL13_EXPECT_EVIDENCE_TOKEN=1           require evidence_token in I2 preflight
 #
 # I0 and I2 both start from the D0 matched checkpoint and use the same C1
 # data, steps, batch and seed. I1/I3 are evaluation-only diagnostics on I2 and
@@ -26,6 +28,8 @@ readonly SRC_CONFIG="${2:?usage: run_goal13_i_matched.sh <I0|I2> <config> [steps
 readonly STEPS="${3:-500}"
 readonly RUN_TAG="${GOAL13_RUN_TAG:-}"
 readonly EXPECT_EVIDENCE_CROSS_ATTENTION="${GOAL13_EXPECT_EVIDENCE_CROSS_ATTENTION:-0}"
+readonly FORBID_EVIDENCE_CROSS_ATTENTION="${GOAL13_FORBID_EVIDENCE_CROSS_ATTENTION:-0}"
+readonly EXPECT_EVIDENCE_TOKEN="${GOAL13_EXPECT_EVIDENCE_TOKEN:-0}"
 if [[ -n "$RUN_TAG" && ! "$RUN_TAG" =~ ^[A-Za-z0-9._-]+$ ]]; then
   echo "invalid GOAL13_RUN_TAG: $RUN_TAG" >&2
   exit 2
@@ -89,6 +93,12 @@ if [[ "$ARM" == "I2" ]]; then
 fi
 if [[ "$EXPECT_EVIDENCE_CROSS_ATTENTION" == "1" ]]; then
   PREFLIGHT_ARGS+=(--expect-evidence-cross-attention)
+fi
+if [[ "$FORBID_EVIDENCE_CROSS_ATTENTION" == "1" ]]; then
+  PREFLIGHT_ARGS+=(--forbid-evidence-cross-attention)
+fi
+if [[ "$EXPECT_EVIDENCE_TOKEN" == "1" ]]; then
+  PREFLIGHT_ARGS+=(--expect-evidence-token)
 fi
 
 "$E" "$TOOLS_DIR/preflight_goal13_i_config.py" \
