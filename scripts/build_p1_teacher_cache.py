@@ -98,29 +98,32 @@ def load_demo_states(path: Path, demo_key: str) -> np.ndarray:
         return np.asarray(handle["data"][demo_key]["states"], dtype=np.float64)
 
 
-def load_inventory(path: Path) -> dict[str, Any]:
+def load_inventory(path: Path, split: str) -> dict[str, Any]:
     payload = read_json(path)
-    rows = payload["splits"]["train"]
-    if len(rows) != 96:
-        raise ValueError(f"expected 96 train episodes, got {len(rows)}")
+    if split not in ("train", "validation"):
+        raise ValueError(f"unsupported inventory split: {split}")
+    rows = payload["splits"][split]
+    expected = 96 if split == "train" else 15
+    if len(rows) != expected:
+        raise ValueError(f"expected {expected} {split} episodes, got {len(rows)}")
     if any(is_white_right(row.get("language")) for row in rows):
-        raise ValueError("white_right found in P1-B train inventory")
+        raise ValueError(f"white_right found in P1-B {split} inventory")
     return payload
 
 
 def validate_cache_alignment(
-    cache_meta: list[dict[str, Any]], inventory: dict[str, Any]
+    cache_meta: list[dict[str, Any]], inventory: dict[str, Any], split: str
 ) -> dict[str, list[dict[str, Any]]]:
-    inventory_by_id = {str(row["episode_id"]): row for row in inventory["splits"]["train"]}
+    inventory_by_id = {str(row["episode_id"]): row for row in inventory["splits"][split]}
     by_episode: dict[str, list[dict[str, Any]]] = defaultdict(list)
     for row in cache_meta:
         episode_id = str(row["episode_id"])
         if episode_id not in inventory_by_id:
-            raise ValueError(f"cache episode missing from train inventory: {episode_id}")
+            raise ValueError(f"cache episode missing from {split} inventory: {episode_id}")
         by_episode[episode_id].append(row)
     if set(by_episode) != set(inventory_by_id):
         missing = sorted(set(inventory_by_id) - set(by_episode))
-        raise ValueError(f"train episodes missing from cache: {missing}")
+        raise ValueError(f"{split} episodes missing from cache: {missing}")
     for episode_id, rows in by_episode.items():
         rows.sort(key=lambda item: int(item["timestep"]))
         timesteps = [int(row["timestep"]) for row in rows]
@@ -153,6 +156,7 @@ def main() -> int:
     parser.add_argument("--manifest", type=Path, required=True)
     parser.add_argument("--config", type=Path, required=True)
     parser.add_argument("--output", type=Path, required=True)
+    parser.add_argument("--split", choices=("train", "validation"), default="train")
     parser.add_argument("--resolution", type=int, default=256)
     parser.add_argument("--max-episodes", type=int, default=0)
     parser.add_argument("--force", action="store_true")
@@ -165,8 +169,8 @@ def main() -> int:
     cache = load_t4_cache(args.cache)
     arrays = cache["arrays"]
     cache_meta = cache["meta"]
-    inventory = load_inventory(args.inventory)
-    episode_rows = validate_cache_alignment(cache_meta, inventory)
+    inventory = load_inventory(args.inventory, args.split)
+    episode_rows = validate_cache_alignment(cache_meta, inventory, args.split)
     prompts = prompt_metadata(args.manifest)
     config = read_json(args.config)
     metrics = config["metrics"]
@@ -176,7 +180,7 @@ def main() -> int:
     if float(arm_cfg["release_xy_m"]) != 0.03 or float(arm_cfg["release_z_m"]) != 0.05:
         raise ValueError("A10 release thresholds drifted")
 
-    inventory_by_id = {str(row["episode_id"]): row for row in inventory["splits"]["train"]}
+    inventory_by_id = {str(row["episode_id"]): row for row in inventory["splits"][args.split]}
     episode_ids = sorted(episode_rows)
     if args.max_episodes:
         episode_ids = episode_ids[: args.max_episodes]
@@ -278,7 +282,7 @@ def main() -> int:
                         "prompt": prompt,
                         "demo_key": row["demo_key"],
                         "state_index": start + timestep,
-                        "split": "train",
+                        "split": args.split,
                         "target_object": target,
                         "target_receptacle": plate,
                         "teacher_applied": telemetry["applied"],
@@ -318,21 +322,35 @@ def main() -> int:
             z_m_array,
         )
     )
+    episode_check_name = (
+        "all_train_episodes_present"
+        if args.split == "train"
+        else "all_validation_episodes_present"
+    )
+    white_check_name = (
+        "white_right_train_zero"
+        if args.split == "train"
+        else "white_right_validation_zero"
+    )
     checks = {
-        "all_train_episodes_present": len({row["episode_id"] for row in label_rows})
+        episode_check_name: len({row["episode_id"] for row in label_rows})
         == len(episode_ids),
         "transition_count_matches": len(label_rows) == int(arrays["base_action"].shape[0])
         if not args.max_episodes
         else True,
-        "white_right_train_zero": not any(is_white_right(row["language"]) for row in label_rows),
-        "release_positive_transitions_ge_50": int(release_array.sum()) >= 50,
-        "release_positive_episodes_ge_50": release_episodes >= 50,
+        white_check_name: not any(is_white_right(row["language"]) for row in label_rows),
         "plateau_bucket_nonempty": int(((delta_norm >= 0.027) & (delta_norm <= 0.035)).sum()) > 0,
         "large_bucket_nonempty": int(((delta_norm >= 0.05) & (delta_norm <= 0.10)).sum()) > 0,
         "delta_xy_abs_max_le_010": float(np.abs(delta_array).max()) <= 0.10 + 1e-6,
         "all_arrays_finite": bool(finite),
         "no_generation_errors": not errors,
     }
+    if args.split == "train":
+        checks["release_positive_transitions_ge_50"] = int(release_array.sum()) >= 50
+        checks["release_positive_episodes_ge_50"] = release_episodes >= 50
+    else:
+        checks["release_positive_transitions_gt_0"] = int(release_array.sum()) > 0
+        checks["release_positive_episodes_gt_0"] = release_episodes > 0
     status = "PASS" if all(checks.values()) else "INVALID"
     np.save(args.output / "source_index.npy", source_index_array)
     np.save(args.output / "teacher_delta_xy.npy", delta_array)
@@ -350,6 +368,7 @@ def main() -> int:
         "run_contract_status": status,
         "cache": str(args.cache),
         "inventory": str(args.inventory),
+        "inventory_split": args.split,
         "inventory_sha256": sha256_file(args.inventory),
         "manifest": str(args.manifest),
         "manifest_sha256": sha256_file(args.manifest),
