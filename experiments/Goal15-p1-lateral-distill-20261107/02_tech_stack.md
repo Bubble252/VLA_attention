@@ -104,7 +104,7 @@ P1-D：
 
 - `scripts/audit_p1_lateral_distill.py`；
 - 复用 P0 `run_episode` 和 evaluator；
-- arms：`R0/R1-CAP/R2-PRED/R3-GEO`；
+- arms：`R0/R1-CAP/R2-ROUTE/R3-GEO`；
 - 15-init 先 pilot，不直接扩 50。
 
 ## 3. 训练配置建议

@@ -40,7 +40,7 @@ Goal13 的接口层已经失败：oracle marker 都没有让 action expert 产�
 1. 先把教师标签和 student 的输入输出冻结；
 2. 先证明 student 能拟合教师的方向，不先追加接口模块；
 3. 只有 offline 方向 Gate 过了，才允许闭环；
-4. 闭环只看 `R2-PRED` 相对 `R1-CAP` 的增量，不把参数容量误写成 evidence 收益。
+4. 闭环只看 `R2-ROUTE` 相对 `R1-CAP` 的增量，不把参数容量误写成 evidence 收益。
 
 ## 4. 一个必须诚实处理的缺口
 
@@ -60,10 +60,10 @@ P0 的 backbone 是 J2/OpenVLA-OFT；Goal13 的 point head 是 Qwen/starVLA 资�
 |---|---|---|---|
 | `R0` | base policy | 无 | 闭环基线 |
 | `R1-CAP` | base action + proprio；不含图像/语言 evidence；参数量与 `R2` 对齐 | `delta_xy + release` | 排除“多参数”解释 |
-| `R2-PRED` | 图像 + 语言 + proprio + base action + predicted point/region | `delta_xy + release` | 可部署候选 |
+| `R2-ROUTE` | 图像 + 语言 + proprio + base action + predicted route centroid | `delta_xy + release` | 可部署候选 |
 | `R3-GEO` | 同 `R2`，point 换成 oracle geometry | `delta_xy + release` | 诊断上界，不部署 |
 
-`R0` 不训练；`R1-CAP`、`R2-PRED`、`R3-GEO` 同数据、同初始化、同 batch、同 step、同 seed。
+`R0` 不训练；`R1-CAP`、`R2-ROUTE`、`R3-GEO` 同数据、同初始化、同 batch、同 step、同 seed。
 
 ## 6. 不做什么
 

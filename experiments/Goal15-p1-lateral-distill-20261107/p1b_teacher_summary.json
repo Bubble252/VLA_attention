@@ -1,0 +1,96 @@
+{
+  "arrays": {
+    "source_index": [
+      11630
+    ],
+    "teacher_action_xy": [
+      11630,
+      2
+    ],
+    "teacher_delta_chunk": [
+      11630,
+      8,
+      2
+    ],
+    "teacher_delta_xy": [
+      11630,
+      2
+    ],
+    "teacher_release": [
+      11630
+    ],
+    "teacher_release_active": [
+      11630
+    ]
+  },
+  "cache": "/vepfs-mlp2/c20250405/400040/transfer/vla_attention/vla_workspace/results/K4_lite/T4_residual/cache_train_v2",
+  "config": "/vepfs-mlp2/c20250405/400040/transfer/vla_attention/repo/VLA_attention/configs/vla/k4_lite_t4b_v12_p0_authority_release.json",
+  "config_sha256": "ecb501f86b4b795d94429cc17ce21bb2461014b64a54b3b006f2c9d344cef52d",
+  "delta_bins": {
+    "counts": [
+      6593,
+      55,
+      90,
+      262,
+      4630
+    ],
+    "fractions": [
+      0.566895958727429,
+      0.004729148753224419,
+      0.007738607050730868,
+      0.022527944969905418,
+      0.39810834049871024
+    ],
+    "large_count": 262,
+    "plateau_count": 37,
+    "thresholds_m": [
+      0.01,
+      0.03,
+      0.05,
+      0.1
+    ]
+  },
+  "delta_norm_quantiles": {
+    "p00": 0.0,
+    "p10": 0.0,
+    "p100": 0.1414213627576828,
+    "p25": 0.0,
+    "p50": 0.0,
+    "p75": 0.1414213627576828,
+    "p90": 0.1414213627576828,
+    "p99": 0.1414213627576828
+  },
+  "episodes": 96,
+  "errors": [],
+  "gates": {
+    "all_arrays_finite": true,
+    "all_train_episodes_present": true,
+    "delta_xy_abs_max_le_010": true,
+    "large_bucket_nonempty": true,
+    "no_generation_errors": true,
+    "plateau_bucket_nonempty": true,
+    "release_positive_episodes_ge_50": true,
+    "release_positive_transitions_ge_50": true,
+    "transition_count_matches": true,
+    "white_right_train_zero": true
+  },
+  "inventory": "/vepfs-mlp2/c20250405/400040/transfer/vla_attention/vla_workspace/results/K4_lite/T1_router/inventory_v1/inventory.json",
+  "inventory_sha256": "23fca7dcdcb432f5d414fa076a43e1242ae03ffc9166383112bd61594dee0f0b",
+  "languages": {
+    "put the red mug on the left plate": 3657,
+    "put the red mug on the right plate": 4521,
+    "put the white mug on the left plate": 3452
+  },
+  "manifest": "/vepfs-mlp2/c20250405/400040/transfer/vla_attention/vla_workspace/data/jgate_c1/counterfactual_20261027/manifest.jsonl",
+  "manifest_sha256": "e9564ca9aef800e618e3fdb5d144892eabe9471815bbd24bae3140583946f45e",
+  "release_active_transitions": 1442,
+  "release_positive_episodes": 88,
+  "release_positive_transitions": 88,
+  "run_contract_status": "PASS",
+  "status": "PASS",
+  "teacher_arm": "A10",
+  "teacher_fine_cap": 0.1,
+  "teacher_release_xy_m": 0.03,
+  "teacher_release_z_m": 0.05,
+  "transitions": 11630
+}

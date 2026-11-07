@@ -1,0 +1,91 @@
+{
+  "status": "PASS",
+  "scope": "offline_teacher_label_cache",
+  "state_source": "hdf5_expert_replay",
+  "lengths": {
+    "meta": 11630,
+    "delta_xy": 11630,
+    "release": 11630,
+    "release_active": 11630,
+    "source_index": 11630
+  },
+  "source_index": {
+    "min": 0,
+    "max": 11629,
+    "unique": 11630,
+    "contiguous": true,
+    "meta_match": true
+  },
+  "delta": {
+    "finite": true,
+    "abs_max": 0.10000000149011612,
+    "exact_zero_count": 6590,
+    "exact_zero_fraction": 0.5666380051590714,
+    "any_axis_cap_count": 4547,
+    "any_axis_cap_fraction": 0.3909716251074807,
+    "both_axes_cap_count": 3131,
+    "both_axes_cap_fraction": 0.2692175408426483,
+    "norm_quantiles": {
+      "p00": 0.0,
+      "p25": 0.0,
+      "p50": 0.0,
+      "p75": 0.1414213627576828,
+      "p90": 0.1414213627576828,
+      "p99": 0.1414213627576828,
+      "p100": 0.1414213627576828
+    },
+    "bins": {
+      "thresholds_m": [0.01, 0.03, 0.05, 0.10],
+      "counts": [6593, 55, 90, 262, 4630],
+      "plateau_count": 37,
+      "large_count": 262
+    }
+  },
+  "release": {
+    "positive_transitions": 88,
+    "positive_episodes": 88,
+    "active_transitions": 1442
+  },
+  "teacher_status": {
+    "applied": {
+      "null": 5148,
+      "absolute_xy": 5031,
+      "release": 1442,
+      "stop_at_success_radius": 9
+    },
+    "cap_mode": {
+      "null": 6599,
+      "coarse": 3100,
+      "fine": 1931
+    }
+  },
+  "languages": {
+    "put the red mug on the left plate": {
+      "transitions": 3657,
+      "episodes": 27,
+      "zero_fraction": 0.5881870385561936,
+      "any_axis_cap_fraction": 0.37325676784249384,
+      "release": 27
+    },
+    "put the red mug on the right plate": {
+      "transitions": 4521,
+      "episodes": 34,
+      "zero_fraction": 0.5792966157929662,
+      "any_axis_cap_fraction": 0.3753594337535943,
+      "release": 33
+    },
+    "put the white mug on the left plate": {
+      "transitions": 3452,
+      "episodes": 35,
+      "zero_fraction": 0.5272305909617613,
+      "any_axis_cap_fraction": 0.43018539976825027,
+      "release": 28
+    }
+  },
+  "warnings": [
+    "state_source_is_hdf5_expert_replay_not_base_policy_closed_loop",
+    "teacher_delta_chunk_is_repeated_single_step_label_not_8_step_rollout",
+    "label_distribution_is_sharply_bimodal_zero_or_cap",
+    "release_episodes_88_of_96"
+  ]
+}

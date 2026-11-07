@@ -1,7 +1,7 @@
 # P1 执行计划
 
 **日期**：2026-11-07
-**状态**：`P1_A_PASS_P1_B_NEXT`；P1-A 已通过，只允许进入 P1-B，不训练
+**状态**：`P1_A_PASS_P1_B_PASS_P1_C_NEXT`；P1-A/P1-B 已通过；只允许进入 P1-C offline student，不启动闭环
 
 ## 1. 总体顺序
 
@@ -82,15 +82,21 @@ $W/results/K4_lite/T1_router/inventory_v1/inventory.json
 - 记录 base action、teacher delta、release、route/point evidence、proprio；
 - 保存 episode-level split。
 
+**P1-B 实现记录（2026-11-07）**：本阶段实际使用 `HDF5 expert states + cache timesteps` 重放，以确保教师标签与 `cache_train_v2` 的离线训练分布严格对齐。它属于 `offline teacher-label cache`，不是 base-policy closed-loop teacher rollout；后者留到 P1-D 或独立实验验证。该偏差已写入 `06_p1b_teacher_result.md`，后续结果必须带 `state_source=hdf5_expert_replay`。
+
+`teacher_delta_chunk` 是把同一单步教师修正复制到 8 步，不能当作真实 8-step teacher rollout；P1-C 默认只使用 `teacher_delta_xy`。
+
 ### 3.4 Gate
 
-- [ ] 96 个 training episodes 全部有标签，或缺失原因逐条记录；
-- [ ] `white_right` 计数为 0；
-- [ ] train/validation/rollout init overlap 为 0；
-- [ ] plateau 桶和大修正桶都非空；
-- [ ] release 正样本数 `>=50`，否则标 `INVALID`，不能判 release 学习失败；
-- [ ] 所有数组 finite，NaN 为 0；
-- [ ] cache manifest、行数、shape、SHA 全部记录。
+- [x] 96 个 training episodes 全部有标签，或缺失原因逐条记录；
+- [x] `white_right` 计数为 0；
+- [x] train/validation/rollout init overlap 为 0；
+- [x] plateau 桶和大修正桶都非空；
+- [x] release 正样本数 `>=50`，否则标 `INVALID`，不能判 release 学习失败；
+- [x] 所有数组 finite，NaN 为 0；
+- [x] cache manifest、行数、shape、SHA 全部记录。
+
+**P1-B 裁决**：`PASS`（离线教师缓存）。96 episodes、11,630 transitions、release `88 transitions / 88 episodes`、`white_right=0`、plateau `37`、大修正桶 `262`、无生成错误。结果见 `06_p1b_teacher_result.md`。该 PASS 只解锁 P1-C，不解锁 P1-D 或方法论文。
 
 ## 4. P1-C：offline student training
 
@@ -99,7 +105,7 @@ $W/results/K4_lite/T1_router/inventory_v1/inventory.json
 | arm | evidence | 训练 |
 |---|---|---|
 | `R1-CAP` | 无图像/语言 evidence，只有 base action/proprio；参数量与 `R2` 对齐 | 500 smoke + 2000 pilot |
-| `R2-PRED` | predicted point/region + route + proprio + base action | 500 smoke + 2000 pilot |
+| `R2-ROUTE` | predicted route centroid + proprio + base action | 500 smoke + 2000 pilot |
 | `R3-GEO` | oracle geometry | 诊断，同预算 |
 
 `R0` 不训练，直接复用 P0 `B0` 的闭环基线。
@@ -148,7 +154,7 @@ $W/results/K4_lite/T1_router/inventory_v1/inventory.json
 - 15-init manifest 与 P0 完全一致；
 - 3 calibration + 12 confirmation 分开报告；
 - seed 7；
-- arms：`R0`、`R1-CAP`、`R2-PRED`（或 `R2-ROUTE`）、`R3-GEO`；
+- arms：`R0`、`R1-CAP`、`R2-ROUTE`、`R3-GEO`；
 - release/settle 与 P0 一致：`xy=0.03`、`z=0.05`、streak `3`、settle `4`；
 - `R0` 复用 `B0` 基线，不重新训练。
 
