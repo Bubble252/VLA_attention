@@ -614,6 +614,13 @@ F4 消融成立 -> 才允许升级 AC-VLA-lite 的 phase 机制
 | `W-A` 动作组件 | 固定 best interface arm；`A1 > A0`；随后 `A2` 在 held-out 和 suff/nec margin 上同向 | CRAFT/CounterAlign/CAST 式配对构造、negative mining、discriminator/AWR（逐项按原文核对） | `A2` 未过就合并 phase；用更多参数或更长训练冒充因果增益 |
 | `W-F` 完整方法 | `A2` PASS；`F0` 至少优于 `F1/F2/F3` 中两个；`F4` 消融显示 phase 有贡献；第 13.1 节论文/代码检查完成 | 完整 `F0`、AC-VLA phase、CompoSlot 组合版 | 在 3 seeds + 第二场景前写“L3/主会方法论文已成立” |
 
+**当前执行状态（2026-11-07，Goal13）**：`D0` 契约 PASS；`D1` 契约也 PASS，但结果方向为负，`white_right` 仍为 `0/15`，C1 seen group-any 从 `13/15` 降到 `9/15`，说明 carrier 没有带来可用的 destination 因子收益，反而伴随整体到达退化。因此：
+
+- best data arm 固定为 `D0`，`D2` 跳过；
+- `W-D` **不开启**，数据组件保持 lite 版，不允许以“更接近 Scale-Up/AC-VLA”为理由继续加数据配方；
+- 下一步只能在 `D0` 上写 `I0/I1/I2/I3` 的 matched 协议；先过 `W-I`，再谈接口组件升级；
+- `D1` 的负结果必须保留为解释材料，不能因为流程上 PASS 就改写成“方法失败”或“数据无用”。详细数字见 `experiments/Goal13-autoresearch-20261107/10_d1_matched_result.md`。
+
 执行时间顺序固定为：
 
 ```text
