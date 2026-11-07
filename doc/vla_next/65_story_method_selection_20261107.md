@@ -1,7 +1,7 @@
 # 65 故事、主任务与方法选择
 
 **日期**：2026-11-07<br>
-**状态**：调查与裁决完成；不启动训练、不修改远端代码<br>
+**状态**：升级规则与外部论文准入规范已落盘；截至 2026-11-07，Goal13 接口 Gate 为 FAIL，`W-I` 关闭，不启动 `A2/F0`<br>
 **输入**：61–64 的审计、C1/J4.1/Goal11/Goal12/G2 的已有结果、2026 年近邻论文<br>
 **一句话**：主任务继续用 C1，但论文故事必须是 **“证据为什么没有控制动作”**，而不是再讲一次 “我们的 grounding 更准”。方法采用 **Data → Interface → Control 三级因果阶梯**；FAI-VLA 只有在第三级成立时才能作为主方法。
 
@@ -580,7 +580,7 @@ F0 = D1（因子数据覆盖）
 
 #### 11.4.3 组件级升级时间表
 
-“升级到更像论文”不是把更多模块塞进来，而是把当前 lite 版替换成原文的完整机制。每个组件都必须先通过本层 Gate，再升级；升级前必须完成第 13.1 节的论文/代码检查。
+“升级到更像论文”不是把更多模块塞进来，而是把当前 lite 版替换成原文的完整机制。每个组件都必须先通过本层 Gate，再升级；升级前必须完成第 13.1 节的检查清单和第 13.6 节的论文/代码准入流程。
 
 | 组件 | 当前 lite 版 | 论文近似版 | 最早升级时点 | 升级前必须看到的证据 |
 |---|---|---|---|---|
@@ -612,14 +612,37 @@ F4 消融成立 -> 才允许升级 AC-VLA-lite 的 phase 机制
 | `W-D` 数据组件 | `D0` vs `D1` 使用同一 Run Contract 完成 pilot；`D1` 在 held-out 或因子可辨识指标上优于 `D0`；seen group-any 无明显退化；`white_right` 训练计数仍为 0 | FDR/FDH 式因子诊断、bias-aware sampling、预算对齐的混合训练 | 同时加 marker/反事实；用 pilot 结果直接宣称论文级结论 |
 | `W-I` 接口组件 | 固定 best data arm；`I1 > I0`，证明动作头确实读取 marker；`I2 > I3`，证明 predicted marker 不塌缩；point-in-mask 抽检通过 | AnySlot/CompoSlot 式 slot marker、区域/HSV 提取、slot-level spatial token | 把 GT mask/point 放进部署输入；在 `I1` 无效时硬上 `I2` |
 | `W-A` 动作组件 | 固定 best interface arm；`A1 > A0`；随后 `A2` 在 held-out 和 suff/nec margin 上同向 | CRAFT/CounterAlign/CAST 式配对构造、negative mining、discriminator/AWR（逐项按原文核对） | `A2` 未过就合并 phase；用更多参数或更长训练冒充因果增益 |
-| `W-F` 完整方法 | `A2` PASS；`F0` 至少优于 `F1/F2/F3` 中两个；`F4` 消融显示 phase 有贡献；第 13.1 节论文/代码检查完成 | 完整 `F0`、AC-VLA phase、CompoSlot 组合版 | 在 3 seeds + 第二场景前写“L3/主会方法论文已成立” |
+| `W-F` 完整方法 | `A2` PASS；`F0` 至少优于 `F1/F2/F3` 中两个；`F4` 消融显示 phase 有贡献；第 13.1/13.6 节论文/代码检查完成 | 完整 `F0`、AC-VLA phase、CompoSlot 组合版 | 在 3 seeds + 第二场景前写“L3/主会方法论文已成立” |
 
-**当前执行状态（2026-11-07，Goal13）**：`D0` 契约 PASS；`D1` 契约也 PASS，但结果方向为负，`white_right` 仍为 `0/15`，C1 seen group-any 从 `13/15` 降到 `9/15`，说明 carrier 没有带来可用的 destination 因子收益，反而伴随整体到达退化。因此：
+**当前执行状态（2026-11-07，Goal13；接口层已完成判读）**：
 
-- best data arm 固定为 `D0`，`D2` 跳过；
-- `W-D` **不开启**，数据组件保持 lite 版，不允许以“更接近 Scale-Up/AC-VLA”为理由继续加数据配方；
-- 下一步只能在 `D0` 上写 `I0/I1/I2/I3` 的 matched 协议；先过 `W-I`，再谈接口组件升级；
-- `D1` 的负结果必须保留为解释材料，不能因为流程上 PASS 就改写成“方法失败”或“数据无用”。详细数字见 `experiments/Goal13-autoresearch-20261107/10_d1_matched_result.md`。
+- `D0` 契约 PASS，固定为 best data arm；`D1` 契约也 PASS，但结果方向为负，`white_right` 仍为 `0/15`，C1 seen group-any 从 `13/15` 降到 `9/15`。`W-D` 关闭，`D2` 跳过，数据组件保持 lite 版。
+- 接口层已完成 `I0/I2` 的 500-step continuation 和 `I1/I2/I3` 的完整 118 groups 离线评测；所有 arm 的 Run Contract 为 PASS，但 `gate_status=DESCRIPTIVE` 只表示结果可描述，不表示 Gate 通过。
+- `G-I1` **FAIL**：`I1` oracle marker 没有优于 `I0`；`G-I2` **FAIL**：`I2` predicted marker 没有优于 `I3` shuffle。完整数字如下：
+
+| arm | destination correct MAE | non-gripper MAE（由 7 维动作重算） | destination margin | 结论 |
+|---|---:|---:|---:|---|
+| `I0` none | `0.144959` | `0.149199` | `+0.011656` | matched baseline |
+| `I1` oracle | `0.148985` | `0.152426` | `+0.010116` | 比 `I0` 差约 `+2.16%`，无动作头 headroom |
+| `I2` predicted | `0.149226` | `0.152723` | `+0.010700` | 不优于 shuffle |
+| `I3` shuffle | `0.148852` | `0.152197` | `+0.010773` | 负控不劣于 predicted |
+
+- point head 本身不是主要瓶颈：predicted point 的 destination L1 约 `2.645 px`、object L1 约 `7.807 px`，point-in-mask 为 `0.8008`；但 point ablation 中 oracle 的 MAE 比 none 差 `0.000384`，predicted 的 MAE 比 shuffle 差 `0.000237`（JSON 字段 `predicted_minus_shuffle=-0.000237` 的实际定义是 `shuffle_mae - predicted_mae`，正数才表示 predicted 更好），完美 oracle marker 也没有改善动作。因此当前结论是“marker 没有被 action expert 有效读取”，不是“point 预测太差”。
+- `W-I` **不开启**，接口组件冻结在 lite 版；`W-A`、`W-F` 以及 `A2/A3/F0` 均不得启动。不能因为论文里使用 cross-attention、slot 或 factor loss，就跳过 `I1 > I0` 直接升级。
+- 下一步只允许一次**注入修复** arm，例如 `I2-XATTN`：保持与 `I2` 相同的 `D0` 数据、初始化、500 steps、batch 4、seed 17，只把 marker 注入方式改为 `action_model.evidence_cross_attention: true`；先跑 `I1/I2/I3` limit=2 smoke，再跑完整 118 groups。若仍无 `I1 > I0` / `I2 > I3`，只允许再做一次 `evidence_token`/append 类注入修复，随后停止这条接口路线，不再用更长训练或“更像论文”掩盖失败。
+- `D1` 的负结果必须保留为解释材料，不能因为流程上 PASS 就改写成“方法失败”或“数据无用”。接口数字见 `experiments/Goal13-autoresearch-20261107/12_interface_result.md`，数据数字见 `10_d1_matched_result.md`。
+
+**现在能否升级为论文近似版（2026-11-07）**
+
+| 组件 | 当前层级 | Gate 状态 | 现在能否升级 | 解锁条件 |
+|---|---|---|---|---|
+| 数据配方 | `D0` lite | `W-D` 关闭 | 否 | `D1` 需在 held-out 或因子可辨识指标上优于 `D0`，且 seen 不退化 |
+| point/marker 接口 | `I0/I1/I2/I3` lite | `W-I` 关闭；`G-I1/G-I2 FAIL` | 否 | 先完成一次注入修复并重新通过 `I1 > I0`、`I2 > I3` |
+| 反事实动作 | 未启动 | `W-A` 关闭 | 否 | 接口 Gate PASS 后，先证明 `A1 > A0` |
+| `AC-VLA-lite` phase | 未合并 | `W-F` 关闭 | 否 | `A2` PASS，且 `F4` 消融证明 phase 有贡献 |
+| `CompoSlot` | 未升级 | `W-I` 关闭 | 否 | `I2` 相对 `I0/I3` 稳定有增益，slot 不塌缩 |
+| `A3` 去混淆 | 可选，未启动 | 未进入 | 否 | `A2` 通过且仍有 visual shortcut |
+| 完整 `F0` | 未合并 | 未进入 | 否 | `A2` PASS，`F0 > F1/F2/F3` 中至少两个，第二场景同向 |
 
 执行时间顺序固定为：
 
@@ -685,7 +708,7 @@ VLA 可能已经“看见”正确目标，却没有让证据控制动作。我�
 - GT mask/point 只进训练 loss，不进部署输入；
 - validation/rollout init state 不进训练；
 - 15 条 pilot 只作筛选，正式结论用 30/50 + 3 seeds。
-- 任何外部论文方法在使用前，必须按第 13.0/13.1 节下载论文 PDF/TXT、找到并下载官方代码仓库、pin commit、写 paper_reading；缺材料则该 arm 为 INVALID。
+- 任何外部论文方法在使用前，必须按第 13.0/13.1/13.6 节下载论文 PDF/TXT、找到并下载官方代码仓库、pin commit、写 paper_reading；缺材料则该 arm 为 INVALID。
 
 停止/转向：
 - D0 不能复现 0/15：先查 data/rollout，不判方法失败；
@@ -824,7 +847,7 @@ D0 vs D1
 - 用 paper-search 查 3 组不同措辞的问题；
 - 用 scoop-check 拆 problem / mechanism / insight / domain；
 - 保存到 literature/survey.md；
-- 任何准备借用的方法，必须按第 13 节下载论文 PDF/TXT、查正文中的 code/project page、克隆官方仓库并 pin commit；没有代码就标记 official_code_missing；
+- 任何准备借用的方法，必须按第 13 节（含 13.6 的固定操作）下载论文 PDF/TXT、查正文中的 code/project page、克隆官方仓库并 pin commit；没有代码就标记 official_code_missing；
 - 在 references/paper_reading/{slug}.md 写“原文做法 / 我们做法 / 差异 / 风险”，未完成不得进入训练；
 - 只提出最多 2 个可执行的新假设；
 - 不得把“论文里有效”直接当作本项目有效。
@@ -998,6 +1021,79 @@ literature/survey.md            # 所有候选论文的摘要与相关性
 
 这张记录同时更新到 `references/repositories.yaml`；下载/归档状态更新到 `references/download_manifest.md`。论文方法进入实验前，`paper_reading/{slug}.md` 必须已经写完“原文做法 / 我们做法 / 差异 / 风险 / 复现等级”。
 
+### 13.6 一次外部方法准入的固定操作
+
+只要某个 arm 使用了外部论文的模块、loss、数据构造、评测协议或训练 recipe，就先完成本节，再改我们自己的训练代码。不能先用“论文里大概是这样”写一版，再回头补材料。
+
+#### 13.6.1 下载论文并全文找代码
+
+```bash
+cd /home/bubble/类脑计算/VLM终局
+SLUG=acvla                 # 例如 acvla / composlot / craft / counteralign
+ARXIV_ID=2607.15714        # 替换成论文的真实 arXiv ID
+mkdir -p papers references/papers references/repos references/paper_reading literature
+
+# 下载 PDF，并抽取可全文搜索的文本
+curl -L --fail --retry 3 "https://arxiv.org/pdf/${ARXIV_ID}" -o "papers/${SLUG}.pdf"
+pdftotext -layout "papers/${SLUG}.pdf" "papers/${SLUG}.txt"
+
+# 不要只搜首页；正文、脚注、附录、补充材料和参考文献都要一起搜
+rg -n -i 'github\.com|gitlab|code|implementation|project page|supplementary|openreview|huggingface|zenodo' \
+  "papers/${SLUG}.txt"
+
+# 如果论文给了多个仓库，逐个打开确认；优先作者/官方实验室仓库
+```
+
+找到链接后，必须记录它出现在论文的哪个位置，例如 `paper §4.2`、`appendix A.1`、`footnote 2` 或 `OpenReview supplementary`。如果链接只指向项目页、OpenReview 或 HuggingFace，继续追到实际 GitHub/GitLab 仓库；不能停在项目页。
+
+#### 13.6.2 克隆并 pin 官方代码
+
+```bash
+git clone <repo_url> "references/repos/${SLUG}"
+git -C "references/repos/${SLUG}" remote get-url origin
+git -C "references/repos/${SLUG}" rev-parse HEAD
+git -C "references/repos/${SLUG}" log -1 --format='%H %ad %s' --date=iso
+```
+
+克隆后至少阅读以下内容，不能只读 README：
+
+- `README`、`requirements` / `environment`、`config`；
+- 论文对应模块的模型定义和 forward 路径；
+- loss、数据 pipeline、训练入口、评测入口；
+- 与论文公式/伪代码对应的变量、超参数和默认值。
+
+如果找到的是第三方复现仓库，必须在记录里写 `official: false`，并在文件名或目录名上标 `-unofficial`；不能写成“官方实现”。如果论文没有代码，写 `official_code_missing: true`，只能按论文伪代码实现并标 `pseudocode`，不得声称 `faithful_reproduction`。
+
+#### 13.6.3 写完阅读记录后才能进入 arm
+
+`references/paper_reading/{slug}.md` 至少包含以下六段：
+
+```markdown
+# {paper title}
+## 1. 原文做法
+## 2. 官方代码结构与关键路径
+## 3. 我们的做法
+## 4. 与原文的差异
+## 5. 风险与失败模式
+## 6. 复现等级与证据边界
+```
+
+然后在 `references/repositories.yaml`、`references/repo_versions.md` 和 `references/download_manifest.md` 中补齐 `paper_downloaded`、`repo_url`、`repo_found_in`、`repo_commit`、`license`、`paper_reading`、`reproduction_level`。这些字段任意一项缺失，该 arm 只能标为 `INVALID`，不能进入训练或 Gate 判读。
+
+#### 13.6.4 硬阻断条件
+
+以下情况一律不允许启动新 arm：
+
+- 只有论文链接、摘要或二手解读，没有本地 PDF/TXT；
+- 只搜了论文首页，没有检查正文、脚注、附录和 OpenReview 附件；
+- 论文正文或补充材料给了代码链接，但没有继续追踪到实际仓库；
+- 仓库没有 clone、没有 pin commit，或没有记录 license；
+- 没有写 `paper_reading/{slug}.md`，或没有写与原文的差异；
+- 把第三方复现仓库写成官方实现；
+- 因为没有官方代码，就把“按论文思路实现”写成 `faithful_reproduction`。
+
+这些都按 Run Contract 的 `INVALID` 处理，不进入 Gate；不能用“先跑一下看看”绕过。
+
 ---
 
 ## 14. 证据索引
@@ -1031,12 +1127,16 @@ literature/survey.md            # 所有候选论文的摘要与相关性
 
 ## 15. Git
 
-本文件为规划文档；提交时只提交本文档，不提交 checkpoint、视频、大数据或无关改动。需要提交时：
+本文件与 Goal13 接口层结果记录需要一起提交；不提交 checkpoint、视频、大数据或无关改动。需要提交时：
 
 ```bash
 cd /home/bubble/类脑计算/VLM终局
 git status --short
-git add doc/vla_next/65_story_method_selection_20261107.md
+git add \
+  doc/vla_next/65_story_method_selection_20261107.md \
+  experiments/Goal13-autoresearch-20261107/12_interface_result.md \
+  experiments/Goal13-autoresearch-20261107/research-state.yaml \
+  experiments/Goal13-autoresearch-20261107/research-log.md
 git diff --cached --check
-git commit -m "docs(vla): define paper-level component upgrade gates"
+git commit -m "docs(vla): record interface gate failure and paper upgrade rules"
 ```

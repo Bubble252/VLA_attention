@@ -1,6 +1,6 @@
 # 12 接口层结果：I0 / I1 / I2 / I3
 
-**状态**：进行中。`I0/I2` 已完成并通过 smoke；`I1/I2/I3` limit=2 smoke 已完成；尚待完整 118 groups。<br>
+**状态**：接口层已完成正式判读。`I0/I2` 的 500-step continuation、`I1/I2/I3` 的完整 118 groups 均已完成；Run Contract 全部 PASS，但 `G-I1/G-I2` **FAIL**，`W-I` 不开启，`A2/F0` 冻结。<br>
 **协议**：[11_i_interface_protocol.md](11_i_interface_protocol.md)<br>
 **主数据臂**：`D0`（D1 已关闭，不进入接口层）<br>
 **判读规则**：500-step 与 limit=2 只用于链路检查，不能作为方法 Gate。
@@ -72,9 +72,9 @@
 | predicted MAE | 0.074212 |
 | oracle MAE | 0.074632 |
 | shuffle MAE | 0.073522 |
-| predicted - none | -0.000594，95% CI [-0.003436, 0.002247] |
-| predicted - shuffle | -0.000690，95% CI [-0.001706, 0.000326] |
-| oracle - none | -0.001014 |
+| `predicted_minus_none`（`none_mae - predicted_mae`，正=predicted 更好） | -0.000594，95% CI [-0.003436, 0.002247] |
+| `predicted_minus_shuffle`（`shuffle_mae - predicted_mae`，正=predicted 更好） | -0.000690，95% CI [-0.001706, 0.000326] |
+| `oracle_mae - none_mae`（负=oracle 更好） | -0.001014 |
 | predicted point L1 | 1.943 px |
 | predicted point-in-mask | 1.000 |
 
@@ -90,10 +90,73 @@
 
 `I2` 与 `I3` 的 destination margin 几乎相同，且 CI 都跨 0；这与 point ablation 的负向结果一致。当前只能记为“预注册 smoke 通过、方法方向未证实”。
 
-## 4. 下一步
+## 4. 完整 118 groups 结果
 
-1. 对 `I1/I2/I3` 依次跑完整 118 groups / 78+78 pairs；
-2. 用完整结果判断 `I1 > I0` 是否有动作头 headroom；
-3. 若 `I1 <= I0`，停止 A2，先修 marker 注入位置或 action head；
-4. 若 `I1 > I0` 但 `I2 <= I3`，修 point head/接口，不进入控制层；
-5. 只有接口 Gate 通过，才允许进入 A2/F0。
+`I0/I1/I2/I3` 均使用 118 个 validation groups、78 个 destination pairs 和 78 个 object pairs。四份 contract 的 `contract_status` 均为 `PASS`，`failures=[]`；`gate_status=DESCRIPTIVE` 只表示描述性契约成立，不是 Gate PASS。
+
+### 4.1 destination 主指标
+
+non-gripper MAE 按 7 维动作的 `(7 × correct_mae - gripper_mae) / 6` 重算。这个值用于接口 Gate，不能只看总 MAE。
+
+| arm | destination correct MAE | non-gripper MAE | destination margin | margin 95% CI |
+|---|---:|---:|---:|---|
+| `I0` none | `0.144959` | `0.149199` | `+0.011656` | `[0.005462, 0.018087]` |
+| `I1` oracle | `0.148985` | `0.152426` | `+0.010116` | `[0.004184, 0.017882]` |
+| `I2` predicted | `0.149226` | `0.152723` | `+0.010700` | `[0.004433, 0.018365]` |
+| `I3` shuffle | `0.148852` | `0.152197` | `+0.010773` | `[0.004424, 0.018104]` |
+
+解读：
+
+- `I1` 相对 `I0` 的 non-gripper MAE 差约 `+2.16%`，不是协议要求的改善 `>=10%`，因此 `G-I1 FAIL`。
+- `I2` 的 non-gripper MAE 比 `I3` 差约 `+0.35%`，destination margin 也略低于 `I3`，因此 `G-I2 FAIL`。
+- 所有 arm 的 margin CI 都为正，只说明语言配对本身有信号；这不是 marker 有效的证据，因为 `I0` 和 `I3` 也有同样方向。
+
+### 4.2 point ablation 与 point 质量
+
+同一份 `I2` checkpoint 上切换 none/oracle/predicted/shuffle marker，结果如下：
+
+| marker | MAE | MAE 差：marker - none | MAE 差：marker - shuffle |
+|---|---:|---:|---:|
+| none | `0.148574` | — | — |
+| oracle | `0.148958` | `+0.000384`（更差） | — |
+| predicted | `0.149074` | `+0.000500`（更差） | `+0.000237`（更差） |
+| shuffle | `0.148837` | — | — |
+
+JSON 里的 `predicted_minus_none` 和 `predicted_minus_shuffle` 实际分别计算 `none_mae - predicted_mae`、`shuffle_mae - predicted_mae`，所以正数才表示 predicted 更好；本次两个值都是负数，表示 predicted 的 MAE 反而更高。对应 95% CI 为 `[-0.001544, 0.000681]` 和 `[-0.000603, 0.000157]`，都没有正收益信号。
+
+point head 本身并不差：
+
+| 指标 | predicted | shuffle | oracle |
+|---|---:|---:|---:|
+| destination L1 | `2.645 px` | `2.654 px` | `0` |
+| object L1 | `7.807 px` | `14.440 px` | `0` |
+| point-in-mask | `0.8008` | `0.7076` | `1.0` |
+
+因此当前主要问题不是“point head 预测不准”，而是 **action expert 没有把 marker 变成动作控制**。完美 oracle marker 也没有优于 none，进一步排除了“只修 point head 就够”的解释。
+
+## 5. 正式裁决与下一步
+
+### 5.1 Gate 裁决
+
+| Gate | 条件 | 结果 | 裁决 |
+|---|---|---|---|
+| `G-I1` | `I1` non-gripper MAE 相对 `I0` 改善 `>=10%` | 实际差约 `+2.16%` | **FAIL** |
+| `G-I2` | `I2 > I3` | 实际 `I2` 略差于 `I3` | **FAIL** |
+| `G-I3` | shuffle 不优于 predicted；none 不优于 predicted | 负控成立，predicted 没有优势 | **FAIL（无正信号）** |
+| 幅度检查 | translation/rotation/gripper 不塌缩 | `I0/I1/I2/I3` 均未出现冻结 | PASS（仅链路） |
+
+结论：接口层 Gate 失败，`W-I` 不开启；不能进入 `A2/A3/F0`，也不能把 `AC-VLA-lite`、`CompoSlot` 或 factor loss 升级成论文近似版。
+
+### 5.2 唯一允许的下一步
+
+按 `65` 的停止规则，先做一次 **marker 注入修复**，不增加新 loss、不换数据、不延长训练。
+
+建议新 arm：`I2-XATTN`。
+
+- parent：`I2` 的同一 D0 数据和初始化；
+- 训练预算：500 steps、batch 4、seed 17，与 `I2` matched；
+- 唯一变量：把当前 common-mode evidence addition 改为 `action_model.evidence_cross_attention: true`；
+- 先跑 `I1/I2/I3` limit=2 smoke，再跑完整 118 groups；
+- 通过条件仍是 `I1 > I0` 且 `I2 > I3`；若仍失败，只允许再做一次 `evidence_token`/append 类注入修复，随后停止这条接口路线。
+
+在注入修复通过前，不启动 A2，不启动 F0，不把接口组件升级为 AnySlot/CompoSlot 式实现。详细历史结果文件在 `results/star13_i*_offline_full*.json`，接口阈值见 [11_i_interface_protocol.md](11_i_interface_protocol.md)。

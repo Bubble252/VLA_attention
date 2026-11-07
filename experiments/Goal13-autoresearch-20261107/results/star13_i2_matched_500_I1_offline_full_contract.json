@@ -1,0 +1,229 @@
+{
+  "arm": "I1",
+  "checks": {
+    "all_metrics_finite": {
+      "actual": [],
+      "detail": "",
+      "expected": [],
+      "passed": true
+    },
+    "checkpoint_path": {
+      "actual": "/vepfs-mlp2/c20250405/400040/transfer/vla_attention/results/star105_goal13_20261107/checkpoints/star13_i2_matched_500/final_model/model.safetensors",
+      "detail": "",
+      "expected": "/vepfs-mlp2/c20250405/400040/transfer/vla_attention/results/star105_goal13_20261107/checkpoints/star13_i2_matched_500/final_model/model.safetensors",
+      "passed": true
+    },
+    "checkpoint_sha256": {
+      "actual": "1112960e559964e1f81639d01bfc4e403f795f0262e6051a45b3092c1c1d13e6",
+      "detail": "",
+      "expected": "1112960e559964e1f81639d01bfc4e403f795f0262e6051a45b3092c1c1d13e6",
+      "passed": true
+    },
+    "config_path": {
+      "actual": "/vepfs-mlp2/c20250405/400040/transfer/vla_attention/results/star105_goal13_20261107/configs/goal13_i2_matched_500_snapshot.yaml",
+      "detail": "",
+      "expected": "/vepfs-mlp2/c20250405/400040/transfer/vla_attention/results/star105_goal13_20261107/configs/goal13_i2_matched_500_snapshot.yaml",
+      "passed": true
+    },
+    "config_sha256": {
+      "actual": "4fca007051367ad6e916f9881974e1701ee78c5a6cd982bd8d8e78d0a68e9e3f",
+      "detail": "",
+      "expected": "4fca007051367ad6e916f9881974e1701ee78c5a6cd982bd8d8e78d0a68e9e3f",
+      "passed": true
+    },
+    "destination_action_amplitude_ratio_present": {
+      "actual": 1.0073797702789307,
+      "detail": "",
+      "expected": "number",
+      "passed": true
+    },
+    "destination_correct_mae_present": {
+      "actual": 0.148985356092453,
+      "detail": "",
+      "expected": "number",
+      "passed": true
+    },
+    "destination_gripper_amplitude_ratio_present": {
+      "actual": 0.9261564612388611,
+      "detail": "",
+      "expected": "number",
+      "passed": true
+    },
+    "destination_margin_mean_present": {
+      "actual": 0.010115647688508034,
+      "detail": "",
+      "expected": "number",
+      "passed": true
+    },
+    "destination_pair_count": {
+      "actual": 78,
+      "detail": "",
+      "expected": 78,
+      "passed": true
+    },
+    "destination_pair_count_present": {
+      "actual": 78,
+      "detail": "",
+      "expected": "number",
+      "passed": true
+    },
+    "destination_rotation_amplitude_ratio_present": {
+      "actual": 0.8564133048057556,
+      "detail": "",
+      "expected": "number",
+      "passed": true
+    },
+    "destination_translation_amplitude_ratio_present": {
+      "actual": 1.1030811071395874,
+      "detail": "",
+      "expected": "number",
+      "passed": true
+    },
+    "num_groups": {
+      "actual": 118,
+      "detail": "",
+      "expected": 118,
+      "passed": true
+    },
+    "object_action_amplitude_ratio_present": {
+      "actual": 1.0018653869628906,
+      "detail": "",
+      "expected": "number",
+      "passed": true
+    },
+    "object_correct_mae_present": {
+      "actual": 0.15206223726272583,
+      "detail": "",
+      "expected": "number",
+      "passed": true
+    },
+    "object_gripper_amplitude_ratio_present": {
+      "actual": 0.8689125776290894,
+      "detail": "",
+      "expected": "number",
+      "passed": true
+    },
+    "object_margin_mean_present": {
+      "actual": 0.009792763739824295,
+      "detail": "",
+      "expected": "number",
+      "passed": true
+    },
+    "object_pair_count": {
+      "actual": 78,
+      "detail": "",
+      "expected": 78,
+      "passed": true
+    },
+    "object_pair_count_present": {
+      "actual": 78,
+      "detail": "",
+      "expected": "number",
+      "passed": true
+    },
+    "object_rotation_amplitude_ratio_present": {
+      "actual": 0.9216957092285156,
+      "detail": "",
+      "expected": "number",
+      "passed": true
+    },
+    "object_translation_amplitude_ratio_present": {
+      "actual": 1.0629717111587524,
+      "detail": "",
+      "expected": "number",
+      "passed": true
+    },
+    "offline_arm": {
+      "actual": "I1",
+      "detail": "",
+      "expected": "I1",
+      "passed": true
+    },
+    "offline_schema": {
+      "actual": "goal12-c1-counterfactual-offline-v1",
+      "detail": "",
+      "expected": "goal12-c1-counterfactual-offline-v1",
+      "passed": true
+    },
+    "pair_result_kinds": {
+      "actual": [
+        "destination",
+        "object"
+      ],
+      "detail": "",
+      "expected": [
+        "destination",
+        "object"
+      ],
+      "passed": true
+    },
+    "postrun_arm": {
+      "actual": "I2",
+      "detail": "",
+      "expected": "I2",
+      "passed": true
+    },
+    "postrun_status": {
+      "actual": "PASS",
+      "detail": "",
+      "expected": "PASS",
+      "passed": true
+    }
+  },
+  "contract_status": "PASS",
+  "created_at": "2026-11-07T10:46:35.330555+00:00",
+  "expected": {
+    "destination_pairs": 78,
+    "groups": 118,
+    "object_pairs": 78
+  },
+  "expected_postrun_arm": "I2",
+  "failures": [],
+  "gate_status": "DESCRIPTIVE",
+  "interpretation": "The full paired evaluator ran on the expected group and pair counts. Offline gate booleans are descriptive; closed-loop destination evidence is still required before any method claim.",
+  "metrics": {
+    "destination": {
+      "action_amplitude_ratio": 1.0073797702789307,
+      "correct_mae": 0.148985356092453,
+      "gripper_amplitude_ratio": 0.9261564612388611,
+      "margin_mean": 0.010115647688508034,
+      "pair_count": 78,
+      "rotation_amplitude_ratio": 0.8564133048057556,
+      "translation_amplitude_ratio": 1.1030811071395874
+    },
+    "object": {
+      "action_amplitude_ratio": 1.0018653869628906,
+      "correct_mae": 0.15206223726272583,
+      "gripper_amplitude_ratio": 0.8689125776290894,
+      "margin_mean": 0.009792763739824295,
+      "pair_count": 78,
+      "rotation_amplitude_ratio": 0.9216957092285156,
+      "translation_amplitude_ratio": 1.0629717111587524
+    }
+  },
+  "num_groups": 118,
+  "num_pairs": {
+    "destination": 78,
+    "object": 78
+  },
+  "offline": {
+    "path": "/vepfs-mlp2/c20250405/400040/transfer/vla_attention/results/star105_goal13_20261107/evals/star13_i2_matched_500_I1_offline_full.json",
+    "sha256": "ecc5c16568c7b5043bf29db7297589fe354398a12dc029c6811f073d700b51eb"
+  },
+  "offline_gate": {
+    "destination_margin_positive_with_ci": true,
+    "object_margin_positive": true,
+    "point_oracle_beats_none": false,
+    "point_predicted_beats_none": false,
+    "point_predicted_beats_shuffle": false,
+    "region_predicted_action_beats_none": false,
+    "region_predicted_action_beats_shuffle": false,
+    "region_predicted_mask_beats_constant": false,
+    "region_predicted_mask_beats_shuffle": false
+  },
+  "postrun": {
+    "path": "/vepfs-mlp2/c20250405/400040/transfer/vla_attention/results/star105_goal13_20261107/contracts/I2_matched_500_postrun.json",
+    "sha256": "8d864f011b17a7f03b0ab6f0274058789bbae2fa3459779573e583201199683d"
+  },
+  "schema": "goal13-offline-eval-contract-v1"
+}

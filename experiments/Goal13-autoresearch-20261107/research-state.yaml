@@ -1,8 +1,9 @@
-current_stage: I_interface
-current_hypothesis: "D0 上，显式 point marker 是否能被动作专家读取，并保留 predicted marker 的语义"
+current_stage: I_interface_repair
+current_hypothesis: "接口失败主要来自 marker 注入过弱，而不是 point head 精度；cross-attention 注入能否让 action expert 读取 marker"
 best_arm: D0
 parent_arm: D0
 contract_status: PASS
+interface_gate: FAIL
 primary_metric: "I1 non-gripper MAE vs I0; I2 vs I3"
 key_metrics:
   D0_c1_group_any: "13/15"
@@ -18,14 +19,33 @@ key_metrics:
   I1_point_results_present: true
   I2_point_results_present: true
   I3_point_results_present: true
-  point_predicted_minus_none_limit2: -0.0005943886935710907
-  point_predicted_minus_shuffle_limit2: -0.0006903968751430511
+  point_none_minus_predicted_limit2: -0.0005943886935710907
+  point_shuffle_minus_predicted_limit2: -0.0006903968751430511
+  I0_destination_correct_mae_full: 0.14495909214019775
+  I1_destination_correct_mae_full: 0.148985356092453
+  I2_destination_correct_mae_full: 0.1492258608341217
+  I3_destination_correct_mae_full: 0.14885231852531433
+  I0_non_gripper_mae_full: 0.14919899155696234
+  I1_non_gripper_mae_full: 0.15242551267147064
+  I2_non_gripper_mae_full: 0.15272307147582373
+  I3_non_gripper_mae_full: 0.1521973262230555
+  I0_destination_margin_full: 0.011656230315566063
+  I1_destination_margin_full: 0.010115647688508034
+  I2_destination_margin_full: 0.01069987565279007
+  I3_destination_margin_full: 0.010772704146802425
+  point_oracle_mae_minus_none_mae_full: 0.00038389861583709717
+  point_none_mae_minus_predicted_mae_full: -0.0004998192889615893
+  point_shuffle_mae_minus_predicted_mae_full: -0.00023686778149567544
+  point_predicted_destination_l1_px: 2.644501209259033
+  point_predicted_object_l1_px: 7.806859016418457
+  point_predicted_in_mask: 0.8008474576271186
 budget_used:
   training_arms: 2
   interface_training_arms_completed: 2
   interface_eval_smokes_completed: 3
-  interface_full_evals_completed: 0
-next_action: "跑 I1/I2/I3 完整 118 groups，判定接口 Gate"
+  interface_full_evals_completed: 4
+next_action: "只做一次 I2-XATTN marker 注入修复；先 smoke，再完整 118 groups"
 blockers: []
 open_literature_questions:
-  - "若 I1 > I0 但 I2 <= I3，优先修 point head 还是 marker 注入位置"
+  - "GR00T_ActionHeader 的 evidence_cross_attention 是否比当前 common-mode addition 更适合 point marker"
+  - "若 cross-attention 仍失败，evidence_token/append 是否是最后一个合理注入修复"
