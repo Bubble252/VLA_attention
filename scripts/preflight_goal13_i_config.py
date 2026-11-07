@@ -49,6 +49,7 @@ def evaluate(
     point_checkpoint: Path | None,
     trainable_modules: list[str],
     point_checkpoint_sha256: str | None = None,
+    expected_evidence_cross_attention: bool | None = None,
 ) -> dict[str, Any]:
     config = load_yaml(config_path)
     framework = config.get("framework", {}) if isinstance(config.get("framework"), dict) else {}
@@ -59,6 +60,7 @@ def evaluate(
         else {}
     )
     point = framework.get("point_condition", {}) if isinstance(framework.get("point_condition"), dict) else {}
+    action_model = framework.get("action_model", {}) if isinstance(framework.get("action_model"), dict) else {}
     lr = trainer.get("learning_rate", {}) if isinstance(trainer.get("learning_rate"), dict) else {}
     freeze = str(trainer.get("freeze_modules", ""))
     checks: dict[str, Any] = {}
@@ -131,6 +133,16 @@ def evaluate(
             ["action_model", "point_evidence_projector"],
             trainable_modules,
         )
+        if expected_evidence_cross_attention is not None:
+            actual_cross_attention = bool(action_model.get("evidence_cross_attention", False))
+            add(
+                checks,
+                failures,
+                "i2_evidence_cross_attention",
+                actual_cross_attention is expected_evidence_cross_attention,
+                expected_evidence_cross_attention,
+                actual_cross_attention,
+            )
 
     status = "PASS" if not failures else "INVALID"
     return {
@@ -152,6 +164,7 @@ def main() -> int:
     parser.add_argument("--point-checkpoint", type=Path, default=None)
     parser.add_argument("--point-checkpoint-sha256", default=None)
     parser.add_argument("--trainable-modules", required=True)
+    parser.add_argument("--expect-evidence-cross-attention", action="store_true")
     parser.add_argument("--output", type=Path, required=True)
     args = parser.parse_args()
     modules = [item.strip() for item in args.trainable_modules.split(",") if item.strip()]
@@ -162,6 +175,7 @@ def main() -> int:
         point_checkpoint=args.point_checkpoint,
         trainable_modules=modules,
         point_checkpoint_sha256=args.point_checkpoint_sha256,
+        expected_evidence_cross_attention=True if args.expect_evidence_cross_attention else None,
     )
     args.output.parent.mkdir(parents=True, exist_ok=True)
     args.output.write_text(json.dumps(report, indent=2, sort_keys=True) + "\n")

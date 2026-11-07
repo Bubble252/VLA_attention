@@ -6,6 +6,10 @@ set -euo pipefail
 #   bash server/run_goal13_i_matched.sh I0 <config> [steps]
 #   bash server/run_goal13_i_matched.sh I2 <config> [steps]
 #
+# Optional environment:
+#   GOAL13_RUN_TAG=xattn                    unique run/config/contract suffix
+#   GOAL13_EXPECT_EVIDENCE_CROSS_ATTENTION=1 require cross-attention in I2 preflight
+#
 # I0 and I2 both start from the D0 matched checkpoint and use the same C1
 # data, steps, batch and seed. I1/I3 are evaluation-only diagnostics on I2 and
 # are not launched here.
@@ -20,16 +24,23 @@ readonly TOOLS_DIR="${GOAL13_TOOLS:-/tmp/goal13_tools}"
 readonly ARM="${1:?usage: run_goal13_i_matched.sh <I0|I2> <config> [steps]}"
 readonly SRC_CONFIG="${2:?usage: run_goal13_i_matched.sh <I0|I2> <config> [steps]}"
 readonly STEPS="${3:-500}"
+readonly RUN_TAG="${GOAL13_RUN_TAG:-}"
+readonly EXPECT_EVIDENCE_CROSS_ATTENTION="${GOAL13_EXPECT_EVIDENCE_CROSS_ATTENTION:-0}"
+if [[ -n "$RUN_TAG" && ! "$RUN_TAG" =~ ^[A-Za-z0-9._-]+$ ]]; then
+  echo "invalid GOAL13_RUN_TAG: $RUN_TAG" >&2
+  exit 2
+fi
+readonly RUN_SUFFIX="${RUN_TAG:+-${RUN_TAG}}"
 case "$ARM" in
   I0) readonly MARKER_MODE=none; readonly MARKER_SOURCE=none; readonly TRAINABLE_MODULES=action_model; readonly ARM_LOWER=i0 ;;
   I2) readonly MARKER_MODE=predicted; readonly MARKER_SOURCE=point_head; readonly TRAINABLE_MODULES=action_model,point_evidence_projector; readonly ARM_LOWER=i2 ;;
   *) echo "unsupported training arm: $ARM (only I0/I2 train)" >&2; exit 2 ;;
 esac
 
-readonly RUN_ID="star13_${ARM_LOWER}_matched_${STEPS}"
-readonly SNAPSHOT="$G13/configs/goal13_${ARM_LOWER}_matched_${STEPS}_snapshot.yaml"
-readonly CONTRACT="$G13/contracts/${ARM}_matched_${STEPS}_contract.json"
-readonly PREFLIGHT="$G13/contracts/${ARM}_matched_${STEPS}_preflight.json"
+readonly RUN_ID="star13_${ARM_LOWER}_matched_${STEPS}${RUN_SUFFIX}"
+readonly SNAPSHOT="$G13/configs/goal13_${ARM_LOWER}_matched_${STEPS}${RUN_SUFFIX}_snapshot.yaml"
+readonly CONTRACT="$G13/contracts/${ARM}_matched_${STEPS}${RUN_SUFFIX}_contract.json"
+readonly PREFLIGHT="$G13/contracts/${ARM}_matched_${STEPS}${RUN_SUFFIX}_preflight.json"
 readonly LOG="$G13/logs/${RUN_ID}.log"
 readonly RUN="$G13/checkpoints/$RUN_ID"
 readonly CKPT="$RUN/final_model/model.safetensors"
@@ -72,8 +83,12 @@ fi
 readonly CONFIG_SHA="$(sha256sum "$SNAPSHOT" | cut -d' ' -f1)"
 
 POINT_ARGS=()
+PREFLIGHT_ARGS=()
 if [[ "$ARM" == "I2" ]]; then
   POINT_ARGS=(--point-checkpoint "$POINT" --point-checkpoint-sha256 "$POINT_SHA")
+fi
+if [[ "$EXPECT_EVIDENCE_CROSS_ATTENTION" == "1" ]]; then
+  PREFLIGHT_ARGS+=(--expect-evidence-cross-attention)
 fi
 
 "$E" "$TOOLS_DIR/preflight_goal13_i_config.py" \
@@ -81,6 +96,7 @@ fi
   --arm "$ARM" \
   --init-checkpoint "$D0" \
   "${POINT_ARGS[@]}" \
+  "${PREFLIGHT_ARGS[@]}" \
   --trainable-modules "$TRAINABLE_MODULES" \
   --output "$PREFLIGHT"
 
@@ -172,19 +188,19 @@ grep -q "STAR105_RUNTIME_CONFIG_SHA ${CONFIG_SHA}" "$LOG" || { echo "runtime con
 
 "$E" "$TOOLS_DIR/check_goal13_checkpoint_health.py" \
   --checkpoint "$CKPT" \
-  --output "$G13/contracts/${ARM}_matched_${STEPS}_checkpoint_health.json"
+  --output "$G13/contracts/${ARM}_matched_${STEPS}${RUN_SUFFIX}_checkpoint_health.json"
 
 "$E" "$TOOLS_DIR/verify_goal13_postrun.py" \
   --contract "$CONTRACT" \
   --run-dir "$RUN" \
   --train-log "$LOG" \
   --config-snapshot "$SNAPSHOT" \
-  --checkpoint-health "$G13/contracts/${ARM}_matched_${STEPS}_checkpoint_health.json" \
-  --output "$G13/contracts/${ARM}_matched_${STEPS}_postrun.json" \
+  --checkpoint-health "$G13/contracts/${ARM}_matched_${STEPS}${RUN_SUFFIX}_checkpoint_health.json" \
+  --output "$G13/contracts/${ARM}_matched_${STEPS}${RUN_SUFFIX}_postrun.json" \
   --expected-steps "$STEPS" \
   --expected-arm "$ARM" \
   --expected-marker-mode "$MARKER_MODE" \
   --repo "$R" \
   --require-runtime-markers
 
-echo "${ARM}_MATCHED_OK run=$RUN checkpoint=$CKPT postrun=$G13/contracts/${ARM}_matched_${STEPS}_postrun.json"
+echo "${ARM}_MATCHED_OK run=$RUN checkpoint=$CKPT postrun=$G13/contracts/${ARM}_matched_${STEPS}${RUN_SUFFIX}_postrun.json"

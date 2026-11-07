@@ -1,0 +1,124 @@
+{
+  "arm": "I2",
+  "checks": {
+    "action_lr_positive": {
+      "actual": 0.0001,
+      "expected": ">0",
+      "passed": true
+    },
+    "arm_supported": {
+      "actual": "I2",
+      "expected": [
+        "I0",
+        "I2"
+      ],
+      "passed": true
+    },
+    "data_mix": {
+      "actual": "libero_c1_gate",
+      "expected": "libero_c1_gate",
+      "passed": true
+    },
+    "grad_accum": {
+      "actual": 1,
+      "expected": 1,
+      "passed": true
+    },
+    "i2_evidence_cross_attention": {
+      "actual": true,
+      "expected": true,
+      "passed": true
+    },
+    "i2_injection": {
+      "actual": "evidence",
+      "expected": "evidence",
+      "passed": true
+    },
+    "i2_marker_enabled": {
+      "actual": true,
+      "expected": true,
+      "passed": true
+    },
+    "i2_point_checkpoint": {
+      "actual": "/vepfs-mlp2/c20250405/400040/transfer/vla_attention/results/star105_goal10p5_20261105/point_head/pilot_5000/point_head.pt",
+      "expected": "/vepfs-mlp2/c20250405/400040/transfer/vla_attention/results/star105_goal10p5_20261105/point_head/pilot_5000/point_head.pt",
+      "passed": true
+    },
+    "i2_point_checkpoint_exists": {
+      "actual": true,
+      "expected": true,
+      "passed": true
+    },
+    "i2_point_checkpoint_sha256": {
+      "actual": "693f0dd8086a4d64cd4f1064a7f4d5c1f934f0914123df5478cdc1f86815fce7",
+      "expected": "693f0dd8086a4d64cd4f1064a7f4d5c1f934f0914123df5478cdc1f86815fce7",
+      "passed": true
+    },
+    "i2_point_head_frozen": {
+      "actual": "qwen_vl_interface,point_head,point_tokenizer",
+      "expected": true,
+      "passed": true
+    },
+    "i2_projector_lr_positive": {
+      "actual": 0.0001,
+      "expected": ">0",
+      "passed": true
+    },
+    "i2_tokenizer_frozen": {
+      "actual": "qwen_vl_interface,point_head,point_tokenizer",
+      "expected": true,
+      "passed": true
+    },
+    "i2_trainable_modules": {
+      "actual": [
+        "action_model",
+        "point_evidence_projector"
+      ],
+      "expected": [
+        "action_model",
+        "point_evidence_projector"
+      ],
+      "passed": true
+    },
+    "init_checkpoint": {
+      "actual": "/vepfs-mlp2/c20250405/400040/transfer/vla_attention/results/star105_goal13_20261107/checkpoints/star13_d0_matched_2500/final_model/model.safetensors",
+      "expected": "/vepfs-mlp2/c20250405/400040/transfer/vla_attention/results/star105_goal13_20261107/checkpoints/star13_d0_matched_2500/final_model/model.safetensors",
+      "passed": true
+    },
+    "init_checkpoint_exists": {
+      "actual": true,
+      "expected": true,
+      "passed": true
+    },
+    "max_train_steps_positive": {
+      "actual": 2500,
+      "expected": ">0",
+      "passed": true
+    },
+    "per_device_batch": {
+      "actual": 4,
+      "expected": 4,
+      "passed": true
+    },
+    "qwen_frozen": {
+      "actual": "qwen_vl_interface,point_head,point_tokenizer",
+      "expected": true,
+      "passed": true
+    },
+    "qwen_lr_zero": {
+      "actual": 0.0,
+      "expected": 0.0,
+      "passed": true
+    },
+    "seed": {
+      "actual": 17,
+      "expected": 17,
+      "passed": true
+    }
+  },
+  "config": "/vepfs-mlp2/c20250405/400040/transfer/vla_attention/results/star105_goal13_20261107/configs/goal13_i2_matched_2-xattn-smoke_snapshot.yaml",
+  "created_at": "2026-11-07T11:19:22.844861+00:00",
+  "failures": [],
+  "schema": "goal13-i-config-preflight-v1",
+  "status": "PASS"
+}
