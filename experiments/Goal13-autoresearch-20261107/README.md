@@ -2,7 +2,7 @@
 
 本目录执行 [65_story_method_selection_20261107.md](../../doc/vla_next/65_story_method_selection_20261107.md) 的 `Data -> Interface -> Control` 三级阶梯。
 
-当前状态：**D0 baseline Gate 已 PASS；D1 carrier 抽取、独立 LeRobot 转换、Run Contract、2-step smoke、2.5K matched run 和 offline `limit=2` smoke 已 PASS；下一步是 D1 完整 118-group offline eval 与 15-init pilot。D2 仍待决定。**
+当前状态：**D0 baseline Gate 已 PASS；D1 carrier、Run Contract、2-step smoke、2.5K matched run、offline `limit=2` smoke 和完整 118-group offline eval 已 PASS。D1 离线指标没有优于 D0，正在用 15-init pilot 判断 held-out `white_right`。D2 仍待决定。**
 
 阅读顺序：
 
@@ -16,6 +16,7 @@
 8. [07_d0_matched_result.md](07_d0_matched_result.md)：D0 matched 2.5K postrun 与完整 118-group offline eval；不替代闭环结论。
 9. [08_d0_c1_pilot_result.md](08_d0_c1_pilot_result.md)：D0 15-init pilot，复现 `white_right=0/15` 并关闭 D0 基线 Gate。
 10. [09_d1_carrier_build_and_smoke.md](09_d1_carrier_build_and_smoke.md)：D1 carrier 抽取、mixture、Run Contract、2.5K matched run 和 offline smoke。
+11. [10_d1_matched_result.md](10_d1_matched_result.md)：D1 完整离线对比；闭环 pilot 完成后追加裁决。
 
 一句话目标：先证明 C1 `white_right` 的数据和评测契约没有泄漏、没有配置幻觉，再决定是否值得跑 `D0/D1` 和后续接口/控制实验。
 
