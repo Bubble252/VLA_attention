@@ -128,7 +128,8 @@ if (( LIMIT == 2 )); then
     --postrun "$POSTRUN" \
     --offline "$OUTPUT" \
     --output "$CONTRACT_OUTPUT" \
-    --expected-limit-groups "$LIMIT"
+    --expected-limit-groups "$LIMIT" \
+    --expected-arm "$ARM"
 else
   "$E" "$TOOLS_DIR/verify_goal13_offline_eval.py" \
     --postrun "$POSTRUN" \

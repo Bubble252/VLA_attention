@@ -69,7 +69,7 @@ $W/results/star105_goal13_20261107/audit/
 - [x] 抽取并转换独立 carrier 数据集（48 episodes / 4786 effective steps）；
 - [x] D1 注册独立 mixture，重新过 Run Contract；
 - [x] D1 2-step training smoke 与 postrun PASS；
-- [ ] D1 offline smoke 检查 NaN、动作幅度、gripper；
+- [x] D1 offline smoke 检查 NaN、动作幅度、gripper；
 - [ ] D0/D1 pilot 使用同一 evaluator、batch、seed；
 - [ ] 只取 best data arm 进入接口层；
 - [ ] 不在没有 D0 的情况下宣称 D1 有效。

@@ -72,6 +72,36 @@ class Goal13OfflineSmokeTests(unittest.TestCase):
         self.assertEqual(report["gate_status"], "NOT_EVALUATED")
         self.assertEqual(report["failures"], [])
 
+    def test_valid_d1_smoke_passes_with_expected_arm(self):
+        with tempfile.TemporaryDirectory() as directory:
+            postrun, offline = self.make_fixture(Path(directory))
+            payload = json.loads(offline.read_text())
+            payload["arm"] = "D1"
+            offline.write_text(json.dumps(payload))
+            report = evaluate_offline_smoke(
+                postrun_path=postrun,
+                offline_path=offline,
+                expected_limit=2,
+                expected_arm="D1",
+            )
+        self.assertEqual(report["postrun_status"], "SMOKE_PASS")
+        self.assertEqual(report["failures"], [])
+
+    def test_arm_mismatch_is_invalid(self):
+        with tempfile.TemporaryDirectory() as directory:
+            postrun, offline = self.make_fixture(Path(directory))
+            payload = json.loads(offline.read_text())
+            payload["arm"] = "D1"
+            offline.write_text(json.dumps(payload))
+            report = evaluate_offline_smoke(
+                postrun_path=postrun,
+                offline_path=offline,
+                expected_limit=2,
+                expected_arm="D0",
+            )
+        self.assertEqual(report["postrun_status"], "INVALID")
+        self.assertIn("offline_arm", report["failures"])
+
     def test_checkpoint_sha_mismatch_is_invalid(self):
         with tempfile.TemporaryDirectory() as directory:
             postrun, offline = self.make_fixture(Path(directory))

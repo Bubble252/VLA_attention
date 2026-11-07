@@ -1,8 +1,8 @@
-# 09 D1 Carrier 数据构建、Run Contract 与 2-step Smoke
+# 09 D1 Carrier 数据构建、Run Contract、2.5K Training 与 Offline Smoke
 
 ## 1. 结论
 
-D1 的 carrier 数据已经按 audit 精确抽取并转换成独立 LeRobot 数据集，Run Contract 和 2-step training smoke 都通过：
+D1 的 carrier 数据已经按 audit 精确抽取并转换成独立 LeRobot 数据集，Run Contract、2-step smoke、2.5K matched training 和 offline `limit=2` smoke 都已通过：
 
 ```text
 carrier extraction       = PASS
@@ -12,6 +12,8 @@ observed dataset length = 11630 (C1) + 4786 (carrier)
 sampling weights        = 0.666667 / 0.333333
 contract_status         = PASS
 2-step postrun          = PASS / SMOKE_PASS
+2.5K postrun            = PASS / RUN_PASS
+offline limit=2 contract = SMOKE_PASS
 checkpoint tensors      = 248 finite
 ```
 
@@ -133,10 +135,46 @@ D1 训练使用 C1+carrier 的 merged dataset statistics，而旧离线 evaluato
 
 远端补丁记录在 `server/patches/goal13_d1_eval_mixture_metadata_20261107.patch`。D1 offline smoke 必须先验证该路径确实加载 mixture metadata，再跑完整评测。
 
+### 6.2 D1 2.5K matched training
+
+D1 使用与 D0 相同的 A3 初始化、2,500 steps、per-device batch 4、accumulation 1、seed 17 和 A3 初始化，只替换为 C1+carrier mixture。
+
+```text
+run_id             = star13_d1_matched_2500
+effective samples  = 10,000
+contract_status    = PASS
+postrun_status     = PASS / RUN_PASS
+final checkpoint   = b1236559bef38e58943d66b3d83d8f49efea9126219b5e58a87db4e54e840cc5
+```
+
+证据：
+
+- [D1_contract.json](results/D1_contract.json)
+- [D1_matched_postrun.json](results/D1_matched_postrun.json)
+- [D1_matched_checkpoint_health.json](results/D1_matched_checkpoint_health.json)
+
+### 6.3 D1 offline smoke
+
+离线 smoke 复用完整的 evaluator 与 D1 checkpoint，只取 2 个 group。它验证了 D1 mixture metadata 确实进入反归一化路径，并且动作指标全部有限：
+
+```text
+postrun_status = SMOKE_PASS
+gate_status    = NOT_EVALUATED
+num_groups     = 2
+pair failures  = []
+```
+
+smoke 的两个 pair 只用于确认链路，不能用于判断 D1 是否优于 D0。最初的 verifier 把 `arm == D0` 写死，导致一份数值有效的 D1 输出被误标为 `INVALID`；现在 verifier 改为显式接收 `expected_arm`，默认仍为 `D0`，wrapper 的 smoke 分支会传入当前 arm，并新增了 D1 通过与 arm mismatch 失败的单测。
+
+证据：
+
+- [D1_offline_smoke_limit2.json](results/D1_offline_smoke_limit2.json)
+- [D1_offline_smoke_contract.json](results/D1_offline_smoke_contract.json)
+- [D1_offline_smoke_limit2.log](results/D1_offline_smoke_limit2.log)
+
 ## 7. 下一步
 
-1. 完成 D1 2.5K matched training，并重新过 postrun；
-2. 用同一 evaluator 跑 D1 offline `limit=2` smoke，再跑完整 118-group offline eval；
-3. 用同一 15-init × 4-prompt manifest 跑 D1 pilot；
-4. 只有 D1 相对 D0 在 `white_right` 或机制指标上有方向性增益，或给出明确失败解释，才允许取 best data arm 进入 I 层；
-5. 不因 smoke PASS 提前启动 interface 或 action 层。
+1. 用同一 evaluator 跑 D1 完整 118-group offline eval；
+2. 用同一 15-init × 4-prompt manifest 跑 D1 pilot；
+3. 只有 D1 相对 D0 在 `white_right` 或机制指标上有方向性增益，或给出明确失败解释，才允许取 best data arm 进入 I 层；
+4. 不因 smoke PASS 提前启动 interface 或 action 层。

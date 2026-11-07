@@ -83,6 +83,7 @@ def evaluate_offline_smoke(
     postrun_path: Path,
     offline_path: Path,
     expected_limit: int,
+    expected_arm: str = "D0",
 ) -> dict[str, Any]:
     postrun = load_json(postrun_path)
     offline = load_json(offline_path)
@@ -96,7 +97,7 @@ def evaluate_offline_smoke(
 
     check("postrun_status", postrun.get("postrun_status") == "PASS", "PASS", postrun.get("postrun_status"))
     check("offline_schema", offline.get("schema") == EXPECTED_OFFLINE_SCHEMA, EXPECTED_OFFLINE_SCHEMA, offline.get("schema"))
-    check("offline_arm", offline.get("arm") == "D0", "D0", offline.get("arm"))
+    check("offline_arm", offline.get("arm") == expected_arm, expected_arm, offline.get("arm"))
 
     checkpoint = offline.get("checkpoint", {})
     config = offline.get("config", {})
@@ -188,11 +189,13 @@ def main() -> int:
     parser.add_argument("--offline", type=Path, required=True)
     parser.add_argument("--output", type=Path, required=True)
     parser.add_argument("--expected-limit-groups", type=int, default=2)
+    parser.add_argument("--expected-arm", default="D0")
     args = parser.parse_args()
     report = evaluate_offline_smoke(
         postrun_path=args.postrun,
         offline_path=args.offline,
         expected_limit=args.expected_limit_groups,
+        expected_arm=args.expected_arm,
     )
     atomic_json_write(args.output, report)
     print(
