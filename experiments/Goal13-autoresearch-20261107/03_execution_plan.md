@@ -62,7 +62,8 @@ $W/results/star105_goal13_20261107/audit/
 - [x] D0 2-step training smoke 跑通；
 - [x] D0 smoke postrun contract PASS（见 [05_d0_smoke_result.md](05_d0_smoke_result.md)）；
 - [x] 先跑 D0 offline `limit=2` smoke（[06_d0_offline_smoke_result.md](06_d0_offline_smoke_result.md)）；
-- [ ] 跑 D0 matched 2.5K training，并重新过 postrun contract；
+- [x] 跑 D0 matched 2.5K training，并重新过 postrun contract；
+- [x] 跑 D0 matched 完整 offline eval（118 groups，78+78 pairs）；
 - [ ] D0 matched 复现 `white_right = 0/15` 或解释差异；
 - [ ] D0 seen group-any / wrong-destination 与历史一致；
 - [ ] D1 加入 carrier，重新过 Run Contract；

@@ -1,0 +1,146 @@
+{
+  "arm": "D0",
+  "checkpoint": {
+    "path": "/vepfs-mlp2/c20250405/400040/transfer/vla_attention/results/star105_goal13_20261107/checkpoints/star13_d0_matched_2500/final_model/model.safetensors",
+    "sha256": "6df931aeaed2f870affc775b6728a3eb99e5e59cebc21b7c66ef6906f3e7493e"
+  },
+  "config": {
+    "path": "/vepfs-mlp2/c20250405/400040/transfer/vla_attention/results/star105_goal13_20261107/configs/goal13_d0_matched_snapshot.yaml",
+    "sha256": "953e5e1658105eb3a40f5703b7bdc5e9d75d5906e3a8204b18f633a1a944ef56"
+  },
+  "gate": {
+    "destination_margin_positive_with_ci": true,
+    "object_margin_positive": true,
+    "region_predicted_action_beats_none": false,
+    "region_predicted_action_beats_shuffle": false,
+    "region_predicted_mask_beats_constant": false,
+    "region_predicted_mask_beats_shuffle": false
+  },
+  "notes": [
+    "Pairs use the same image, frame and expert action chunk; only language changes.",
+    "Correct and wrong calls for each subset use the same seed and batch order.",
+    "white_right is not evaluated here because it has no expert action labels."
+  ],
+  "num_groups": 118,
+  "pair_results": {
+    "destination": {
+      "action_amplitude_ratio": 0.9869990348815918,
+      "action_delta": 0.038079459220170975,
+      "by_language": {
+        "put the red mug on the left plate": {
+          "correct_mae": 0.1464805006980896,
+          "margin_bootstrap_95ci": [
+            0.0070454896078445016,
+            0.026108682993799454
+          ],
+          "margin_mean": 0.016526805236935616,
+          "pair_count": 38,
+          "wrong_mae": 0.16300730407238007
+        },
+        "put the red mug on the right plate": {
+          "correct_mae": 0.14392030239105225,
+          "margin_bootstrap_95ci": [
+            0.004413140704855323,
+            0.024830643879249693
+          ],
+          "margin_mean": 0.013754293322563171,
+          "pair_count": 40,
+          "wrong_mae": 0.15767459571361542
+        }
+      },
+      "correct_gripper_mae": 0.11913524568080902,
+      "correct_mae": 0.14516757428646088,
+      "correct_rotation_mae": 0.15136127173900604,
+      "correct_translation_mae": 0.14765134453773499,
+      "gripper_amplitude_ratio": 0.9120519757270813,
+      "margin_bootstrap_95ci": [
+        0.007568403403274715,
+        0.02353953393176198
+      ],
+      "margin_mean": 0.015105006285011768,
+      "margin_median": 0.003990929573774338,
+      "margin_positive_fraction": 0.6794871794871795,
+      "pair_count": 78,
+      "per_dimension_amplitude_ratio": [
+        1.0992183685302734,
+        1.0338494777679443,
+        1.0400793552398682,
+        0.9022887945175171,
+        0.5691401362419128,
+        1.118849277496338,
+        0.9120519757270813
+      ],
+      "predicted_action_abs_mean": 0.2821763753890991,
+      "rotation_amplitude_ratio": 0.8634260296821594,
+      "target_action_abs_mean": 0.2858932614326477,
+      "translation_amplitude_ratio": 1.0577157735824585,
+      "wrong_gripper_mae": 0.12059921026229858,
+      "wrong_mae": 0.16027258336544037,
+      "wrong_rotation_mae": 0.1537584513425827,
+      "wrong_translation_mae": 0.18001119792461395
+    },
+    "object": {
+      "action_amplitude_ratio": 1.0060375928878784,
+      "action_delta": 0.0589112713932991,
+      "by_language": {
+        "put the red mug on the left plate": {
+          "correct_mae": 0.1464805006980896,
+          "margin_bootstrap_95ci": [
+            0.009141185693442822,
+            0.031294784229248765
+          ],
+          "margin_mean": 0.019468404352664948,
+          "pair_count": 38,
+          "wrong_mae": 0.16594891250133514
+        },
+        "put the white mug on the left plate": {
+          "correct_mae": 0.14622369408607483,
+          "margin_bootstrap_95ci": [
+            -0.0016815519309602675,
+            0.020290504023432732
+          ],
+          "margin_mean": 0.009478562511503696,
+          "pair_count": 40,
+          "wrong_mae": 0.15570223331451416
+        }
+      },
+      "correct_gripper_mae": 0.12999236583709717,
+      "correct_mae": 0.14634878933429718,
+      "correct_rotation_mae": 0.13800176978111267,
+      "correct_translation_mae": 0.16014796495437622,
+      "gripper_amplitude_ratio": 0.8600562810897827,
+      "margin_bootstrap_95ci": [
+        0.006304174195975065,
+        0.02179847601801158
+      ],
+      "margin_mean": 0.014345409348607063,
+      "margin_median": 0.00981377437710762,
+      "margin_positive_fraction": 0.6153846153846154,
+      "pair_count": 78,
+      "per_dimension_amplitude_ratio": [
+        1.1042205095291138,
+        1.0051480531692505,
+        1.1150832176208496,
+        1.0535643100738525,
+        0.6481346487998962,
+        1.0807478427886963,
+        0.8600562810897827
+      ],
+      "predicted_action_abs_mean": 0.2740004062652588,
+      "rotation_amplitude_ratio": 0.9274823069572449,
+      "target_action_abs_mean": 0.2723560333251953,
+      "translation_amplitude_ratio": 1.0748172998428345,
+      "wrong_gripper_mae": 0.1316395103931427,
+      "wrong_mae": 0.1606942117214203,
+      "wrong_rotation_mae": 0.1370212882757187,
+      "wrong_translation_mae": 0.19405204057693481
+    }
+  },
+  "region_results": null,
+  "schema": "goal12-c1-counterfactual-offline-v1",
+  "seed": 17,
+  "sidecar": {
+    "path": "/vepfs-mlp2/c20250405/400040/transfer/vla_attention/vla_workspace/results/K4_lite/T2_future/validation_sidecar_v1/manifest.jsonl",
+    "sha256": "510fe44dee0c0deb408563c3fbaaefc780bf7b8c22f149bced93f05d857880e7"
+  }
+}
