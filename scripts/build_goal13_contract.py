@@ -30,6 +30,25 @@ CARRIER_DATASET_NAME = "libero_90_goal13_carrier_lerobot"
 WHITE_BOWL_DATASET_NAME = "libero_90_goal13_white_bowl_lerobot"
 COMMIT_PATTERN = re.compile(r"^[0-9a-f]{40}$")
 SHA256_PATTERN = re.compile(r"^[0-9a-f]{64}$")
+I_ARM_MARKERS = {
+    "I0": "none",
+    "I1": "oracle",
+    "I2": "predicted",
+    "I3": "shuffle",
+}
+I_ARM_PARENTS = {
+    "I0": "D0",
+    "I1": "I2",
+    "I2": "D0",
+    "I3": "I2",
+}
+I_ARM_MARKER_SOURCES = {
+    "I0": "none",
+    "I1": "gt_point_manifest",
+    "I2": "point_head",
+    "I3": "point_head",
+}
+I_ARM_DIAGNOSTIC = {"I0": False, "I1": True, "I2": False, "I3": True}
 
 
 def utc_now() -> str:
@@ -252,6 +271,14 @@ def evaluate_contract(
     prompt_text: Mapping[str, str],
     expected_seed: int,
     expected_effective_batch: int,
+    arm: str | None = None,
+    marker_source: str | None = None,
+    init_checkpoint: str | None = None,
+    init_checkpoint_sha256: str | None = None,
+    point_checkpoint: str | None = None,
+    point_checkpoint_sha256: str | None = None,
+    trainable_modules: list[str] | None = None,
+    diagnostic_only: bool = False,
 ) -> dict[str, Any]:
     checks: dict[str, dict[str, Any]] = {}
     failures: list[str] = []
@@ -513,6 +540,80 @@ def evaluate_contract(
         actual={"manifest": summary["overlap_total"], "audit": audit.get("split_overlap_total")},
     )
 
+    contract_arm = arm or data_arm
+    trainable_modules = list(trainable_modules or [])
+    add("arm_name", bool(contract_arm), expected="non-empty", actual=contract_arm)
+    if contract_arm in I_ARM_MARKERS:
+        expected_marker = I_ARM_MARKERS[contract_arm]
+        expected_parent = I_ARM_PARENTS[contract_arm]
+        expected_source = I_ARM_MARKER_SOURCES[contract_arm]
+        add("i_data_arm", data_arm == "D0", expected="D0", actual=data_arm)
+        add("i_marker_mode", marker_mode == expected_marker, expected=expected_marker, actual=marker_mode)
+        add("i_parent_arm", parent_arm == expected_parent, expected=expected_parent, actual=parent_arm)
+        add("i_marker_source", marker_source == expected_source, expected=expected_source, actual=marker_source)
+        add(
+            "i_diagnostic_only",
+            diagnostic_only is I_ARM_DIAGNOSTIC[contract_arm],
+            expected=I_ARM_DIAGNOSTIC[contract_arm],
+            actual=diagnostic_only,
+        )
+        add(
+            "i_init_checkpoint",
+            bool(init_checkpoint),
+            expected="absolute checkpoint path",
+            actual=init_checkpoint,
+        )
+        add(
+            "i_init_checkpoint_sha256",
+            bool(init_checkpoint_sha256 and SHA256_PATTERN.fullmatch(init_checkpoint_sha256)),
+            expected="64-character init checkpoint SHA256",
+            actual=init_checkpoint_sha256,
+        )
+        if contract_arm == "I0":
+            add(
+                "i_point_checkpoint_optional",
+                point_checkpoint is None and point_checkpoint_sha256 is None,
+                expected="not provided",
+                actual={"path": point_checkpoint, "sha256": point_checkpoint_sha256},
+            )
+            add(
+                "i_trainable_modules",
+                "action_model" in trainable_modules and "point_evidence_projector" not in trainable_modules,
+                expected=["action_model"],
+                actual=trainable_modules,
+            )
+        else:
+            add(
+                "i_point_checkpoint",
+                bool(point_checkpoint),
+                expected="absolute point-head checkpoint path",
+                actual=point_checkpoint,
+            )
+            add(
+                "i_point_checkpoint_sha256",
+                bool(point_checkpoint_sha256 and SHA256_PATTERN.fullmatch(point_checkpoint_sha256)),
+                expected="64-character point-head checkpoint SHA256",
+                actual=point_checkpoint_sha256,
+            )
+            if contract_arm == "I2":
+                add(
+                    "i_trainable_modules",
+                    "action_model" in trainable_modules
+                    and "point_evidence_projector" in trainable_modules,
+                    expected=["action_model", "point_evidence_projector"],
+                    actual=trainable_modules,
+                )
+            else:
+                add(
+                    "i_trainable_modules",
+                    trainable_modules == [],
+                    expected=[],
+                    actual=trainable_modules,
+                )
+    else:
+        add("d_marker_none", marker_mode == "none", expected="none", actual=marker_mode)
+        add("d_counterfactual_none", counterfactual_mode == "none", expected="none", actual=counterfactual_mode)
+
     overlap_total = summary["overlap_total"] + int(audit.get("split_overlap_total", 0))
     contract_status = "PASS" if not failures else "INVALID"
     return {
@@ -520,10 +621,17 @@ def evaluate_contract(
         "created_at": utc_now(),
         "contract_status": contract_status,
         "arm_status": "PENDING_GATE" if contract_status == "PASS" else "INVALID",
-        "arm": data_arm,
+        "arm": contract_arm,
         "parent_arm": parent_arm,
         "code_commit": code_commit,
         "config_sha256": config_sha256,
+        "marker_source": marker_source,
+        "diagnostic_only": bool(diagnostic_only),
+        "init_checkpoint": init_checkpoint,
+        "init_checkpoint_sha256": init_checkpoint_sha256,
+        "point_checkpoint": point_checkpoint,
+        "point_checkpoint_sha256": point_checkpoint_sha256,
+        "trainable_modules": trainable_modules,
         "data": {
             "data_arm": data_arm,
             "train_language_counts": train_language_counts,
@@ -560,9 +668,17 @@ def main() -> int:
     parser.add_argument("--split-manifest", type=Path, required=True)
     parser.add_argument("--data-arms-config", type=Path, default=Path("configs/vla/goal13_data_arms.json"))
     parser.add_argument("--data-arm", choices=("D0", "D1", "D2"), required=True)
+    parser.add_argument("--arm", choices=("I0", "I1", "I2", "I3"), default=None)
     parser.add_argument("--output", type=Path, required=True)
     parser.add_argument("--parent-arm", default=None)
     parser.add_argument("--marker-mode", choices=("none", "oracle", "predicted", "shuffle"), default="none")
+    parser.add_argument("--marker-source", choices=("none", "gt_point_manifest", "point_head"), default=None)
+    parser.add_argument("--init-checkpoint", default=None)
+    parser.add_argument("--init-checkpoint-sha256", default=None)
+    parser.add_argument("--point-checkpoint", default=None)
+    parser.add_argument("--point-checkpoint-sha256", default=None)
+    parser.add_argument("--trainable-modules", default=None, help="comma-separated module names; empty string means eval-only")
+    parser.add_argument("--diagnostic-only", action="store_true")
     parser.add_argument("--counterfactual-mode", choices=("none", "rank", "suff_nec"), default="none")
     parser.add_argument("--code-commit", default=None)
     parser.add_argument("--config-sha256", default=None)
@@ -631,6 +747,18 @@ def main() -> int:
         prompt_text=data_arms["prompts"],
         expected_seed=args.expected_seed,
         expected_effective_batch=args.expected_effective_batch,
+        arm=args.arm,
+        marker_source=args.marker_source,
+        init_checkpoint=args.init_checkpoint,
+        init_checkpoint_sha256=args.init_checkpoint_sha256,
+        point_checkpoint=args.point_checkpoint,
+        point_checkpoint_sha256=args.point_checkpoint_sha256,
+        trainable_modules=(
+            [item.strip() for item in args.trainable_modules.split(",") if item.strip()]
+            if args.trainable_modules is not None
+            else None
+        ),
+        diagnostic_only=args.diagnostic_only,
     )
     atomic_json_write(args.output, contract)
     print(

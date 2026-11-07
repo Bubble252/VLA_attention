@@ -117,6 +117,7 @@ def evaluate_postrun(
     checkpoint_health_path: Path,
     expected_steps: int,
     expected_arm: str | None = None,
+    expected_marker_mode: str = "none",
     expected_transitions: int | None = None,
     expected_trajectories: int | None = None,
     repo: Path | None = None,
@@ -135,7 +136,14 @@ def evaluate_postrun(
     contract_data = contract.get("data", {}) if isinstance(contract.get("data"), dict) else {}
     contract_arm = expected_arm or contract.get("arm")
     check("contract_arm", bool(contract_arm) and contract.get("arm") == contract_arm, contract_arm, contract.get("arm"))
-    check("contract_marker_none", contract.get("marker_mode") == "none", "none", contract.get("marker_mode"))
+    check(
+        "contract_marker_mode",
+        contract.get("marker_mode") == expected_marker_mode,
+        expected_marker_mode,
+        contract.get("marker_mode"),
+    )
+    if expected_marker_mode == "none":
+        check("contract_marker_none", contract.get("marker_mode") == "none", "none", contract.get("marker_mode"))
     check(
         "contract_counterfactual_none",
         contract.get("counterfactual_mode") == "none",
@@ -355,6 +363,8 @@ def evaluate_postrun(
         else "INVALID",
         "gate_status": "NOT_EVALUATED",
         "arm": contract.get("arm"),
+        "marker_mode": contract.get("marker_mode"),
+        "expected_marker_mode": expected_marker_mode,
         "contract_path": str(contract_path),
         "contract_sha256": sha256_file(contract_path),
         "expected_steps": expected_steps,
@@ -386,6 +396,11 @@ def main() -> int:
     parser.add_argument("--output", type=Path, required=True)
     parser.add_argument("--expected-steps", type=int, default=2)
     parser.add_argument("--expected-arm", default=None)
+    parser.add_argument(
+        "--expected-marker-mode",
+        choices=("none", "oracle", "predicted", "shuffle"),
+        default="none",
+    )
     parser.add_argument("--expected-transitions", type=int, default=None)
     parser.add_argument("--expected-trajectories", type=int, default=None)
     parser.add_argument("--repo", type=Path, default=None)
@@ -400,6 +415,7 @@ def main() -> int:
         checkpoint_health_path=args.checkpoint_health,
         expected_steps=args.expected_steps,
         expected_arm=args.expected_arm,
+        expected_marker_mode=args.expected_marker_mode,
         expected_transitions=args.expected_transitions,
         expected_trajectories=args.expected_trajectories,
         repo=args.repo,

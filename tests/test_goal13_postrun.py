@@ -201,6 +201,41 @@ class Goal13PostrunTests(unittest.TestCase):
         self.assertEqual(report["postrun_status"], "INVALID")
         self.assertIn("checkpoint_copy_identical", report["failures"])
 
+    def test_expected_predicted_marker_is_accepted(self):
+        with tempfile.TemporaryDirectory() as directory:
+            fixture = self.make_fixture(Path(directory))
+            contract = json.loads(fixture["contract"].read_text())
+            contract["arm"] = "I2"
+            contract["marker_mode"] = "predicted"
+            fixture["contract"].write_text(json.dumps(contract))
+            report = evaluate_postrun(
+                contract_path=fixture["contract"],
+                run_dir=fixture["run_dir"],
+                train_log=fixture["train_log"],
+                config_snapshot=fixture["snapshot"],
+                checkpoint_health_path=fixture["health"],
+                expected_steps=2,
+                expected_arm="I2",
+                expected_marker_mode="predicted",
+            )
+        self.assertEqual(report["postrun_status"], "PASS")
+        self.assertEqual(report["marker_mode"], "predicted")
+
+    def test_wrong_marker_mode_is_invalid(self):
+        with tempfile.TemporaryDirectory() as directory:
+            fixture = self.make_fixture(Path(directory))
+            report = evaluate_postrun(
+                contract_path=fixture["contract"],
+                run_dir=fixture["run_dir"],
+                train_log=fixture["train_log"],
+                config_snapshot=fixture["snapshot"],
+                checkpoint_health_path=fixture["health"],
+                expected_steps=2,
+                expected_marker_mode="predicted",
+            )
+        self.assertEqual(report["postrun_status"], "INVALID")
+        self.assertIn("contract_marker_mode", report["failures"])
+
 
 if __name__ == "__main__":
     unittest.main()

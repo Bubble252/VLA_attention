@@ -101,9 +101,9 @@ def make_carrier_rows(count: int = 48):
     ]
 
 
-def evaluate(*, data_arm="D0", audit=None, observed=None, runtime=None, carrier_rows=None):
+def evaluate(*, data_arm="D0", audit=None, observed=None, runtime=None, carrier_rows=None, **overrides):
     arms = default_data_arms()
-    return evaluate_contract(
+    arguments = dict(
         audit=audit or make_audit(),
         split_manifest=make_manifest(),
         data_arm=data_arm,
@@ -132,6 +132,8 @@ def evaluate(*, data_arm="D0", audit=None, observed=None, runtime=None, carrier_
         expected_seed=17,
         expected_effective_batch=4,
     )
+    arguments.update(overrides)
+    return evaluate_contract(**arguments)
 
 
 class Goal13AuditTests(unittest.TestCase):
@@ -324,6 +326,68 @@ class Goal13ContractTests(unittest.TestCase):
         contract = evaluate(runtime={"per_device_batch": 2, "num_processes": 1, "grad_accum": 1, "seed": 17})
         self.assertEqual(contract["contract_status"], "INVALID")
         self.assertIn("effective_batch", contract["failures"])
+
+    def test_i0_matched_contract_passes(self):
+        contract = evaluate(
+            arm="I0",
+            parent_arm="D0",
+            marker_mode="none",
+            marker_source="none",
+            init_checkpoint="/checkpoints/D0/final_model/model.safetensors",
+            init_checkpoint_sha256="b" * 64,
+            trainable_modules=["action_model"],
+        )
+        self.assertEqual(contract["contract_status"], "PASS", contract["failures"])
+        self.assertEqual(contract["arm"], "I0")
+        self.assertEqual(contract["data"]["data_arm"], "D0")
+
+    def test_i2_requires_predicted_marker_and_projector(self):
+        contract = evaluate(
+            arm="I2",
+            parent_arm="D0",
+            marker_mode="predicted",
+            marker_source="point_head",
+            init_checkpoint="/checkpoints/D0/final_model/model.safetensors",
+            init_checkpoint_sha256="b" * 64,
+            point_checkpoint="/point_head.pt",
+            point_checkpoint_sha256="c" * 64,
+            trainable_modules=["action_model", "point_evidence_projector"],
+        )
+        self.assertEqual(contract["contract_status"], "PASS", contract["failures"])
+
+        wrong = evaluate(
+            arm="I2",
+            parent_arm="D0",
+            marker_mode="none",
+            marker_source="point_head",
+            init_checkpoint="/checkpoints/D0/final_model/model.safetensors",
+            init_checkpoint_sha256="b" * 64,
+            point_checkpoint="/point_head.pt",
+            point_checkpoint_sha256="c" * 64,
+            trainable_modules=["action_model", "point_evidence_projector"],
+        )
+        self.assertEqual(wrong["contract_status"], "INVALID")
+        self.assertIn("i_marker_mode", wrong["failures"])
+
+    def test_i1_and_i3_are_eval_only_children_of_i2(self):
+        for arm, mode, source in (
+            ("I1", "oracle", "gt_point_manifest"),
+            ("I3", "shuffle", "point_head"),
+        ):
+            with self.subTest(arm=arm):
+                contract = evaluate(
+                    arm=arm,
+                    parent_arm="I2",
+                    marker_mode=mode,
+                    marker_source=source,
+                    init_checkpoint="/checkpoints/I2/final_model/model.safetensors",
+                    init_checkpoint_sha256="d" * 64,
+                    point_checkpoint="/point_head.pt",
+                    point_checkpoint_sha256="c" * 64,
+                    trainable_modules=[],
+                    diagnostic_only=True,
+                )
+                self.assertEqual(contract["contract_status"], "PASS", contract["failures"])
 
 
 if __name__ == "__main__":
