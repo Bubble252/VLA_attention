@@ -303,10 +303,21 @@ def evaluate_postrun(
     dataset_stats_path = run_dir / "dataset_statistics.json"
     dataset_stats = load_json(dataset_stats_path) if dataset_stats_path.is_file() else {}
     franka = dataset_stats.get("franka", {}) if isinstance(dataset_stats.get("franka"), dict) else {}
+    data_contract = contract_data.get("data", {})
+    if not isinstance(data_contract, dict):
+        data_contract = {}
     if expected_transitions is None:
-        expected_transitions = int(contract_data.get("expected_raw_transitions", 12302))
+        expected_transitions = int(
+            contract_data.get("expected_raw_transitions")
+            or data_contract.get("expected_raw_transitions")
+            or 12302
+        )
     if expected_trajectories is None:
-        expected_trajectories = int(contract_data.get("expected_trajectories", 96))
+        expected_trajectories = int(
+            contract_data.get("expected_trajectories")
+            or data_contract.get("expected_trajectories")
+            or 96
+        )
     check(
         "dataset_statistics_transitions",
         int(franka.get("num_transitions", -1)) == expected_transitions,

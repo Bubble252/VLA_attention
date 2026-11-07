@@ -1,0 +1,21 @@
+current_stage: I_interface
+current_hypothesis: "D0 上，显式 point marker 是否能被动作专家读取，并保留 predicted marker 的语义"
+best_arm: D0
+parent_arm: D0
+contract_status: PASS
+primary_metric: "I1 non-gripper MAE vs I0; I2 vs I3"
+key_metrics:
+  D0_c1_group_any: "13/15"
+  D0_white_right_official: "0/15"
+  I0_postrun: PASS
+  I0_offline_limit2_contract: SMOKE_PASS
+  I0_destination_margin: 0.008456530049443245
+  I0_object_margin: 0.02204115316271782
+budget_used:
+  training_arms: 1
+  interface_training_arms_completed: 1
+  interface_training_arms_pending: 1
+next_action: "完成 I2 500-step，并跑 I1/I2/I3 limit=2 smoke"
+blockers: []
+open_literature_questions:
+  - "若 I1 > I0 但 I2 <= I3，优先修 point head 还是 marker 注入位置"
