@@ -1,0 +1,49 @@
+{
+  "schema": "goal13-data-arms-v1",
+  "prompts": {
+    "red_left": "put the red mug on the left plate",
+    "red_right": "put the red mug on the right plate",
+    "white_left": "put the white mug on the left plate",
+    "white_right": "put the white mug on the right plate",
+    "yellow_and_white_right": "put the yellow and white mug on the right plate",
+    "white_bowl_right": "put the white bowl to the right of the plate"
+  },
+  "expected_source_counts": {
+    "red_left": 37,
+    "red_right": 44,
+    "white_left": 45,
+    "white_right": 0,
+    "yellow_and_white_right": 48,
+    "white_bowl_right": 44
+  },
+  "expected_train_counts": {
+    "red_left": 27,
+    "red_right": 34,
+    "white_left": 35
+  },
+  "expected_manifest_split_counts": {
+    "train": 96,
+    "validation": 15,
+    "rollout": 15
+  },
+  "arms": {
+    "D0": {
+      "description": "Original C1 three prompts",
+      "include_carrier_train": false,
+      "include_white_bowl_train": false,
+      "expected_train_episodes": 96
+    },
+    "D1": {
+      "description": "D0 plus yellow-and-white-right carrier",
+      "include_carrier_train": true,
+      "include_white_bowl_train": false,
+      "expected_train_episodes": 144
+    },
+    "D2": {
+      "description": "D1 plus optional white-bowl-right data at low weight",
+      "include_carrier_train": true,
+      "include_white_bowl_train": true,
+      "expected_train_episodes": 188
+    }
+  }
+}
