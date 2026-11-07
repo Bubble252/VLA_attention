@@ -603,6 +603,40 @@ F4 消融成立 -> 才允许升级 AC-VLA-lite 的 phase 机制
 
 任何组件升级都必须作为新 arm 重新登记 `parent_arm`、config SHA、论文/仓库来源和 Gate，不能静默替换旧实现。为了“更像论文”而提前升级、但没有本层 Gate 证据的 arm，标为 `INVALID`，不得写入主结论。
 
+#### 11.4.4 升级窗口：什么实验之后才允许更像论文
+
+这里的“什么时候”以实验 Gate 为时钟，不按日历计算。没有对应 Gate 的 PASS，组件就冻结在当前 lite 版；`smoke PASS` 只说明接口能跑通，不允许据此升级方法。一个组件只有在下列窗口开启后，才允许替换成更接近论文原版的实现。
+
+| 窗口 | 开启条件（全部满足） | 最早允许升级到什么 | 仍然禁止 |
+|---|---|---|---|
+| `W-D` 数据组件 | `D0` vs `D1` 使用同一 Run Contract 完成 pilot；`D1` 在 held-out 或因子可辨识指标上优于 `D0`；seen group-any 无明显退化；`white_right` 训练计数仍为 0 | FDR/FDH 式因子诊断、bias-aware sampling、预算对齐的混合训练 | 同时加 marker/反事实；用 pilot 结果直接宣称论文级结论 |
+| `W-I` 接口组件 | 固定 best data arm；`I1 > I0`，证明动作头确实读取 marker；`I2 > I3`，证明 predicted marker 不塌缩；point-in-mask 抽检通过 | AnySlot/CompoSlot 式 slot marker、区域/HSV 提取、slot-level spatial token | 把 GT mask/point 放进部署输入；在 `I1` 无效时硬上 `I2` |
+| `W-A` 动作组件 | 固定 best interface arm；`A1 > A0`；随后 `A2` 在 held-out 和 suff/nec margin 上同向 | CRAFT/CounterAlign/CAST 式配对构造、negative mining、discriminator/AWR（逐项按原文核对） | `A2` 未过就合并 phase；用更多参数或更长训练冒充因果增益 |
+| `W-F` 完整方法 | `A2` PASS；`F0` 至少优于 `F1/F2/F3` 中两个；`F4` 消融显示 phase 有贡献；第 13.1 节论文/代码检查完成 | 完整 `F0`、AC-VLA phase、CompoSlot 组合版 | 在 3 seeds + 第二场景前写“L3/主会方法论文已成立” |
+
+执行时间顺序固定为：
+
+```text
+Stage 0: D0 Run Contract PASS
+  -> D0 matched pilot
+  -> D1 carrier + matched pilot
+  -> W-D 开启：允许升级数据组件
+  -> I0/I1/I2/I3 pilot
+  -> W-I 开启：允许升级接口/marker 组件
+  -> A0/A1/A2 pilot
+  -> W-A 开启：允许升级动作组件
+  -> F0/F1/F2/F3/F4
+  -> W-F 开启：允许合并完整方法
+  -> 30/50 + 3 seeds + 第二场景：才允许写 L3
+```
+
+冻结和回滚规则：
+
+- Gate 为 `FAIL` 或 `INVALID` 时，对应组件冻结在 lite 版；先修数据、契约或接口，不得用“更像论文”掩盖失败。
+- 每个升级必须是独立 arm，登记 `parent_arm`、config SHA、Gate、论文来源、官方仓库 URL 和 pin commit；不能直接覆盖旧实现。
+- 升级后的第一次运行只算 smoke，必须与 parent 使用同一数据、evaluator、batch 和 seed；若退化，回滚到 parent，并把升级标记为失败证据。
+- pilot 只能支持“是否进入下一层”的工程决策；论文级结论必须等 30/50 条确认、3 seeds 和第二场景/外部 benchmark。
+
 **一句话**：`AC-VLA-lite`、`CompoSlot` 和 `factor sufficiency/necessity` 不是永久绑在一起；它们是三个可独立升级的组件，只有 `A2` 通过后才允许合并成完整 FAI-VLA。
 
 ---
@@ -644,6 +678,7 @@ VLA 可能已经“看见”正确目标，却没有让证据控制动作。我�
 - GT mask/point 只进训练 loss，不进部署输入；
 - validation/rollout init state 不进训练；
 - 15 条 pilot 只作筛选，正式结论用 30/50 + 3 seeds。
+- 任何外部论文方法在使用前，必须按第 13.0/13.1 节下载论文 PDF/TXT、找到并下载官方代码仓库、pin commit、写 paper_reading；缺材料则该 arm 为 INVALID。
 
 停止/转向：
 - D0 不能复现 0/15：先查 data/rollout，不判方法失败；
@@ -786,6 +821,7 @@ D0 vs D1
 - 在 references/paper_reading/{slug}.md 写“原文做法 / 我们做法 / 差异 / 风险”，未完成不得进入训练；
 - 只提出最多 2 个可执行的新假设；
 - 不得把“论文里有效”直接当作本项目有效。
+- 任何组件从 lite 升级到论文近似版，必须先满足第 11.4.4 节的 W-D/W-I/W-A/W-F 窗口；没有对应 Gate PASS，只能保持 lite，不能因为“论文这样做”就提前升级。
 
 允许的方向切换：
 - 数据不可用 -> 先修数据；
@@ -848,13 +884,24 @@ D0 vs D1
 
 这条是硬规则：**只要准备借用某个论文的模块、loss、数据构造、评测协议或训练 recipe，就必须先把论文和代码参考材料下载到本地，读完实现后再动手。** 不能只看摘要、二手解读或博客就开始写。
 
+### 13.0 适用范围与不可协商的红线
+
+这条规则适用于“直接移植”和“只借一个思想”两种情况；只要某个设计来自某篇论文，就必须留下可追溯材料，不能凭记忆实现。
+
+- 论文必须实际下载到本地，至少保留 `papers/{slug}.pdf` 和抽取出的 `papers/{slug}.txt`；只保存网页链接、摘要或聊天记录不算完成。
+- 必须找到并下载对应代码仓库到 `references/repos/{slug}`；仓库链接可能出现在论文正文的方法段、实验设置、脚注、附录、补充材料或 OpenReview 附件中，**不能只搜论文首页就下结论说“没有代码”**。
+- 如果正文链接指向项目页、OpenReview 或 HuggingFace，必须继续追到实际 GitHub/GitLab 仓库；找不到时才允许标记 `official_code_missing=true`。
+- 进入训练前，本地必须同时具备四类材料：论文 PDF、抽取文本、官方/明确标注非官方的代码 checkout、`references/paper_reading/{slug}.md` 阅读笔记。缺任何一项，该 arm 标为 `INVALID`，不得进入 Gate。
+- 必须按第 13.5 节记录仓库链接在论文中的位置、pin 住的 commit 和 license；不能把一个第三方复现仓库写成“官方实现”。
+- 下载或克隆失败时，先尝试 7897 代理或国内镜像，并把 URL、失败原因和替代来源写入 `references/download_failures.log`；不能用“当时打不开”作为跳过复现记录的理由。
+
 ### 13.1 使用前必须完成的检查清单
 
-- [ ] 下载论文 PDF 到 `papers/{slug}.pdf`；
+- [ ] 下载论文 PDF 到 `papers/{slug}.pdf`，不能只保存链接；
 - [ ] 抽取正文到 `papers/{slug}.txt`，便于全文搜索；
 - [ ] 在摘要、引言、方法、实验、脚注、附录、补充材料、参考文献和 OpenReview 附件中搜索 `github.com`、`gitlab`、`code`、`implementation`、`project page`、`supplementary`、`huggingface`、`zenodo`；不能只搜论文首页或只看二手解读；
 - [ ] 记录仓库链接出现在论文的哪个位置，例如 `paper §4.2`、`appendix A.1`、`footnote 2`；如果链接指向项目页/OpenReview/HuggingFace，继续追到实际代码仓库，不能停在项目页；
-- [ ] 找到官方仓库后，克隆到 `references/repos/{slug}`，执行 `git rev-parse HEAD` 并在 `references/repositories.yaml`、`references/repo_versions.md` 中记录 commit；
+- [ ] 找到官方仓库后，实际克隆到 `references/repos/{slug}`，执行 `git rev-parse HEAD` 并在 `references/repositories.yaml`、`references/repo_versions.md` 中记录 commit；
 - [ ] 记录 license、依赖、数据集版本、预处理、超参数、训练步数；
 - [ ] 阅读官方代码中的 README、config、requirements、loss、数据 pipeline、训练/评测入口和模型接口，不只读 README；
 - [ ] 写 `references/paper_reading/{slug}.md`，记录“原文做法 / 我们做法 / 差异 / 风险”；
@@ -896,6 +943,8 @@ literature/survey.md            # 所有候选论文的摘要与相关性
 | CofactVLA `2608.04396` | 未下载 | 未查 | language-masked branch、去混淆投影 |
 
 这张表不是为了现在全部实现，而是防止“看到一篇论文就凭印象加模块”。每个方法进入实验前，先把对应行补完整。
+
+表中的“待查/未下载”只是审计起点，不是使用许可。真正进入训练前，对应行必须至少补齐为：`paper_downloaded=true`、`repo_url`（找不到则 `official_code_missing=true`）、`repo_commit`、`repo_found_in`、`paper_reading`、`reproduction_level`；任何一项为空，该外部方法只能用于文献讨论，不能进入 arm。
 
 ### 13.4 代码复现的最低证据
 
