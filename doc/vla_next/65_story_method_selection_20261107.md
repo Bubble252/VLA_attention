@@ -669,6 +669,39 @@ Stage 0: D0 Run Contract PASS
 
 **一句话**：`AC-VLA-lite`、`CompoSlot` 和 `factor sufficiency/necessity` 不是永久绑在一起；它们是三个可独立升级的组件，只有 `A2` 通过后才允许合并成完整 FAI-VLA。
 
+#### 11.4.5 升级批次与材料门槛
+
+下面的“批次”是执行顺序，不是日历承诺。只有上一批的 Gate 已经 PASS，且该批组件的外部材料包已经完整落盘，下一批才允许启动。当前（2026-11-07）处于 `P0`：`W-I` 关闭，只允许做一次接口注入修复，不允许把任何组件换成“论文近似版”。
+
+| 批次 | 触发条件 | 允许升级的组件 | 启动前必须完成的材料检查 |
+|---|---|---|---|
+| `P0` 当前 | `G-I1/G-I2 FAIL`；`W-I` 关闭 | 无；只允许 `I2-XATTN` 或 `evidence_token` 注入修复 | 修复本身如果借用外部 cross-attention/query-token 设计，也要先下载对应论文 PDF/TXT、追到正文中的仓库链接、clone 并 pin commit，再写 `paper_reading` |
+| `P1` 接口 | 注入修复后重新满足 `I1 > I0` 和 `I2 > I3`，且 point-in-mask 抽检通过 | `I2` marker -> AnySlot/CompoSlot 式 slot marker、区域/HSV 提取、slot-level spatial token | AnySlot/CompoSlot 论文 PDF/TXT 已下载；全文搜索到仓库链接或明确记录 `official_code_missing=true`；官方仓库已 clone、pin commit、记录 license 和入口文件 |
+| `P2` 动作 | 固定 best interface arm 后，`A1 > A0`，且 `A2` 的 held-out 指标与 suff/nec margin 同向 | `A1/A2` -> CRAFT/CounterAlign/CAST 式配对构造、negative mining、discriminator/AWR | 每引入一个外部 loss 或 pair 构造，都要单独下载对应论文和官方代码；`paper_reading` 必须逐项写出“原文做法 / 我们做法 / 差异 / 风险” |
+| `P3` 完整方法 | `A2` PASS，且 `F0` 至少优于 `F1/F2/F3` 中两个，`F4` 消融显示 phase 有贡献 | `AC-VLA-lite` phase + `CompoSlot` + factor constraints 合并为 `F0` | AC-VLA、CompoSlot 及其他被合并组件的材料包全部齐全；每个升级 arm 登记 `parent_arm`、config SHA、论文来源、仓库 URL、pin commit |
+| `P4` 论文级 | `L2` 成立，并完成 30/50 条确认、3 seeds、第二场景/外部 benchmark | 不再新增组件；只做复现、消融和证据补强 | 所有 baseline、消融和外部方法都能追到论文、仓库 commit 和运行命令；缺材料的 arm 只能标 `INVALID` |
+
+“材料包齐全”不是一句口头要求，而是以下四件套同时存在：
+
+1. `papers/{slug}.pdf` 和 `papers/{slug}.txt` 已在本机；
+2. 已在论文摘要、方法、实验、脚注、附录、补充材料和 OpenReview 附件中搜索过代码链接，不能只搜首页；
+3. 找到的官方仓库已 clone 到 `references/repos/{slug}`，并记录 `repo_found_in`、`repo_url`、`repo_commit`、`license`、`official`；
+4. `references/paper_reading/{slug}.md` 已写完，明确 `faithful_reproduction | adapted_reproduction | pseudocode` 以及我们与原文的差异。
+
+固定执行顺序只能是：
+
+```text
+下载论文 PDF/TXT
+  -> 全文定位论文正文中的代码链接
+  -> clone 官方仓库并 pin commit
+  -> 读完 config / loss / data pipeline / train-eval 入口
+  -> 写 paper_reading 和 repositories.yaml
+  -> 再改我们自己的代码
+  -> 最后才启动新 arm
+```
+
+不能先凭印象写一版实现，再回头补论文和代码；也不能用“论文里大概是这样”代替本地材料。缺少四件套中任何一项，该 arm 的 Run Contract 必须是 `INVALID`，不进入 Gate 判读。详细操作见第 13.6 节。
+
 ---
 
 ## 12. 下一阶段 Goal 提示词
@@ -1127,16 +1160,14 @@ git -C "references/repos/${SLUG}" log -1 --format='%H %ad %s' --date=iso
 
 ## 15. Git
 
-本文件与 Goal13 接口层结果记录需要一起提交；不提交 checkpoint、视频、大数据或无关改动。需要提交时：
+本次文档改动只涉及本文件；不提交 `papers/`、`references/` 的工作区变化、checkpoint、视频或大数据。确认后按以下方式提交：
 
 ```bash
 cd /home/bubble/类脑计算/VLM终局
 git status --short
-git add \
-  doc/vla_next/65_story_method_selection_20261107.md \
-  experiments/Goal13-autoresearch-20261107/12_interface_result.md \
-  experiments/Goal13-autoresearch-20261107/research-state.yaml \
-  experiments/Goal13-autoresearch-20261107/research-log.md
+git add doc/vla_next/65_story_method_selection_20261107.md
 git diff --cached --check
-git commit -m "docs(vla): record interface gate failure and paper upgrade rules"
+git commit -m "docs(vla): add component upgrade batch and material gate"
 ```
+
+需要同步到远端时，再执行 `git push origin main`；本次不自动 push。
