@@ -134,10 +134,9 @@ $W/envs/oft/bin/python $R/scripts/build_p1_teacher_cache.py \
 
 ## 6. 下一步
 
-P1-B 已 PASS，按协议进入 **P1-C offline student**：
+P1-C 已按协议完成并失败，结果见 `07_p1c_result.md`：
 
-1. arms 使用 `R1-CAP`、`R2-ROUTE`、`R3-GEO`，不能写 `R2-PRED`；
-2. 先做 500-step smoke，再做 2000-step pilot；
-3. 必须同时检查 cosine、dominant-axis sign、magnitude ratio、plateau/large/cap 桶和 release precision/recall；
-4. 如果模型只学会三档输出，离线 Gate 不能算“连续横向修正”通过；
-5. offline Gate PASS 后才允许进入 P1-D 15-init 闭环。
+1. `R2-ROUTE` 没有相对 `R1-CAP` 产生增益，且失败 magnitude Gate；
+2. P1-D 15-init 闭环不启动，不扩 30/50；
+3. 若要继续 P1 线，只能先做新的、预注册的离线诊断（train-only magnitude calibration + 3 seeds），不能把本次 FAIL 改写成 PASS；
+4. 任何论文近似组件仍不能升级。

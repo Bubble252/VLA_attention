@@ -1,7 +1,7 @@
 # P1 执行计划
 
 **日期**：2026-11-07
-**状态**：`P1_A_PASS_P1_B_PASS_P1_C_NEXT`；P1-A/P1-B 已通过；只允许进入 P1-C offline student，不启动闭环
+**状态**：`P1_A_PASS_P1_B_PASS_P1_C_FAIL`；P1-C v4 offline Gate 失败，P1-D 不启动，不跑闭环
 
 ## 1. 总体顺序
 
@@ -97,6 +97,8 @@ $W/results/K4_lite/T1_router/inventory_v1/inventory.json
 - [x] cache manifest、行数、shape、SHA 全部记录。
 
 **P1-B 裁决**：`PASS`（离线教师缓存）。96 episodes、11,630 transitions、release `88 transitions / 88 episodes`、`white_right=0`、plateau `37`、大修正桶 `262`、无生成错误。结果见 `06_p1b_teacher_result.md`。该 PASS 只解锁 P1-C，不解锁 P1-D 或方法论文。
+
+**P1-C 裁决（2026-11-07）**：`FAIL`。commit `4763365`、config v3、2000-step pilot 下，`R2-ROUTE` 的 validation cosine `0.7036`、sign `0.7952`、magnitude `0.6734`，失败 magnitude Gate；`R1-CAP` 仍在 cosine/sign/MAE 上优于 `R2-ROUTE`，没有 evidence 增益。按停止条件，P1-D 不启动。结果见 `07_p1c_result.md`。
 
 ## 4. P1-C：offline student training
 
