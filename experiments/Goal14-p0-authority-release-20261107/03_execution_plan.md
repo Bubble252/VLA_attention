@@ -132,18 +132,8 @@ git commit -m "feat(vla): add p0 authority release runner"
 ssh -p 27219 root@115.190.90.101
 export W=/vepfs-mlp2/c20250405/400040/transfer/vla_attention/vla_workspace
 export R=/vepfs-mlp2/c20250405/400040/transfer/vla_attention/repo/VLA_attention
-export OUT=$W/results/K4_lite/T4b/p0_authority_release_15init_20261107
-export CUDA_VISIBLE_DEVICES=1
 cd "$R"
-python scripts/audit_k4_lite_t4b_v12_p0_authority_release.py \
-  --model "$W/models/openvla--openvla-7b" \
-  --checkpoint "$W/results/JGATE_first_batch_20261023T0737cache/openvla--openvla-7b+libero_90_gate+b32+lr-0.0005+lora-r32+dropout-0.0--image_aug--JGATE_formal_20261023T0737cache--J2--12500_chkpt" \
-  --manifest "$W/data/jgate_c1/counterfactual_20261027/manifest.jsonl" \
-  --gate-config configs/vla/k4_lite_t4b_v12_p0_authority_release.json \
-  --expected-checkpoint-fingerprint 747a28690383ca45e795518121e9aed3f4610265c14618a69f203922b4238e20 \
-  --output "$OUT" \
-  --max-inits 15 \
-  --seed 7
+bash server/run_k4_lite_t4b_v12_p0.sh
 ```
 
 - [ ] 4 arms x 15 init 全部跑完；

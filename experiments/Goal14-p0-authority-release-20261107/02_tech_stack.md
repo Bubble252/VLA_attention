@@ -31,6 +31,21 @@ GPU：
 - GPU1 空闲，本实验只使用 `CUDA_VISIBLE_DEVICES=1`；
 - 所有 episode 串行执行，不并行抢占显存。
 
+运行环境：
+
+```text
+$W/envs/oft/bin/python
+```
+
+不能使用 base `python`：base 环境没有 `tensorflow`。必须设置：
+
+```bash
+export PYTHONPATH="$R:$R/src:$W/repos/openvla-oft:$W/repos/libero"
+export LIBERO_CONFIG_PATH="$W/libero_config"
+export CUDA_VISIBLE_DEVICES=1
+export MUJOCO_EGL_DEVICE_ID=1
+```
+
 ## 3. 冻结资产
 
 J2 checkpoint：
@@ -90,6 +105,7 @@ init_3500df19a4d3b5a1
 - `configs/vla/k4_lite_t4b_v12_p0_authority_release.json`：冻结 arms、release/settle、Gate；
 - `scripts/audit_k4_lite_t4b_v12_p0_authority_release.py`：选择 15 init、运行 4 arms、分 split 汇总和判 Gate；
 - `tests/test_k4_lite_t4b_v12.py`：SHA、配置篡改、Gate 和 split 测试。
+- `server/run_k4_lite_t4b_v12_p0.sh`：远端正式启动脚本，固定 `oft` 环境、LIBERO 路径和 GPU1。
 
 复用：
 
