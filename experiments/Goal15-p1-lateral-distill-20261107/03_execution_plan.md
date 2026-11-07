@@ -1,7 +1,7 @@
 # P1 执行计划
 
 **日期**：2026-11-07
-**状态**：`PROTOCOL_FROZEN_NOT_STARTED`；只写协议，不训练
+**状态**：`P1_A_PASS_P1_B_NEXT`；P1-A 已通过，只允许进入 P1-B，不训练
 
 ## 1. 总体顺序
 
@@ -31,12 +31,14 @@ P1-A evidence adapter qualification
 
 ### 2.3 Gate
 
-- [ ] evidence 只使用部署时输入，不读取 GT object/plate/mask；
-- [ ] train/validation/rollout split 零重叠；
-- [ ] `white_right` 训练计数为 0；
-- [ ] point/region 覆盖率 `>=0.90`；
-- [ ] 若使用 point head：point-in-mask `>=0.80`，destination L1 报告且不劣于旧 Qwen 资产的同口径基线；
-- [ ] 输出 SHA、config SHA、checkpoint SHA 全部记录。
+- [x] evidence 只使用部署时输入，不读取 GT object/plate/mask；
+- [x] train/validation/rollout split 零重叠；
+- [x] `white_right` 训练计数为 0；
+- [x] point/region 覆盖率 `>=0.90`（route-centroid coverage = 1.000）；
+- [x] 若使用 point head：point-in-mask `>=0.80`，destination L1 报告且不劣于旧 Qwen 资产的同口径基线；
+- [x] 输出 SHA、config SHA、checkpoint SHA 全部记录。
+
+**P1-A 裁决**：`PASS`。证据类型为 `route_centroid`，学生 arm 为 `R2-ROUTE`；未使用 J2 point head，不能命名为 `R2-PRED`。结果见 `05_p1a_evidence_result.md`。
 
 ### 2.4 失败处理
 
@@ -62,6 +64,14 @@ teacher_release  = A10 release trigger at this step
 - 同一状态要保留正确的 destination 和错误 destination 的 route pair；
 - 标签分布必须覆盖 plateau（`0.027–0.035m`）和大修正桶（`0.05–0.10m`）；
 - `white_right` 为 0。
+
+P1-B 已有可用的 episode→HDF5 demo→84D init-state 映射：
+
+```text
+$W/results/K4_lite/T1_router/inventory_v1/inventory.json
+```
+
+该 inventory 覆盖 96 个 train episodes，init-state 与 validation/rollout 零重叠。P1-B 必须使用它重放，不得用 `target_action` 或 route centroid 冒充 A10 教师。
 
 ### 3.3 数据生成
 
