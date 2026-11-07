@@ -2,7 +2,7 @@
 
 本目录执行 [65_story_method_selection_20261107.md](../../doc/vla_next/65_story_method_selection_20261107.md) 的 `Data -> Interface -> Control` 三级阶梯。
 
-当前状态：**D0 baseline Gate 已 PASS；D1 carrier、Run Contract、2-step smoke、2.5K matched run、offline `limit=2` smoke 和完整 118-group offline eval 已 PASS。D1 离线指标没有优于 D0，正在用 15-init pilot 判断 held-out `white_right`。D2 仍待决定。**
+当前状态：**D0 已被选为 best data arm；D1 契约全部 PASS，但 offline 与 15-init pilot 都没有方向性增益（`white_right=0/15`，seen group-any `9/15` vs D0 `13/15`）。D2 跳过，下一步进入 D0 的接口层 I0/I1/I2/I3。**
 
 阅读顺序：
 

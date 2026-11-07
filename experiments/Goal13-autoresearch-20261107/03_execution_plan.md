@@ -71,9 +71,10 @@ $W/results/star105_goal13_20261107/audit/
 - [x] D1 2-step training smoke 与 postrun PASS；
 - [x] D1 offline smoke 检查 NaN、动作幅度、gripper；
 - [x] D1 完整 118-group offline eval 完成并通过契约；
-- [ ] D0/D1 pilot 使用同一 evaluator、batch、seed；
-- [ ] 只取 best data arm 进入接口层；
-- [ ] 不在没有 D0 的情况下宣称 D1 有效。
+- [x] D0/D1 pilot 使用同一 evaluator、batch、seed；
+- [x] 只取 best data arm 进入接口层（D0；D1 无方向性增益）；
+- [x] 不在没有 D0 的情况下宣称 D1 有效（D1 `white_right=0/15`，seen 退化）。
+- [x] D2 可选臂跳过：D1 已负向，继续增加 carrier 的信息收益低，先以 D0 做接口归因。
 
 ## 3. Stage 1b：I0/I1/I2/I3
 

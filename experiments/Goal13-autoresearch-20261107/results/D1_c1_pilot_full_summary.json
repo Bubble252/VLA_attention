@@ -1,0 +1,118 @@
+{
+  "arm": "star13_d1_matched_2500",
+  "destination_reached_correct": 0.2833333333333333,
+  "elapsed_seconds": 759.182,
+  "env_seed": 0,
+  "episodes": 60,
+  "evaluator_file": "/vepfs-mlp2/c20250405/400040/transfer/vla_attention/vla_workspace/repo/starvla_55_20261030/repo/scripts/star105_c1_rollout.py",
+  "evaluator_sha256": "b3f722e82b82c9bd9cabec227288daa42ca57ff3eb21c211912d53f21c519cb6",
+  "failure_types": {
+    "grasp_failure": 3,
+    "predicate_failure": 6,
+    "success": 11,
+    "target_not_reached": 30,
+    "wrong_object": 1,
+    "wrong_receptacle_or_relation": 9
+  },
+  "faithful": 0.2833333333333333,
+  "init_count": 15,
+  "manifest": "/vepfs-mlp2/c20250405/400040/transfer/vla_attention/vla_workspace/data/jgate_c1/counterfactual_20261027/manifest.jsonl",
+  "manifest_sha256": "e9564ca9aef800e618e3fdb5d144892eabe9471815bbd24bae3140583946f45e",
+  "max_steps": 300,
+  "no_destination": 0.4666666666666667,
+  "num_steps_wait": 10,
+  "per_prompt": {
+    "red_left": {
+      "destination_reached_correct": 0.2,
+      "episodes": 15,
+      "failure_types": {
+        "grasp_failure": 2,
+        "success": 3,
+        "target_not_reached": 8,
+        "wrong_object": 1,
+        "wrong_receptacle_or_relation": 1
+      },
+      "faithful": 0.2,
+      "no_destination": 0.5333333333333333,
+      "strict_destination_correct": 0.2,
+      "success": 0.2,
+      "target_destination_correct": 0.8571428571428571,
+      "target_destination_not_reached": 0.2,
+      "target_object_correct": 1.0,
+      "wrong_destination": 0.14285714285714285,
+      "wrong_object": 0.0
+    },
+    "red_right": {
+      "destination_reached_correct": 0.5333333333333333,
+      "episodes": 15,
+      "failure_types": {
+        "predicate_failure": 5,
+        "success": 3,
+        "target_not_reached": 4,
+        "wrong_receptacle_or_relation": 3
+      },
+      "faithful": 0.5333333333333333,
+      "no_destination": 0.2,
+      "strict_destination_correct": 0.5333333333333333,
+      "success": 0.2,
+      "target_destination_correct": 0.75,
+      "target_destination_not_reached": 0.06666666666666667,
+      "target_object_correct": 1.0,
+      "wrong_destination": 0.25,
+      "wrong_object": 0.0
+    },
+    "white_left": {
+      "destination_reached_correct": 0.4,
+      "episodes": 15,
+      "failure_types": {
+        "predicate_failure": 1,
+        "success": 5,
+        "target_not_reached": 9
+      },
+      "faithful": 0.4,
+      "no_destination": 0.5333333333333333,
+      "strict_destination_correct": 0.4,
+      "success": 0.3333333333333333,
+      "target_destination_correct": 1.0,
+      "target_destination_not_reached": 0.06666666666666667,
+      "target_object_correct": 0.8666666666666667,
+      "wrong_destination": 0.0,
+      "wrong_object": 0.13333333333333333
+    },
+    "white_right": {
+      "destination_reached_correct": 0.0,
+      "episodes": 15,
+      "failure_types": {
+        "grasp_failure": 1,
+        "target_not_reached": 9,
+        "wrong_receptacle_or_relation": 5
+      },
+      "faithful": 0.0,
+      "no_destination": 0.6,
+      "strict_destination_correct": 0.0,
+      "success": 0.0,
+      "target_destination_correct": 0.0,
+      "target_destination_not_reached": 0.0,
+      "target_object_correct": 0.9333333333333333,
+      "wrong_destination": 1.0,
+      "wrong_object": 0.06666666666666667
+    }
+  },
+  "prompt_ids": [
+    "red_left",
+    "red_right",
+    "white_left",
+    "white_right"
+  ],
+  "purpose": "C1 same-scene same-init four-prompt counterfactual",
+  "requested_episodes": 60,
+  "seed": 7,
+  "status": "complete",
+  "strict_destination_correct": 0.2833333333333333,
+  "success": 0.18333333333333332,
+  "target_destination_correct": 0.6875,
+  "target_destination_not_reached": 0.08333333333333333,
+  "target_object_correct": 0.95,
+  "wrong_destination": 0.3125,
+  "wrong_object": 0.05
+}
