@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import tempfile
 import unittest
+import hashlib
 from pathlib import Path
 
 import yaml
@@ -63,6 +64,7 @@ class Goal13IPreflightTests(unittest.TestCase):
             point = root / "point_head.pt"
             init.write_bytes(b"d0")
             point.write_bytes(b"point")
+            point_sha = hashlib.sha256(point.read_bytes()).hexdigest()
             config = make_config(root, arm="I2", init_checkpoint=init, point_checkpoint=point)
             report = evaluate(
                 config_path=config,
@@ -70,8 +72,28 @@ class Goal13IPreflightTests(unittest.TestCase):
                 init_checkpoint=init,
                 point_checkpoint=point,
                 trainable_modules=["action_model", "point_evidence_projector"],
+                point_checkpoint_sha256=point_sha,
             )
         self.assertEqual(report["status"], "PASS", report["failures"])
+
+    def test_i2_with_wrong_point_sha_is_invalid(self):
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            init = root / "d0.safetensors"
+            point = root / "point_head.pt"
+            init.write_bytes(b"d0")
+            point.write_bytes(b"point")
+            config = make_config(root, arm="I2", init_checkpoint=init, point_checkpoint=point)
+            report = evaluate(
+                config_path=config,
+                arm="I2",
+                init_checkpoint=init,
+                point_checkpoint=point,
+                trainable_modules=["action_model", "point_evidence_projector"],
+                point_checkpoint_sha256="0" * 64,
+            )
+        self.assertEqual(report["status"], "INVALID")
+        self.assertIn("i2_point_checkpoint_sha256", report["failures"])
 
     def test_i2_with_disabled_marker_is_invalid(self):
         with tempfile.TemporaryDirectory() as directory:

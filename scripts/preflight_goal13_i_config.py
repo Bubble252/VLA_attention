@@ -8,6 +8,7 @@ the registered I0/I2 intervention before any GPU work starts.
 from __future__ import annotations
 
 import argparse
+import hashlib
 import json
 from datetime import datetime, timezone
 from pathlib import Path
@@ -32,7 +33,23 @@ def add(checks: dict[str, Any], failures: list[str], name: str, passed: bool, ex
         failures.append(name)
 
 
-def evaluate(*, config_path: Path, arm: str, init_checkpoint: Path, point_checkpoint: Path | None, trainable_modules: list[str]) -> dict[str, Any]:
+def sha256_file(path: Path) -> str:
+    digest = hashlib.sha256()
+    with path.open("rb") as handle:
+        for block in iter(lambda: handle.read(8 * 1024 * 1024), b""):
+            digest.update(block)
+    return digest.hexdigest()
+
+
+def evaluate(
+    *,
+    config_path: Path,
+    arm: str,
+    init_checkpoint: Path,
+    point_checkpoint: Path | None,
+    trainable_modules: list[str],
+    point_checkpoint_sha256: str | None = None,
+) -> dict[str, Any]:
     config = load_yaml(config_path)
     framework = config.get("framework", {}) if isinstance(config.get("framework"), dict) else {}
     trainer = config.get("trainer", {}) if isinstance(config.get("trainer"), dict) else {}
@@ -90,6 +107,19 @@ def evaluate(*, config_path: Path, arm: str, init_checkpoint: Path, point_checkp
             True,
             point_checkpoint.is_file() if point_checkpoint else None,
         )
+        actual_point_sha = (
+            sha256_file(point_checkpoint)
+            if point_checkpoint is not None and point_checkpoint.is_file()
+            else None
+        )
+        add(
+            checks,
+            failures,
+            "i2_point_checkpoint_sha256",
+            bool(point_checkpoint_sha256) and actual_point_sha == point_checkpoint_sha256,
+            point_checkpoint_sha256,
+            actual_point_sha,
+        )
         add(checks, failures, "i2_point_head_frozen", "point_head" in freeze, True, freeze)
         add(checks, failures, "i2_tokenizer_frozen", "point_tokenizer" in freeze, True, freeze)
         add(checks, failures, "i2_projector_lr_positive", float(lr.get("point_evidence_projector", 0.0)) > 0.0, ">0", lr.get("point_evidence_projector"))
@@ -120,6 +150,7 @@ def main() -> int:
     parser.add_argument("--arm", choices=("I0", "I2"), required=True)
     parser.add_argument("--init-checkpoint", type=Path, required=True)
     parser.add_argument("--point-checkpoint", type=Path, default=None)
+    parser.add_argument("--point-checkpoint-sha256", default=None)
     parser.add_argument("--trainable-modules", required=True)
     parser.add_argument("--output", type=Path, required=True)
     args = parser.parse_args()
@@ -130,6 +161,7 @@ def main() -> int:
         init_checkpoint=args.init_checkpoint,
         point_checkpoint=args.point_checkpoint,
         trainable_modules=modules,
+        point_checkpoint_sha256=args.point_checkpoint_sha256,
     )
     args.output.parent.mkdir(parents=True, exist_ok=True)
     args.output.write_text(json.dumps(report, indent=2, sort_keys=True) + "\n")
