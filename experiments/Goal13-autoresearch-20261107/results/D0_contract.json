@@ -1,0 +1,282 @@
+{
+  "arm": "D0",
+  "arm_status": "PENDING_GATE",
+  "checks": {
+    "arm_train_episode_count": {
+      "actual": 96,
+      "detail": "",
+      "expected": 96,
+      "passed": true
+    },
+    "arm_white_right_train_zero": {
+      "actual": 0,
+      "detail": "",
+      "expected": 0,
+      "passed": true
+    },
+    "audit_source_counts": {
+      "actual": {
+        "red_left": 37,
+        "red_right": 44,
+        "white_bowl_right": 44,
+        "white_left": 45,
+        "white_right": 0,
+        "yellow_and_white_right": 48
+      },
+      "detail": "",
+      "expected": {
+        "red_left": 37,
+        "red_right": 44,
+        "white_bowl_right": 44,
+        "white_left": 45,
+        "white_right": 0,
+        "yellow_and_white_right": 48
+      },
+      "passed": true
+    },
+    "audit_split_overlap_zero": {
+      "actual": 0,
+      "detail": "",
+      "expected": 0,
+      "passed": true
+    },
+    "audit_status": {
+      "actual": "PASS",
+      "detail": "",
+      "expected": "PASS",
+      "passed": true
+    },
+    "audit_train_counts": {
+      "actual": {
+        "red_left": 27,
+        "red_right": 34,
+        "white_left": 35,
+        "white_right": 0
+      },
+      "detail": "",
+      "expected": {
+        "red_left": 27,
+        "red_right": 34,
+        "white_left": 35,
+        "white_right": 0
+      },
+      "passed": true
+    },
+    "c1_dataset_length": {
+      "actual": 11630,
+      "detail": "",
+      "expected": 11630,
+      "passed": true
+    },
+    "c1_dataset_present": {
+      "actual": [
+        "libero_90_gate_lerobot"
+      ],
+      "detail": "",
+      "expected": "libero_90_gate_lerobot",
+      "passed": true
+    },
+    "carrier_count": {
+      "actual": 48,
+      "detail": "",
+      "expected": 48,
+      "passed": true
+    },
+    "code_commit": {
+      "actual": "4507931a625c844404c4a76128fb116536d8ca7c",
+      "detail": "",
+      "expected": "40-character git commit",
+      "passed": true
+    },
+    "config_sha256": {
+      "actual": "61cbe071a8ca21d5e1d603b03c6a17e552a55ea00ca72aadc32133f12c23b252",
+      "detail": "",
+      "expected": "64-character config SHA256",
+      "passed": true
+    },
+    "effective_batch": {
+      "actual": 4,
+      "detail": "",
+      "expected": 4,
+      "passed": true
+    },
+    "effective_batch_positive": {
+      "actual": 4,
+      "detail": "",
+      "expected": ">0",
+      "passed": true
+    },
+    "heldout_prompt_train_count": {
+      "actual": 0,
+      "detail": "",
+      "expected": 0,
+      "passed": true
+    },
+    "manifest_language_counts": {
+      "actual": {
+        "put the red mug on the left plate": 37,
+        "put the red mug on the right plate": 44,
+        "put the white mug on the left plate": 45
+      },
+      "detail": "",
+      "expected": {
+        "put the red mug on the left plate": 37,
+        "put the red mug on the right plate": 44,
+        "put the white mug on the left plate": 45
+      },
+      "passed": true
+    },
+    "manifest_overlap_zero": {
+      "actual": 0,
+      "detail": "{'train__validation': 0, 'train__rollout': 0, 'validation__rollout': 0}",
+      "expected": 0,
+      "passed": true
+    },
+    "manifest_split_counts": {
+      "actual": {
+        "rollout": 15,
+        "train": 96,
+        "validation": 15
+      },
+      "detail": "",
+      "expected": {
+        "rollout": 15,
+        "train": 96,
+        "validation": 15
+      },
+      "passed": true
+    },
+    "observed_dataset_present": {
+      "actual": [
+        "libero_90_gate_lerobot"
+      ],
+      "detail": "",
+      "expected": ">=1 dataset",
+      "passed": true
+    },
+    "observed_lengths_positive": {
+      "actual": {
+        "libero_90_gate_lerobot": 11630
+      },
+      "detail": "",
+      "expected": "all lengths > 0",
+      "passed": true
+    },
+    "observed_sampling_weight_sum": {
+      "actual": 1.0,
+      "detail": "",
+      "expected": "1.0 +/- 0.01",
+      "passed": true
+    },
+    "seed": {
+      "actual": 17,
+      "detail": "",
+      "expected": 17,
+      "passed": true
+    },
+    "train_validation_rollout_overlap": {
+      "actual": {
+        "audit": 0,
+        "manifest": 0
+      },
+      "detail": "",
+      "expected": 0,
+      "passed": true
+    },
+    "white_bowl_right_count": {
+      "actual": 44,
+      "detail": "",
+      "expected": 44,
+      "passed": true
+    },
+    "white_right_train_zero": {
+      "actual": 0,
+      "detail": "",
+      "expected": 0,
+      "passed": true
+    }
+  },
+  "code_commit": "4507931a625c844404c4a76128fb116536d8ca7c",
+  "config_sha256": "61cbe071a8ca21d5e1d603b03c6a17e552a55ea00ca72aadc32133f12c23b252",
+  "contract_status": "PASS",
+  "counterfactual_mode": "none",
+  "created_at": "2026-11-07T08:12:41.578598+00:00",
+  "data": {
+    "carrier_episode_count": 0,
+    "data_arm": "D0",
+    "dataset_lengths": {
+      "libero_90_gate_lerobot": 11630
+    },
+    "heldout_prompt_train_count": 0,
+    "manifest_split_counts": {
+      "rollout": 15,
+      "train": 96,
+      "validation": 15
+    },
+    "sampling_weights": {
+      "libero_90_gate_lerobot": 1.0
+    },
+    "source_language_counts": {
+      "red_left": 37,
+      "red_right": 44,
+      "white_bowl_right": 44,
+      "white_left": 45,
+      "white_right": 0,
+      "yellow_and_white_right": 48
+    },
+    "split_language_counts": {
+      "rollout": {
+        "red_left": 5,
+        "red_right": 5,
+        "white_bowl_right": 0,
+        "white_left": 5,
+        "white_right": 0,
+        "yellow_and_white_right": 0
+      },
+      "train": {
+        "red_left": 27,
+        "red_right": 34,
+        "white_bowl_right": 0,
+        "white_left": 35,
+        "white_right": 0,
+        "yellow_and_white_right": 0
+      },
+      "unassigned": {
+        "red_left": 0,
+        "red_right": 0,
+        "white_bowl_right": 44,
+        "white_left": 0,
+        "white_right": 0,
+        "yellow_and_white_right": 48
+      },
+      "validation": {
+        "red_left": 5,
+        "red_right": 5,
+        "white_bowl_right": 0,
+        "white_left": 5,
+        "white_right": 0,
+        "yellow_and_white_right": 0
+      }
+    },
+    "train_episode_count": 96,
+    "train_language_counts": {
+      "red_left": 27,
+      "red_right": 34,
+      "white_left": 35,
+      "white_right": 0
+    },
+    "train_validation_rollout_overlap": 0,
+    "white_bowl_right_episode_count": 0
+  },
+  "failures": [],
+  "marker_mode": "none",
+  "parent_arm": null,
+  "runtime": {
+    "effective_batch": 4,
+    "grad_accum": 1,
+    "num_processes": 1,
+    "per_device_batch": 4,
+    "seed": 17
+  },
+  "schema": "goal13-run-contract-v1"
+}

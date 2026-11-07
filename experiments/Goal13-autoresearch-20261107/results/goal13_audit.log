@@ -1,0 +1,19 @@
+{
+  "audit_status": "PASS",
+  "source_language_counts": {
+    "red_left": 37,
+    "red_right": 44,
+    "white_left": 45,
+    "white_right": 0,
+    "yellow_and_white_right": 48,
+    "white_bowl_right": 44
+  },
+  "train_language_counts": {
+    "red_left": 27,
+    "red_right": 34,
+    "white_left": 35
+  },
+  "split_overlap_total": 0,
+  "failures": [],
+  "output": "/vepfs-mlp2/c20250405/400040/transfer/vla_attention/results/star105_goal13_20261107/audit/goal13_audit.json"
+}

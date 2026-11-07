@@ -1,0 +1,7 @@
+== carrier-like files ==
+== hdf5 files ==
+/vepfs-mlp2/c20250405/400040/transfer/vla_attention/vla_workspace/data/libero_90_hdf5/task65_67/LIVING_ROOM_SCENE5_put_the_red_mug_on_the_left_plate_demo.hdf5
+/vepfs-mlp2/c20250405/400040/transfer/vla_attention/vla_workspace/data/libero_90_hdf5/task65_67/LIVING_ROOM_SCENE5_put_the_red_mug_on_the_right_plate_demo.hdf5
+/vepfs-mlp2/c20250405/400040/transfer/vla_attention/vla_workspace/data/libero_90_hdf5/task65_67/LIVING_ROOM_SCENE5_put_the_white_mug_on_the_left_plate_demo.hdf5
+== target hdf5 count ==
+3

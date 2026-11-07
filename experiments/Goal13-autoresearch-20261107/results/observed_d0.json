@@ -1,0 +1,19 @@
+{
+  "balance_dataset_weights": false,
+  "balance_trajectory_weights": false,
+  "config": "/tmp/goal13_tools/goal13_d0.yaml",
+  "data_mix": "libero_c1_gate",
+  "data_root_dir": "/vepfs-mlp2/c20250405/400040/transfer/vla_attention/results/star105_goal10p5_20261105/data/LEROBOT_LIBERO_DATA",
+  "datasets": [
+    {
+      "base_weight": 1.0,
+      "length": 11630,
+      "name": "libero_90_gate_lerobot",
+      "num_trajectories": 96,
+      "sampling_weight": 1.0
+    }
+  ],
+  "sampling_weight_sum": 1.0,
+  "schema": "goal10.5-dataset-contract-v1",
+  "total_length": 11630
+}
