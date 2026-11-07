@@ -116,6 +116,9 @@ def evaluate_postrun(
     config_snapshot: Path,
     checkpoint_health_path: Path,
     expected_steps: int,
+    expected_arm: str | None = None,
+    expected_transitions: int | None = None,
+    expected_trajectories: int | None = None,
     repo: Path | None = None,
     require_runtime_markers: bool = False,
 ) -> dict[str, Any]:
@@ -129,7 +132,9 @@ def evaluate_postrun(
             failures.append(name)
 
     check("contract_status", contract.get("contract_status") == "PASS", "PASS", contract.get("contract_status"))
-    check("contract_arm", contract.get("arm") == "D0", "D0", contract.get("arm"))
+    contract_data = contract.get("data", {}) if isinstance(contract.get("data"), dict) else {}
+    contract_arm = expected_arm or contract.get("arm")
+    check("contract_arm", bool(contract_arm) and contract.get("arm") == contract_arm, contract_arm, contract.get("arm"))
     check("contract_marker_none", contract.get("marker_mode") == "none", "none", contract.get("marker_mode"))
     check(
         "contract_counterfactual_none",
@@ -290,16 +295,20 @@ def evaluate_postrun(
     dataset_stats_path = run_dir / "dataset_statistics.json"
     dataset_stats = load_json(dataset_stats_path) if dataset_stats_path.is_file() else {}
     franka = dataset_stats.get("franka", {}) if isinstance(dataset_stats.get("franka"), dict) else {}
+    if expected_transitions is None:
+        expected_transitions = int(contract_data.get("expected_raw_transitions", 12302))
+    if expected_trajectories is None:
+        expected_trajectories = int(contract_data.get("expected_trajectories", 96))
     check(
         "dataset_statistics_transitions",
-        int(franka.get("num_transitions", -1)) == 12302,
-        12302,
+        int(franka.get("num_transitions", -1)) == expected_transitions,
+        expected_transitions,
         franka.get("num_transitions"),
     )
     check(
         "dataset_statistics_trajectories",
-        int(franka.get("num_trajectories", -1)) == 96,
-        96,
+        int(franka.get("num_trajectories", -1)) == expected_trajectories,
+        expected_trajectories,
         franka.get("num_trajectories"),
     )
 
@@ -376,6 +385,9 @@ def main() -> int:
     parser.add_argument("--checkpoint-health", type=Path, required=True)
     parser.add_argument("--output", type=Path, required=True)
     parser.add_argument("--expected-steps", type=int, default=2)
+    parser.add_argument("--expected-arm", default=None)
+    parser.add_argument("--expected-transitions", type=int, default=None)
+    parser.add_argument("--expected-trajectories", type=int, default=None)
     parser.add_argument("--repo", type=Path, default=None)
     parser.add_argument("--require-runtime-markers", action="store_true")
     args = parser.parse_args()
@@ -387,6 +399,9 @@ def main() -> int:
         config_snapshot=args.config_snapshot,
         checkpoint_health_path=args.checkpoint_health,
         expected_steps=args.expected_steps,
+        expected_arm=args.expected_arm,
+        expected_transitions=args.expected_transitions,
+        expected_trajectories=args.expected_trajectories,
         repo=args.repo,
         require_runtime_markers=args.require_runtime_markers,
     )

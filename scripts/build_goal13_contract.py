@@ -26,6 +26,8 @@ C1_PROMPTS = ("red_left", "red_right", "white_left")
 HELDOUT_PROMPT = "white_right"
 CARRIER_PROMPT = "yellow_and_white_right"
 WHITE_BOWL_PROMPT = "white_bowl_right"
+CARRIER_DATASET_NAME = "libero_90_goal13_carrier_lerobot"
+WHITE_BOWL_DATASET_NAME = "libero_90_goal13_white_bowl_lerobot"
 COMMIT_PATTERN = re.compile(r"^[0-9a-f]{40}$")
 SHA256_PATTERN = re.compile(r"^[0-9a-f]{64}$")
 
@@ -44,6 +46,17 @@ def sha256_file(path: Path) -> str:
 
 def load_json(path: Path) -> dict[str, Any]:
     return json.loads(path.read_text())
+
+
+def load_jsonl(path: Path) -> list[dict[str, Any]]:
+    rows = []
+    for line in path.read_text().splitlines():
+        if line.strip():
+            payload = json.loads(line)
+            if not isinstance(payload, dict):
+                raise ValueError(f"expected JSON object per line in {path}")
+            rows.append(payload)
+    return rows
 
 
 def atomic_json_write(path: Path, payload: dict[str, Any]) -> None:
@@ -162,6 +175,38 @@ def normalize_observed_contract(payload: Mapping[str, Any]) -> dict[str, Any]:
     }
 
 
+def carrier_manifest_summary(
+    rows: list[Mapping[str, Any]],
+    *,
+    expected_language: str,
+    split_manifest: Mapping[str, Any],
+) -> dict[str, Any]:
+    ids: list[str] = []
+    languages: Counter[str] = Counter()
+    for row in rows:
+        episode_id = str(row.get("episode_id", ""))
+        if not episode_id:
+            raise ValueError("carrier manifest row is missing episode_id")
+        ids.append(episode_id)
+        languages[str(row.get("language", ""))] += 1
+    split_ids = {split: set() for split in SPLITS}
+    for split, split_rows in split_manifest.get("splits", {}).items():
+        if split not in split_ids:
+            raise ValueError(f"unknown split in manifest: {split}")
+        split_ids[split].update(str(row["episode_id"]) for row in split_rows)
+    carrier_ids = set(ids)
+    overlap = {split: len(carrier_ids & values) for split, values in split_ids.items()}
+    return {
+        "count": len(ids),
+        "unique_count": len(carrier_ids),
+        "ids": sorted(carrier_ids),
+        "languages": dict(languages),
+        "expected_language": expected_language,
+        "split_overlap": overlap,
+        "split_overlap_total": sum(overlap.values()),
+    }
+
+
 def _check(
     name: str,
     passed: bool,
@@ -198,6 +243,12 @@ def evaluate_contract(
     expected_white_bowl_count: int,
     expected_c1_dataset_length: int,
     c1_dataset_name: str,
+    expected_carrier_dataset_length: int | None,
+    expected_c1_sampling_weight: float | None,
+    expected_carrier_sampling_weight: float | None,
+    carrier_rows: list[Mapping[str, Any]] | None,
+    expected_raw_transitions: int | None,
+    expected_trajectories: int | None,
     prompt_text: Mapping[str, str],
     expected_seed: int,
     expected_effective_batch: int,
@@ -353,10 +404,80 @@ def evaluate_contract(
             if data_arm in {"D1", "D2"}:
                 add(
                     "carrier_dataset_present",
-                    len(datasets) >= 2,
-                    expected=">=2 datasets for D1/D2",
+                    CARRIER_DATASET_NAME in datasets,
+                    expected=CARRIER_DATASET_NAME,
                     actual=sorted(datasets),
                 )
+                carrier_row = datasets.get(CARRIER_DATASET_NAME)
+                if carrier_row is not None and expected_carrier_dataset_length is not None:
+                    add(
+                        "carrier_dataset_length",
+                        int(carrier_row["length"]) == expected_carrier_dataset_length,
+                        expected=expected_carrier_dataset_length,
+                        actual=int(carrier_row["length"]),
+                    )
+                if expected_c1_sampling_weight is not None:
+                    add(
+                        "c1_sampling_weight",
+                        c1_row is not None
+                        and abs(float(c1_row["sampling_weight"]) - expected_c1_sampling_weight) <= 0.005,
+                        expected=expected_c1_sampling_weight,
+                        actual=float(c1_row["sampling_weight"]) if c1_row is not None else None,
+                    )
+                if carrier_row is not None and expected_carrier_sampling_weight is not None:
+                    add(
+                        "carrier_sampling_weight",
+                        abs(float(carrier_row["sampling_weight"]) - expected_carrier_sampling_weight) <= 0.005,
+                        expected=expected_carrier_sampling_weight,
+                        actual=float(carrier_row["sampling_weight"]),
+                    )
+                allowed = {c1_dataset_name, CARRIER_DATASET_NAME}
+                if data_arm == "D2":
+                    allowed.add(WHITE_BOWL_DATASET_NAME)
+                add(
+                    "observed_dataset_names",
+                    set(datasets) == allowed,
+                    expected=sorted(allowed),
+                    actual=sorted(datasets),
+                )
+                if carrier_rows is None:
+                    add(
+                        "carrier_manifest",
+                        False,
+                        expected="ordered carrier episode manifest",
+                        actual=None,
+                    )
+                else:
+                    carrier_summary = carrier_manifest_summary(
+                        carrier_rows,
+                        expected_language=prompt_text[CARRIER_PROMPT],
+                        split_manifest=split_manifest,
+                    )
+                    add(
+                        "carrier_manifest_count",
+                        carrier_summary["count"] == expected_carrier_count,
+                        expected=expected_carrier_count,
+                        actual=carrier_summary["count"],
+                    )
+                    add(
+                        "carrier_manifest_ids_unique",
+                        carrier_summary["unique_count"] == carrier_summary["count"],
+                        expected=carrier_summary["count"],
+                        actual=carrier_summary["unique_count"],
+                    )
+                    add(
+                        "carrier_manifest_language",
+                        carrier_summary["languages"]
+                        == {prompt_text[CARRIER_PROMPT]: expected_carrier_count},
+                        expected={prompt_text[CARRIER_PROMPT]: expected_carrier_count},
+                        actual=carrier_summary["languages"],
+                    )
+                    add(
+                        "carrier_manifest_split_overlap_zero",
+                        carrier_summary["split_overlap_total"] == 0,
+                        expected=0,
+                        actual=carrier_summary["split_overlap"],
+                    )
         except Exception as error:
             add("observed_dataset_contract", False, expected="valid observed contract", actual=str(error))
 
@@ -416,6 +537,8 @@ def evaluate_contract(
             "manifest_split_counts": summary["split_counts"],
             "sampling_weights": normalized_observed["sampling_weights"] if normalized_observed else {},
             "dataset_lengths": normalized_observed["dataset_lengths"] if normalized_observed else {},
+            "expected_raw_transitions": expected_raw_transitions,
+            "expected_trajectories": expected_trajectories,
         },
         "runtime": {
             "per_device_batch": per_device_batch,
@@ -455,6 +578,12 @@ def main() -> int:
     parser.add_argument("--expected-white-bowl-count", type=int, default=44)
     parser.add_argument("--expected-c1-dataset-length", type=int, default=11630)
     parser.add_argument("--c1-dataset-name", default="libero_90_gate_lerobot")
+    parser.add_argument("--expected-carrier-dataset-length", type=int, default=None)
+    parser.add_argument("--expected-c1-sampling-weight", type=float, default=None)
+    parser.add_argument("--expected-carrier-sampling-weight", type=float, default=None)
+    parser.add_argument("--carrier-manifest", type=Path, default=None)
+    parser.add_argument("--expected-raw-transitions", type=int, default=None)
+    parser.add_argument("--expected-trajectories", type=int, default=None)
     args = parser.parse_args()
 
     data_arms = load_data_arms(args.data_arms_config)
@@ -465,6 +594,7 @@ def main() -> int:
     if config_sha is None and args.config is not None:
         config_sha = sha256_file(args.config)
     observed = load_json(args.observed_dataset_contract) if args.observed_dataset_contract else None
+    carrier_rows = load_jsonl(args.carrier_manifest) if args.carrier_manifest else None
     audit = load_json(args.audit)
     split_manifest = load_json(args.split_manifest)
 
@@ -492,6 +622,12 @@ def main() -> int:
         expected_white_bowl_count=args.expected_white_bowl_count,
         expected_c1_dataset_length=args.expected_c1_dataset_length,
         c1_dataset_name=args.c1_dataset_name,
+        expected_carrier_dataset_length=args.expected_carrier_dataset_length,
+        expected_c1_sampling_weight=args.expected_c1_sampling_weight,
+        expected_carrier_sampling_weight=args.expected_carrier_sampling_weight,
+        carrier_rows=carrier_rows,
+        expected_raw_transitions=args.expected_raw_transitions,
+        expected_trajectories=args.expected_trajectories,
         prompt_text=data_arms["prompts"],
         expected_seed=args.expected_seed,
         expected_effective_batch=args.expected_effective_batch,

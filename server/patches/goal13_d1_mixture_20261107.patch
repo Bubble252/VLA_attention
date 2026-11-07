@@ -1,0 +1,13 @@
+--- a/examples/simBenchmarks/LIBERO/train_files/data_registry/data_config.py
++++ b/examples/simBenchmarks/LIBERO/train_files/data_registry/data_config.py
+@@ -136,6 +136,10 @@
+     "libero_c1_gate": [
+         ("libero_90_gate_lerobot", 1.0, "libero_franka"),
+     ],
++    "libero_c1_gate_d1": [
++        ("libero_90_gate_lerobot", 1.0, "libero_franka"),
++        ("libero_90_goal13_carrier_lerobot", 0.5, "libero_franka"),
++    ],
+     # Matched retention pilot: no object/goal/10, no replay dilution.  With
+     # balance_dataset_weights=false the sampler is exactly 1:1 per sample.
+     "libero_c1_spatial_replay": [

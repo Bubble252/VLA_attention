@@ -83,14 +83,25 @@ def make_observed_contract(*, include_carrier=False):
         datasets.append(
             {
                 "name": "libero_90_goal13_carrier_lerobot",
-                "length": 5160,
+                "length": 4786,
                 "sampling_weight": 0.3333333,
             }
         )
     return {"datasets": datasets, "sampling_weight_sum": 1.0}
 
 
-def evaluate(*, data_arm="D0", audit=None, observed=None, runtime=None):
+def make_carrier_rows(count: int = 48):
+    return [
+        {
+            "output_record_index": index,
+            "episode_id": f"carrier-{index}",
+            "language": "put the yellow and white mug on the right plate",
+        }
+        for index in range(count)
+    ]
+
+
+def evaluate(*, data_arm="D0", audit=None, observed=None, runtime=None, carrier_rows=None):
     arms = default_data_arms()
     return evaluate_contract(
         audit=audit or make_audit(),
@@ -111,6 +122,12 @@ def evaluate(*, data_arm="D0", audit=None, observed=None, runtime=None):
         expected_white_bowl_count=44,
         expected_c1_dataset_length=11630,
         c1_dataset_name="libero_90_gate_lerobot",
+        expected_carrier_dataset_length=4786 if data_arm in {"D1", "D2"} else None,
+        expected_c1_sampling_weight=0.6666667 if data_arm in {"D1", "D2"} else None,
+        expected_carrier_sampling_weight=0.3333333 if data_arm in {"D1", "D2"} else None,
+        carrier_rows=make_carrier_rows() if carrier_rows is None else carrier_rows,
+        expected_raw_transitions=17424 if data_arm in {"D1", "D2"} else 12302,
+        expected_trajectories=144 if data_arm in {"D1", "D2"} else 96,
         prompt_text=arms["prompts"],
         expected_seed=17,
         expected_effective_batch=4,
@@ -230,6 +247,35 @@ class Goal13ContractTests(unittest.TestCase):
         self.assertEqual(contract["data"]["train_episode_count"], 144)
         self.assertEqual(contract["data"]["carrier_episode_count"], 48)
 
+    def test_d1_requires_carrier_manifest(self):
+        contract = evaluate(
+            data_arm="D1",
+            observed=make_observed_contract(include_carrier=True),
+            carrier_rows=[],
+        )
+        self.assertEqual(contract["contract_status"], "INVALID")
+        self.assertIn("carrier_manifest_count", contract["failures"])
+
+    def test_d1_wrong_carrier_weight_is_invalid(self):
+        observed = make_observed_contract(include_carrier=True)
+        observed["datasets"][0]["sampling_weight"] = 0.5
+        observed["datasets"][1]["sampling_weight"] = 0.5
+        contract = evaluate(data_arm="D1", observed=observed)
+        self.assertEqual(contract["contract_status"], "INVALID")
+        self.assertIn("c1_sampling_weight", contract["failures"])
+        self.assertIn("carrier_sampling_weight", contract["failures"])
+
+    def test_d1_carrier_split_overlap_is_invalid(self):
+        rows = make_carrier_rows()
+        rows[0]["episode_id"] = "red_left-0"
+        contract = evaluate(
+            data_arm="D1",
+            observed=make_observed_contract(include_carrier=True),
+            carrier_rows=rows,
+        )
+        self.assertEqual(contract["contract_status"], "INVALID")
+        self.assertIn("carrier_manifest_split_overlap_zero", contract["failures"])
+
     def test_white_right_in_train_invalidates_contract(self):
         audit = make_audit()
         audit["train_language_counts"]["white_right"] = 1
@@ -261,6 +307,12 @@ class Goal13ContractTests(unittest.TestCase):
             expected_white_bowl_count=44,
             expected_c1_dataset_length=11630,
             c1_dataset_name="libero_90_gate_lerobot",
+            expected_carrier_dataset_length=None,
+            expected_c1_sampling_weight=None,
+            expected_carrier_sampling_weight=None,
+            carrier_rows=None,
+            expected_raw_transitions=12302,
+            expected_trajectories=96,
             prompt_text=arms["prompts"],
             expected_seed=17,
             expected_effective_batch=4,

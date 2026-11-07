@@ -1,0 +1,89 @@
+run_id: star13_d1_matched_2500
+run_root_dir: /vepfs-mlp2/c20250405/400040/transfer/vla_attention/results/star105_goal13_20261107/checkpoints
+seed: 17
+wandb_entity: local
+wandb_project: star105
+is_debug: false
+version_id: "0.21"
+
+framework:
+  name: QwenGR00T
+  qwenvl:
+    base_vlm: /vepfs-mlp2/c20250405/400040/transfer/vla_attention/models/Qwen2.5-VL-7B-Instruct
+    adapter_path: /vepfs-mlp2/c20250405/400040/transfer/vla_attention/checkpoints/P4_vlm_formal_9952x3_20261016/V4_seed17/final
+    attn_implementation: flash_attention_2
+    processor_use_fast: false
+    vl_hidden_dim: 3584
+  action_model:
+    action_model_type: DiT-B
+    action_dim: 7
+    state_dim: 7
+    action_horizon: 8
+    repeated_diffusion_steps: 8
+    num_inference_timesteps: 4
+    num_target_vision_tokens: 32
+    add_pos_embed: true
+    max_seq_len: 1024
+    hidden_size: 1024
+    diffusion_model_cfg:
+      cross_attention_dim: 3584
+      dropout: 0.2
+      final_dropout: true
+      interleave_self_attention: true
+      norm_type: ada_norm
+      num_layers: 16
+      output_dim: 1024
+      positional_embeddings: null
+
+datasets:
+  vla_data:
+    dataset_py: lerobot_datasets
+    data_root_dir: /vepfs-mlp2/c20250405/400040/transfer/vla_attention/results/star105_goal10p5_20261105/data/LEROBOT_LIBERO_DATA
+    data_mix: libero_c1_gate_d1
+    action_mode: abs
+    sequential_step_sampling: false
+    per_device_batch_size: 4
+    num_workers: 4
+    pin_memory: true
+    persistent_workers: true
+    prefetch_factor: 2
+    include_state: false
+    image_size: 224
+    state_action_dtype: float32
+    video_backend: pyav
+    drop_incomplete_action_chunks: true
+    balance_dataset_weights: false
+    balance_trajectory_weights: false
+    episode_whitelist_by_dataset:
+      libero_90_gate_lerobot: /vepfs-mlp2/c20250405/400040/transfer/vla_attention/results/star105_goal10p5_20261105/manifests/c1_train_episodes.json
+    CoT_prompt: "Your task is {instruction}. Locate the target object and destination in the image before predicting the action chunk."
+
+trainer:
+  pretrained_checkpoint: /vepfs-mlp2/c20250405/400040/transfer/vla_attention/results/star105_goal10p5_20261105/checkpoints/star105_A3_qwengr00t_12500/final_model/model.safetensors
+  max_train_steps: 2500
+  num_warmup_steps: 100
+  save_interval: 2500
+  eval_interval: 999999
+  learning_rate:
+    base: 1.0e-04
+    qwen_vl_interface: 0.0
+    action_model: 1.0e-04
+  lr_scheduler_type: cosine_with_min_lr
+  scheduler_specific_kwargs:
+    min_lr: 1.0e-06
+  freeze_modules: qwen_vl_interface
+  loss_scale:
+    vla: 1.0
+  max_grad_norm: 1.0
+  weight_decay: 1.0e-08
+  logging_frequency: 10
+  gradient_clipping: 1.0
+  gradient_accumulation_steps: 1
+  gradient_checkpointing: false
+  save_trainable_only: true
+  save_format: safetensors
+  optimizer:
+    name: AdamW
+    betas: [0.9, 0.95]
+    eps: 1.0e-08
+    weight_decay: 1.0e-08

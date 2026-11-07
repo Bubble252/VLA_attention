@@ -2,7 +2,7 @@
 
 本目录执行 [65_story_method_selection_20261107.md](../../doc/vla_next/65_story_method_selection_20261107.md) 的 `Data -> Interface -> Control` 三级阶梯。
 
-当前状态：**Stage 0 数据审计、G0 视觉抽检、D0 Run Contract、D0 2-step smoke、offline `limit=2` smoke、D0 matched 2.5K postrun、完整 offline eval 和 D0 15-init pilot 已 PASS；D1/D2 仍待完成。**
+当前状态：**D0 baseline Gate 已 PASS；D1 carrier 抽取、独立 LeRobot 转换、Run Contract 和 2-step smoke 已 PASS，D1 2.5K matched run 正在执行；D2 仍待决定。**
 
 阅读顺序：
 
@@ -15,6 +15,7 @@
 7. [06_d0_offline_smoke_result.md](06_d0_offline_smoke_result.md)：D0 offline `limit=2` evaluator smoke；只验证链路，不作方法判断。
 8. [07_d0_matched_result.md](07_d0_matched_result.md)：D0 matched 2.5K postrun 与完整 118-group offline eval；不替代闭环结论。
 9. [08_d0_c1_pilot_result.md](08_d0_c1_pilot_result.md)：D0 15-init pilot，复现 `white_right=0/15` 并关闭 D0 基线 Gate。
+10. [09_d1_carrier_build_and_smoke.md](09_d1_carrier_build_and_smoke.md)：D1 carrier 抽取、mixture、Run Contract 和 2-step smoke。
 
 一句话目标：先证明 C1 `white_right` 的数据和评测契约没有泄漏、没有配置幻觉，再决定是否值得跑 `D0/D1` 和后续接口/控制实验。
 

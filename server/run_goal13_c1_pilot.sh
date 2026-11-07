@@ -60,8 +60,8 @@ def sha256(path: Path) -> str:
 
 if postrun.get("postrun_status") != "PASS":
     raise SystemExit(f"postrun is not PASS: {postrun.get('postrun_status')}")
-if postrun.get("arm") != "D0":
-    raise SystemExit(f"unexpected arm: {postrun.get('arm')}")
+if postrun.get("arm") not in {"D0", "D1", "D2"}:
+    raise SystemExit(f"unexpected Goal13 arm: {postrun.get('arm')}")
 if postrun.get("config_snapshot_sha256") != expected_config_sha:
     raise SystemExit("config SHA drift between shell and postrun")
 if postrun.get("checkpoint_sha256") != sha256(checkpoint_path):
@@ -160,4 +160,4 @@ fi
   --expected-groups "$MAX_INITS" \
   --expected-arm "$ARM"
 
-echo "D0_C1_PILOT_OK run=$RUN_ID output=$OUTPUT summary=$SUMMARY contract=$CONTRACT"
+echo "GOAL13_C1_PILOT_OK arm=$ARM run=$RUN_ID output=$OUTPUT summary=$SUMMARY contract=$CONTRACT"

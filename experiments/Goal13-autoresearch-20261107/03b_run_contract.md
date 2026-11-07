@@ -14,6 +14,9 @@
 | `heldout_prompt_train_count` | 必须为 0 |
 | `train_validation_rollout_overlap` | 必须为 0 |
 | `sampling_weights` | 实际 sampler 权重，打印出来，不从 YAML 推断 |
+| `carrier_dataset_length` | D1/D2 必须等于实测 effective length；当前为 `4786` |
+| `carrier_sampling_weight` | D1/D2 必须记录真实归一化权重；当前为 `0.333333` |
+| `carrier_manifest` | D1/D2 必须有 48 条、语言唯一、ID 唯一，且与三个 split 交集为 0 |
 | `effective_batch` | `per_device_batch × num_processes × grad_accum` |
 | `marker_mode` | `none/oracle/predicted/shuffle` |
 | `counterfactual_mode` | `none/rank/suff_nec` |

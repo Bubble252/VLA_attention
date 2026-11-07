@@ -66,7 +66,9 @@ $W/results/star105_goal13_20261107/audit/
 - [x] 跑 D0 matched 完整 offline eval（118 groups，78+78 pairs）；
 - [x] D0 matched 复现 `white_right = 0/15` 或解释差异；
 - [x] D0 seen group-any / wrong-destination 与历史一致；
-- [ ] D1 加入 carrier，重新过 Run Contract；
+- [x] 抽取并转换独立 carrier 数据集（48 episodes / 4786 effective steps）；
+- [x] D1 注册独立 mixture，重新过 Run Contract；
+- [x] D1 2-step training smoke 与 postrun PASS；
 - [ ] D1 offline smoke 检查 NaN、动作幅度、gripper；
 - [ ] D0/D1 pilot 使用同一 evaluator、batch、seed；
 - [ ] 只取 best data arm 进入接口层；

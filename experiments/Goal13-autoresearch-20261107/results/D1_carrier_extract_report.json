@@ -1,0 +1,457 @@
+{
+  "carrier_count": 48,
+  "carrier_episode_ids_sha256": "bf32459d360bbdcae0366e27de08d000df1e1ff30585aa944881479f809740bb",
+  "created_at": "2026-11-07T09:13:50.704152+00:00",
+  "expected_count": 48,
+  "language": "put the yellow and white mug on the right plate",
+  "output_manifest": "/vepfs-mlp2/c20250405/400040/transfer/vla_attention/results/star105_goal13_20261107/carrier/episodes.jsonl",
+  "output_manifest_sha256": "616bd9fdf85bb3c90cf53e631ee8c450f3de95f83279d98369e94f896c9c94fe",
+  "output_tfrecord": "/vepfs-mlp2/c20250405/400040/transfer/vla_attention/results/star105_goal13_20261107/carrier/yellow_and_white_right.tfrecord",
+  "output_tfrecord_sha256": "b7858ac999c48f2e3c7653e6fa0bc9506f7f40057da5e07ca6d51a572dcfe53a",
+  "prompt": "yellow_and_white_right",
+  "rows": [
+    {
+      "episode_id": "25b0525076af749acc865cf2fc7b5953a9558fe0e9927b9f3dfefa47031d8e0d",
+      "language": "put the yellow and white mug on the right plate",
+      "output_record_index": 0,
+      "prompt": "yellow_and_white_right",
+      "source_record_index": 10,
+      "source_shard": "/vepfs-mlp2/c20250405/400040/transfer/vla_attention/vla_workspace/data/jesbu1--libero_90_rlds/libero_90_openvla_processed/1.0.0/liber_o90-train.tfrecord-00000-of-00256",
+      "source_shard_index": 0
+    },
+    {
+      "episode_id": "ff43dfb97466e8c7862223b5b056a25e75e557c2f8233af5784572f4a23ef84b",
+      "language": "put the yellow and white mug on the right plate",
+      "output_record_index": 1,
+      "prompt": "yellow_and_white_right",
+      "source_record_index": 0,
+      "source_shard": "/vepfs-mlp2/c20250405/400040/transfer/vla_attention/vla_workspace/data/jesbu1--libero_90_rlds/libero_90_openvla_processed/1.0.0/liber_o90-train.tfrecord-00002-of-00256",
+      "source_shard_index": 2
+    },
+    {
+      "episode_id": "fce210632c0ef3acbb0b416499e1520ddbbe001e39e55029e9cc8cba7f75a0e3",
+      "language": "put the yellow and white mug on the right plate",
+      "output_record_index": 2,
+      "prompt": "yellow_and_white_right",
+      "source_record_index": 6,
+      "source_shard": "/vepfs-mlp2/c20250405/400040/transfer/vla_attention/vla_workspace/data/jesbu1--libero_90_rlds/libero_90_openvla_processed/1.0.0/liber_o90-train.tfrecord-00004-of-00256",
+      "source_shard_index": 4
+    },
+    {
+      "episode_id": "6f20e24a701791bcc275083b96066ba40946af742ac0a7d9ff06b8d74d63c3ea",
+      "language": "put the yellow and white mug on the right plate",
+      "output_record_index": 3,
+      "prompt": "yellow_and_white_right",
+      "source_record_index": 12,
+      "source_shard": "/vepfs-mlp2/c20250405/400040/transfer/vla_attention/vla_workspace/data/jesbu1--libero_90_rlds/libero_90_openvla_processed/1.0.0/liber_o90-train.tfrecord-00004-of-00256",
+      "source_shard_index": 4
+    },
+    {
+      "episode_id": "f1d7b0943e9a6fbeda0d650ab17a56224d915803900950c5f554b884d62f06e3",
+      "language": "put the yellow and white mug on the right plate",
+      "output_record_index": 4,
+      "prompt": "yellow_and_white_right",
+      "source_record_index": 6,
+      "source_shard": "/vepfs-mlp2/c20250405/400040/transfer/vla_attention/vla_workspace/data/jesbu1--libero_90_rlds/libero_90_openvla_processed/1.0.0/liber_o90-train.tfrecord-00005-of-00256",
+      "source_shard_index": 5
+    },
+    {
+      "episode_id": "6b5a7348003c01916320396b959697c20f8f07d30fefb1b94100c2762bf9aac1",
+      "language": "put the yellow and white mug on the right plate",
+      "output_record_index": 5,
+      "prompt": "yellow_and_white_right",
+      "source_record_index": 13,
+      "source_shard": "/vepfs-mlp2/c20250405/400040/transfer/vla_attention/vla_workspace/data/jesbu1--libero_90_rlds/libero_90_openvla_processed/1.0.0/liber_o90-train.tfrecord-00012-of-00256",
+      "source_shard_index": 12
+    },
+    {
+      "episode_id": "9a91f34f81dff193b56c51a85124e2e981140f7d890b7a3b0367e3378085e26a",
+      "language": "put the yellow and white mug on the right plate",
+      "output_record_index": 6,
+      "prompt": "yellow_and_white_right",
+      "source_record_index": 10,
+      "source_shard": "/vepfs-mlp2/c20250405/400040/transfer/vla_attention/vla_workspace/data/jesbu1--libero_90_rlds/libero_90_openvla_processed/1.0.0/liber_o90-train.tfrecord-00013-of-00256",
+      "source_shard_index": 13
+    },
+    {
+      "episode_id": "6d7da91dff310e5c31160b31ccb4372023ad4c2e393301d539e3c4516908bd8f",
+      "language": "put the yellow and white mug on the right plate",
+      "output_record_index": 7,
+      "prompt": "yellow_and_white_right",
+      "source_record_index": 13,
+      "source_shard": "/vepfs-mlp2/c20250405/400040/transfer/vla_attention/vla_workspace/data/jesbu1--libero_90_rlds/libero_90_openvla_processed/1.0.0/liber_o90-train.tfrecord-00019-of-00256",
+      "source_shard_index": 19
+    },
+    {
+      "episode_id": "814abdb1cb3b86c75d475f9d90083d76e1741b82bce93e1c40a3a0a25308adb4",
+      "language": "put the yellow and white mug on the right plate",
+      "output_record_index": 8,
+      "prompt": "yellow_and_white_right",
+      "source_record_index": 5,
+      "source_shard": "/vepfs-mlp2/c20250405/400040/transfer/vla_attention/vla_workspace/data/jesbu1--libero_90_rlds/libero_90_openvla_processed/1.0.0/liber_o90-train.tfrecord-00029-of-00256",
+      "source_shard_index": 29
+    },
+    {
+      "episode_id": "0141101a1f62b837d6c1dd3d3773b90efc20523f1dbddd80a4471df786aa4776",
+      "language": "put the yellow and white mug on the right plate",
+      "output_record_index": 9,
+      "prompt": "yellow_and_white_right",
+      "source_record_index": 0,
+      "source_shard": "/vepfs-mlp2/c20250405/400040/transfer/vla_attention/vla_workspace/data/jesbu1--libero_90_rlds/libero_90_openvla_processed/1.0.0/liber_o90-train.tfrecord-00041-of-00256",
+      "source_shard_index": 41
+    },
+    {
+      "episode_id": "c40ccfb3de4dd826d7f123bbcca4020678689d887209d36e5e249ef836c7a23b",
+      "language": "put the yellow and white mug on the right plate",
+      "output_record_index": 10,
+      "prompt": "yellow_and_white_right",
+      "source_record_index": 13,
+      "source_shard": "/vepfs-mlp2/c20250405/400040/transfer/vla_attention/vla_workspace/data/jesbu1--libero_90_rlds/libero_90_openvla_processed/1.0.0/liber_o90-train.tfrecord-00044-of-00256",
+      "source_shard_index": 44
+    },
+    {
+      "episode_id": "1ba1d63c8bd6d9e7e5c07b2cb343641c3c3dec0a04c8bd88682546d288af8d5d",
+      "language": "put the yellow and white mug on the right plate",
+      "output_record_index": 11,
+      "prompt": "yellow_and_white_right",
+      "source_record_index": 13,
+      "source_shard": "/vepfs-mlp2/c20250405/400040/transfer/vla_attention/vla_workspace/data/jesbu1--libero_90_rlds/libero_90_openvla_processed/1.0.0/liber_o90-train.tfrecord-00054-of-00256",
+      "source_shard_index": 54
+    },
+    {
+      "episode_id": "1467a3a05ddc73676e46caa11fdb8faf7b7429747b6ff26af96315e6066ff726",
+      "language": "put the yellow and white mug on the right plate",
+      "output_record_index": 12,
+      "prompt": "yellow_and_white_right",
+      "source_record_index": 6,
+      "source_shard": "/vepfs-mlp2/c20250405/400040/transfer/vla_attention/vla_workspace/data/jesbu1--libero_90_rlds/libero_90_openvla_processed/1.0.0/liber_o90-train.tfrecord-00056-of-00256",
+      "source_shard_index": 56
+    },
+    {
+      "episode_id": "64f76a4b6ce8249929700f8994a5cc8cc51b0e9c5070563a81d782f0f6afd3ec",
+      "language": "put the yellow and white mug on the right plate",
+      "output_record_index": 13,
+      "prompt": "yellow_and_white_right",
+      "source_record_index": 7,
+      "source_shard": "/vepfs-mlp2/c20250405/400040/transfer/vla_attention/vla_workspace/data/jesbu1--libero_90_rlds/libero_90_openvla_processed/1.0.0/liber_o90-train.tfrecord-00060-of-00256",
+      "source_shard_index": 60
+    },
+    {
+      "episode_id": "f97d42ac6d94e53f5269f8d4cb6a5cea45e258e66bebe4d49df0815dadac9dda",
+      "language": "put the yellow and white mug on the right plate",
+      "output_record_index": 14,
+      "prompt": "yellow_and_white_right",
+      "source_record_index": 7,
+      "source_shard": "/vepfs-mlp2/c20250405/400040/transfer/vla_attention/vla_workspace/data/jesbu1--libero_90_rlds/libero_90_openvla_processed/1.0.0/liber_o90-train.tfrecord-00062-of-00256",
+      "source_shard_index": 62
+    },
+    {
+      "episode_id": "8bc54e061dc3f8738bc664ac99dde37c5e805ac877944dfc1536129cb795dd9c",
+      "language": "put the yellow and white mug on the right plate",
+      "output_record_index": 15,
+      "prompt": "yellow_and_white_right",
+      "source_record_index": 13,
+      "source_shard": "/vepfs-mlp2/c20250405/400040/transfer/vla_attention/vla_workspace/data/jesbu1--libero_90_rlds/libero_90_openvla_processed/1.0.0/liber_o90-train.tfrecord-00064-of-00256",
+      "source_shard_index": 64
+    },
+    {
+      "episode_id": "f1cd2143fe83dce4221d28e01c4d7886d5dcd56e11093f22b26693acbfc83f7e",
+      "language": "put the yellow and white mug on the right plate",
+      "output_record_index": 16,
+      "prompt": "yellow_and_white_right",
+      "source_record_index": 9,
+      "source_shard": "/vepfs-mlp2/c20250405/400040/transfer/vla_attention/vla_workspace/data/jesbu1--libero_90_rlds/libero_90_openvla_processed/1.0.0/liber_o90-train.tfrecord-00070-of-00256",
+      "source_shard_index": 70
+    },
+    {
+      "episode_id": "e8fa1c68da99a19f768f4f75ca7ea46f48e48f12c6f065e626b4fda8adef7396",
+      "language": "put the yellow and white mug on the right plate",
+      "output_record_index": 17,
+      "prompt": "yellow_and_white_right",
+      "source_record_index": 5,
+      "source_shard": "/vepfs-mlp2/c20250405/400040/transfer/vla_attention/vla_workspace/data/jesbu1--libero_90_rlds/libero_90_openvla_processed/1.0.0/liber_o90-train.tfrecord-00095-of-00256",
+      "source_shard_index": 95
+    },
+    {
+      "episode_id": "be8a1f9a7457f5c565f242eb9e1aefab147c9246d683e2f97fdd455b913ffa7f",
+      "language": "put the yellow and white mug on the right plate",
+      "output_record_index": 18,
+      "prompt": "yellow_and_white_right",
+      "source_record_index": 10,
+      "source_shard": "/vepfs-mlp2/c20250405/400040/transfer/vla_attention/vla_workspace/data/jesbu1--libero_90_rlds/libero_90_openvla_processed/1.0.0/liber_o90-train.tfrecord-00101-of-00256",
+      "source_shard_index": 101
+    },
+    {
+      "episode_id": "60d6374a92bb3f63767c3c54945c65fcb2022be3c75a42839f97e2b5071317f7",
+      "language": "put the yellow and white mug on the right plate",
+      "output_record_index": 19,
+      "prompt": "yellow_and_white_right",
+      "source_record_index": 14,
+      "source_shard": "/vepfs-mlp2/c20250405/400040/transfer/vla_attention/vla_workspace/data/jesbu1--libero_90_rlds/libero_90_openvla_processed/1.0.0/liber_o90-train.tfrecord-00109-of-00256",
+      "source_shard_index": 109
+    },
+    {
+      "episode_id": "fd2de948a5c48b432a62fa5eee0af805e84861966d0bf975a9824f66193d0578",
+      "language": "put the yellow and white mug on the right plate",
+      "output_record_index": 20,
+      "prompt": "yellow_and_white_right",
+      "source_record_index": 3,
+      "source_shard": "/vepfs-mlp2/c20250405/400040/transfer/vla_attention/vla_workspace/data/jesbu1--libero_90_rlds/libero_90_openvla_processed/1.0.0/liber_o90-train.tfrecord-00122-of-00256",
+      "source_shard_index": 122
+    },
+    {
+      "episode_id": "e8104afc745a640dc5fcbc1d21a3de492df3dd980a93aeb36e6a61615428e5cb",
+      "language": "put the yellow and white mug on the right plate",
+      "output_record_index": 21,
+      "prompt": "yellow_and_white_right",
+      "source_record_index": 8,
+      "source_shard": "/vepfs-mlp2/c20250405/400040/transfer/vla_attention/vla_workspace/data/jesbu1--libero_90_rlds/libero_90_openvla_processed/1.0.0/liber_o90-train.tfrecord-00122-of-00256",
+      "source_shard_index": 122
+    },
+    {
+      "episode_id": "d9b6fcca61f921daa933f6dc1748752bc233053b862637b06af5b26ab85d44f4",
+      "language": "put the yellow and white mug on the right plate",
+      "output_record_index": 22,
+      "prompt": "yellow_and_white_right",
+      "source_record_index": 0,
+      "source_shard": "/vepfs-mlp2/c20250405/400040/transfer/vla_attention/vla_workspace/data/jesbu1--libero_90_rlds/libero_90_openvla_processed/1.0.0/liber_o90-train.tfrecord-00123-of-00256",
+      "source_shard_index": 123
+    },
+    {
+      "episode_id": "5cc122d832fd4b95490ce34c93c0539300550f7fcc3532907067356b374c38e0",
+      "language": "put the yellow and white mug on the right plate",
+      "output_record_index": 23,
+      "prompt": "yellow_and_white_right",
+      "source_record_index": 1,
+      "source_shard": "/vepfs-mlp2/c20250405/400040/transfer/vla_attention/vla_workspace/data/jesbu1--libero_90_rlds/libero_90_openvla_processed/1.0.0/liber_o90-train.tfrecord-00126-of-00256",
+      "source_shard_index": 126
+    },
+    {
+      "episode_id": "f28c62075e963c975f0cd47ced33a73ebbd803fd42e8f51bbf83a1c022195d61",
+      "language": "put the yellow and white mug on the right plate",
+      "output_record_index": 24,
+      "prompt": "yellow_and_white_right",
+      "source_record_index": 2,
+      "source_shard": "/vepfs-mlp2/c20250405/400040/transfer/vla_attention/vla_workspace/data/jesbu1--libero_90_rlds/libero_90_openvla_processed/1.0.0/liber_o90-train.tfrecord-00130-of-00256",
+      "source_shard_index": 130
+    },
+    {
+      "episode_id": "c2244b9d568da88766604d2e5f23d42ecaa7a8e840fa60b34718015807cc316e",
+      "language": "put the yellow and white mug on the right plate",
+      "output_record_index": 25,
+      "prompt": "yellow_and_white_right",
+      "source_record_index": 4,
+      "source_shard": "/vepfs-mlp2/c20250405/400040/transfer/vla_attention/vla_workspace/data/jesbu1--libero_90_rlds/libero_90_openvla_processed/1.0.0/liber_o90-train.tfrecord-00139-of-00256",
+      "source_shard_index": 139
+    },
+    {
+      "episode_id": "ab7545d1ae270130f9b0da4d5897cf7404fdf91315d5389f97c59e5fdcf7e16a",
+      "language": "put the yellow and white mug on the right plate",
+      "output_record_index": 26,
+      "prompt": "yellow_and_white_right",
+      "source_record_index": 3,
+      "source_shard": "/vepfs-mlp2/c20250405/400040/transfer/vla_attention/vla_workspace/data/jesbu1--libero_90_rlds/libero_90_openvla_processed/1.0.0/liber_o90-train.tfrecord-00154-of-00256",
+      "source_shard_index": 154
+    },
+    {
+      "episode_id": "630cc5b87c6b6704337451d2dc1a2326218475ece7353ff6d072c9c2901e267d",
+      "language": "put the yellow and white mug on the right plate",
+      "output_record_index": 27,
+      "prompt": "yellow_and_white_right",
+      "source_record_index": 6,
+      "source_shard": "/vepfs-mlp2/c20250405/400040/transfer/vla_attention/vla_workspace/data/jesbu1--libero_90_rlds/libero_90_openvla_processed/1.0.0/liber_o90-train.tfrecord-00170-of-00256",
+      "source_shard_index": 170
+    },
+    {
+      "episode_id": "d9ab68ffb01dd8c89f57e1ff9679651bde6097076c2731f5d60b6ac5310ffccb",
+      "language": "put the yellow and white mug on the right plate",
+      "output_record_index": 28,
+      "prompt": "yellow_and_white_right",
+      "source_record_index": 5,
+      "source_shard": "/vepfs-mlp2/c20250405/400040/transfer/vla_attention/vla_workspace/data/jesbu1--libero_90_rlds/libero_90_openvla_processed/1.0.0/liber_o90-train.tfrecord-00175-of-00256",
+      "source_shard_index": 175
+    },
+    {
+      "episode_id": "7b21043bd4718d900a82cc695a982c23b5835b7490f1551c5e4735056fa8756e",
+      "language": "put the yellow and white mug on the right plate",
+      "output_record_index": 29,
+      "prompt": "yellow_and_white_right",
+      "source_record_index": 9,
+      "source_shard": "/vepfs-mlp2/c20250405/400040/transfer/vla_attention/vla_workspace/data/jesbu1--libero_90_rlds/libero_90_openvla_processed/1.0.0/liber_o90-train.tfrecord-00185-of-00256",
+      "source_shard_index": 185
+    },
+    {
+      "episode_id": "5d0d7322fd4e6085b193e477399d4b9a34c990a6845bf0ddd6c6fb0be2b5b1ca",
+      "language": "put the yellow and white mug on the right plate",
+      "output_record_index": 30,
+      "prompt": "yellow_and_white_right",
+      "source_record_index": 11,
+      "source_shard": "/vepfs-mlp2/c20250405/400040/transfer/vla_attention/vla_workspace/data/jesbu1--libero_90_rlds/libero_90_openvla_processed/1.0.0/liber_o90-train.tfrecord-00192-of-00256",
+      "source_shard_index": 192
+    },
+    {
+      "episode_id": "8bf5b14f408fdbca84753813a2a94ac23c5029776fbd6a786c8a13e288c342ce",
+      "language": "put the yellow and white mug on the right plate",
+      "output_record_index": 31,
+      "prompt": "yellow_and_white_right",
+      "source_record_index": 2,
+      "source_shard": "/vepfs-mlp2/c20250405/400040/transfer/vla_attention/vla_workspace/data/jesbu1--libero_90_rlds/libero_90_openvla_processed/1.0.0/liber_o90-train.tfrecord-00196-of-00256",
+      "source_shard_index": 196
+    },
+    {
+      "episode_id": "94ceb93ffb0f3231bdab69f79e649b5a5d6047bc374dbf6127b235fd4a84ea56",
+      "language": "put the yellow and white mug on the right plate",
+      "output_record_index": 32,
+      "prompt": "yellow_and_white_right",
+      "source_record_index": 7,
+      "source_shard": "/vepfs-mlp2/c20250405/400040/transfer/vla_attention/vla_workspace/data/jesbu1--libero_90_rlds/libero_90_openvla_processed/1.0.0/liber_o90-train.tfrecord-00196-of-00256",
+      "source_shard_index": 196
+    },
+    {
+      "episode_id": "0af843771773e13beb4587e0bcb162a3350d17b2e38236ff09514816aabc750f",
+      "language": "put the yellow and white mug on the right plate",
+      "output_record_index": 33,
+      "prompt": "yellow_and_white_right",
+      "source_record_index": 12,
+      "source_shard": "/vepfs-mlp2/c20250405/400040/transfer/vla_attention/vla_workspace/data/jesbu1--libero_90_rlds/libero_90_openvla_processed/1.0.0/liber_o90-train.tfrecord-00199-of-00256",
+      "source_shard_index": 199
+    },
+    {
+      "episode_id": "d6dec50aaa313821855c09da555e2185a77f26a4d09d0ab1ea838e0704002ac6",
+      "language": "put the yellow and white mug on the right plate",
+      "output_record_index": 34,
+      "prompt": "yellow_and_white_right",
+      "source_record_index": 13,
+      "source_shard": "/vepfs-mlp2/c20250405/400040/transfer/vla_attention/vla_workspace/data/jesbu1--libero_90_rlds/libero_90_openvla_processed/1.0.0/liber_o90-train.tfrecord-00212-of-00256",
+      "source_shard_index": 212
+    },
+    {
+      "episode_id": "04af2329eaea1124456ddf37ca81314264540b30567511b203af4afa7e28164a",
+      "language": "put the yellow and white mug on the right plate",
+      "output_record_index": 35,
+      "prompt": "yellow_and_white_right",
+      "source_record_index": 4,
+      "source_shard": "/vepfs-mlp2/c20250405/400040/transfer/vla_attention/vla_workspace/data/jesbu1--libero_90_rlds/libero_90_openvla_processed/1.0.0/liber_o90-train.tfrecord-00214-of-00256",
+      "source_shard_index": 214
+    },
+    {
+      "episode_id": "438f48e969107ce7ddd77b0551014206cfd784d1f98337723c15b99273e58f09",
+      "language": "put the yellow and white mug on the right plate",
+      "output_record_index": 36,
+      "prompt": "yellow_and_white_right",
+      "source_record_index": 11,
+      "source_shard": "/vepfs-mlp2/c20250405/400040/transfer/vla_attention/vla_workspace/data/jesbu1--libero_90_rlds/libero_90_openvla_processed/1.0.0/liber_o90-train.tfrecord-00218-of-00256",
+      "source_shard_index": 218
+    },
+    {
+      "episode_id": "8c4ba2e92979f77f4cbda8b5e4a0cd81522681eeb27a09ca945aad36d1f34412",
+      "language": "put the yellow and white mug on the right plate",
+      "output_record_index": 37,
+      "prompt": "yellow_and_white_right",
+      "source_record_index": 14,
+      "source_shard": "/vepfs-mlp2/c20250405/400040/transfer/vla_attention/vla_workspace/data/jesbu1--libero_90_rlds/libero_90_openvla_processed/1.0.0/liber_o90-train.tfrecord-00218-of-00256",
+      "source_shard_index": 218
+    },
+    {
+      "episode_id": "3f89a1c7d33805d70010b229b2f5e694a57dee5ce88f7c774e04b03f556b1643",
+      "language": "put the yellow and white mug on the right plate",
+      "output_record_index": 38,
+      "prompt": "yellow_and_white_right",
+      "source_record_index": 2,
+      "source_shard": "/vepfs-mlp2/c20250405/400040/transfer/vla_attention/vla_workspace/data/jesbu1--libero_90_rlds/libero_90_openvla_processed/1.0.0/liber_o90-train.tfrecord-00219-of-00256",
+      "source_shard_index": 219
+    },
+    {
+      "episode_id": "e2634ef765bef465a1eb04c015c0ea9336eb5336821a7c680c8799a7f30eda17",
+      "language": "put the yellow and white mug on the right plate",
+      "output_record_index": 39,
+      "prompt": "yellow_and_white_right",
+      "source_record_index": 5,
+      "source_shard": "/vepfs-mlp2/c20250405/400040/transfer/vla_attention/vla_workspace/data/jesbu1--libero_90_rlds/libero_90_openvla_processed/1.0.0/liber_o90-train.tfrecord-00221-of-00256",
+      "source_shard_index": 221
+    },
+    {
+      "episode_id": "6d74d6e7f068b12c9ce0188e86f48aa8c2c4bfc130bf562f49483affc8d3065c",
+      "language": "put the yellow and white mug on the right plate",
+      "output_record_index": 40,
+      "prompt": "yellow_and_white_right",
+      "source_record_index": 11,
+      "source_shard": "/vepfs-mlp2/c20250405/400040/transfer/vla_attention/vla_workspace/data/jesbu1--libero_90_rlds/libero_90_openvla_processed/1.0.0/liber_o90-train.tfrecord-00221-of-00256",
+      "source_shard_index": 221
+    },
+    {
+      "episode_id": "af7741cfff0dff6593a4f516fca1ddd7d6265fe7f2b9a3f9ea2297c7054c9980",
+      "language": "put the yellow and white mug on the right plate",
+      "output_record_index": 41,
+      "prompt": "yellow_and_white_right",
+      "source_record_index": 4,
+      "source_shard": "/vepfs-mlp2/c20250405/400040/transfer/vla_attention/vla_workspace/data/jesbu1--libero_90_rlds/libero_90_openvla_processed/1.0.0/liber_o90-train.tfrecord-00229-of-00256",
+      "source_shard_index": 229
+    },
+    {
+      "episode_id": "e6956528da020720318abc12f4ecb48ad79be401aca51546da8e15da2e8e1d74",
+      "language": "put the yellow and white mug on the right plate",
+      "output_record_index": 42,
+      "prompt": "yellow_and_white_right",
+      "source_record_index": 14,
+      "source_shard": "/vepfs-mlp2/c20250405/400040/transfer/vla_attention/vla_workspace/data/jesbu1--libero_90_rlds/libero_90_openvla_processed/1.0.0/liber_o90-train.tfrecord-00229-of-00256",
+      "source_shard_index": 229
+    },
+    {
+      "episode_id": "5686e7995531562b5a5f8ffd9cd016d8fef89e94897914b36c0335f9dbf3528d",
+      "language": "put the yellow and white mug on the right plate",
+      "output_record_index": 43,
+      "prompt": "yellow_and_white_right",
+      "source_record_index": 11,
+      "source_shard": "/vepfs-mlp2/c20250405/400040/transfer/vla_attention/vla_workspace/data/jesbu1--libero_90_rlds/libero_90_openvla_processed/1.0.0/liber_o90-train.tfrecord-00231-of-00256",
+      "source_shard_index": 231
+    },
+    {
+      "episode_id": "0fbc02cf05b87b220ce1e336e487936dd732b4695268321ef026311309a41fb0",
+      "language": "put the yellow and white mug on the right plate",
+      "output_record_index": 44,
+      "prompt": "yellow_and_white_right",
+      "source_record_index": 1,
+      "source_shard": "/vepfs-mlp2/c20250405/400040/transfer/vla_attention/vla_workspace/data/jesbu1--libero_90_rlds/libero_90_openvla_processed/1.0.0/liber_o90-train.tfrecord-00239-of-00256",
+      "source_shard_index": 239
+    },
+    {
+      "episode_id": "fe2b315bca7b2202b12d4646fabdd06e6cda1e526f402192c4d760670358de3f",
+      "language": "put the yellow and white mug on the right plate",
+      "output_record_index": 45,
+      "prompt": "yellow_and_white_right",
+      "source_record_index": 0,
+      "source_shard": "/vepfs-mlp2/c20250405/400040/transfer/vla_attention/vla_workspace/data/jesbu1--libero_90_rlds/libero_90_openvla_processed/1.0.0/liber_o90-train.tfrecord-00244-of-00256",
+      "source_shard_index": 244
+    },
+    {
+      "episode_id": "360fc5f1754e16ae9e583c611de5c7d117b81aca6b793a7e9cb475988e35cc5c",
+      "language": "put the yellow and white mug on the right plate",
+      "output_record_index": 46,
+      "prompt": "yellow_and_white_right",
+      "source_record_index": 14,
+      "source_shard": "/vepfs-mlp2/c20250405/400040/transfer/vla_attention/vla_workspace/data/jesbu1--libero_90_rlds/libero_90_openvla_processed/1.0.0/liber_o90-train.tfrecord-00249-of-00256",
+      "source_shard_index": 249
+    },
+    {
+      "episode_id": "3e098dd5f87a76789ebcece5b041db2ac475b478628dbc9faa67bbc0c9f69646",
+      "language": "put the yellow and white mug on the right plate",
+      "output_record_index": 47,
+      "prompt": "yellow_and_white_right",
+      "source_record_index": 5,
+      "source_shard": "/vepfs-mlp2/c20250405/400040/transfer/vla_attention/vla_workspace/data/jesbu1--libero_90_rlds/libero_90_openvla_processed/1.0.0/liber_o90-train.tfrecord-00251-of-00256",
+      "source_shard_index": 251
+    }
+  ],
+  "schema": "goal13-carrier-extract-v1",
+  "source_audit": "/vepfs-mlp2/c20250405/400040/transfer/vla_attention/results/star105_goal13_20261107/audit/goal13_audit.json",
+  "source_audit_sha256": "fc8baf9b141c0cbeaa1d9ce087f8d0888e2788f20773cae92d9a2131d828b40e",
+  "split_manifest": "/vepfs-mlp2/c20250405/400040/transfer/vla_attention/vla_workspace/data/jgate_c1/c1_split_manifest_v1.json",
+  "split_overlap_total": 0,
+  "split_overlaps": {
+    "rollout": 0,
+    "train": 0,
+    "validation": 0
+  },
+  "status": "PASS"
+}
