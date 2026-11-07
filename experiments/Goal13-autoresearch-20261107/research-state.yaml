@@ -1,5 +1,5 @@
-current_stage: I_interface_repair
-current_hypothesis: "接口失败主要来自 marker 注入过弱，而不是 point head 精度；cross-attention 注入能否让 action expert 读取 marker"
+current_stage: I_interface_repair_final
+current_hypothesis: "cross-attention 注入没有让 action expert 读取 marker；最后一次 evidence_token query-token 注入能否产生可检测控制增益"
 best_arm: D0
 parent_arm: D0
 contract_status: PASS
@@ -33,6 +33,15 @@ key_metrics:
   I1_destination_margin_full: 0.010115647688508034
   I2_destination_margin_full: 0.01069987565279007
   I3_destination_margin_full: 0.010772704146802425
+  I0_non_gripper_mae_xattn_comparison: 0.14919899155696234
+  I1_non_gripper_mae_xattn: 0.153917042
+  I2_non_gripper_mae_xattn: 0.153986648
+  I3_non_gripper_mae_xattn: 0.153697833
+  I1_vs_I0_xattn: 0.031622535189042
+  I2_vs_I3_xattn: 0.0018791046030695
+  I2_destination_margin_xattn: 0.011738941
+  I3_destination_margin_xattn: 0.012078720
+  I2_xattn_checkpoint_sha256: c9898baf54899eba88b5e0b73bee6d8a60f6fe89e6d263dc9fb52351d085d601
   point_oracle_mae_minus_none_mae_full: 0.00038389861583709717
   point_none_mae_minus_predicted_mae_full: -0.0004998192889615893
   point_shuffle_mae_minus_predicted_mae_full: -0.00023686778149567544
@@ -41,11 +50,11 @@ key_metrics:
   point_predicted_in_mask: 0.8008474576271186
 budget_used:
   training_arms: 2
-  interface_training_arms_completed: 2
-  interface_eval_smokes_completed: 3
-  interface_full_evals_completed: 4
-next_action: "只做一次 I2-XATTN marker 注入修复；先 smoke，再完整 118 groups"
+  interface_training_arms_completed: 3
+  interface_eval_smokes_completed: 6
+  interface_full_evals_completed: 7
+next_action: "只做最后一次 I2 evidence_token query-token 注入修复；失败则永久关闭接口路线"
 blockers: []
 open_literature_questions:
-  - "GR00T_ActionHeader 的 evidence_cross_attention 是否比当前 common-mode addition 更适合 point marker"
-  - "若 cross-attention 仍失败，evidence_token/append 是否是最后一个合理注入修复"
+  - "evidence_token 的独立 query-token 是否比 common-mode addition 和 cross-attention 更能保留 marker 的选择性"
+  - "若最后一次注入仍失败，是关闭接口路线并转诊断/第二任务，还是重新审视动作头的 query 设计"

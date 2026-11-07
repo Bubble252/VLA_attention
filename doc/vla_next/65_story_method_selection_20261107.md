@@ -629,7 +629,8 @@ F4 消融成立 -> 才允许升级 AC-VLA-lite 的 phase 机制
 
 - point head 本身不是主要瓶颈：predicted point 的 destination L1 约 `2.645 px`、object L1 约 `7.807 px`，point-in-mask 为 `0.8008`；但 point ablation 中 oracle 的 MAE 比 none 差 `0.000384`，predicted 的 MAE 比 shuffle 差 `0.000237`（JSON 字段 `predicted_minus_shuffle=-0.000237` 的实际定义是 `shuffle_mae - predicted_mae`，正数才表示 predicted 更好），完美 oracle marker 也没有改善动作。因此当前结论是“marker 没有被 action expert 有效读取”，不是“point 预测太差”。
 - `W-I` **不开启**，接口组件冻结在 lite 版；`W-A`、`W-F` 以及 `A2/A3/F0` 均不得启动。不能因为论文里使用 cross-attention、slot 或 factor loss，就跳过 `I1 > I0` 直接升级。
-- 下一步只允许一次**注入修复** arm，例如 `I2-XATTN`：保持与 `I2` 相同的 `D0` 数据、初始化、500 steps、batch 4、seed 17，只把 marker 注入方式改为 `action_model.evidence_cross_attention: true`；先跑 `I1/I2/I3` limit=2 smoke，再跑完整 118 groups。若仍无 `I1 > I0` / `I2 > I3`，只允许再做一次 `evidence_token`/append 类注入修复，随后停止这条接口路线，不再用更长训练或“更像论文”掩盖失败。
+- `I2-XATTN` 已完成：保持 `I2` 的 D0 数据、初始化、500 steps、batch 4、seed 17，只增加 `action_model.evidence_cross_attention: true`。完整 118 groups 仍为 **FAIL**：`I1` non-gripper MAE 比 `I0` 差 `+3.162%`，`I2` 比 `I3` 差约 `0.188%`，destination margin 也更低；动作幅度未塌缩。详见 `experiments/Goal13-autoresearch-20261107/14_i2x_injection_result.md`。
+- 因此只剩最后一次 `evidence_token=true` 的 query-token 注入修复；若它也失败，接口路线停止，不再做第三个注入变体，也不进入 `A2/A3/F0`。
 - `D1` 的负结果必须保留为解释材料，不能因为流程上 PASS 就改写成“方法失败”或“数据无用”。接口数字见 `experiments/Goal13-autoresearch-20261107/12_interface_result.md`，数据数字见 `10_d1_matched_result.md`。
 
 **现在能否升级为论文近似版（2026-11-07）**
@@ -637,7 +638,7 @@ F4 消融成立 -> 才允许升级 AC-VLA-lite 的 phase 机制
 | 组件 | 当前层级 | Gate 状态 | 现在能否升级 | 解锁条件 |
 |---|---|---|---|---|
 | 数据配方 | `D0` lite | `W-D` 关闭 | 否 | `D1` 需在 held-out 或因子可辨识指标上优于 `D0`，且 seen 不退化 |
-| point/marker 接口 | `I0/I1/I2/I3` lite | `W-I` 关闭；`G-I1/G-I2 FAIL` | 否 | 先完成一次注入修复并重新通过 `I1 > I0`、`I2 > I3` |
+| point/marker 接口 | `I0/I1/I2/I3` lite | `W-I` 关闭；`G-I1/G-I2 FAIL`；`I2-XATTN FAIL` | 否 | 只剩最后一次 `evidence_token` 注入并重新通过 `I1 > I0`、`I2 > I3`；否则永久关闭接口路线 |
 | 反事实动作 | 未启动 | `W-A` 关闭 | 否 | 接口 Gate PASS 后，先证明 `A1 > A0` |
 | `AC-VLA-lite` phase | 未合并 | `W-F` 关闭 | 否 | `A2` PASS，且 `F4` 消融证明 phase 有贡献 |
 | `CompoSlot` | 未升级 | `W-I` 关闭 | 否 | `I2` 相对 `I0/I3` 稳定有增益，slot 不塌缩 |

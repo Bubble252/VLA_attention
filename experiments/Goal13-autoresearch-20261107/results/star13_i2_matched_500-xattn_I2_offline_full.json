@@ -1,0 +1,267 @@
+{
+  "arm": "I2",
+  "checkpoint": {
+    "path": "/vepfs-mlp2/c20250405/400040/transfer/vla_attention/results/star105_goal13_20261107/checkpoints/star13_i2_matched_500-xattn/final_model/model.safetensors",
+    "sha256": "c9898baf54899eba88b5e0b73bee6d8a60f6fe89e6d263dc9fb52351d085d601"
+  },
+  "config": {
+    "path": "/vepfs-mlp2/c20250405/400040/transfer/vla_attention/results/star105_goal13_20261107/configs/goal13_i2_matched_500-xattn_snapshot.yaml",
+    "sha256": "6f0f8716090fb95514a99d12bd39f0c269715f0ac750d04136fd9bbaae747de3"
+  },
+  "gate": {
+    "destination_margin_positive_with_ci": true,
+    "object_margin_positive": true,
+    "point_oracle_beats_none": true,
+    "point_predicted_beats_none": true,
+    "point_predicted_beats_shuffle": false,
+    "region_predicted_action_beats_none": false,
+    "region_predicted_action_beats_shuffle": false,
+    "region_predicted_mask_beats_constant": false,
+    "region_predicted_mask_beats_shuffle": false
+  },
+  "notes": [
+    "Pairs use the same image, frame and expert action chunk; only language changes.",
+    "Correct and wrong calls for each subset use the same seed and batch order.",
+    "white_right is not evaluated here because it has no expert action labels.",
+    "Oracle point markers are diagnostic only and never enter deployment inputs."
+  ],
+  "num_groups": 118,
+  "pair_results": {
+    "destination": {
+      "action_amplitude_ratio": 0.9989830255508423,
+      "action_delta": 0.03296201303601265,
+      "by_language": {
+        "put the red mug on the left plate": {
+          "correct_mae": 0.15498816967010498,
+          "margin_bootstrap_95ci": [
+            0.002105206088162959,
+            0.020290941698476676
+          ],
+          "margin_mean": 0.010986295528709888,
+          "pair_count": 38,
+          "wrong_mae": 0.1659744381904602
+        },
+        "put the red mug on the right plate": {
+          "correct_mae": 0.14605358242988586,
+          "margin_bootstrap_95ci": [
+            0.005027366383001208,
+            0.021097218617796898
+          ],
+          "margin_mean": 0.012453955598175526,
+          "pair_count": 40,
+          "wrong_mae": 0.15850752592086792
+        }
+      },
+      "correct_gripper_mae": 0.12892432510852814,
+      "correct_mae": 0.15040631592273712,
+      "correct_rotation_mae": 0.15353058278560638,
+      "correct_translation_mae": 0.154442697763443,
+      "gripper_amplitude_ratio": 0.9189707040786743,
+      "margin_bootstrap_95ci": [
+        0.005100021790713072,
+        0.018801753968000413
+      ],
+      "margin_mean": 0.011738941073417664,
+      "margin_median": 0.0030871517956256866,
+      "margin_positive_fraction": 0.6538461538461539,
+      "pair_count": 78,
+      "per_dimension_amplitude_ratio": [
+        1.1880481243133545,
+        1.0476419925689697,
+        1.045395851135254,
+        0.8578698635101318,
+        0.595548689365387,
+        1.0914164781570435,
+        0.9189707040786743
+      ],
+      "predicted_action_abs_mean": 0.28560250997543335,
+      "rotation_amplitude_ratio": 0.8482783436775208,
+      "target_action_abs_mean": 0.2858932614326477,
+      "translation_amplitude_ratio": 1.0936952829360962,
+      "wrong_gripper_mae": 0.1302618384361267,
+      "wrong_mae": 0.16214525699615479,
+      "wrong_rotation_mae": 0.15381784737110138,
+      "wrong_translation_mae": 0.18110045790672302
+    },
+    "object": {
+      "action_amplitude_ratio": 1.0054514408111572,
+      "action_delta": 0.05079212784767151,
+      "by_language": {
+        "put the red mug on the left plate": {
+          "correct_mae": 0.15498816967010498,
+          "margin_bootstrap_95ci": [
+            0.003866910166107118,
+            0.02188571249134839
+          ],
+          "margin_mean": 0.012529732659459114,
+          "pair_count": 38,
+          "wrong_mae": 0.16751787066459656
+        },
+        "put the white mug on the left plate": {
+          "correct_mae": 0.1491807997226715,
+          "margin_bootstrap_95ci": [
+            -0.0012932607671245933,
+            0.01961862393654883
+          ],
+          "margin_mean": 0.009286102838814259,
+          "pair_count": 40,
+          "wrong_mae": 0.1584668904542923
+        }
+      },
+      "correct_gripper_mae": 0.14424659311771393,
+      "correct_mae": 0.1520100086927414,
+      "correct_rotation_mae": 0.13866063952445984,
+      "correct_translation_mae": 0.1679472029209137,
+      "gripper_amplitude_ratio": 0.87021404504776,
+      "margin_bootstrap_95ci": [
+        0.004075393924722449,
+        0.01798259825445712
+      ],
+      "margin_mean": 0.010866330936551094,
+      "margin_median": 0.008225072175264359,
+      "margin_positive_fraction": 0.6153846153846154,
+      "pair_count": 78,
+      "per_dimension_amplitude_ratio": [
+        1.1392507553100586,
+        0.9752658605575562,
+        1.0948598384857178,
+        1.0332653522491455,
+        0.667557418346405,
+        1.0791292190551758,
+        0.87021404504776
+      ],
+      "predicted_action_abs_mean": 0.2738407552242279,
+      "rotation_amplitude_ratio": 0.9266507029533386,
+      "target_action_abs_mean": 0.2723560333251953,
+      "translation_amplitude_ratio": 1.0697921514511108,
+      "wrong_gripper_mae": 0.1474018394947052,
+      "wrong_mae": 0.16287635266780853,
+      "wrong_rotation_mae": 0.13672566413879395,
+      "wrong_translation_mae": 0.19418519735336304
+    }
+  },
+  "point_manifest": {
+    "path": "/vepfs-mlp2/c20250405/400040/transfer/vla_attention/results/star105_goal10p5_20261105/point_manifests/validation_sidecar_v1/point_manifest.jsonl",
+    "sha256": "9a3a508d063b36a11cda9331753513f5019ada62a19ba2de6ab96f20fab068bf"
+  },
+  "point_results": {
+    "action_comparison": {
+      "none_mae": 0.1498514860868454,
+      "oracle_mae": 0.14924806356430054,
+      "oracle_minus_predicted": 0.00015185808297246695,
+      "predicted_mae": 0.14939990639686584,
+      "predicted_minus_none": 0.00045163396862335503,
+      "predicted_minus_none_bootstrap_95ci": [
+        -0.0007703918832703494,
+        0.0017019435268593953
+      ],
+      "predicted_minus_shuffle": -0.000220162546611391,
+      "predicted_minus_shuffle_bootstrap_95ci": [
+        -0.0006015306222252548,
+        0.00010026114396168857
+      ],
+      "shuffle_mae": 0.14917972683906555
+    },
+    "amplitude": {
+      "none": {
+        "action_amplitude_ratio": 0.9719291925430298,
+        "gripper_amplitude_ratio": 0.914358913898468,
+        "per_dimension_amplitude_ratio": [
+          1.141387939453125,
+          1.0132256746292114,
+          0.9824573397636414,
+          0.8748442530632019,
+          0.7050500512123108,
+          1.0053046941757202,
+          0.914358913898468
+        ],
+        "predicted_action_abs_mean": 0.2720247209072113,
+        "rotation_amplitude_ratio": 0.8617329597473145,
+        "target_action_abs_mean": 0.27988120913505554,
+        "translation_amplitude_ratio": 1.0456902980804443
+      },
+      "oracle": {
+        "action_amplitude_ratio": 0.9841526746749878,
+        "gripper_amplitude_ratio": 0.9166547060012817,
+        "per_dimension_amplitude_ratio": [
+          1.1376219987869263,
+          1.0083125829696655,
+          1.0102463960647583,
+          0.9065691232681274,
+          0.6213828325271606,
+          1.0650784969329834,
+          0.9166547060012817
+        ],
+        "predicted_action_abs_mean": 0.2754458487033844,
+        "rotation_amplitude_ratio": 0.8643434643745422,
+        "target_action_abs_mean": 0.27988120913505554,
+        "translation_amplitude_ratio": 1.0520602464675903
+      },
+      "predicted": {
+        "action_amplitude_ratio": 0.9833033084869385,
+        "gripper_amplitude_ratio": 0.9167852997779846,
+        "per_dimension_amplitude_ratio": [
+          1.133805513381958,
+          1.0125941038131714,
+          1.00788414478302,
+          0.9076839685440063,
+          0.6212320923805237,
+          1.0629527568817139,
+          0.9167852997779846
+        ],
+        "predicted_action_abs_mean": 0.27520811557769775,
+        "rotation_amplitude_ratio": 0.8639562726020813,
+        "target_action_abs_mean": 0.27988120913505554,
+        "translation_amplitude_ratio": 1.0514278411865234
+      },
+      "shuffle": {
+        "action_amplitude_ratio": 0.9829182624816895,
+        "gripper_amplitude_ratio": 0.9159815311431885,
+        "per_dimension_amplitude_ratio": [
+          1.133832335472107,
+          1.0099756717681885,
+          1.0089595317840576,
+          0.9091182351112366,
+          0.6193152070045471,
+          1.0623066425323486,
+          0.9159815311431885
+        ],
+        "predicted_action_abs_mean": 0.27510035037994385,
+        "rotation_amplitude_ratio": 0.863580048084259,
+        "target_action_abs_mean": 0.27988120913505554,
+        "translation_amplitude_ratio": 1.0509225130081177
+      }
+    },
+    "num_groups": 118,
+    "point_ablation": "predicted",
+    "point_in_mask": {
+      "oracle": 1.0,
+      "predicted": 0.8008474576271186,
+      "shuffle": 0.7076271186440678
+    },
+    "point_l1_px": {
+      "oracle": {
+        "all": 0.0,
+        "destination": 0.0,
+        "object": 0.0
+      },
+      "predicted": {
+        "all": 5.225679874420166,
+        "destination": 2.644501209259033,
+        "object": 7.806859016418457
+      },
+      "shuffle": {
+        "all": 8.547252655029297,
+        "destination": 2.65447998046875,
+        "object": 14.44002628326416
+      }
+    }
+  },
+  "region_results": null,
+  "schema": "goal12-c1-counterfactual-offline-v1",
+  "seed": 17,
+  "sidecar": {
+    "path": "/vepfs-mlp2/c20250405/400040/transfer/vla_attention/vla_workspace/results/K4_lite/T2_future/validation_sidecar_v1/manifest.jsonl",
+    "sha256": "510fe44dee0c0deb408563c3fbaaefc780bf7b8c22f149bced93f05d857880e7"
+  }
+}

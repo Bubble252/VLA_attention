@@ -18,3 +18,6 @@
 - 完美 oracle marker 的 MAE 仍比 none 差 `+0.000384`；predicted 的 MAE 比 shuffle 高 `0.000237`（正数表示更差；JSON 字段 `predicted_minus_shuffle` 的方向相反）。
 - point head 质量不是主因：predicted destination L1 `2.645 px`、object L1 `7.807 px`、point-in-mask `0.8008`。
 - 裁决：W-I 关闭；A2/A3/F0 冻结；下一步只做一次 `I2-XATTN` 注入修复，不增加 loss、不延长训练。
+- 完成 `I2-XATTN` 2-step smoke：preflight PASS、postrun `SMOKE_PASS`、7 个 cross-attention 参数进入 checkpoint、`all_finite=true`。
+- 完成 `I2-XATTN` 500-step matched pilot 及完整 118 groups：`I1` non-gripper MAE 比 `I0` 差 `+3.162%`，`I2` 比 `I3` 差约 `0.188%`，`I2` destination margin 也低于 `I3`；动作幅度未塌缩。
+- 裁决：`I2-XATTN` FAIL；W-I 保持关闭；按协议只允许最后一次 `evidence_token=true` 注入修复，随后无论结果如何都不再增加第三个注入变体。
