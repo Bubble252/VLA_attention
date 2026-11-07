@@ -5,6 +5,8 @@
 **输入**：`65`、Goal 9 / `55`、K4-lite T4b v7–v11、Goal12、Goal13 的 D/I 结果<br>
 **一句话**：当前最先要验证的不是“再加一个 evidence token”，而是 **横向控制 authority 是否足够，以及这份 authority 能否从特权教师蒸馏成可部署策略**。
 
+**P0 更新（2026-11-07）**：P0 已完成，`A10` 在 15-init `white_right` 上取得 `7/15` official success、`4/15` released success、`6/12` confirmation success，预注册 Gate 全部通过。结果见 [Goal14 P0](../experiments/Goal14-p0-authority-release-20261107/05_p0_result.md)。这只允许写 P1 protocol，不直接启动训练。
+
 ---
 
 ## 1. 裁决先行

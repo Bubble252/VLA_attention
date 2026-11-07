@@ -1137,6 +1137,8 @@ git -C "references/repos/${SLUG}" log -1 --format='%H %ad %s' --date=iso
 
 ## 14. 证据索引
 
+- [P0 横向 authority + release/settle 结果](../../experiments/Goal14-p0-authority-release-20261107/05_p0_result.md)
+- [P1 横向 authority 蒸馏协议](../../experiments/Goal15-p1-lateral-distill-20261107/03_execution_plan.md)
 - [接口路线失败后的 outer-loop PIVOT](66_outer_loop_pivot_after_interface_failure_20261107.md)
 - [现有 idea 可行性审计](61_vla_idea_viability_audit_and_pivot_20261107.md)
 - [FAI-VLA 融合方案](62_fai_vla_fusion_plan_20261107.md)
