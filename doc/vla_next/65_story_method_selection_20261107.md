@@ -1,7 +1,7 @@
 # 65 故事、主任务与方法选择
 
 **日期**：2026-11-07<br>
-**状态**：升级规则与外部论文准入规范已落盘；Goal13 三种接口注入均 FAIL，`W-I` 永久关闭，`A2/F0` 不启动；Goal14 P0 authority release 已 PASS（`A10` total `7/15`、released `4/15`、confirmation `6/12`），Goal15 P1-A/P1-B 已 PASS（evidence 固定为 `route_centroid`，学生臂必须命名为 `R2-ROUTE`；P1-B 是 HDF5 expert replay 的离线教师缓存，不是闭环教师）；P1-C v4 offline Gate 已 FAIL，`R2-ROUTE` 没有优于 `R1-CAP`，P1-D 不启动，不能升级任何论文近似组件。<br>
+**状态**：升级规则与外部论文准入规范已落盘；Goal13 三种接口注入均 FAIL，`W-I` 永久关闭，`A2/F0` 不启动；Goal14 P0 authority release 已 PASS（`A10` total `7/15`、released `4/15`、confirmation `6/12`），Goal15 P1-A/P1-B 已 PASS（evidence 固定为 `route_centroid`，学生臂必须命名为 `R2-ROUTE`；P1-B 是 HDF5 expert replay 的离线教师缓存，不是闭环教师）；P1-C v4 offline Gate 已 FAIL，3-seed 复现确认 `R2-ROUTE` 在 `3/3` 个 seed 上均劣于 `R1-CAP`，`H-DISTILL-NOT-SUPPORTED`；P1-D 不启动，不能升级任何论文近似组件。<br>
 **输入**：61–64 的审计、C1/J4.1/Goal11/Goal12/G2 的已有结果、2026 年近邻论文<br>
 **一句话**：主任务继续用 C1，但论文故事必须是 **“证据为什么没有控制动作”**，而不是再讲一次 “我们的 grounding 更准”。方法采用 **Data → Interface → Control 三级因果阶梯**；FAI-VLA 只有在第三级成立时才能作为主方法。
 
@@ -636,7 +636,7 @@ F4 消融成立 -> 才允许升级 AC-VLA-lite 的 phase 机制
 
 **现在能否升级为论文近似版（2026-11-07）**
 
-Goal15 的当前补充：P1-A 已 PASS，说明 `cache_train_v2` 可以用 **predicted route centroid** 作为学生证据输入；P1-B 也已在完整 96 episodes 上 PASS（11,630 transitions、release `88/88`、`white_right=0`、plateau `37`、大修正桶 `262`）。但 P1-B 使用的是 `HDF5 expert states + cache timesteps` 的离线重放，不是 base-policy closed-loop 教师；且标签分布高度两极化（`56.7%` 零修正、`39.1%` 至少一轴打满 `0.10`）。P1-C v4 已 FAIL：`R2-ROUTE` 没有优于参数匹配的 `R1-CAP`，因此 P1-B/P1-C 都**不解锁任何 `D/I/A/F0` 组件升级**，也不能把 `R2-ROUTE` 写成已经验证过的 residual 方法。
+Goal15 的当前补充：P1-A 已 PASS，说明 `cache_train_v2` 可以用 **predicted route centroid** 作为学生证据输入；P1-B 也已在完整 96 episodes 上 PASS（11,630 transitions、release `88/88`、`white_right=0`、plateau `37`、大修正桶 `262`）。但 P1-B 使用的是 `HDF5 expert states + cache timesteps` 的离线重放，不是 base-policy closed-loop 教师；且标签分布高度两极化（`56.7%` 零修正、`39.1%` 至少一轴打满 `0.10`）。P1-C v4 已 FAIL：`R2-ROUTE` 没有优于参数匹配的 `R1-CAP`；3-seed 复现进一步确认它在 `3/3` 个 seed 上 cosine/sign 更低、MAE 更高，因此 `H-DISTILL` 的“route evidence 带来增益”不成立。P1-B/P1-C 都**不解锁任何 `D/I/A/F0` 组件升级**，也不能把 `R2-ROUTE` 写成已经验证过的 residual 方法。
 
 | 组件 | 当前层级 | Gate 状态 | 现在能否升级 | 解锁条件 |
 |---|---|---|---|---|
@@ -717,7 +717,7 @@ Stage 0: D0 Run Contract PASS
 | Goal14 `P0` authority release | **PASS，但只刚过线**：`A10` total `7/15`、released `4/15`、confirmation `6/12`；`A20` 没有更好 | 只允许写 P1 协议，并启动 P1-A | 不能把 P0 写成 residual 方法成功；不能据此升级任何组件 |
 | P1-A evidence adapter qualification | **PASS**：evidence 固定为 `route_centroid`，学生臂名固定为 `R2-ROUTE`；train 11,630 transitions / 96 episodes，validation 1,824 / 15，coverage `1.000`，`white_right` 训练与 validation 均为 0 | 只允许启动完整 P1-B；可以使用 predicted route 作为学生证据 | 不能训练学生策略；不能用 GT mask/point 做 fallback；不能把旧 Qwen point head 当成 J2 资产；不能把 `R2-ROUTE` 写成 `R2-PRED` |
 | P1-B teacher label cache | **PASS（离线教师缓存）**：96 episodes、11,630 transitions、release `88 transitions / 88 episodes`、`white_right=0`、plateau `37`、大修正桶 `262`、无 NaN/错误。标签高度两极化：`56.7%` 零修正、`39.1%` 至少一轴 cap。 | 只允许进入 P1-C offline student；必须报告 cosine、方向、幅度、cap 桶和 release 指标 | 不能称为 base-policy closed-loop 教师；不能把 `teacher_delta_chunk` 当真实 8-step rollout；不能因 P1-B PASS 就升级 residual 方法或 `D/I/A/F0` |
-| P1-C offline student | **FAIL**：commit `4763365`、config v3、2000-step pilot；`R2-ROUTE` cosine `0.7036`、sign `0.7952`、magnitude `0.6734`；`R1-CAP` 在 cosine/sign/MAE 上更好 | 只允许新的、预注册的离线诊断；不能进入 P1-D | offline 不过不能进闭环；不能靠加容量或 validation 调参跳过 |
+| P1-C offline student | **FAIL（3 seeds）**：commit `4763365`、config v3、2000-step pilot；`R2-ROUTE` 在 3/3 seeds 上 cosine/sign 均低于 `R1-CAP`，MAE 更高；均值 cosine `0.6908` vs `0.7554` | 停止 P1 residual 容量路线；不能进入 P1-D | offline 不过不能进闭环；不能靠加容量、单 seed 或 validation 调参跳过 |
 | P1-D 15-init closed-loop | 未启动 | `R2` official `>=3/15`、confirmation `>=2/12`、`R2 - R1-CAP >=2/15`、released `>=2/15` 后，才允许扩确认实验 | 15 条 pilot 只作筛选；不能写论文级结论；P1-D PASS 也不等于 `A2` PASS |
 | 30/50 条 + 3 seeds | 未启动，只有 P1-D PASS 后才允许 | 把 pilot 变成确认性结果 | 仍不能替代第二场景/外部 benchmark |
 | 第二场景/外部 benchmark | 未启动 | 与 C1 同向后才允许写 L3 | 不能只靠 C1 单场景声称泛化 |
@@ -741,9 +741,9 @@ Stage 0: D0 Run Contract PASS
 
 | 阶段 | 完成条件 | 完成后最多可以做什么 | 仍然不能做什么 |
 |---|---|---|---|
-| 现在 | P1-C v4 FAIL；`R2-ROUTE` 未优于 `R1-CAP` | 停止 P1-D；如继续，只能做 train-only magnitude calibration + 3 seeds 的独立离线诊断 | 不跑闭环、不升级组件、不写方法论文 |
+| 现在 | P1-C v4 FAIL，3-seed 复现确认 `R2-ROUTE` 稳定劣于 `R1-CAP` | 停止 P1-D 和 residual 容量路线；按 66 的失败分支转下一项预注册实验 | 不跑闭环、不升级组件、不写方法论文 |
 | P1-B | 完整 96 episodes、11,630 transitions、release 与 delta 阈值满足 | 已解锁 P1-C；P1-C 必须验证连续方向而非三档开关 | 不能把 teacher cache 当成 residual 方法已经成立 |
-| P1-C | **FAIL**：offline student 未通过 cosine/方向/幅度/release 的联合 Gate；`R2-ROUTE` 还低于 `R1-CAP` | 只能做新的预注册离线诊断；不进入 P1-D | 不能扩 30/50，不能升级 `D/I/A/F0` |
+| P1-C | **FAIL（3 seeds）**：offline student 未通过联合 Gate；`R2-ROUTE` 在 3/3 seeds 上低于 `R1-CAP`，`H-DISTILL` 不成立 | 停止 residual 容量路线；不进入 P1-D；转下一项预注册实验 | 不能扩 30/50，不能升级 `D/I/A/F0` |
 | P1-D | 15-init 达到 official `>=3/15`、confirmation `>=2/12`、相对 `R1-CAP` `>=2/15` | 只允许扩 30/50 条确认实验 | 不能写 L3，不能把 pilot 当论文级证据 |
 | 30/50 + 3 seeds | 结果同向且不依赖单 seed | 可把 residual/authority 写成 L2 方法候选 | 仍不能替代第二场景/外部 benchmark |
 | 第二场景同向 | caddy 或外部 benchmark 同向，且四件套齐全 | 才允许讨论完整 `F0`/L3；若回到 D/I/A 路线，仍须分别打开 `W-D/W-I/W-A/W-F` | 不能因为 P1 成功就自动升级 CompoSlot、AC-VLA phase 或 `A2` |
@@ -1194,6 +1194,7 @@ git -C "references/repos/${SLUG}" log -1 --format='%H %ad %s' --date=iso
 - [P1 横向 authority 蒸馏协议](../../experiments/Goal15-p1-lateral-distill-20261107/03_execution_plan.md)
 - [P1-B A10 教师缓存结果](../../experiments/Goal15-p1-lateral-distill-20261107/06_p1b_teacher_result.md)
 - [P1-C offline student 失败裁决](../../experiments/Goal15-p1-lateral-distill-20261107/07_p1c_result.md)
+- [P1-C 3-seed robustness 结果](../../experiments/Goal15-p1-lateral-distill-20261107/09_p1c_seed_robustness_result.md)
 - [接口路线失败后的 outer-loop PIVOT](66_outer_loop_pivot_after_interface_failure_20261107.md)
 - [现有 idea 可行性审计](61_vla_idea_viability_audit_and_pivot_20261107.md)
 - [FAI-VLA 融合方案](62_fai_vla_fusion_plan_20261107.md)

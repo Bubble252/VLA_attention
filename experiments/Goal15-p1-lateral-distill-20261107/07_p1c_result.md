@@ -89,6 +89,8 @@ P1-C 要回答的问题是：
 
 最有信息量的后续离线诊断是：固定 `R1-CAP/R2-ROUTE/R3-GEO`，在 train-only 上拟合一个全局 magnitude calibration，并在独立 validation 上报告 calibration 前后指标，同时跑 3 seeds。该诊断只能回答“失败是否只是尺度校准”，不能替代本 Gate，也不能直接授权闭环。
 
+**3-seed 后续（2026-11-07）**：不做 calibration，只重复 seed `27/37` 的同一训练。`R2-ROUTE` 在 `3/3` 个 seed 上 cosine、sign 都低于 `R1-CAP`，MAE 都更高；结论为 `H-DISTILL-NOT-SUPPORTED`，见 `09_p1c_seed_robustness_result.md`。magnitude calibration 不再作为当前优先项，因为相对增益问题不是尺度问题。
+
 ## 6. 复现
 
 远端输出：

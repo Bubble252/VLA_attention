@@ -136,7 +136,7 @@ $W/envs/oft/bin/python $R/scripts/build_p1_teacher_cache.py \
 
 P1-C 已按协议完成并失败，结果见 `07_p1c_result.md`：
 
-1. `R2-ROUTE` 没有相对 `R1-CAP` 产生增益，且失败 magnitude Gate；
+1. `R2-ROUTE` 没有相对 `R1-CAP` 产生增益，且失败 magnitude Gate；3-seed 复现进一步确认它在 `3/3` 个 seed 上 cosine/sign 更低、MAE 更高；
 2. P1-D 15-init 闭环不启动，不扩 30/50；
 3. 若要继续 P1 线，只能先做新的、预注册的离线诊断（train-only magnitude calibration + 3 seeds），不能把本次 FAIL 改写成 PASS；
 4. 任何论文近似组件仍不能升级。

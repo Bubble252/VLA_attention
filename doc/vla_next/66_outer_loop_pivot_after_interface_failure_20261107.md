@@ -7,6 +7,8 @@
 
 **P0 更新（2026-11-07）**：P0 已完成，`A10` 在 15-init `white_right` 上取得 `7/15` official success、`4/15` released success、`6/12` confirmation success，预注册 Gate 全部通过。结果见 [Goal14 P0](../experiments/Goal14-p0-authority-release-20261107/05_p0_result.md)。这只允许写 P1 protocol，不直接启动训练。
 
+**P1 更新（2026-11-07）**：P1-C v4 offline Gate 失败；3-seed 复现显示 `R2-ROUTE` 在 `3/3` 个 seed 上 cosine/sign 均低于参数匹配的 `R1-CAP`、MAE 更高。按 6.6 失败分支，`H-DISTILL` 的“route evidence 带来增益”不成立，P1-D 不启动，residual 容量路线停止。结果见 [P1-C 失败裁决](../experiments/Goal15-p1-lateral-distill-20261107/07_p1c_result.md) 和 [3-seed 结果](../experiments/Goal15-p1-lateral-distill-20261107/09_p1c_seed_robustness_result.md)。
+
 ---
 
 ## 1. 裁决先行
@@ -360,7 +362,7 @@ P0：B0 / A05 / A10 / A20 的 15-init authority 上界
 停止条件（满足任一即停）：
 
 1. P0 的 `A10` 未达到总量或 confirmation Gate；
-2. P1 的 `R2-PRED` 不优于 `R1-CAP`；
+2. P1 的 `R2-PRED` 不优于 `R1-CAP`（2026-11-07 已触发：`R2-ROUTE` 在 3/3 seeds 上稳定更差）；P1-D 不启动，residual 容量路线停止；
 3. 数据/评测契约持续 `INVALID`；
 4. 连续 3 个 matched arm 失败且下一轮 PIVOT 已写清；
 5. 12 个训练/eval arms 预算用完；
