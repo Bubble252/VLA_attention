@@ -1,0 +1,130 @@
+{
+  "arm": "D0",
+  "checks": {
+    "all_metrics_finite": {
+      "actual": [],
+      "detail": "",
+      "expected": [],
+      "passed": true
+    },
+    "group_ids_unique": {
+      "actual": 0,
+      "detail": "",
+      "expected": "unique",
+      "passed": true
+    },
+    "group_rows_count": {
+      "actual": 15,
+      "detail": "",
+      "expected": 15,
+      "passed": true
+    },
+    "num_episodes": {
+      "actual": 60,
+      "detail": "",
+      "expected": 60,
+      "passed": true
+    },
+    "num_init_groups": {
+      "actual": 15,
+      "detail": "",
+      "expected": 15,
+      "passed": true
+    },
+    "postrun_arm": {
+      "actual": "D0",
+      "detail": "",
+      "expected": "D0",
+      "passed": true
+    },
+    "postrun_status": {
+      "actual": "PASS",
+      "detail": "",
+      "expected": "PASS",
+      "passed": true
+    },
+    "seen_episodes": {
+      "actual": 45,
+      "detail": "",
+      "expected": 45,
+      "passed": true
+    },
+    "seen_group_all_range": {
+      "actual": 1,
+      "detail": "",
+      "expected": [
+        0,
+        15
+      ],
+      "passed": true
+    },
+    "seen_group_any_range": {
+      "actual": 13,
+      "detail": "",
+      "expected": [
+        0,
+        15
+      ],
+      "passed": true
+    },
+    "white_right_episodes": {
+      "actual": 15,
+      "detail": "",
+      "expected": 15,
+      "passed": true
+    },
+    "white_right_strict_destination_range": {
+      "actual": 0,
+      "detail": "",
+      "expected": [
+        0,
+        15
+      ],
+      "passed": true
+    },
+    "white_right_success_range": {
+      "actual": 0,
+      "detail": "",
+      "expected": [
+        0,
+        15
+      ],
+      "passed": true
+    }
+  },
+  "contract_status": "PASS",
+  "created_at": "2026-11-07T09:04:59.051633+00:00",
+  "expected": {
+    "episodes": 60,
+    "init_groups": 15
+  },
+  "failures": [],
+  "gate_status": "NOT_EVALUATED",
+  "interpretation": "This fifteen-init pilot is a screening run. It is not a formal method claim; confirmation requires 30/50 inits and multiple seeds.",
+  "postrun": {
+    "path": "/vepfs-mlp2/c20250405/400040/transfer/vla_attention/results/star105_goal13_20261107/contracts/D0_matched_postrun.json",
+    "sha256": "139ce40eecf6e2f1d15e340e4ce7d77568dd1f80f06321395314c64722b100bf"
+  },
+  "schema": "goal13-c1-pilot-contract-v1",
+  "seen": {
+    "episodes": 45,
+    "group_all_success_rate": 0.06666666666666667,
+    "group_all_successes": 1,
+    "group_any_success_rate": 0.8666666666666667,
+    "group_any_successes": 13,
+    "success_rate": 0.4444444444444444,
+    "successes": 20
+  },
+  "summary": {
+    "path": "/vepfs-mlp2/c20250405/400040/transfer/vla_attention/results/star105_goal13_20261107/c1/star13_d0_matched_2500_summary.json",
+    "sha256": "fad50bce648edbcd47321bfbd73f31a9fd3c0fbd4db5fcf56e9e5d41b045fa1d"
+  },
+  "white_right": {
+    "episodes": 15,
+    "headroom": true,
+    "strict_destination_rate": 0.0,
+    "strict_destination_successes": 0,
+    "success_rate": 0.0,
+    "successes": 0
+  }
+}

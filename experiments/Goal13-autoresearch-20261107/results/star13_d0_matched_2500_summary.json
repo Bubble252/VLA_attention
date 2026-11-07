@@ -1,0 +1,173 @@
+{
+  "groups": [
+    {
+      "seen_all_success": false,
+      "seen_any_success": false,
+      "seen_episodes": 3,
+      "seen_successes": 0,
+      "shared_init_id": "init_0e94a4e6b9622c6b",
+      "white_right_episodes": 1,
+      "white_right_strict_destination": 0,
+      "white_right_successes": 0
+    },
+    {
+      "seen_all_success": false,
+      "seen_any_success": true,
+      "seen_episodes": 3,
+      "seen_successes": 1,
+      "shared_init_id": "init_2edf49999eb35566",
+      "white_right_episodes": 1,
+      "white_right_strict_destination": 0,
+      "white_right_successes": 0
+    },
+    {
+      "seen_all_success": false,
+      "seen_any_success": true,
+      "seen_episodes": 3,
+      "seen_successes": 1,
+      "shared_init_id": "init_3500df19a4d3b5a1",
+      "white_right_episodes": 1,
+      "white_right_strict_destination": 0,
+      "white_right_successes": 0
+    },
+    {
+      "seen_all_success": false,
+      "seen_any_success": true,
+      "seen_episodes": 3,
+      "seen_successes": 2,
+      "shared_init_id": "init_530c50ee73587af4",
+      "white_right_episodes": 1,
+      "white_right_strict_destination": 0,
+      "white_right_successes": 0
+    },
+    {
+      "seen_all_success": false,
+      "seen_any_success": true,
+      "seen_episodes": 3,
+      "seen_successes": 2,
+      "shared_init_id": "init_7206d9b0bbf0705e",
+      "white_right_episodes": 1,
+      "white_right_strict_destination": 0,
+      "white_right_successes": 0
+    },
+    {
+      "seen_all_success": false,
+      "seen_any_success": true,
+      "seen_episodes": 3,
+      "seen_successes": 2,
+      "shared_init_id": "init_9940fb101f2b0000",
+      "white_right_episodes": 1,
+      "white_right_strict_destination": 0,
+      "white_right_successes": 0
+    },
+    {
+      "seen_all_success": false,
+      "seen_any_success": true,
+      "seen_episodes": 3,
+      "seen_successes": 2,
+      "shared_init_id": "init_a2ab436f335d9f7b",
+      "white_right_episodes": 1,
+      "white_right_strict_destination": 0,
+      "white_right_successes": 0
+    },
+    {
+      "seen_all_success": false,
+      "seen_any_success": true,
+      "seen_episodes": 3,
+      "seen_successes": 1,
+      "shared_init_id": "init_a2e4d7bc32a0db02",
+      "white_right_episodes": 1,
+      "white_right_strict_destination": 0,
+      "white_right_successes": 0
+    },
+    {
+      "seen_all_success": false,
+      "seen_any_success": true,
+      "seen_episodes": 3,
+      "seen_successes": 1,
+      "shared_init_id": "init_bfd0c6484dd671d0",
+      "white_right_episodes": 1,
+      "white_right_strict_destination": 0,
+      "white_right_successes": 0
+    },
+    {
+      "seen_all_success": false,
+      "seen_any_success": false,
+      "seen_episodes": 3,
+      "seen_successes": 0,
+      "shared_init_id": "init_c6e1e9cd7bc29f86",
+      "white_right_episodes": 1,
+      "white_right_strict_destination": 0,
+      "white_right_successes": 0
+    },
+    {
+      "seen_all_success": true,
+      "seen_any_success": true,
+      "seen_episodes": 3,
+      "seen_successes": 3,
+      "shared_init_id": "init_cd28ad2f294bd19f",
+      "white_right_episodes": 1,
+      "white_right_strict_destination": 0,
+      "white_right_successes": 0
+    },
+    {
+      "seen_all_success": false,
+      "seen_any_success": true,
+      "seen_episodes": 3,
+      "seen_successes": 1,
+      "shared_init_id": "init_f1edd3671d78a7ea",
+      "white_right_episodes": 1,
+      "white_right_strict_destination": 0,
+      "white_right_successes": 0
+    },
+    {
+      "seen_all_success": false,
+      "seen_any_success": true,
+      "seen_episodes": 3,
+      "seen_successes": 1,
+      "shared_init_id": "init_f3c100bf0414c40a",
+      "white_right_episodes": 1,
+      "white_right_strict_destination": 0,
+      "white_right_successes": 0
+    },
+    {
+      "seen_all_success": false,
+      "seen_any_success": true,
+      "seen_episodes": 3,
+      "seen_successes": 1,
+      "shared_init_id": "init_fe8d8b77d59c3ff3",
+      "white_right_episodes": 1,
+      "white_right_strict_destination": 0,
+      "white_right_successes": 0
+    },
+    {
+      "seen_all_success": false,
+      "seen_any_success": true,
+      "seen_episodes": 3,
+      "seen_successes": 2,
+      "shared_init_id": "init_fe97ba4bcbe0598b",
+      "white_right_episodes": 1,
+      "white_right_strict_destination": 0,
+      "white_right_successes": 0
+    }
+  ],
+  "num_episodes": 60,
+  "num_init_groups": 15,
+  "seen": {
+    "episodes": 45,
+    "group_all_success_rate": 0.06666666666666667,
+    "group_all_successes": 1,
+    "group_any_success_rate": 0.8666666666666667,
+    "group_any_successes": 13,
+    "success_rate": 0.4444444444444444,
+    "successes": 20
+  },
+  "white_right": {
+    "episodes": 15,
+    "headroom": true,
+    "strict_destination_rate": 0.0,
+    "strict_destination_successes": 0,
+    "success_rate": 0.0,
+    "successes": 0
+  }
+}
