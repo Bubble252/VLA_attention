@@ -339,7 +339,11 @@ def evaluate_postrun(
         "schema": SCHEMA,
         "created_at": utc_now(),
         "postrun_status": postrun_status,
-        "arm_status": "SMOKE_PASS" if postrun_status == "PASS" else "INVALID",
+        "arm_status": (
+            "SMOKE_PASS" if expected_steps <= 2 else "RUN_PASS"
+        )
+        if postrun_status == "PASS"
+        else "INVALID",
         "gate_status": "NOT_EVALUATED",
         "arm": contract.get("arm"),
         "contract_path": str(contract_path),
