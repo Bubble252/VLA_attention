@@ -67,11 +67,11 @@ stop_xy_m = 0.005
 
 ### 阶段 A：文档和冻结协议
 
-- [ ] 写 `01_background.md`；
-- [ ] 写 `02_tech_stack.md`；
-- [ ] 写 `03_execution_plan.md`；
-- [ ] 写 `04_run_contract.md`；
-- [ ] 确认本文件中的 arms、release/settle 和 Gate 不再改动。
+- [x] 写 `01_background.md`；
+- [x] 写 `02_tech_stack.md`；
+- [x] 写 `03_execution_plan.md`；
+- [x] 写 `04_run_contract.md`；
+- [x] 确认本文件中的 arms、release/settle 和 Gate 不再改动。
 
 提交：
 
@@ -93,13 +93,13 @@ git push origin main
 
 ### 阶段 B：配置、runner 和本地测试
 
-- [ ] 新增 `configs/vla/k4_lite_t4b_v12_p0_authority_release.json`；
-- [ ] 计算 config SHA 并写入 runner 常量；
-- [ ] 新增 `scripts/audit_k4_lite_t4b_v12_p0_authority_release.py`；
-- [ ] 新增 `tests/test_k4_lite_t4b_v12.py`；
-- [ ] `PYTHONPATH=. pytest -q tests/test_k4_lite_t4b_v12.py` 通过；
-- [ ] `python -m py_compile` 通过；
-- [ ] 检查 config 不允许被静默篡改。
+- [x] 新增 `configs/vla/k4_lite_t4b_v12_p0_authority_release.json`；
+- [x] 计算 config SHA 并写入 runner 常量；
+- [x] 新增 `scripts/audit_k4_lite_t4b_v12_p0_authority_release.py`；
+- [x] 新增 `tests/test_k4_lite_t4b_v12.py`；
+- [x] `PYTHONPATH=. pytest -q tests/test_k4_lite_t4b_v12.py` 通过；
+- [x] `python -m py_compile` 通过；
+- [x] 检查 config 不允许被静默篡改。
 
 提交：
 
@@ -114,15 +114,15 @@ git commit -m "feat(vla): add p0 authority release runner"
 
 ### 阶段 C：远端只读 preflight
 
-- [ ] SSH 可连接；
-- [ ] GPU1 空闲，GPU0 不被本实验使用；
-- [ ] manifest SHA 一致；
-- [ ] J2 checkpoint fingerprint 一致；
-- [ ] statistics SHA 一致；
-- [ ] config SHA 一致；
-- [ ] 输出目录不存在；
-- [ ] 远端代码与本地提交一致；
-- [ ] 不覆盖 v7–v11 结果。
+- [x] SSH 可连接；
+- [x] GPU1 空闲，GPU0 不被本实验使用；
+- [x] manifest SHA 一致；
+- [x] J2 checkpoint fingerprint 一致；
+- [x] statistics SHA 一致；
+- [x] config SHA 一致；
+- [x] 输出目录不存在；
+- [x] 远端代码与本地提交一致；
+- [x] 不覆盖 v7–v11 结果。
 
 只有全部通过才允许进入阶段 D。
 
@@ -136,18 +136,18 @@ cd "$R"
 bash server/run_k4_lite_t4b_v12_p0.sh
 ```
 
-- [ ] 4 arms x 15 init 全部跑完；
-- [ ] 无 NaN、error、飞出；
-- [ ] 结果 JSON/MD 和 traces 已落盘；
-- [ ] 不产生 optimizer checkpoint。
+- [x] 4 arms x 15 init 全部跑完；
+- [x] 无 NaN、error、飞出；
+- [x] 结果 JSON/MD 和 traces 已落盘；
+- [x] 不产生 optimizer checkpoint。
 
 ### 阶段 E：回传与判 Gate
 
-- [ ] 回传 `audit_p0_authority_release_v12.json` 和 `.md`；
-- [ ] 写 `05_p0_result.md`；
-- [ ] 按 Gate 判 `PASS/FAIL/INVALID`；
-- [ ] 如果是 `PASS`，只写 P1 protocol，不直接训练；
-- [ ] 如果是 `FAIL`，写 `H-AUTH` 否证证据和 caddy/PIVOT 建议。
+- [x] 回传紧凑 `p0_summary.json` 和 `.md`；完整 JSON 保留远端；
+- [x] 写 `05_p0_result.md`；
+- [x] 按 Gate 判 `PASS/FAIL/INVALID`；
+- [x] 如果是 `PASS`，只写 P1 protocol，不直接训练；
+- [x] 如果是 `FAIL`，写 `H-AUTH` 否证证据和 caddy/PIVOT 建议。
 
 提交：
 
