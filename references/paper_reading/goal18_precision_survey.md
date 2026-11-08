@@ -20,9 +20,9 @@
 
 | 论文 | 本地文件 | reading note | 官方 code | 状态 |
 |---|---|---|---|---|
-| ReGuide `2609.38616` | `papers/reguide_2609.38616.pdf/.txt` | `references/paper_reading/reguide_2609.38616.md` | 正文未找到 | 已精读，Goal16/17 使用方法结构 |
-| AnySlot `2604.10432` | `papers/anyslot_2604.10432.pdf/.txt` | `references/paper_reading/anyslot_2604.10432.md` | 未找到，`official_code_missing=true` | 已读摘要/方法；未进入代码 |
-| TAG `2603.24584` | `papers/tag_2603.24584.pdf/.txt` | `references/paper_reading/tag_2603.24584.md` | 未找到，`official_code_missing=true` | 已读摘要/方法；未进入代码 |
+| ReGuide `2609.38616` | `https://arxiv.org/abs/2609.38616`；`papers/reguide_2609.38616.pdf/.txt` | `references/paper_reading/reguide_2609.38616.md` | 正文未找到 | 已精读，Goal16/17 使用方法结构 |
+| AnySlot `2604.10432` | `https://arxiv.org/abs/2604.10432`；`papers/anyslot_2604.10432.pdf/.txt` | `references/paper_reading/anyslot_2604.10432.md` | 未找到，`official_code_missing=true` | 已读摘要/方法；未进入代码 |
+| TAG `2603.24584` | `https://arxiv.org/abs/2603.24584`；`papers/tag_2603.24584.pdf/.txt` | `references/paper_reading/tag_2603.24584.md` | 未找到，`official_code_missing=true` | 已读摘要/方法；未进入代码 |
 
 ## 3. 未落盘候选
 
