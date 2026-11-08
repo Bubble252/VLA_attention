@@ -95,8 +95,16 @@ transport/release/settle 失败分解。
 
 - [ ] 读取 Goal18 `05_gate.md`、`06_result.md`、`evidence/white_right_pixel_alignment.csv`；
 - [ ] 写 `01_background.md`、`02_tech_stack.md`、`03_execution_plan.md`、`04_run_contract.md`；
+- [ ] 写 `00_preflight.md`，逐项记录已读取的 AGENTS、research contract 和当前 `STATE.md` 摘要；
 - [ ] 在 Run Contract 中写清 label source、train/val/eval 隔离和 no oracle fallback；
 - [ ] 运行 `python3 scripts/check_research_ledger.py --goal Goal18 ... --strict --require-result`，确认 Goal18 已关闭。
+
+`00_preflight.md` 不是形式文件。至少要写出：
+
+- 当前 goal、Gate 和失败裁决；
+- `autoresearch` 的触发条件；
+- 本 goal 允许改动的文件和禁止改动的 split；
+- 如果 Gate 失败，必须停在哪一步、先写哪个文件。
 
 ### Phase 1：Target-aligned label
 
@@ -138,6 +146,28 @@ transport/release/settle 失败分解。
 | target-aligned G-P 不过、label ceiling 够 | point head 容量/特征不足 | 才考虑 TAG/AnySlot/open-vocab |
 | G-P 过、E1 不动 | execution mapping 主导 | 只做 release/transport 校准 |
 | 只用 confirmation 调参 | 结果污染 | 标 INVALID，不判方法失败 |
+
+### Autoresearch 状态机
+
+Goal19 的 Gate 不是终点，而是状态机输入：
+
+```text
+PREFLIGHT -> RUN -> GATE
+                    | PASS -> RESULT -> COMMIT
+                    | FAIL/INVALID -> STOP
+                                      -> blocker + 2 hypotheses
+                                      -> data -> label -> eval -> baseline -> architecture -> literature
+                                      -> cheapest falsification
+                                      -> LEDGER decision
+                                      -> continue / pivot / stop
+```
+
+硬规则：
+
+- Gate 失败后，禁止直接写 `06_result.md` 收尾；
+- 没有 blocker、hypothesis、falsification 和 ledger 记录时，不得 commit 为 completed；
+- 文献检索失败也必须记录“查了什么、为什么失败、用了什么替代来源”，不能静默跳过；
+- 只有 `decision=pivot/stop` 才能改主线；`continue` 只能继续当前预注册实验。
 
 ## 7. 文献与 code
 
@@ -189,6 +219,12 @@ Goal18 已关闭：C0/C1/C2 全部 G-P FAIL，3 cm 内 6/15。失败后诊断发
 mask centroid 到 oracle mean 22.27 mm；projected object center 到 oracle mean 10.64 mm；
 所以先修标签，不继续调 2D offset，也不先堆 TAG/AnySlot。
 
+启动前先做 compliance preflight，不允许直接开始训练：
+1. 真的读取上面列出的 AGENTS、research 文件和 Goal18 证据；
+2. 写 experiments/Goal19-target-aligned-20261109/00_preflight.md；
+3. 在文件里逐项写：当前 goal、Gate、autoresearch 触发条件、允许改动范围、禁止使用的 split；
+4. 如果不写 00_preflight.md，后续训练和结果一律视为 INVALID。
+
 硬约束：
 1. 先写 Goal19 的 01_background.md、02_tech_stack.md、03_execution_plan.md、04_run_contract.md；
 2. 训练标签只使用 train split 的 projected object center 或经过审核的等价区域目标；
@@ -209,6 +245,16 @@ mask centroid 到 oracle mean 22.27 mm；projected object center 到 oracle mean
 6. 如果 target-aligned G-P 仍失败，先判断是区域定义还是 head 容量，
    再决定 TAG/AnySlot/open-vocab；不得直接堆模块。
 
+Autoresearch 是硬状态机，不是“有空再做”：
+- Gate PASS：写 result、更新 ledger、commit；
+- Gate FAIL/INVALID：立即停止主实验，先写 research/blockers/<date>-goal19-*.md；
+- blocker 必须包含现象、证据、已排除项、至少 2 个可证伪 hypothesis；
+- 排查顺序固定为：数据 -> 标签 -> 评测 -> baseline -> 架构 -> 文献；
+- 文献必须记录查询词、来源、日期、结论；下载 PDF/TXT，查官方 code，能 clone 就 pin commit，
+  不能 clone 就写 official_code_missing=true 和理由，并写 references/paper_reading/ note；
+- 跑最便宜的 falsification experiment，再写 research/LEDGER.jsonl 的 decision 和 next；
+- 没有 ledger 记录时，禁止写“Goal19 completed”，禁止把 FAIL 当成结束。
+
 Gate：
 - G-P：mean <=0.015 m；max <=0.030 m；12/15 在 3 cm 内；object in mask >=12/15；0 NaN；
 - G-E：success >=4/15，且比 2/15 至少 +2；correct destination subset >=3/10；wrong dest <=3；
@@ -218,6 +264,8 @@ Gate：
 完成时：
 - 写 06_result.md；
 - 更新 research/STATE.md、research/LEDGER.jsonl、blockers/ 和必要的 decisions/；
+- 在 result 中明确写：是否触发 autoresearch、触发条件、读了哪些论文、PDF/TXT 是否落盘、
+  是否有 reading note、官方 code 是否存在；没有触发也必须写原因；
 - 运行：
   python3 scripts/check_research_ledger.py --goal Goal19 \
     --goal-doc doc/vla_next/70_goal19_goal18_failure_research_loop_20261109.md \
