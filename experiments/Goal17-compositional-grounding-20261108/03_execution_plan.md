@@ -57,10 +57,12 @@ Track C：
 
 ## 6. Step 5–6：执行
 
-- [ ] oracle destination + 简化 xy/release wrapper；
-- [ ] predicted destination（R-PRED）；
+- [ ] `E1`：oracle destination + 简化 xy/release wrapper；
+- [ ] `E1`：predicted destination（R-PRED）；
+- [ ] `E2`：predicted destination + full 3D hand-back（Goal16 `R-GEO` 对照）；
 - [ ] 15 init，seed 7；
-- [ ] 记录 official success、released success、wrong-destination、动作幅度。
+- [ ] 记录 official success、released success、wrong-destination、动作幅度；
+- [ ] 报告 `E1` vs `E2`，不要因为 `E1` 更简单就默认丢掉 3D。
 
 ## 7. Gate
 

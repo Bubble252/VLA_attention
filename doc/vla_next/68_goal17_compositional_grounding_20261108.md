@@ -113,19 +113,31 @@ Goal17 只做两件事：
 3. 用 VLM open-vocabulary 选择 object/receptacle，再接几何反投影；
 4. 最后才考虑 Grounding DINO / SAM 等外部 detector。
 
-## 5. 执行 wrapper 怎么简化
+## 5. 执行 wrapper：简化是控制变量，不是判 3D 死刑
 
-Goal16 已经说明 full 3D hand-back 不是赢家。Goal17 用：
+Goal16 的结果不是“xy-only 一定更好”，而是：
 
-```text
-R-NAIVE+：oracle 或 predicted destination
-  - 只改 xy
-  - z / rotation 保持 base policy
-  - 到达后显式 release/settle
-  - 不 re-arm，或最多 1 次
-```
+- `R-GEO`：2/15，但 2/15 都是 released；
+- `R-NAIVE`：4/15，但只有 1/15 released，另外 3/15 是 hold-only；
+- `R-GEO` re-arm 总数 26，`R-NAIVE` 只有 4。
 
-先跑 oracle 版确认 release 逻辑，再跑 predicted 版。不要一上来就恢复 3D approach + hand-back。
+所以正确结论是：**full 3D hand-back 没有证明出优势，而且引入了更多 re-arm 复杂度；但它的 released success 并不差。** 不能因为总 success 4 > 2 就把 3D 直接丢掉。
+
+Goal17 的执行端要保留两个 arm：
+
+| arm | 执行方式 | 作用 |
+|---|---|---|
+| `E1` | 简化 xy transport + explicit release；z/rotation 保持 base policy；不 re-arm 或最多 1 次 | 主 readout，低方差，先确认 grounding 是否真的被用上 |
+| `E2` | Goal16 的 full 3D approach + hand-back + re-arm | 对照，防止把有用的 3D 机制提前丢掉 |
+
+执行顺序：
+
+1. 先用 oracle destination 跑 `E1`，确认 release/settle 逻辑；
+2. 接 predicted destination 跑 `E1`；
+3. 只有 grounding Gate 通过后，再用同一批 predicted points 跑 `E2`；
+4. 如果 `E2 > E1`，说明 3D hand-back 值得保留；如果 `E1 >= E2`，才把 `E1` 定为默认。
+
+**简化只是为了先隔离 grounding 变量，不是最终方法结论。**
 
 ## 6. Gate
 
@@ -162,7 +174,7 @@ R-NAIVE+：oracle 或 predicted destination
 
 ## 8. 一句话
 
-**Goal17 不是继续调 ReGuide wrapper，而是用 2×2 counterfactual + margin loss 修 grounding，再用简化 xy + release 验证 R-PRED 能否真正把“看对”转成“做对”。**
+**Goal17 不是继续调 ReGuide wrapper，而是用 2×2 counterfactual + margin loss 修 grounding；执行端先用简化 xy + release 做主 readout，同时保留 full 3D hand-back 作为 E2 对照，避免把有用的 3D 机制提前丢掉。**
 
 ---
 
