@@ -1,0 +1,298 @@
+{
+  "camera_json": "/vepfs-mlp2/c20250405/400040/transfer/vla_attention/vla_workspace/results/K4_lite/T4b/goal16_reguide_rebinding_20261108/grounding/summary.json",
+  "camera_json_sha256": "d84f2dfc085b378cd0ef165d8252cbf6735aebca827c2a7367469ca0797f8f1f",
+  "checks": {
+    "destination_correct": false,
+    "destination_margin": false,
+    "no_nan": true,
+    "object_in_mask": false,
+    "object_margin": false,
+    "prediction_count": true
+  },
+  "config": "/vepfs-mlp2/c20250405/400040/transfer/vla_attention/repo/VLA_attention/configs/vla/goal17_grounding.json",
+  "config_sha256": "37f83443911f54e44ad17d4b02f71045cf36154f8f03a477c4f780ee7b0442de",
+  "destination_correct_count": 0,
+  "destination_margin_correct_init_count": 0,
+  "destination_margin_correct_pair_count": 15,
+  "grounding_rows": "/vepfs-mlp2/c20250405/400040/transfer/vla_attention/vla_workspace/results/K4_lite/T4b/goal17_compositional_grounding_20261108/eval/grounding/G3-MARGIN/grounding_rows.jsonl",
+  "grounding_rows_sha256": "0ce3b3af8440f6bc751654a9fbf5135e75c8a03c3a5ade37d3528fb7cf697225",
+  "max_destination_error_m": 0.615655312844295,
+  "mean_destination_error_m": 0.5883413129110917,
+  "notes": [
+    "Object and destination masks are used only for scoring, never as model inputs.",
+    "Counterfactual margins are same-image mask-membership margins.",
+    "A per-init margin is correct only when both relevant prompt pairs are correct.",
+    "The Gate uses white_right destination error and object-in-mask."
+  ],
+  "object_in_mask_count": 5,
+  "object_margin_correct_init_count": 4,
+  "object_margin_correct_pair_count": 15,
+  "passed": false,
+  "per_init": [
+    {
+      "destination_margin_correct": false,
+      "destination_pair_margins": [
+        1.0,
+        0.0
+      ],
+      "object_margin_correct": false,
+      "object_pair_margins": [
+        1.0,
+        0.0
+      ],
+      "shared_init_id": "init_0e94a4e6b9622c6b",
+      "split": "calibration",
+      "white_right_destination_error_m": 0.5574051958551673,
+      "white_right_destination_in_mask": false,
+      "white_right_object_in_mask": false
+    },
+    {
+      "destination_margin_correct": false,
+      "destination_pair_margins": [
+        1.0,
+        0.0
+      ],
+      "object_margin_correct": false,
+      "object_pair_margins": [
+        1.0,
+        0.5
+      ],
+      "shared_init_id": "init_2edf49999eb35566",
+      "split": "calibration",
+      "white_right_destination_error_m": 0.5742663334061178,
+      "white_right_destination_in_mask": false,
+      "white_right_object_in_mask": false
+    },
+    {
+      "destination_margin_correct": false,
+      "destination_pair_margins": [
+        1.0,
+        0.0
+      ],
+      "object_margin_correct": true,
+      "object_pair_margins": [
+        1.0,
+        1.0
+      ],
+      "shared_init_id": "init_3500df19a4d3b5a1",
+      "split": "calibration",
+      "white_right_destination_error_m": 0.5889476679063049,
+      "white_right_destination_in_mask": false,
+      "white_right_object_in_mask": true
+    },
+    {
+      "destination_margin_correct": false,
+      "destination_pair_margins": [
+        1.0,
+        0.0
+      ],
+      "object_margin_correct": false,
+      "object_pair_margins": [
+        1.0,
+        0.5
+      ],
+      "shared_init_id": "init_530c50ee73587af4",
+      "split": "calibration",
+      "white_right_destination_error_m": 0.5994399632564569,
+      "white_right_destination_in_mask": false,
+      "white_right_object_in_mask": false
+    },
+    {
+      "destination_margin_correct": false,
+      "destination_pair_margins": [
+        1.0,
+        0.0
+      ],
+      "object_margin_correct": false,
+      "object_pair_margins": [
+        0.5,
+        -0.5
+      ],
+      "shared_init_id": "init_7206d9b0bbf0705e",
+      "split": "calibration",
+      "white_right_destination_error_m": 0.5964851141472711,
+      "white_right_destination_in_mask": false,
+      "white_right_object_in_mask": false
+    },
+    {
+      "destination_margin_correct": false,
+      "destination_pair_margins": [
+        1.0,
+        0.0
+      ],
+      "object_margin_correct": false,
+      "object_pair_margins": [
+        1.0,
+        0.5
+      ],
+      "shared_init_id": "init_9940fb101f2b0000",
+      "split": "heldout",
+      "white_right_destination_error_m": 0.5672165124356349,
+      "white_right_destination_in_mask": false,
+      "white_right_object_in_mask": false
+    },
+    {
+      "destination_margin_correct": false,
+      "destination_pair_margins": [
+        1.0,
+        0.0
+      ],
+      "object_margin_correct": false,
+      "object_pair_margins": [
+        0.5,
+        0.5
+      ],
+      "shared_init_id": "init_a2ab436f335d9f7b",
+      "split": "heldout",
+      "white_right_destination_error_m": 0.615655312844295,
+      "white_right_destination_in_mask": false,
+      "white_right_object_in_mask": true
+    },
+    {
+      "destination_margin_correct": false,
+      "destination_pair_margins": [
+        1.0,
+        0.0
+      ],
+      "object_margin_correct": true,
+      "object_pair_margins": [
+        1.0,
+        1.0
+      ],
+      "shared_init_id": "init_a2e4d7bc32a0db02",
+      "split": "heldout",
+      "white_right_destination_error_m": 0.5737250024649599,
+      "white_right_destination_in_mask": false,
+      "white_right_object_in_mask": true
+    },
+    {
+      "destination_margin_correct": false,
+      "destination_pair_margins": [
+        1.0,
+        0.0
+      ],
+      "object_margin_correct": false,
+      "object_pair_margins": [
+        0.5,
+        -0.5
+      ],
+      "shared_init_id": "init_bfd0c6484dd671d0",
+      "split": "heldout",
+      "white_right_destination_error_m": 0.6035870451218013,
+      "white_right_destination_in_mask": false,
+      "white_right_object_in_mask": false
+    },
+    {
+      "destination_margin_correct": false,
+      "destination_pair_margins": [
+        1.0,
+        0.0
+      ],
+      "object_margin_correct": true,
+      "object_pair_margins": [
+        1.0,
+        1.0
+      ],
+      "shared_init_id": "init_c6e1e9cd7bc29f86",
+      "split": "heldout",
+      "white_right_destination_error_m": 0.6117435009119307,
+      "white_right_destination_in_mask": false,
+      "white_right_object_in_mask": true
+    },
+    {
+      "destination_margin_correct": false,
+      "destination_pair_margins": [
+        1.0,
+        0.0
+      ],
+      "object_margin_correct": false,
+      "object_pair_margins": [
+        0.5,
+        0.0
+      ],
+      "shared_init_id": "init_cd28ad2f294bd19f",
+      "split": "heldout",
+      "white_right_destination_error_m": 0.583923682316906,
+      "white_right_destination_in_mask": false,
+      "white_right_object_in_mask": false
+    },
+    {
+      "destination_margin_correct": false,
+      "destination_pair_margins": [
+        1.0,
+        0.0
+      ],
+      "object_margin_correct": false,
+      "object_pair_margins": [
+        1.0,
+        0.0
+      ],
+      "shared_init_id": "init_f1edd3671d78a7ea",
+      "split": "heldout",
+      "white_right_destination_error_m": 0.6041597903222217,
+      "white_right_destination_in_mask": false,
+      "white_right_object_in_mask": false
+    },
+    {
+      "destination_margin_correct": false,
+      "destination_pair_margins": [
+        1.0,
+        0.0
+      ],
+      "object_margin_correct": true,
+      "object_pair_margins": [
+        1.0,
+        1.0
+      ],
+      "shared_init_id": "init_f3c100bf0414c40a",
+      "split": "heldout",
+      "white_right_destination_error_m": 0.5810067737095725,
+      "white_right_destination_in_mask": false,
+      "white_right_object_in_mask": true
+    },
+    {
+      "destination_margin_correct": false,
+      "destination_pair_margins": [
+        1.0,
+        0.0
+      ],
+      "object_margin_correct": false,
+      "object_pair_margins": [
+        1.0,
+        0.5
+      ],
+      "shared_init_id": "init_fe8d8b77d59c3ff3",
+      "split": "heldout",
+      "white_right_destination_error_m": 0.5835465019930405,
+      "white_right_destination_in_mask": false,
+      "white_right_object_in_mask": false
+    },
+    {
+      "destination_margin_correct": false,
+      "destination_pair_margins": [
+        1.0,
+        0.0
+      ],
+      "object_margin_correct": false,
+      "object_pair_margins": [
+        1.0,
+        0.5
+      ],
+      "shared_init_id": "init_fe97ba4bcbe0598b",
+      "split": "heldout",
+      "white_right_destination_error_m": 0.584011296974694,
+      "white_right_destination_in_mask": false,
+      "white_right_object_in_mask": false
+    }
+  ],
+  "point_head": "/vepfs-mlp2/c20250405/400040/transfer/vla_attention/vla_workspace/results/K4_lite/T4b/goal17_compositional_grounding_20261108/train/G3-MARGIN/point_head.pt",
+  "point_head_sha256": "f3b1124c26fde06600cbd4677f53cdbc60531a89a0571f93916b241a56075077",
+  "predicted_sidecar": "/vepfs-mlp2/c20250405/400040/transfer/vla_attention/vla_workspace/results/K4_lite/T4b/goal17_compositional_grounding_20261108/eval/grounding/G3-MARGIN/predicted_points.jsonl",
+  "predicted_sidecar_sha256": "5de42b3ed7ae2dd493ca7edafd96d4a53e47513951801eddeeb161eb62d222e3",
+  "schema": "goal17-grounding-eval-v1",
+  "selected_init_count": 15,
+  "sidecar": "/vepfs-mlp2/c20250405/400040/transfer/vla_attention/vla_workspace/results/K4_lite/T0c_audit/sidecar_v2/manifest.jsonl",
+  "sidecar_sha256": "5de42b3ed7ae2dd493ca7edafd96d4a53e47513951801eddeeb161eb62d222e3",
+  "status": "FAIL",
+  "white_right_row_count": 15
+}

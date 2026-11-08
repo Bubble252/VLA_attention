@@ -2,7 +2,26 @@
 
 **日期**：2026-11-08<br>
 **上游**：[Goal16](../experiments/Goal16-reguide-rebinding-20261108/05_pilot_result.md)、[67](67_dependency_repair_and_reguide_pivot_20261108.md)<br>
-**状态**：`PROTOCOL_DRAFTED_BEFORE_MEASUREMENT`
+**状态**：`COMPLETED_PASS`（见 [06_result.md](../../experiments/Goal17-compositional-grounding-20261108/06_result.md)）
+
+## Research Contract
+
+```yaml
+autoresearch:
+  required: true
+  triggers:
+    - gate_fail_twice
+    - no_metric_movement_after_3_fixes
+    - heldout_collapse
+    - seed_noise_ambiguous
+  ledger: research/LEDGER.jsonl
+  blockers_dir: research/blockers/
+  reading_dir: references/paper_reading/
+  max_outer_loops: 3
+  check_command: python scripts/check_research_ledger.py --goal Goal17 --goal-doc doc/vla_next/68_goal17_compositional_grounding_20261108.md --strict
+```
+
+Goal17 是探索型 goal，`required: true`。触发 blocker 时必须走 autoresearch loop；如果连续失败，允许 outer loop 调研并重选 grounding 方案，但不得违反 eval 隔离、no oracle fallback、不得用 validation/eval 调参。
 
 ## 1. 为什么做 Goal17
 
@@ -183,6 +202,8 @@ Goal17 的执行端要保留两个 arm：
 ```text
 你现在执行 Goal17：Compositional grounding repair + simplified R-PRED。
 
+autoresearch: required
+
 先读：
 - doc/vla_next/68_goal17_compositional_grounding_20261108.md
 - doc/vla_next/67_dependency_repair_and_reguide_pivot_20261108.md
@@ -197,18 +218,29 @@ Goal17 的执行端要保留两个 arm：
 4. 必须实现 2×2 counterfactual 四宫格：red/white × left/right；图像不变，只换 instruction 和标签。
 5. 必须实现 counterfactual margin loss：左右 destination 必须分开，红白 object 必须分开；没有 margin 的 baseline 也要跑。
 6. 同时跑 Track D（4 prompt 训练，episode-held-out）和 Track C（3 prompt 训练，white_right held-out）；主 Gate 只看 Track D，Track C 只做诊断。
-7. 先跑 oracle destination + 简化 xy/release wrapper，确认 release 逻辑；再跑 predicted destination。
-8. 如果 Track D grounding 仍 <12/15，停止 point-head 线，转 VLM open-vocab/detector；不要继续加 hand-back 模块。
-9. 所有结果必须报告 destination error、object in-mask、counterfactual margin、official success、released success、wrong-destination、动作幅度。
-10. 最后更新 result md、提交并 push；禁止 git add -A。
+7. 先跑 oracle destination + 简化 xy/release wrapper（E1），确认 release 逻辑；再跑 predicted destination（E1）。
+8. 保留 E2：predicted destination + full 3D hand-back（Goal16 R-GEO 对照）；不要因为 E1 更简单就提前丢掉 3D。
+9. 如果 Track D grounding 仍 <12/15，停止 point-head 线，转 VLM open-vocab/detector；不要继续加 hand-back 模块。
+10. 所有结果必须报告 destination error、object in-mask、counterfactual margin、official success、released success、wrong-destination、动作幅度。
+11. 必须使用 autoresearch skill：
+    - inner loop：每个 hypothesis 记录 experiment、metric、result、decision；
+    - outer loop：连续失败时允许调研论文并重选 grounding 方案；
+    - 每次触发 blocker 都要写 research/blockers/ 和 research/LEDGER.jsonl；
+    - decision 只能是 continue / pivot / stop。
+12. 完成前必须运行：
+    python scripts/check_research_ledger.py --goal Goal17 --goal-doc doc/vla_next/68_goal17_compositional_grounding_20261108.md --strict
+    检查不通过不能 commit。
+13. 最后更新 result md、提交并 push；禁止 git add -A。
 
 执行顺序：
 - 先写 Run Contract；
 - 构造 2×2 训练特征；
 - 跑 no-margin baseline；
 - 跑 margin 版；
-- 先 oracle destination + 简化 wrapper；
-- 再 predicted destination；
+- 先 oracle destination + E1 简化 wrapper；
+- 再 predicted destination + E1；
+- grounding Gate 通过后，跑 predicted destination + E2 full 3D 对照；
 - 按 G-A/G-B/G-C 判读；
-- 失败就按裁决表停线或转 VLM open-vocab。
+- 失败就按裁决表停线或转 VLM open-vocab；
+- 写 result md、ledger、运行 checker、commit/push。
 ```

@@ -1,0 +1,92 @@
+{
+  "version": "goal17_compositional_grounding_v1",
+  "date": "2026-11-08",
+  "status": "frozen_before_measurement",
+  "purpose": "Repair held-out white_right destination grounding with same-image 2x2 counterfactual supervision, then test predicted destination in the simplified E1 wrapper.",
+  "workspace_root": "/vepfs-mlp2/c20250405/400040/transfer/vla_attention",
+  "repo_root": "/vepfs-mlp2/c20250405/400040/transfer/vla_attention/vla_workspace/repo/starvla_55_20261030/repo",
+  "qwen_point_config": "/vepfs-mlp2/c20250405/400040/transfer/vla_attention/vla_workspace/repo/starvla_55_20261030/repo/examples/simBenchmarks/LIBERO/train_files/star105/starvla_qwengr00t_M3_point.yaml",
+  "source_train_manifest": "/vepfs-mlp2/c20250405/400040/transfer/vla_attention/results/star105_goal10p5_20261105/point_manifests/train_sidecar_v1e/point_manifest.jsonl",
+  "source_train_manifest_sha256": "815c7107c68afad457e6b2e8fbc99c9e1c8e9a9c9b6b149217776c989966c2c9",
+  "source_val_manifest": "/vepfs-mlp2/c20250405/400040/transfer/vla_attention/results/star105_goal10p5_20261105/point_manifests/validation_sidecar_v1/point_manifest.jsonl",
+  "source_val_manifest_sha256": "9a3a508d063b36a11cda9331753513f5019ada62a19ba2de6ab96f20fab068bf",
+  "source_train_index": "/vepfs-mlp2/c20250405/400040/transfer/vla_attention/results/star105_goal10p5_20261105/point_head/features/train/index.jsonl",
+  "source_val_index": "/vepfs-mlp2/c20250405/400040/transfer/vla_attention/results/star105_goal10p5_20261105/point_head/features/val/index.jsonl",
+  "eval_manifest": "/vepfs-mlp2/c20250405/400040/transfer/vla_attention/vla_workspace/data/jgate_c1/counterfactual_20261027/manifest.jsonl",
+  "eval_manifest_sha256": "e9564ca9aef800e618e3fdb5d144892eabe9471815bbd24bae3140583946f45e",
+  "eval_mask_sidecar": "/vepfs-mlp2/c20250405/400040/transfer/vla_attention/vla_workspace/results/K4_lite/T0c_audit/sidecar_v2/manifest.jsonl",
+  "eval_mask_sidecar_summary": "/vepfs-mlp2/c20250405/400040/transfer/vla_attention/vla_workspace/results/K4_lite/T0c_audit/sidecar_v2/summary.json",
+  "baseline_point_head": "/vepfs-mlp2/c20250405/400040/transfer/vla_attention/results/star105_goal10p5_20261105/point_head/pilot_5000/point_head.pt",
+  "baseline_point_head_sha256": "693f0dd8086a4d64cd4f1064a7f4d5c1f934f0914123df5478cdc1f86815fce7",
+  "output_root": "/vepfs-mlp2/c20250405/400040/transfer/vla_attention/vla_workspace/results/K4_lite/T4b/goal17_compositional_grounding_20261108",
+  "gpu": 1,
+  "oracle_fallback_allowed": false,
+  "training_scope": "grounding_point_head_only",
+  "eval_init_count": 15,
+  "calibration_init_ids": [
+    "init_0e94a4e6b9622c6b",
+    "init_2edf49999eb35566",
+    "init_3500df19a4d3b5a1"
+  ],
+  "confirmation_init_count": 12,
+  "seed": 17,
+  "prompts": {
+    "D": ["red_left", "red_right", "white_left", "white_right"],
+    "C": ["red_left", "red_right", "white_left"]
+  },
+  "training": {
+    "steps": 5000,
+    "group_batch_size": 4,
+    "eval_batch_size": 32,
+    "hidden_dim": 3584,
+    "num_heads": 8,
+    "num_layers": 2,
+    "lr": 0.0001,
+    "weight_decay": 0.01,
+    "warmup": 200,
+    "margin_destination": 0.30,
+    "margin_object": 0.10,
+    "lambda_destination": 0.5,
+    "lambda_object": 0.5
+  },
+  "arms": {
+    "G4-NO-MARGIN": {
+      "track": "D",
+      "prompts": ["red_left", "red_right", "white_left", "white_right"],
+      "lambda_destination": 0.0,
+      "lambda_object": 0.0
+    },
+    "G4-MARGIN": {
+      "track": "D",
+      "prompts": ["red_left", "red_right", "white_left", "white_right"],
+      "lambda_destination": 0.5,
+      "lambda_object": 0.5
+    },
+    "G3-MARGIN": {
+      "track": "C",
+      "prompts": ["red_left", "red_right", "white_left"],
+      "lambda_destination": 0.5,
+      "lambda_object": 0.5
+    },
+    "G3-BASE": {
+      "track": "C",
+      "prompts": ["red_left", "red_right", "white_left"],
+      "checkpoint": "/vepfs-mlp2/c20250405/400040/transfer/vla_attention/results/star105_goal10p5_20261105/point_head/pilot_5000/point_head.pt",
+      "note": "Existing Goal16 baseline; reference only, not retrained."
+    }
+  },
+  "gate": {
+    "grounding_init_denominator": 15,
+    "destination_error_threshold_m": 0.15,
+    "destination_correct_min": 12,
+    "object_in_mask_min": 12,
+    "destination_margin_correct_min": 12,
+    "object_margin_correct_min": 12,
+    "execution_r_pred_success_min": 1,
+    "execution_r_pred_minus_b0_min": 1,
+    "execution_released_success_min": 1,
+    "no_errors": true,
+    "no_nan": true,
+    "no_flew_out": true
+  }
+}

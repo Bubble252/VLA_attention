@@ -1,0 +1,210 @@
+{
+  "schema": "goal17-point-head-training-v1",
+  "status": "complete",
+  "train_rows": 3056,
+  "train_groups": 764,
+  "val_rows": 354,
+  "prompts": [
+    "red_left",
+    "red_right",
+    "white_left"
+  ],
+  "steps": 5000,
+  "group_batch_size": 4,
+  "device": "cuda",
+  "checkpoint": "/vepfs-mlp2/c20250405/400040/transfer/vla_attention/vla_workspace/results/K4_lite/T4b/goal17_compositional_grounding_20261108/train/G3-MARGIN/point_head.pt",
+  "gate_checkpoint": "final_model",
+  "margin": {
+    "destination": 0.3,
+    "object": 0.1,
+    "lambda_destination": 0.5,
+    "lambda_object": 0.5
+  },
+  "final_metrics": {
+    "num_rows": 354,
+    "point_l1_px": {
+      "all": 2.4298980236053467,
+      "object": 2.844744920730591,
+      "destination": 2.0150492191314697
+    },
+    "point_in_mask": 0.9392655491828918,
+    "object_pair_count": 118,
+    "object_margin_mean": 0.9533898305084746,
+    "destination_pair_count": 118,
+    "destination_margin_mean": 0.940677966101695,
+    "step": 5000,
+    "train_loss": 0.005987672135233879
+  },
+  "best_metrics": {
+    "num_rows": 354,
+    "point_l1_px": {
+      "all": 2.4298980236053467,
+      "object": 2.844744920730591,
+      "destination": 2.0150492191314697
+    },
+    "point_in_mask": 0.9392655491828918,
+    "object_pair_count": 118,
+    "object_margin_mean": 0.9533898305084746,
+    "destination_pair_count": 118,
+    "destination_margin_mean": 0.940677966101695,
+    "step": 5000,
+    "train_loss": 0.005987672135233879
+  },
+  "history": [
+    {
+      "num_rows": 354,
+      "point_l1_px": {
+        "all": 26.735149383544922,
+        "object": 38.076908111572266,
+        "destination": 15.393391609191895
+      },
+      "point_in_mask": 0.2330508530139923,
+      "object_pair_count": 118,
+      "object_margin_mean": -0.07627118644067797,
+      "destination_pair_count": 118,
+      "destination_margin_mean": 0.1694915254237288,
+      "step": 500,
+      "train_loss": 0.11299651116132736
+    },
+    {
+      "num_rows": 354,
+      "point_l1_px": {
+        "all": 26.712636947631836,
+        "object": 26.517948150634766,
+        "destination": 26.907333374023438
+      },
+      "point_in_mask": 0.16384181380271912,
+      "object_pair_count": 118,
+      "object_margin_mean": 0.15677966101694915,
+      "destination_pair_count": 118,
+      "destination_margin_mean": 0.07627118644067797,
+      "step": 1000,
+      "train_loss": 0.11238859593868256
+    },
+    {
+      "num_rows": 354,
+      "point_l1_px": {
+        "all": 15.656760215759277,
+        "object": 26.59796714782715,
+        "destination": 4.715550422668457
+      },
+      "point_in_mask": 0.637005627155304,
+      "object_pair_count": 118,
+      "object_margin_mean": 0.07203389830508475,
+      "destination_pair_count": 118,
+      "destination_margin_mean": 0.9194915254237288,
+      "step": 1500,
+      "train_loss": 0.08050140738487244
+    },
+    {
+      "num_rows": 354,
+      "point_l1_px": {
+        "all": 7.319372653961182,
+        "object": 10.414258003234863,
+        "destination": 4.22448205947876
+      },
+      "point_in_mask": 0.7288135886192322,
+      "object_pair_count": 118,
+      "object_margin_mean": 0.6567796610169492,
+      "destination_pair_count": 118,
+      "destination_margin_mean": 0.8686440677966102,
+      "step": 2000,
+      "train_loss": 0.03218156099319458
+    },
+    {
+      "num_rows": 354,
+      "point_l1_px": {
+        "all": 3.6280431747436523,
+        "object": 4.5068678855896,
+        "destination": 2.7492177486419678
+      },
+      "point_in_mask": 0.9110169410705566,
+      "object_pair_count": 118,
+      "object_margin_mean": 0.902542372881356,
+      "destination_pair_count": 118,
+      "destination_margin_mean": 0.9194915254237288,
+      "step": 2500,
+      "train_loss": 0.012581615708768368
+    },
+    {
+      "num_rows": 354,
+      "point_l1_px": {
+        "all": 3.766587495803833,
+        "object": 4.63777494430542,
+        "destination": 2.8953986167907715
+      },
+      "point_in_mask": 0.8940678238868713,
+      "object_pair_count": 118,
+      "object_margin_mean": 0.8940677966101694,
+      "destination_pair_count": 118,
+      "destination_margin_mean": 0.9152542372881356,
+      "step": 3000,
+      "train_loss": 0.014939493499696255
+    },
+    {
+      "num_rows": 354,
+      "point_l1_px": {
+        "all": 2.7397537231445312,
+        "object": 3.2507317066192627,
+        "destination": 2.2287769317626953
+      },
+      "point_in_mask": 0.9406779408454895,
+      "object_pair_count": 118,
+      "object_margin_mean": 0.9533898305084746,
+      "destination_pair_count": 118,
+      "destination_margin_mean": 0.9533898305084746,
+      "step": 3500,
+      "train_loss": 0.007507734000682831
+    },
+    {
+      "num_rows": 354,
+      "point_l1_px": {
+        "all": 2.67612886428833,
+        "object": 3.019315481185913,
+        "destination": 2.3329434394836426
+      },
+      "point_in_mask": 0.9420903921127319,
+      "object_pair_count": 118,
+      "object_margin_mean": 0.9449152542372882,
+      "destination_pair_count": 118,
+      "destination_margin_mean": 0.940677966101695,
+      "step": 4000,
+      "train_loss": 0.006406296044588089
+    },
+    {
+      "num_rows": 354,
+      "point_l1_px": {
+        "all": 2.4712865352630615,
+        "object": 2.89815616607666,
+        "destination": 2.044416666030884
+      },
+      "point_in_mask": 0.9420903921127319,
+      "object_pair_count": 118,
+      "object_margin_mean": 0.9576271186440678,
+      "destination_pair_count": 118,
+      "destination_margin_mean": 0.9491525423728814,
+      "step": 4500,
+      "train_loss": 0.004051877651363611
+    },
+    {
+      "num_rows": 354,
+      "point_l1_px": {
+        "all": 2.4298980236053467,
+        "object": 2.844744920730591,
+        "destination": 2.0150492191314697
+      },
+      "point_in_mask": 0.9392655491828918,
+      "object_pair_count": 118,
+      "object_margin_mean": 0.9533898305084746,
+      "destination_pair_count": 118,
+      "destination_margin_mean": 0.940677966101695,
+      "step": 5000,
+      "train_loss": 0.005987672135233879
+    }
+  ],
+  "notes": [
+    "Only PointQueryHead parameters are trained; Qwen and the P4 adapter are frozen.",
+    "Margin pairs are same-image prompt interventions, not simulator-success labels.",
+    "The final checkpoint, not best-on-validation, is used for the Goal17 Gate."
+  ]
+}

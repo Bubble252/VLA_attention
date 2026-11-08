@@ -1,0 +1,2195 @@
+{
+  "arms_order": [
+    "B0",
+    "E1-ORACLE",
+    "E1-PRED"
+  ],
+  "audit": "e1_e2_predicted_destination",
+  "by_arm": {
+    "B0": {
+      "action_change_max": {
+        "count": 15,
+        "max": 0.0,
+        "min": 0.0
+      },
+      "destination_reached_correct": 0,
+      "episodes": 15,
+      "errors": 0,
+      "evaluation_complete": 15,
+      "final_distance_to_plate_2": {
+        "init_0e94a4e6b9622c6b": 0.4766988091611091,
+        "init_2edf49999eb35566": 0.5725517658624306,
+        "init_3500df19a4d3b5a1": 0.5887183645794608,
+        "init_530c50ee73587af4": 0.6432725909870112,
+        "init_7206d9b0bbf0705e": 0.6059364173743431,
+        "init_9940fb101f2b0000": 0.5624558509415757,
+        "init_a2ab436f335d9f7b": 0.6395549150550873,
+        "init_a2e4d7bc32a0db02": 0.588676217134675,
+        "init_bfd0c6484dd671d0": 0.6069810108082015,
+        "init_c6e1e9cd7bc29f86": 0.5582199241251325,
+        "init_cd28ad2f294bd19f": 0.5665923754145794,
+        "init_f1edd3671d78a7ea": 0.48872695144555856,
+        "init_f3c100bf0414c40a": 0.5722994150801816,
+        "init_fe8d8b77d59c3ff3": 0.5994736422691015,
+        "init_fe97ba4bcbe0598b": 0.602369915719619
+      },
+      "final_target_placement": 0,
+      "final_target_x_error_m": {
+        "count": 15,
+        "max": 0.13283999783749534,
+        "min": 0.003441502307806016
+      },
+      "final_target_xy_m": {
+        "count": 15,
+        "max": 0.6408548880724786,
+        "min": 0.47518039670078865
+      },
+      "final_target_y_error_m": {
+        "count": 15,
+        "max": 0.6404198492689186,
+        "min": 0.47030154330493645
+      },
+      "final_target_z_diff_m": {
+        "count": 15,
+        "max": 0.05571928524984371,
+        "min": 0.0032212353972337904
+      },
+      "final_xy_above_0033": 15,
+      "first_destination_values": {
+        "None": 1,
+        "plate_1": 14
+      },
+      "gate_margin_min_m": {
+        "count": 0,
+        "max": null,
+        "min": null
+      },
+      "gate_margin_min_steps": {
+        "init_0e94a4e6b9622c6b": null,
+        "init_2edf49999eb35566": null,
+        "init_3500df19a4d3b5a1": null,
+        "init_530c50ee73587af4": null,
+        "init_7206d9b0bbf0705e": null,
+        "init_9940fb101f2b0000": null,
+        "init_a2ab436f335d9f7b": null,
+        "init_a2e4d7bc32a0db02": null,
+        "init_bfd0c6484dd671d0": null,
+        "init_c6e1e9cd7bc29f86": null,
+        "init_cd28ad2f294bd19f": null,
+        "init_f1edd3671d78a7ea": null,
+        "init_f3c100bf0414c40a": null,
+        "init_fe8d8b77d59c3ff3": null,
+        "init_fe97ba4bcbe0598b": null
+      },
+      "gripper_action_change_max": {
+        "count": 15,
+        "max": 0.0,
+        "min": 0.0
+      },
+      "handback_seen": 0,
+      "hold_only_success": 0,
+      "lateral_action_change_max": {
+        "count": 0,
+        "max": null,
+        "min": null
+      },
+      "legacy_target_zone_reached_any": 0,
+      "min_distance_to_plate_2": {
+        "count": 15,
+        "max": 0.49257815426870505,
+        "min": 0.4280560364599235
+      },
+      "min_legacy_3d_distance_m": {
+        "count": 15,
+        "max": 0.49257815426870505,
+        "min": 0.4280560364599235
+      },
+      "min_target_xy_m": {
+        "count": 15,
+        "max": 0.49255618546730356,
+        "min": 0.4280279572653431
+      },
+      "min_z_gap_m": {
+        "count": 0,
+        "max": null,
+        "min": null
+      },
+      "nan_count": 0,
+      "no_destination": 1,
+      "object_flew_out": 0,
+      "object_retained": 15,
+      "official_success_zone_reached_any": 0,
+      "post_done_settle_error_count": 0,
+      "post_done_settle_steps": {
+        "init_0e94a4e6b9622c6b": null,
+        "init_2edf49999eb35566": null,
+        "init_3500df19a4d3b5a1": null,
+        "init_530c50ee73587af4": null,
+        "init_7206d9b0bbf0705e": null,
+        "init_9940fb101f2b0000": null,
+        "init_a2ab436f335d9f7b": null,
+        "init_a2e4d7bc32a0db02": null,
+        "init_bfd0c6484dd671d0": null,
+        "init_c6e1e9cd7bc29f86": null,
+        "init_cd28ad2f294bd19f": null,
+        "init_f1edd3671d78a7ea": null,
+        "init_f3c100bf0414c40a": null,
+        "init_fe8d8b77d59c3ff3": null,
+        "init_fe97ba4bcbe0598b": null
+      },
+      "rearm_total": 0,
+      "release_count": 0,
+      "release_steps": {
+        "init_0e94a4e6b9622c6b": null,
+        "init_2edf49999eb35566": null,
+        "init_3500df19a4d3b5a1": null,
+        "init_530c50ee73587af4": null,
+        "init_7206d9b0bbf0705e": null,
+        "init_9940fb101f2b0000": null,
+        "init_a2ab436f335d9f7b": null,
+        "init_a2e4d7bc32a0db02": null,
+        "init_bfd0c6484dd671d0": null,
+        "init_c6e1e9cd7bc29f86": null,
+        "init_cd28ad2f294bd19f": null,
+        "init_f1edd3671d78a7ea": null,
+        "init_f3c100bf0414c40a": null,
+        "init_fe8d8b77d59c3ff3": null,
+        "init_fe97ba4bcbe0598b": null
+      },
+      "release_trigger_steps": {
+        "init_0e94a4e6b9622c6b": null,
+        "init_2edf49999eb35566": null,
+        "init_3500df19a4d3b5a1": null,
+        "init_530c50ee73587af4": null,
+        "init_7206d9b0bbf0705e": null,
+        "init_9940fb101f2b0000": null,
+        "init_a2ab436f335d9f7b": null,
+        "init_a2e4d7bc32a0db02": null,
+        "init_bfd0c6484dd671d0": null,
+        "init_c6e1e9cd7bc29f86": null,
+        "init_cd28ad2f294bd19f": null,
+        "init_f1edd3671d78a7ea": null,
+        "init_f3c100bf0414c40a": null,
+        "init_fe8d8b77d59c3ff3": null,
+        "init_fe97ba4bcbe0598b": null
+      },
+      "release_xy_after": {
+        "init_0e94a4e6b9622c6b": null,
+        "init_2edf49999eb35566": null,
+        "init_3500df19a4d3b5a1": null,
+        "init_530c50ee73587af4": null,
+        "init_7206d9b0bbf0705e": null,
+        "init_9940fb101f2b0000": null,
+        "init_a2ab436f335d9f7b": null,
+        "init_a2e4d7bc32a0db02": null,
+        "init_bfd0c6484dd671d0": null,
+        "init_c6e1e9cd7bc29f86": null,
+        "init_cd28ad2f294bd19f": null,
+        "init_f1edd3671d78a7ea": null,
+        "init_f3c100bf0414c40a": null,
+        "init_fe8d8b77d59c3ff3": null,
+        "init_fe97ba4bcbe0598b": null
+      },
+      "release_xy_before": {
+        "init_0e94a4e6b9622c6b": null,
+        "init_2edf49999eb35566": null,
+        "init_3500df19a4d3b5a1": null,
+        "init_530c50ee73587af4": null,
+        "init_7206d9b0bbf0705e": null,
+        "init_9940fb101f2b0000": null,
+        "init_a2ab436f335d9f7b": null,
+        "init_a2e4d7bc32a0db02": null,
+        "init_bfd0c6484dd671d0": null,
+        "init_c6e1e9cd7bc29f86": null,
+        "init_cd28ad2f294bd19f": null,
+        "init_f1edd3671d78a7ea": null,
+        "init_f3c100bf0414c40a": null,
+        "init_fe8d8b77d59c3ff3": null,
+        "init_fe97ba4bcbe0598b": null
+      },
+      "release_z_after": {
+        "init_0e94a4e6b9622c6b": null,
+        "init_2edf49999eb35566": null,
+        "init_3500df19a4d3b5a1": null,
+        "init_530c50ee73587af4": null,
+        "init_7206d9b0bbf0705e": null,
+        "init_9940fb101f2b0000": null,
+        "init_a2ab436f335d9f7b": null,
+        "init_a2e4d7bc32a0db02": null,
+        "init_bfd0c6484dd671d0": null,
+        "init_c6e1e9cd7bc29f86": null,
+        "init_cd28ad2f294bd19f": null,
+        "init_f1edd3671d78a7ea": null,
+        "init_f3c100bf0414c40a": null,
+        "init_fe8d8b77d59c3ff3": null,
+        "init_fe97ba4bcbe0598b": null
+      },
+      "release_z_before": {
+        "init_0e94a4e6b9622c6b": null,
+        "init_2edf49999eb35566": null,
+        "init_3500df19a4d3b5a1": null,
+        "init_530c50ee73587af4": null,
+        "init_7206d9b0bbf0705e": null,
+        "init_9940fb101f2b0000": null,
+        "init_a2ab436f335d9f7b": null,
+        "init_a2e4d7bc32a0db02": null,
+        "init_bfd0c6484dd671d0": null,
+        "init_c6e1e9cd7bc29f86": null,
+        "init_cd28ad2f294bd19f": null,
+        "init_f1edd3671d78a7ea": null,
+        "init_f3c100bf0414c40a": null,
+        "init_fe8d8b77d59c3ff3": null,
+        "init_fe97ba4bcbe0598b": null
+      },
+      "released_placement": 0,
+      "released_placement_last_available": 0,
+      "released_success": 0,
+      "settle_unavailable": 0,
+      "success": 0,
+      "target_destination_correct": 0,
+      "target_not_reached": 0,
+      "target_object_correct": 0,
+      "target_zone_reached_any": 0,
+      "transport_started": 0,
+      "wrong_destination": 14,
+      "x_action_change_max": {
+        "count": 15,
+        "max": 0.0,
+        "min": 0.0
+      },
+      "y_action_change_max": {
+        "count": 15,
+        "max": 0.0,
+        "min": 0.0
+      },
+      "z_gate_enter_steps": {
+        "init_0e94a4e6b9622c6b": null,
+        "init_2edf49999eb35566": null,
+        "init_3500df19a4d3b5a1": null,
+        "init_530c50ee73587af4": null,
+        "init_7206d9b0bbf0705e": null,
+        "init_9940fb101f2b0000": null,
+        "init_a2ab436f335d9f7b": null,
+        "init_a2e4d7bc32a0db02": null,
+        "init_bfd0c6484dd671d0": null,
+        "init_c6e1e9cd7bc29f86": null,
+        "init_cd28ad2f294bd19f": null,
+        "init_f1edd3671d78a7ea": null,
+        "init_f3c100bf0414c40a": null,
+        "init_fe8d8b77d59c3ff3": null,
+        "init_fe97ba4bcbe0598b": null
+      },
+      "z_gate_streak_max": {
+        "init_0e94a4e6b9622c6b": null,
+        "init_2edf49999eb35566": null,
+        "init_3500df19a4d3b5a1": null,
+        "init_530c50ee73587af4": null,
+        "init_7206d9b0bbf0705e": null,
+        "init_9940fb101f2b0000": null,
+        "init_a2ab436f335d9f7b": null,
+        "init_a2e4d7bc32a0db02": null,
+        "init_bfd0c6484dd671d0": null,
+        "init_c6e1e9cd7bc29f86": null,
+        "init_cd28ad2f294bd19f": null,
+        "init_f1edd3671d78a7ea": null,
+        "init_f3c100bf0414c40a": null,
+        "init_fe8d8b77d59c3ff3": null,
+        "init_fe97ba4bcbe0598b": null
+      }
+    },
+    "E1-ORACLE": {
+      "action_change_max": {
+        "count": 15,
+        "max": 1.0703125,
+        "min": 0.765625
+      },
+      "destination_reached_correct": 10,
+      "episodes": 15,
+      "errors": 0,
+      "evaluation_complete": 15,
+      "final_distance_to_plate_2": {
+        "init_0e94a4e6b9622c6b": 0.03641423067202972,
+        "init_2edf49999eb35566": 0.04699838245635242,
+        "init_3500df19a4d3b5a1": 0.03821897026628085,
+        "init_530c50ee73587af4": 0.02853865139920223,
+        "init_7206d9b0bbf0705e": 0.028825903593246764,
+        "init_9940fb101f2b0000": 0.035868886757928306,
+        "init_a2ab436f335d9f7b": 0.030075277932705348,
+        "init_a2e4d7bc32a0db02": 0.02549850978340242,
+        "init_bfd0c6484dd671d0": 0.029243202021602854,
+        "init_c6e1e9cd7bc29f86": 0.4928615052709931,
+        "init_cd28ad2f294bd19f": 0.02982578101388341,
+        "init_f1edd3671d78a7ea": 0.4704752429088932,
+        "init_f3c100bf0414c40a": 0.03430480482872932,
+        "init_fe8d8b77d59c3ff3": 0.5994736422691016,
+        "init_fe97ba4bcbe0598b": 0.030455880932186586
+      },
+      "final_target_placement": 7,
+      "final_target_x_error_m": {
+        "count": 15,
+        "max": 0.14429027366538394,
+        "min": 0.0022942163967513626
+      },
+      "final_target_xy_m": {
+        "count": 15,
+        "max": 0.5994649876497362,
+        "min": 0.020839051531806402
+      },
+      "final_target_y_error_m": {
+        "count": 15,
+        "max": 0.5993628202040178,
+        "min": 0.017725458821725326
+      },
+      "final_target_z_diff_m": {
+        "count": 15,
+        "max": 0.042125786458751036,
+        "min": 0.002130099038663291
+      },
+      "final_xy_above_0033": 4,
+      "first_destination_values": {
+        "None": 2,
+        "plate_1": 3,
+        "plate_2": 10
+      },
+      "gate_margin_min_m": {
+        "count": 0,
+        "max": null,
+        "min": null
+      },
+      "gate_margin_min_steps": {
+        "init_0e94a4e6b9622c6b": null,
+        "init_2edf49999eb35566": null,
+        "init_3500df19a4d3b5a1": null,
+        "init_530c50ee73587af4": null,
+        "init_7206d9b0bbf0705e": null,
+        "init_9940fb101f2b0000": null,
+        "init_a2ab436f335d9f7b": null,
+        "init_a2e4d7bc32a0db02": null,
+        "init_bfd0c6484dd671d0": null,
+        "init_c6e1e9cd7bc29f86": null,
+        "init_cd28ad2f294bd19f": null,
+        "init_f1edd3671d78a7ea": null,
+        "init_f3c100bf0414c40a": null,
+        "init_fe8d8b77d59c3ff3": null,
+        "init_fe97ba4bcbe0598b": null
+      },
+      "gripper_action_change_max": {
+        "count": 15,
+        "max": 1.0703125,
+        "min": 0.765625
+      },
+      "handback_seen": 0,
+      "hold_only_success": 3,
+      "lateral_action_change_max": {
+        "count": 0,
+        "max": null,
+        "min": null
+      },
+      "legacy_target_zone_reached_any": 12,
+      "min_distance_to_plate_2": {
+        "count": 15,
+        "max": 0.4925909558367494,
+        "min": 0.02549850978340242
+      },
+      "min_legacy_3d_distance_m": {
+        "count": 15,
+        "max": 0.4925909558367494,
+        "min": 0.02549850978340242
+      },
+      "min_target_xy_m": {
+        "count": 15,
+        "max": 0.4925665098835451,
+        "min": 0.020839051531806402
+      },
+      "min_z_gap_m": {
+        "count": 0,
+        "max": null,
+        "min": null
+      },
+      "nan_count": 0,
+      "no_destination": 2,
+      "object_flew_out": 0,
+      "object_retained": 15,
+      "official_success_zone_reached_any": 10,
+      "post_done_settle_error_count": 0,
+      "post_done_settle_steps": {
+        "init_0e94a4e6b9622c6b": null,
+        "init_2edf49999eb35566": null,
+        "init_3500df19a4d3b5a1": null,
+        "init_530c50ee73587af4": null,
+        "init_7206d9b0bbf0705e": null,
+        "init_9940fb101f2b0000": null,
+        "init_a2ab436f335d9f7b": null,
+        "init_a2e4d7bc32a0db02": null,
+        "init_bfd0c6484dd671d0": null,
+        "init_c6e1e9cd7bc29f86": null,
+        "init_cd28ad2f294bd19f": null,
+        "init_f1edd3671d78a7ea": null,
+        "init_f3c100bf0414c40a": null,
+        "init_fe8d8b77d59c3ff3": null,
+        "init_fe97ba4bcbe0598b": null
+      },
+      "rearm_total": 4,
+      "release_count": 7,
+      "release_steps": {
+        "init_0e94a4e6b9622c6b": 202,
+        "init_2edf49999eb35566": 199,
+        "init_3500df19a4d3b5a1": null,
+        "init_530c50ee73587af4": 233,
+        "init_7206d9b0bbf0705e": 218,
+        "init_9940fb101f2b0000": 322,
+        "init_a2ab436f335d9f7b": null,
+        "init_a2e4d7bc32a0db02": 228,
+        "init_bfd0c6484dd671d0": null,
+        "init_c6e1e9cd7bc29f86": null,
+        "init_cd28ad2f294bd19f": null,
+        "init_f1edd3671d78a7ea": null,
+        "init_f3c100bf0414c40a": null,
+        "init_fe8d8b77d59c3ff3": null,
+        "init_fe97ba4bcbe0598b": 236
+      },
+      "release_trigger_steps": {
+        "init_0e94a4e6b9622c6b": null,
+        "init_2edf49999eb35566": null,
+        "init_3500df19a4d3b5a1": null,
+        "init_530c50ee73587af4": null,
+        "init_7206d9b0bbf0705e": null,
+        "init_9940fb101f2b0000": null,
+        "init_a2ab436f335d9f7b": null,
+        "init_a2e4d7bc32a0db02": null,
+        "init_bfd0c6484dd671d0": null,
+        "init_c6e1e9cd7bc29f86": null,
+        "init_cd28ad2f294bd19f": null,
+        "init_f1edd3671d78a7ea": null,
+        "init_f3c100bf0414c40a": null,
+        "init_fe8d8b77d59c3ff3": null,
+        "init_fe97ba4bcbe0598b": null
+      },
+      "release_xy_after": {
+        "init_0e94a4e6b9622c6b": null,
+        "init_2edf49999eb35566": null,
+        "init_3500df19a4d3b5a1": null,
+        "init_530c50ee73587af4": null,
+        "init_7206d9b0bbf0705e": null,
+        "init_9940fb101f2b0000": null,
+        "init_a2ab436f335d9f7b": null,
+        "init_a2e4d7bc32a0db02": null,
+        "init_bfd0c6484dd671d0": null,
+        "init_c6e1e9cd7bc29f86": null,
+        "init_cd28ad2f294bd19f": null,
+        "init_f1edd3671d78a7ea": null,
+        "init_f3c100bf0414c40a": null,
+        "init_fe8d8b77d59c3ff3": null,
+        "init_fe97ba4bcbe0598b": null
+      },
+      "release_xy_before": {
+        "init_0e94a4e6b9622c6b": null,
+        "init_2edf49999eb35566": null,
+        "init_3500df19a4d3b5a1": null,
+        "init_530c50ee73587af4": null,
+        "init_7206d9b0bbf0705e": null,
+        "init_9940fb101f2b0000": null,
+        "init_a2ab436f335d9f7b": null,
+        "init_a2e4d7bc32a0db02": null,
+        "init_bfd0c6484dd671d0": null,
+        "init_c6e1e9cd7bc29f86": null,
+        "init_cd28ad2f294bd19f": null,
+        "init_f1edd3671d78a7ea": null,
+        "init_f3c100bf0414c40a": null,
+        "init_fe8d8b77d59c3ff3": null,
+        "init_fe97ba4bcbe0598b": null
+      },
+      "release_z_after": {
+        "init_0e94a4e6b9622c6b": null,
+        "init_2edf49999eb35566": null,
+        "init_3500df19a4d3b5a1": null,
+        "init_530c50ee73587af4": null,
+        "init_7206d9b0bbf0705e": null,
+        "init_9940fb101f2b0000": null,
+        "init_a2ab436f335d9f7b": null,
+        "init_a2e4d7bc32a0db02": null,
+        "init_bfd0c6484dd671d0": null,
+        "init_c6e1e9cd7bc29f86": null,
+        "init_cd28ad2f294bd19f": null,
+        "init_f1edd3671d78a7ea": null,
+        "init_f3c100bf0414c40a": null,
+        "init_fe8d8b77d59c3ff3": null,
+        "init_fe97ba4bcbe0598b": null
+      },
+      "release_z_before": {
+        "init_0e94a4e6b9622c6b": null,
+        "init_2edf49999eb35566": null,
+        "init_3500df19a4d3b5a1": null,
+        "init_530c50ee73587af4": null,
+        "init_7206d9b0bbf0705e": null,
+        "init_9940fb101f2b0000": null,
+        "init_a2ab436f335d9f7b": null,
+        "init_a2e4d7bc32a0db02": null,
+        "init_bfd0c6484dd671d0": null,
+        "init_c6e1e9cd7bc29f86": null,
+        "init_cd28ad2f294bd19f": null,
+        "init_f1edd3671d78a7ea": null,
+        "init_f3c100bf0414c40a": null,
+        "init_fe8d8b77d59c3ff3": null,
+        "init_fe97ba4bcbe0598b": null
+      },
+      "released_placement": 6,
+      "released_placement_last_available": 7,
+      "released_success": 1,
+      "settle_unavailable": 0,
+      "success": 4,
+      "target_destination_correct": 10,
+      "target_not_reached": 0,
+      "target_object_correct": 0,
+      "target_zone_reached_any": 7,
+      "transport_started": 15,
+      "wrong_destination": 3,
+      "x_action_change_max": {
+        "count": 15,
+        "max": 0.6030572056770325,
+        "min": 0.16997882723808289
+      },
+      "y_action_change_max": {
+        "count": 15,
+        "max": 0.9660446643829346,
+        "min": 0.36191752552986145
+      },
+      "z_gate_enter_steps": {
+        "init_0e94a4e6b9622c6b": null,
+        "init_2edf49999eb35566": null,
+        "init_3500df19a4d3b5a1": null,
+        "init_530c50ee73587af4": null,
+        "init_7206d9b0bbf0705e": null,
+        "init_9940fb101f2b0000": null,
+        "init_a2ab436f335d9f7b": null,
+        "init_a2e4d7bc32a0db02": null,
+        "init_bfd0c6484dd671d0": null,
+        "init_c6e1e9cd7bc29f86": null,
+        "init_cd28ad2f294bd19f": null,
+        "init_f1edd3671d78a7ea": null,
+        "init_f3c100bf0414c40a": null,
+        "init_fe8d8b77d59c3ff3": null,
+        "init_fe97ba4bcbe0598b": null
+      },
+      "z_gate_streak_max": {
+        "init_0e94a4e6b9622c6b": null,
+        "init_2edf49999eb35566": null,
+        "init_3500df19a4d3b5a1": null,
+        "init_530c50ee73587af4": null,
+        "init_7206d9b0bbf0705e": null,
+        "init_9940fb101f2b0000": null,
+        "init_a2ab436f335d9f7b": null,
+        "init_a2e4d7bc32a0db02": null,
+        "init_bfd0c6484dd671d0": null,
+        "init_c6e1e9cd7bc29f86": null,
+        "init_cd28ad2f294bd19f": null,
+        "init_f1edd3671d78a7ea": null,
+        "init_f3c100bf0414c40a": null,
+        "init_fe8d8b77d59c3ff3": null,
+        "init_fe97ba4bcbe0598b": null
+      }
+    },
+    "E1-PRED": {
+      "action_change_max": {
+        "count": 15,
+        "max": 1.0390625,
+        "min": 0.8346505761146545
+      },
+      "destination_reached_correct": 10,
+      "episodes": 15,
+      "errors": 0,
+      "evaluation_complete": 15,
+      "final_distance_to_plate_2": {
+        "init_0e94a4e6b9622c6b": 0.040746910038786145,
+        "init_2edf49999eb35566": 0.05015585190745043,
+        "init_3500df19a4d3b5a1": 0.05721804621349445,
+        "init_530c50ee73587af4": 0.05256038372107508,
+        "init_7206d9b0bbf0705e": 0.06788087929065055,
+        "init_9940fb101f2b0000": 0.05256329004578639,
+        "init_a2ab436f335d9f7b": 0.06413694509826996,
+        "init_a2e4d7bc32a0db02": 0.039080575050829715,
+        "init_bfd0c6484dd671d0": 0.06813166362107702,
+        "init_c6e1e9cd7bc29f86": 0.4927870648837736,
+        "init_cd28ad2f294bd19f": 0.058880565300072324,
+        "init_f1edd3671d78a7ea": 0.4761122356114357,
+        "init_f3c100bf0414c40a": 0.051949661602772174,
+        "init_fe8d8b77d59c3ff3": 0.5994736422691016,
+        "init_fe97ba4bcbe0598b": 0.04179446635177516
+      },
+      "final_target_placement": 12,
+      "final_target_x_error_m": {
+        "count": 15,
+        "max": 0.11842089040256817,
+        "min": 0.0012370209400093465
+      },
+      "final_target_xy_m": {
+        "count": 15,
+        "max": 0.5994649876497362,
+        "min": 0.022190007045287806
+      },
+      "final_target_y_error_m": {
+        "count": 15,
+        "max": 0.5993628202040178,
+        "min": 0.012960773425620575
+      },
+      "final_target_z_diff_m": {
+        "count": 15,
+        "max": 0.044184977887219756,
+        "min": 0.0032212353972337904
+      },
+      "final_xy_above_0033": 12,
+      "first_destination_values": {
+        "None": 2,
+        "plate_1": 3,
+        "plate_2": 10
+      },
+      "gate_margin_min_m": {
+        "count": 0,
+        "max": null,
+        "min": null
+      },
+      "gate_margin_min_steps": {
+        "init_0e94a4e6b9622c6b": null,
+        "init_2edf49999eb35566": null,
+        "init_3500df19a4d3b5a1": null,
+        "init_530c50ee73587af4": null,
+        "init_7206d9b0bbf0705e": null,
+        "init_9940fb101f2b0000": null,
+        "init_a2ab436f335d9f7b": null,
+        "init_a2e4d7bc32a0db02": null,
+        "init_bfd0c6484dd671d0": null,
+        "init_c6e1e9cd7bc29f86": null,
+        "init_cd28ad2f294bd19f": null,
+        "init_f1edd3671d78a7ea": null,
+        "init_f3c100bf0414c40a": null,
+        "init_fe8d8b77d59c3ff3": null,
+        "init_fe97ba4bcbe0598b": null
+      },
+      "gripper_action_change_max": {
+        "count": 15,
+        "max": 1.0390625,
+        "min": 0.7578125
+      },
+      "handback_seen": 0,
+      "hold_only_success": 0,
+      "lateral_action_change_max": {
+        "count": 0,
+        "max": null,
+        "min": null
+      },
+      "legacy_target_zone_reached_any": 12,
+      "min_distance_to_plate_2": {
+        "count": 15,
+        "max": 0.4925909558367494,
+        "min": 0.039080575050829715
+      },
+      "min_legacy_3d_distance_m": {
+        "count": 15,
+        "max": 0.4925909558367494,
+        "min": 0.039080575050829715
+      },
+      "min_target_xy_m": {
+        "count": 15,
+        "max": 0.4925665098835451,
+        "min": 0.022190007045287806
+      },
+      "min_z_gap_m": {
+        "count": 0,
+        "max": null,
+        "min": null
+      },
+      "nan_count": 0,
+      "no_destination": 2,
+      "object_flew_out": 0,
+      "object_retained": 15,
+      "official_success_zone_reached_any": 3,
+      "post_done_settle_error_count": 0,
+      "post_done_settle_steps": {
+        "init_0e94a4e6b9622c6b": null,
+        "init_2edf49999eb35566": null,
+        "init_3500df19a4d3b5a1": null,
+        "init_530c50ee73587af4": null,
+        "init_7206d9b0bbf0705e": null,
+        "init_9940fb101f2b0000": null,
+        "init_a2ab436f335d9f7b": null,
+        "init_a2e4d7bc32a0db02": null,
+        "init_bfd0c6484dd671d0": null,
+        "init_c6e1e9cd7bc29f86": null,
+        "init_cd28ad2f294bd19f": null,
+        "init_f1edd3671d78a7ea": null,
+        "init_f3c100bf0414c40a": null,
+        "init_fe8d8b77d59c3ff3": null,
+        "init_fe97ba4bcbe0598b": null
+      },
+      "rearm_total": 2,
+      "release_count": 12,
+      "release_steps": {
+        "init_0e94a4e6b9622c6b": 197,
+        "init_2edf49999eb35566": 211,
+        "init_3500df19a4d3b5a1": 214,
+        "init_530c50ee73587af4": 215,
+        "init_7206d9b0bbf0705e": 192,
+        "init_9940fb101f2b0000": 333,
+        "init_a2ab436f335d9f7b": 219,
+        "init_a2e4d7bc32a0db02": 234,
+        "init_bfd0c6484dd671d0": 204,
+        "init_c6e1e9cd7bc29f86": null,
+        "init_cd28ad2f294bd19f": 207,
+        "init_f1edd3671d78a7ea": null,
+        "init_f3c100bf0414c40a": 213,
+        "init_fe8d8b77d59c3ff3": null,
+        "init_fe97ba4bcbe0598b": 198
+      },
+      "release_trigger_steps": {
+        "init_0e94a4e6b9622c6b": null,
+        "init_2edf49999eb35566": null,
+        "init_3500df19a4d3b5a1": null,
+        "init_530c50ee73587af4": null,
+        "init_7206d9b0bbf0705e": null,
+        "init_9940fb101f2b0000": null,
+        "init_a2ab436f335d9f7b": null,
+        "init_a2e4d7bc32a0db02": null,
+        "init_bfd0c6484dd671d0": null,
+        "init_c6e1e9cd7bc29f86": null,
+        "init_cd28ad2f294bd19f": null,
+        "init_f1edd3671d78a7ea": null,
+        "init_f3c100bf0414c40a": null,
+        "init_fe8d8b77d59c3ff3": null,
+        "init_fe97ba4bcbe0598b": null
+      },
+      "release_xy_after": {
+        "init_0e94a4e6b9622c6b": null,
+        "init_2edf49999eb35566": null,
+        "init_3500df19a4d3b5a1": null,
+        "init_530c50ee73587af4": null,
+        "init_7206d9b0bbf0705e": null,
+        "init_9940fb101f2b0000": null,
+        "init_a2ab436f335d9f7b": null,
+        "init_a2e4d7bc32a0db02": null,
+        "init_bfd0c6484dd671d0": null,
+        "init_c6e1e9cd7bc29f86": null,
+        "init_cd28ad2f294bd19f": null,
+        "init_f1edd3671d78a7ea": null,
+        "init_f3c100bf0414c40a": null,
+        "init_fe8d8b77d59c3ff3": null,
+        "init_fe97ba4bcbe0598b": null
+      },
+      "release_xy_before": {
+        "init_0e94a4e6b9622c6b": null,
+        "init_2edf49999eb35566": null,
+        "init_3500df19a4d3b5a1": null,
+        "init_530c50ee73587af4": null,
+        "init_7206d9b0bbf0705e": null,
+        "init_9940fb101f2b0000": null,
+        "init_a2ab436f335d9f7b": null,
+        "init_a2e4d7bc32a0db02": null,
+        "init_bfd0c6484dd671d0": null,
+        "init_c6e1e9cd7bc29f86": null,
+        "init_cd28ad2f294bd19f": null,
+        "init_f1edd3671d78a7ea": null,
+        "init_f3c100bf0414c40a": null,
+        "init_fe8d8b77d59c3ff3": null,
+        "init_fe97ba4bcbe0598b": null
+      },
+      "release_z_after": {
+        "init_0e94a4e6b9622c6b": null,
+        "init_2edf49999eb35566": null,
+        "init_3500df19a4d3b5a1": null,
+        "init_530c50ee73587af4": null,
+        "init_7206d9b0bbf0705e": null,
+        "init_9940fb101f2b0000": null,
+        "init_a2ab436f335d9f7b": null,
+        "init_a2e4d7bc32a0db02": null,
+        "init_bfd0c6484dd671d0": null,
+        "init_c6e1e9cd7bc29f86": null,
+        "init_cd28ad2f294bd19f": null,
+        "init_f1edd3671d78a7ea": null,
+        "init_f3c100bf0414c40a": null,
+        "init_fe8d8b77d59c3ff3": null,
+        "init_fe97ba4bcbe0598b": null
+      },
+      "release_z_before": {
+        "init_0e94a4e6b9622c6b": null,
+        "init_2edf49999eb35566": null,
+        "init_3500df19a4d3b5a1": null,
+        "init_530c50ee73587af4": null,
+        "init_7206d9b0bbf0705e": null,
+        "init_9940fb101f2b0000": null,
+        "init_a2ab436f335d9f7b": null,
+        "init_a2e4d7bc32a0db02": null,
+        "init_bfd0c6484dd671d0": null,
+        "init_c6e1e9cd7bc29f86": null,
+        "init_cd28ad2f294bd19f": null,
+        "init_f1edd3671d78a7ea": null,
+        "init_f3c100bf0414c40a": null,
+        "init_fe8d8b77d59c3ff3": null,
+        "init_fe97ba4bcbe0598b": null
+      },
+      "released_placement": 12,
+      "released_placement_last_available": 12,
+      "released_success": 0,
+      "settle_unavailable": 0,
+      "success": 0,
+      "target_destination_correct": 10,
+      "target_not_reached": 0,
+      "target_object_correct": 0,
+      "target_zone_reached_any": 12,
+      "transport_started": 15,
+      "wrong_destination": 3,
+      "x_action_change_max": {
+        "count": 15,
+        "max": 0.6181421279907227,
+        "min": 0.15179967880249023
+      },
+      "y_action_change_max": {
+        "count": 15,
+        "max": 0.9717574119567871,
+        "min": 0.36834439635276794
+      },
+      "z_gate_enter_steps": {
+        "init_0e94a4e6b9622c6b": null,
+        "init_2edf49999eb35566": null,
+        "init_3500df19a4d3b5a1": null,
+        "init_530c50ee73587af4": null,
+        "init_7206d9b0bbf0705e": null,
+        "init_9940fb101f2b0000": null,
+        "init_a2ab436f335d9f7b": null,
+        "init_a2e4d7bc32a0db02": null,
+        "init_bfd0c6484dd671d0": null,
+        "init_c6e1e9cd7bc29f86": null,
+        "init_cd28ad2f294bd19f": null,
+        "init_f1edd3671d78a7ea": null,
+        "init_f3c100bf0414c40a": null,
+        "init_fe8d8b77d59c3ff3": null,
+        "init_fe97ba4bcbe0598b": null
+      },
+      "z_gate_streak_max": {
+        "init_0e94a4e6b9622c6b": null,
+        "init_2edf49999eb35566": null,
+        "init_3500df19a4d3b5a1": null,
+        "init_530c50ee73587af4": null,
+        "init_7206d9b0bbf0705e": null,
+        "init_9940fb101f2b0000": null,
+        "init_a2ab436f335d9f7b": null,
+        "init_a2e4d7bc32a0db02": null,
+        "init_bfd0c6484dd671d0": null,
+        "init_c6e1e9cd7bc29f86": null,
+        "init_cd28ad2f294bd19f": null,
+        "init_f1edd3671d78a7ea": null,
+        "init_f3c100bf0414c40a": null,
+        "init_fe8d8b77d59c3ff3": null,
+        "init_fe97ba4bcbe0598b": null
+      }
+    }
+  },
+  "by_split": {
+    "B0": {
+      "calibration": {
+        "action_change_max": {
+          "count": 3,
+          "max": 0.0,
+          "min": 0.0
+        },
+        "destination_reached_correct": 0,
+        "episodes": 3,
+        "errors": 0,
+        "evaluation_complete": 3,
+        "final_distance_to_plate_2": {
+          "init_0e94a4e6b9622c6b": 0.4766988091611091,
+          "init_2edf49999eb35566": 0.5725517658624306,
+          "init_3500df19a4d3b5a1": 0.5887183645794608
+        },
+        "final_target_placement": 0,
+        "final_target_x_error_m": {
+          "count": 3,
+          "max": 0.04186461531603418,
+          "min": 0.003441502307806016
+        },
+        "final_target_xy_m": {
+          "count": 3,
+          "max": 0.5883738875146203,
+          "min": 0.47518039670078865
+        },
+        "final_target_y_error_m": {
+          "count": 3,
+          "max": 0.5882871906190452,
+          "min": 0.47333261391241505
+        },
+        "final_target_z_diff_m": {
+          "count": 3,
+          "max": 0.038017696496508324,
+          "min": 0.0035880685682866953
+        },
+        "final_xy_above_0033": 3,
+        "first_destination_values": {
+          "plate_1": 3
+        },
+        "gate_margin_min_m": {
+          "count": 0,
+          "max": null,
+          "min": null
+        },
+        "gate_margin_min_steps": {
+          "init_0e94a4e6b9622c6b": null,
+          "init_2edf49999eb35566": null,
+          "init_3500df19a4d3b5a1": null
+        },
+        "gripper_action_change_max": {
+          "count": 3,
+          "max": 0.0,
+          "min": 0.0
+        },
+        "handback_seen": 0,
+        "hold_only_success": 0,
+        "lateral_action_change_max": {
+          "count": 0,
+          "max": null,
+          "min": null
+        },
+        "legacy_target_zone_reached_any": 0,
+        "min_distance_to_plate_2": {
+          "count": 3,
+          "max": 0.47514327162763825,
+          "min": 0.43081004443012694
+        },
+        "min_legacy_3d_distance_m": {
+          "count": 3,
+          "max": 0.47514327162763825,
+          "min": 0.43081004443012694
+        },
+        "min_target_xy_m": {
+          "count": 3,
+          "max": 0.4751384145691766,
+          "min": 0.430794627781351
+        },
+        "min_z_gap_m": {
+          "count": 0,
+          "max": null,
+          "min": null
+        },
+        "nan_count": 0,
+        "no_destination": 0,
+        "object_flew_out": 0,
+        "object_retained": 3,
+        "official_success_zone_reached_any": 0,
+        "post_done_settle_error_count": 0,
+        "post_done_settle_steps": {
+          "init_0e94a4e6b9622c6b": null,
+          "init_2edf49999eb35566": null,
+          "init_3500df19a4d3b5a1": null
+        },
+        "rearm_total": 0,
+        "release_count": 0,
+        "release_steps": {
+          "init_0e94a4e6b9622c6b": null,
+          "init_2edf49999eb35566": null,
+          "init_3500df19a4d3b5a1": null
+        },
+        "release_trigger_steps": {
+          "init_0e94a4e6b9622c6b": null,
+          "init_2edf49999eb35566": null,
+          "init_3500df19a4d3b5a1": null
+        },
+        "release_xy_after": {
+          "init_0e94a4e6b9622c6b": null,
+          "init_2edf49999eb35566": null,
+          "init_3500df19a4d3b5a1": null
+        },
+        "release_xy_before": {
+          "init_0e94a4e6b9622c6b": null,
+          "init_2edf49999eb35566": null,
+          "init_3500df19a4d3b5a1": null
+        },
+        "release_z_after": {
+          "init_0e94a4e6b9622c6b": null,
+          "init_2edf49999eb35566": null,
+          "init_3500df19a4d3b5a1": null
+        },
+        "release_z_before": {
+          "init_0e94a4e6b9622c6b": null,
+          "init_2edf49999eb35566": null,
+          "init_3500df19a4d3b5a1": null
+        },
+        "released_placement": 0,
+        "released_placement_last_available": 0,
+        "released_success": 0,
+        "settle_unavailable": 0,
+        "success": 0,
+        "target_destination_correct": 0,
+        "target_not_reached": 0,
+        "target_object_correct": 0,
+        "target_zone_reached_any": 0,
+        "transport_started": 0,
+        "wrong_destination": 3,
+        "x_action_change_max": {
+          "count": 3,
+          "max": 0.0,
+          "min": 0.0
+        },
+        "y_action_change_max": {
+          "count": 3,
+          "max": 0.0,
+          "min": 0.0
+        },
+        "z_gate_enter_steps": {
+          "init_0e94a4e6b9622c6b": null,
+          "init_2edf49999eb35566": null,
+          "init_3500df19a4d3b5a1": null
+        },
+        "z_gate_streak_max": {
+          "init_0e94a4e6b9622c6b": null,
+          "init_2edf49999eb35566": null,
+          "init_3500df19a4d3b5a1": null
+        }
+      },
+      "confirmation": {
+        "action_change_max": {
+          "count": 12,
+          "max": 0.0,
+          "min": 0.0
+        },
+        "destination_reached_correct": 0,
+        "episodes": 12,
+        "errors": 0,
+        "evaluation_complete": 12,
+        "final_distance_to_plate_2": {
+          "init_530c50ee73587af4": 0.6432725909870112,
+          "init_7206d9b0bbf0705e": 0.6059364173743431,
+          "init_9940fb101f2b0000": 0.5624558509415757,
+          "init_a2ab436f335d9f7b": 0.6395549150550873,
+          "init_a2e4d7bc32a0db02": 0.588676217134675,
+          "init_bfd0c6484dd671d0": 0.6069810108082015,
+          "init_c6e1e9cd7bc29f86": 0.5582199241251325,
+          "init_cd28ad2f294bd19f": 0.5665923754145794,
+          "init_f1edd3671d78a7ea": 0.48872695144555856,
+          "init_f3c100bf0414c40a": 0.5722994150801816,
+          "init_fe8d8b77d59c3ff3": 0.5994736422691015,
+          "init_fe97ba4bcbe0598b": 0.602369915719619
+        },
+        "final_target_placement": 0,
+        "final_target_x_error_m": {
+          "count": 12,
+          "max": 0.13283999783749534,
+          "min": 0.004973048186627919
+        },
+        "final_target_xy_m": {
+          "count": 12,
+          "max": 0.6408548880724786,
+          "min": 0.488702370221867
+        },
+        "final_target_y_error_m": {
+          "count": 12,
+          "max": 0.6404198492689186,
+          "min": 0.47030154330493645
+        },
+        "final_target_z_diff_m": {
+          "count": 12,
+          "max": 0.05571928524984371,
+          "min": 0.0032212353972337904
+        },
+        "final_xy_above_0033": 12,
+        "first_destination_values": {
+          "None": 1,
+          "plate_1": 11
+        },
+        "gate_margin_min_m": {
+          "count": 0,
+          "max": null,
+          "min": null
+        },
+        "gate_margin_min_steps": {
+          "init_530c50ee73587af4": null,
+          "init_7206d9b0bbf0705e": null,
+          "init_9940fb101f2b0000": null,
+          "init_a2ab436f335d9f7b": null,
+          "init_a2e4d7bc32a0db02": null,
+          "init_bfd0c6484dd671d0": null,
+          "init_c6e1e9cd7bc29f86": null,
+          "init_cd28ad2f294bd19f": null,
+          "init_f1edd3671d78a7ea": null,
+          "init_f3c100bf0414c40a": null,
+          "init_fe8d8b77d59c3ff3": null,
+          "init_fe97ba4bcbe0598b": null
+        },
+        "gripper_action_change_max": {
+          "count": 12,
+          "max": 0.0,
+          "min": 0.0
+        },
+        "handback_seen": 0,
+        "hold_only_success": 0,
+        "lateral_action_change_max": {
+          "count": 0,
+          "max": null,
+          "min": null
+        },
+        "legacy_target_zone_reached_any": 0,
+        "min_distance_to_plate_2": {
+          "count": 12,
+          "max": 0.49257815426870505,
+          "min": 0.4280560364599235
+        },
+        "min_legacy_3d_distance_m": {
+          "count": 12,
+          "max": 0.49257815426870505,
+          "min": 0.4280560364599235
+        },
+        "min_target_xy_m": {
+          "count": 12,
+          "max": 0.49255618546730356,
+          "min": 0.4280279572653431
+        },
+        "min_z_gap_m": {
+          "count": 0,
+          "max": null,
+          "min": null
+        },
+        "nan_count": 0,
+        "no_destination": 1,
+        "object_flew_out": 0,
+        "object_retained": 12,
+        "official_success_zone_reached_any": 0,
+        "post_done_settle_error_count": 0,
+        "post_done_settle_steps": {
+          "init_530c50ee73587af4": null,
+          "init_7206d9b0bbf0705e": null,
+          "init_9940fb101f2b0000": null,
+          "init_a2ab436f335d9f7b": null,
+          "init_a2e4d7bc32a0db02": null,
+          "init_bfd0c6484dd671d0": null,
+          "init_c6e1e9cd7bc29f86": null,
+          "init_cd28ad2f294bd19f": null,
+          "init_f1edd3671d78a7ea": null,
+          "init_f3c100bf0414c40a": null,
+          "init_fe8d8b77d59c3ff3": null,
+          "init_fe97ba4bcbe0598b": null
+        },
+        "rearm_total": 0,
+        "release_count": 0,
+        "release_steps": {
+          "init_530c50ee73587af4": null,
+          "init_7206d9b0bbf0705e": null,
+          "init_9940fb101f2b0000": null,
+          "init_a2ab436f335d9f7b": null,
+          "init_a2e4d7bc32a0db02": null,
+          "init_bfd0c6484dd671d0": null,
+          "init_c6e1e9cd7bc29f86": null,
+          "init_cd28ad2f294bd19f": null,
+          "init_f1edd3671d78a7ea": null,
+          "init_f3c100bf0414c40a": null,
+          "init_fe8d8b77d59c3ff3": null,
+          "init_fe97ba4bcbe0598b": null
+        },
+        "release_trigger_steps": {
+          "init_530c50ee73587af4": null,
+          "init_7206d9b0bbf0705e": null,
+          "init_9940fb101f2b0000": null,
+          "init_a2ab436f335d9f7b": null,
+          "init_a2e4d7bc32a0db02": null,
+          "init_bfd0c6484dd671d0": null,
+          "init_c6e1e9cd7bc29f86": null,
+          "init_cd28ad2f294bd19f": null,
+          "init_f1edd3671d78a7ea": null,
+          "init_f3c100bf0414c40a": null,
+          "init_fe8d8b77d59c3ff3": null,
+          "init_fe97ba4bcbe0598b": null
+        },
+        "release_xy_after": {
+          "init_530c50ee73587af4": null,
+          "init_7206d9b0bbf0705e": null,
+          "init_9940fb101f2b0000": null,
+          "init_a2ab436f335d9f7b": null,
+          "init_a2e4d7bc32a0db02": null,
+          "init_bfd0c6484dd671d0": null,
+          "init_c6e1e9cd7bc29f86": null,
+          "init_cd28ad2f294bd19f": null,
+          "init_f1edd3671d78a7ea": null,
+          "init_f3c100bf0414c40a": null,
+          "init_fe8d8b77d59c3ff3": null,
+          "init_fe97ba4bcbe0598b": null
+        },
+        "release_xy_before": {
+          "init_530c50ee73587af4": null,
+          "init_7206d9b0bbf0705e": null,
+          "init_9940fb101f2b0000": null,
+          "init_a2ab436f335d9f7b": null,
+          "init_a2e4d7bc32a0db02": null,
+          "init_bfd0c6484dd671d0": null,
+          "init_c6e1e9cd7bc29f86": null,
+          "init_cd28ad2f294bd19f": null,
+          "init_f1edd3671d78a7ea": null,
+          "init_f3c100bf0414c40a": null,
+          "init_fe8d8b77d59c3ff3": null,
+          "init_fe97ba4bcbe0598b": null
+        },
+        "release_z_after": {
+          "init_530c50ee73587af4": null,
+          "init_7206d9b0bbf0705e": null,
+          "init_9940fb101f2b0000": null,
+          "init_a2ab436f335d9f7b": null,
+          "init_a2e4d7bc32a0db02": null,
+          "init_bfd0c6484dd671d0": null,
+          "init_c6e1e9cd7bc29f86": null,
+          "init_cd28ad2f294bd19f": null,
+          "init_f1edd3671d78a7ea": null,
+          "init_f3c100bf0414c40a": null,
+          "init_fe8d8b77d59c3ff3": null,
+          "init_fe97ba4bcbe0598b": null
+        },
+        "release_z_before": {
+          "init_530c50ee73587af4": null,
+          "init_7206d9b0bbf0705e": null,
+          "init_9940fb101f2b0000": null,
+          "init_a2ab436f335d9f7b": null,
+          "init_a2e4d7bc32a0db02": null,
+          "init_bfd0c6484dd671d0": null,
+          "init_c6e1e9cd7bc29f86": null,
+          "init_cd28ad2f294bd19f": null,
+          "init_f1edd3671d78a7ea": null,
+          "init_f3c100bf0414c40a": null,
+          "init_fe8d8b77d59c3ff3": null,
+          "init_fe97ba4bcbe0598b": null
+        },
+        "released_placement": 0,
+        "released_placement_last_available": 0,
+        "released_success": 0,
+        "settle_unavailable": 0,
+        "success": 0,
+        "target_destination_correct": 0,
+        "target_not_reached": 0,
+        "target_object_correct": 0,
+        "target_zone_reached_any": 0,
+        "transport_started": 0,
+        "wrong_destination": 11,
+        "x_action_change_max": {
+          "count": 12,
+          "max": 0.0,
+          "min": 0.0
+        },
+        "y_action_change_max": {
+          "count": 12,
+          "max": 0.0,
+          "min": 0.0
+        },
+        "z_gate_enter_steps": {
+          "init_530c50ee73587af4": null,
+          "init_7206d9b0bbf0705e": null,
+          "init_9940fb101f2b0000": null,
+          "init_a2ab436f335d9f7b": null,
+          "init_a2e4d7bc32a0db02": null,
+          "init_bfd0c6484dd671d0": null,
+          "init_c6e1e9cd7bc29f86": null,
+          "init_cd28ad2f294bd19f": null,
+          "init_f1edd3671d78a7ea": null,
+          "init_f3c100bf0414c40a": null,
+          "init_fe8d8b77d59c3ff3": null,
+          "init_fe97ba4bcbe0598b": null
+        },
+        "z_gate_streak_max": {
+          "init_530c50ee73587af4": null,
+          "init_7206d9b0bbf0705e": null,
+          "init_9940fb101f2b0000": null,
+          "init_a2ab436f335d9f7b": null,
+          "init_a2e4d7bc32a0db02": null,
+          "init_bfd0c6484dd671d0": null,
+          "init_c6e1e9cd7bc29f86": null,
+          "init_cd28ad2f294bd19f": null,
+          "init_f1edd3671d78a7ea": null,
+          "init_f3c100bf0414c40a": null,
+          "init_fe8d8b77d59c3ff3": null,
+          "init_fe97ba4bcbe0598b": null
+        }
+      }
+    },
+    "E1-ORACLE": {
+      "calibration": {
+        "action_change_max": {
+          "count": 3,
+          "max": 1.015625,
+          "min": 0.998199462890625
+        },
+        "destination_reached_correct": 1,
+        "episodes": 3,
+        "errors": 0,
+        "evaluation_complete": 3,
+        "final_distance_to_plate_2": {
+          "init_0e94a4e6b9622c6b": 0.03641423067202972,
+          "init_2edf49999eb35566": 0.04699838245635242,
+          "init_3500df19a4d3b5a1": 0.03821897026628085
+        },
+        "final_target_placement": 2,
+        "final_target_x_error_m": {
+          "count": 3,
+          "max": 0.023696412122132773,
+          "min": 0.0030104235159692655
+        },
+        "final_target_xy_m": {
+          "count": 3,
+          "max": 0.037163709693011276,
+          "min": 0.020839051531806402
+        },
+        "final_target_y_error_m": {
+          "count": 3,
+          "max": 0.028629030208591755,
+          "min": 0.02062046117330507
+        },
+        "final_target_z_diff_m": {
+          "count": 3,
+          "max": 0.042125786458751036,
+          "min": 0.008918989296351876
+        },
+        "final_xy_above_0033": 1,
+        "first_destination_values": {
+          "plate_1": 2,
+          "plate_2": 1
+        },
+        "gate_margin_min_m": {
+          "count": 0,
+          "max": null,
+          "min": null
+        },
+        "gate_margin_min_steps": {
+          "init_0e94a4e6b9622c6b": null,
+          "init_2edf49999eb35566": null,
+          "init_3500df19a4d3b5a1": null
+        },
+        "gripper_action_change_max": {
+          "count": 3,
+          "max": 1.015625,
+          "min": 0.998199462890625
+        },
+        "handback_seen": 0,
+        "hold_only_success": 0,
+        "lateral_action_change_max": {
+          "count": 0,
+          "max": null,
+          "min": null
+        },
+        "legacy_target_zone_reached_any": 3,
+        "min_distance_to_plate_2": {
+          "count": 3,
+          "max": 0.04699838245635242,
+          "min": 0.03641423067202972
+        },
+        "min_legacy_3d_distance_m": {
+          "count": 3,
+          "max": 0.04699838245635242,
+          "min": 0.03641423067202972
+        },
+        "min_target_xy_m": {
+          "count": 3,
+          "max": 0.037163709693011276,
+          "min": 0.020839051531806402
+        },
+        "min_z_gap_m": {
+          "count": 0,
+          "max": null,
+          "min": null
+        },
+        "nan_count": 0,
+        "no_destination": 0,
+        "object_flew_out": 0,
+        "object_retained": 3,
+        "official_success_zone_reached_any": 2,
+        "post_done_settle_error_count": 0,
+        "post_done_settle_steps": {
+          "init_0e94a4e6b9622c6b": null,
+          "init_2edf49999eb35566": null,
+          "init_3500df19a4d3b5a1": null
+        },
+        "rearm_total": 1,
+        "release_count": 2,
+        "release_steps": {
+          "init_0e94a4e6b9622c6b": 202,
+          "init_2edf49999eb35566": 199,
+          "init_3500df19a4d3b5a1": null
+        },
+        "release_trigger_steps": {
+          "init_0e94a4e6b9622c6b": null,
+          "init_2edf49999eb35566": null,
+          "init_3500df19a4d3b5a1": null
+        },
+        "release_xy_after": {
+          "init_0e94a4e6b9622c6b": null,
+          "init_2edf49999eb35566": null,
+          "init_3500df19a4d3b5a1": null
+        },
+        "release_xy_before": {
+          "init_0e94a4e6b9622c6b": null,
+          "init_2edf49999eb35566": null,
+          "init_3500df19a4d3b5a1": null
+        },
+        "release_z_after": {
+          "init_0e94a4e6b9622c6b": null,
+          "init_2edf49999eb35566": null,
+          "init_3500df19a4d3b5a1": null
+        },
+        "release_z_before": {
+          "init_0e94a4e6b9622c6b": null,
+          "init_2edf49999eb35566": null,
+          "init_3500df19a4d3b5a1": null
+        },
+        "released_placement": 2,
+        "released_placement_last_available": 2,
+        "released_success": 0,
+        "settle_unavailable": 0,
+        "success": 0,
+        "target_destination_correct": 1,
+        "target_not_reached": 0,
+        "target_object_correct": 0,
+        "target_zone_reached_any": 2,
+        "transport_started": 3,
+        "wrong_destination": 2,
+        "x_action_change_max": {
+          "count": 3,
+          "max": 0.6030572056770325,
+          "min": 0.5506729483604431
+        },
+        "y_action_change_max": {
+          "count": 3,
+          "max": 0.9374806880950928,
+          "min": 0.9203423261642456
+        },
+        "z_gate_enter_steps": {
+          "init_0e94a4e6b9622c6b": null,
+          "init_2edf49999eb35566": null,
+          "init_3500df19a4d3b5a1": null
+        },
+        "z_gate_streak_max": {
+          "init_0e94a4e6b9622c6b": null,
+          "init_2edf49999eb35566": null,
+          "init_3500df19a4d3b5a1": null
+        }
+      },
+      "confirmation": {
+        "action_change_max": {
+          "count": 12,
+          "max": 1.0703125,
+          "min": 0.765625
+        },
+        "destination_reached_correct": 9,
+        "episodes": 12,
+        "errors": 0,
+        "evaluation_complete": 12,
+        "final_distance_to_plate_2": {
+          "init_530c50ee73587af4": 0.02853865139920223,
+          "init_7206d9b0bbf0705e": 0.028825903593246764,
+          "init_9940fb101f2b0000": 0.035868886757928306,
+          "init_a2ab436f335d9f7b": 0.030075277932705348,
+          "init_a2e4d7bc32a0db02": 0.02549850978340242,
+          "init_bfd0c6484dd671d0": 0.029243202021602854,
+          "init_c6e1e9cd7bc29f86": 0.4928615052709931,
+          "init_cd28ad2f294bd19f": 0.02982578101388341,
+          "init_f1edd3671d78a7ea": 0.4704752429088932,
+          "init_f3c100bf0414c40a": 0.03430480482872932,
+          "init_fe8d8b77d59c3ff3": 0.5994736422691016,
+          "init_fe97ba4bcbe0598b": 0.030455880932186586
+        },
+        "final_target_placement": 5,
+        "final_target_x_error_m": {
+          "count": 12,
+          "max": 0.14429027366538394,
+          "min": 0.0022942163967513626
+        },
+        "final_target_xy_m": {
+          "count": 12,
+          "max": 0.5994649876497362,
+          "min": 0.024991036164896858
+        },
+        "final_target_y_error_m": {
+          "count": 12,
+          "max": 0.5993628202040178,
+          "min": 0.017725458821725326
+        },
+        "final_target_z_diff_m": {
+          "count": 12,
+          "max": 0.025729849371069036,
+          "min": 0.002130099038663291
+        },
+        "final_xy_above_0033": 3,
+        "first_destination_values": {
+          "None": 2,
+          "plate_1": 1,
+          "plate_2": 9
+        },
+        "gate_margin_min_m": {
+          "count": 0,
+          "max": null,
+          "min": null
+        },
+        "gate_margin_min_steps": {
+          "init_530c50ee73587af4": null,
+          "init_7206d9b0bbf0705e": null,
+          "init_9940fb101f2b0000": null,
+          "init_a2ab436f335d9f7b": null,
+          "init_a2e4d7bc32a0db02": null,
+          "init_bfd0c6484dd671d0": null,
+          "init_c6e1e9cd7bc29f86": null,
+          "init_cd28ad2f294bd19f": null,
+          "init_f1edd3671d78a7ea": null,
+          "init_f3c100bf0414c40a": null,
+          "init_fe8d8b77d59c3ff3": null,
+          "init_fe97ba4bcbe0598b": null
+        },
+        "gripper_action_change_max": {
+          "count": 12,
+          "max": 1.0703125,
+          "min": 0.765625
+        },
+        "handback_seen": 0,
+        "hold_only_success": 3,
+        "lateral_action_change_max": {
+          "count": 0,
+          "max": null,
+          "min": null
+        },
+        "legacy_target_zone_reached_any": 9,
+        "min_distance_to_plate_2": {
+          "count": 12,
+          "max": 0.4925909558367494,
+          "min": 0.02549850978340242
+        },
+        "min_legacy_3d_distance_m": {
+          "count": 12,
+          "max": 0.4925909558367494,
+          "min": 0.02549850978340242
+        },
+        "min_target_xy_m": {
+          "count": 12,
+          "max": 0.4925665098835451,
+          "min": 0.024991036164896858
+        },
+        "min_z_gap_m": {
+          "count": 0,
+          "max": null,
+          "min": null
+        },
+        "nan_count": 0,
+        "no_destination": 2,
+        "object_flew_out": 0,
+        "object_retained": 12,
+        "official_success_zone_reached_any": 8,
+        "post_done_settle_error_count": 0,
+        "post_done_settle_steps": {
+          "init_530c50ee73587af4": null,
+          "init_7206d9b0bbf0705e": null,
+          "init_9940fb101f2b0000": null,
+          "init_a2ab436f335d9f7b": null,
+          "init_a2e4d7bc32a0db02": null,
+          "init_bfd0c6484dd671d0": null,
+          "init_c6e1e9cd7bc29f86": null,
+          "init_cd28ad2f294bd19f": null,
+          "init_f1edd3671d78a7ea": null,
+          "init_f3c100bf0414c40a": null,
+          "init_fe8d8b77d59c3ff3": null,
+          "init_fe97ba4bcbe0598b": null
+        },
+        "rearm_total": 3,
+        "release_count": 5,
+        "release_steps": {
+          "init_530c50ee73587af4": 233,
+          "init_7206d9b0bbf0705e": 218,
+          "init_9940fb101f2b0000": 322,
+          "init_a2ab436f335d9f7b": null,
+          "init_a2e4d7bc32a0db02": 228,
+          "init_bfd0c6484dd671d0": null,
+          "init_c6e1e9cd7bc29f86": null,
+          "init_cd28ad2f294bd19f": null,
+          "init_f1edd3671d78a7ea": null,
+          "init_f3c100bf0414c40a": null,
+          "init_fe8d8b77d59c3ff3": null,
+          "init_fe97ba4bcbe0598b": 236
+        },
+        "release_trigger_steps": {
+          "init_530c50ee73587af4": null,
+          "init_7206d9b0bbf0705e": null,
+          "init_9940fb101f2b0000": null,
+          "init_a2ab436f335d9f7b": null,
+          "init_a2e4d7bc32a0db02": null,
+          "init_bfd0c6484dd671d0": null,
+          "init_c6e1e9cd7bc29f86": null,
+          "init_cd28ad2f294bd19f": null,
+          "init_f1edd3671d78a7ea": null,
+          "init_f3c100bf0414c40a": null,
+          "init_fe8d8b77d59c3ff3": null,
+          "init_fe97ba4bcbe0598b": null
+        },
+        "release_xy_after": {
+          "init_530c50ee73587af4": null,
+          "init_7206d9b0bbf0705e": null,
+          "init_9940fb101f2b0000": null,
+          "init_a2ab436f335d9f7b": null,
+          "init_a2e4d7bc32a0db02": null,
+          "init_bfd0c6484dd671d0": null,
+          "init_c6e1e9cd7bc29f86": null,
+          "init_cd28ad2f294bd19f": null,
+          "init_f1edd3671d78a7ea": null,
+          "init_f3c100bf0414c40a": null,
+          "init_fe8d8b77d59c3ff3": null,
+          "init_fe97ba4bcbe0598b": null
+        },
+        "release_xy_before": {
+          "init_530c50ee73587af4": null,
+          "init_7206d9b0bbf0705e": null,
+          "init_9940fb101f2b0000": null,
+          "init_a2ab436f335d9f7b": null,
+          "init_a2e4d7bc32a0db02": null,
+          "init_bfd0c6484dd671d0": null,
+          "init_c6e1e9cd7bc29f86": null,
+          "init_cd28ad2f294bd19f": null,
+          "init_f1edd3671d78a7ea": null,
+          "init_f3c100bf0414c40a": null,
+          "init_fe8d8b77d59c3ff3": null,
+          "init_fe97ba4bcbe0598b": null
+        },
+        "release_z_after": {
+          "init_530c50ee73587af4": null,
+          "init_7206d9b0bbf0705e": null,
+          "init_9940fb101f2b0000": null,
+          "init_a2ab436f335d9f7b": null,
+          "init_a2e4d7bc32a0db02": null,
+          "init_bfd0c6484dd671d0": null,
+          "init_c6e1e9cd7bc29f86": null,
+          "init_cd28ad2f294bd19f": null,
+          "init_f1edd3671d78a7ea": null,
+          "init_f3c100bf0414c40a": null,
+          "init_fe8d8b77d59c3ff3": null,
+          "init_fe97ba4bcbe0598b": null
+        },
+        "release_z_before": {
+          "init_530c50ee73587af4": null,
+          "init_7206d9b0bbf0705e": null,
+          "init_9940fb101f2b0000": null,
+          "init_a2ab436f335d9f7b": null,
+          "init_a2e4d7bc32a0db02": null,
+          "init_bfd0c6484dd671d0": null,
+          "init_c6e1e9cd7bc29f86": null,
+          "init_cd28ad2f294bd19f": null,
+          "init_f1edd3671d78a7ea": null,
+          "init_f3c100bf0414c40a": null,
+          "init_fe8d8b77d59c3ff3": null,
+          "init_fe97ba4bcbe0598b": null
+        },
+        "released_placement": 4,
+        "released_placement_last_available": 5,
+        "released_success": 1,
+        "settle_unavailable": 0,
+        "success": 4,
+        "target_destination_correct": 9,
+        "target_not_reached": 0,
+        "target_object_correct": 0,
+        "target_zone_reached_any": 5,
+        "transport_started": 12,
+        "wrong_destination": 1,
+        "x_action_change_max": {
+          "count": 12,
+          "max": 0.5968713760375977,
+          "min": 0.16997882723808289
+        },
+        "y_action_change_max": {
+          "count": 12,
+          "max": 0.9660446643829346,
+          "min": 0.36191752552986145
+        },
+        "z_gate_enter_steps": {
+          "init_530c50ee73587af4": null,
+          "init_7206d9b0bbf0705e": null,
+          "init_9940fb101f2b0000": null,
+          "init_a2ab436f335d9f7b": null,
+          "init_a2e4d7bc32a0db02": null,
+          "init_bfd0c6484dd671d0": null,
+          "init_c6e1e9cd7bc29f86": null,
+          "init_cd28ad2f294bd19f": null,
+          "init_f1edd3671d78a7ea": null,
+          "init_f3c100bf0414c40a": null,
+          "init_fe8d8b77d59c3ff3": null,
+          "init_fe97ba4bcbe0598b": null
+        },
+        "z_gate_streak_max": {
+          "init_530c50ee73587af4": null,
+          "init_7206d9b0bbf0705e": null,
+          "init_9940fb101f2b0000": null,
+          "init_a2ab436f335d9f7b": null,
+          "init_a2e4d7bc32a0db02": null,
+          "init_bfd0c6484dd671d0": null,
+          "init_c6e1e9cd7bc29f86": null,
+          "init_cd28ad2f294bd19f": null,
+          "init_f1edd3671d78a7ea": null,
+          "init_f3c100bf0414c40a": null,
+          "init_fe8d8b77d59c3ff3": null,
+          "init_fe97ba4bcbe0598b": null
+        }
+      }
+    },
+    "E1-PRED": {
+      "calibration": {
+        "action_change_max": {
+          "count": 3,
+          "max": 1.027099609375,
+          "min": 1.006927490234375
+        },
+        "destination_reached_correct": 1,
+        "episodes": 3,
+        "errors": 0,
+        "evaluation_complete": 3,
+        "final_distance_to_plate_2": {
+          "init_0e94a4e6b9622c6b": 0.040746910038786145,
+          "init_2edf49999eb35566": 0.05015585190745043,
+          "init_3500df19a4d3b5a1": 0.05721804621349445
+        },
+        "final_target_placement": 3,
+        "final_target_x_error_m": {
+          "count": 3,
+          "max": 0.025100752770903463,
+          "min": 0.0012370209400093465
+        },
+        "final_target_xy_m": {
+          "count": 3,
+          "max": 0.038378668537042394,
+          "min": 0.023733883156112478
+        },
+        "final_target_y_error_m": {
+          "count": 3,
+          "max": 0.02903229940962565,
+          "min": 0.02370162418194116
+        },
+        "final_target_z_diff_m": {
+          "count": 3,
+          "max": 0.044184977887219756,
+          "min": 0.028513570560423696
+        },
+        "final_xy_above_0033": 1,
+        "first_destination_values": {
+          "plate_1": 2,
+          "plate_2": 1
+        },
+        "gate_margin_min_m": {
+          "count": 0,
+          "max": null,
+          "min": null
+        },
+        "gate_margin_min_steps": {
+          "init_0e94a4e6b9622c6b": null,
+          "init_2edf49999eb35566": null,
+          "init_3500df19a4d3b5a1": null
+        },
+        "gripper_action_change_max": {
+          "count": 3,
+          "max": 1.027099609375,
+          "min": 1.006927490234375
+        },
+        "handback_seen": 0,
+        "hold_only_success": 0,
+        "lateral_action_change_max": {
+          "count": 0,
+          "max": null,
+          "min": null
+        },
+        "legacy_target_zone_reached_any": 3,
+        "min_distance_to_plate_2": {
+          "count": 3,
+          "max": 0.05721804621349445,
+          "min": 0.040746910038786145
+        },
+        "min_legacy_3d_distance_m": {
+          "count": 3,
+          "max": 0.05721804621349445,
+          "min": 0.040746910038786145
+        },
+        "min_target_xy_m": {
+          "count": 3,
+          "max": 0.038378668537042394,
+          "min": 0.023733883156112478
+        },
+        "min_z_gap_m": {
+          "count": 0,
+          "max": null,
+          "min": null
+        },
+        "nan_count": 0,
+        "no_destination": 0,
+        "object_flew_out": 0,
+        "object_retained": 3,
+        "official_success_zone_reached_any": 2,
+        "post_done_settle_error_count": 0,
+        "post_done_settle_steps": {
+          "init_0e94a4e6b9622c6b": null,
+          "init_2edf49999eb35566": null,
+          "init_3500df19a4d3b5a1": null
+        },
+        "rearm_total": 0,
+        "release_count": 3,
+        "release_steps": {
+          "init_0e94a4e6b9622c6b": 197,
+          "init_2edf49999eb35566": 211,
+          "init_3500df19a4d3b5a1": 214
+        },
+        "release_trigger_steps": {
+          "init_0e94a4e6b9622c6b": null,
+          "init_2edf49999eb35566": null,
+          "init_3500df19a4d3b5a1": null
+        },
+        "release_xy_after": {
+          "init_0e94a4e6b9622c6b": null,
+          "init_2edf49999eb35566": null,
+          "init_3500df19a4d3b5a1": null
+        },
+        "release_xy_before": {
+          "init_0e94a4e6b9622c6b": null,
+          "init_2edf49999eb35566": null,
+          "init_3500df19a4d3b5a1": null
+        },
+        "release_z_after": {
+          "init_0e94a4e6b9622c6b": null,
+          "init_2edf49999eb35566": null,
+          "init_3500df19a4d3b5a1": null
+        },
+        "release_z_before": {
+          "init_0e94a4e6b9622c6b": null,
+          "init_2edf49999eb35566": null,
+          "init_3500df19a4d3b5a1": null
+        },
+        "released_placement": 3,
+        "released_placement_last_available": 3,
+        "released_success": 0,
+        "settle_unavailable": 0,
+        "success": 0,
+        "target_destination_correct": 1,
+        "target_not_reached": 0,
+        "target_object_correct": 0,
+        "target_zone_reached_any": 3,
+        "transport_started": 3,
+        "wrong_destination": 2,
+        "x_action_change_max": {
+          "count": 3,
+          "max": 0.6064558625221252,
+          "min": 0.5616949200630188
+        },
+        "y_action_change_max": {
+          "count": 3,
+          "max": 0.9346243143081665,
+          "min": 0.9260551333427429
+        },
+        "z_gate_enter_steps": {
+          "init_0e94a4e6b9622c6b": null,
+          "init_2edf49999eb35566": null,
+          "init_3500df19a4d3b5a1": null
+        },
+        "z_gate_streak_max": {
+          "init_0e94a4e6b9622c6b": null,
+          "init_2edf49999eb35566": null,
+          "init_3500df19a4d3b5a1": null
+        }
+      },
+      "confirmation": {
+        "action_change_max": {
+          "count": 12,
+          "max": 1.0390625,
+          "min": 0.8346505761146545
+        },
+        "destination_reached_correct": 9,
+        "episodes": 12,
+        "errors": 0,
+        "evaluation_complete": 12,
+        "final_distance_to_plate_2": {
+          "init_530c50ee73587af4": 0.05256038372107508,
+          "init_7206d9b0bbf0705e": 0.06788087929065055,
+          "init_9940fb101f2b0000": 0.05256329004578639,
+          "init_a2ab436f335d9f7b": 0.06413694509826996,
+          "init_a2e4d7bc32a0db02": 0.039080575050829715,
+          "init_bfd0c6484dd671d0": 0.06813166362107702,
+          "init_c6e1e9cd7bc29f86": 0.4927870648837736,
+          "init_cd28ad2f294bd19f": 0.058880565300072324,
+          "init_f1edd3671d78a7ea": 0.4761122356114357,
+          "init_f3c100bf0414c40a": 0.051949661602772174,
+          "init_fe8d8b77d59c3ff3": 0.5994736422691016,
+          "init_fe97ba4bcbe0598b": 0.04179446635177516
+        },
+        "final_target_placement": 9,
+        "final_target_x_error_m": {
+          "count": 12,
+          "max": 0.11842089040256817,
+          "min": 0.0019228479100676572
+        },
+        "final_target_xy_m": {
+          "count": 12,
+          "max": 0.5994649876497362,
+          "min": 0.022190007045287806
+        },
+        "final_target_y_error_m": {
+          "count": 12,
+          "max": 0.5993628202040178,
+          "min": 0.012960773425620575
+        },
+        "final_target_z_diff_m": {
+          "count": 12,
+          "max": 0.04192397568178191,
+          "min": 0.0032212353972337904
+        },
+        "final_xy_above_0033": 11,
+        "first_destination_values": {
+          "None": 2,
+          "plate_1": 1,
+          "plate_2": 9
+        },
+        "gate_margin_min_m": {
+          "count": 0,
+          "max": null,
+          "min": null
+        },
+        "gate_margin_min_steps": {
+          "init_530c50ee73587af4": null,
+          "init_7206d9b0bbf0705e": null,
+          "init_9940fb101f2b0000": null,
+          "init_a2ab436f335d9f7b": null,
+          "init_a2e4d7bc32a0db02": null,
+          "init_bfd0c6484dd671d0": null,
+          "init_c6e1e9cd7bc29f86": null,
+          "init_cd28ad2f294bd19f": null,
+          "init_f1edd3671d78a7ea": null,
+          "init_f3c100bf0414c40a": null,
+          "init_fe8d8b77d59c3ff3": null,
+          "init_fe97ba4bcbe0598b": null
+        },
+        "gripper_action_change_max": {
+          "count": 12,
+          "max": 1.0390625,
+          "min": 0.7578125
+        },
+        "handback_seen": 0,
+        "hold_only_success": 0,
+        "lateral_action_change_max": {
+          "count": 0,
+          "max": null,
+          "min": null
+        },
+        "legacy_target_zone_reached_any": 9,
+        "min_distance_to_plate_2": {
+          "count": 12,
+          "max": 0.4925909558367494,
+          "min": 0.039080575050829715
+        },
+        "min_legacy_3d_distance_m": {
+          "count": 12,
+          "max": 0.4925909558367494,
+          "min": 0.039080575050829715
+        },
+        "min_target_xy_m": {
+          "count": 12,
+          "max": 0.4925665098835451,
+          "min": 0.022190007045287806
+        },
+        "min_z_gap_m": {
+          "count": 0,
+          "max": null,
+          "min": null
+        },
+        "nan_count": 0,
+        "no_destination": 2,
+        "object_flew_out": 0,
+        "object_retained": 12,
+        "official_success_zone_reached_any": 1,
+        "post_done_settle_error_count": 0,
+        "post_done_settle_steps": {
+          "init_530c50ee73587af4": null,
+          "init_7206d9b0bbf0705e": null,
+          "init_9940fb101f2b0000": null,
+          "init_a2ab436f335d9f7b": null,
+          "init_a2e4d7bc32a0db02": null,
+          "init_bfd0c6484dd671d0": null,
+          "init_c6e1e9cd7bc29f86": null,
+          "init_cd28ad2f294bd19f": null,
+          "init_f1edd3671d78a7ea": null,
+          "init_f3c100bf0414c40a": null,
+          "init_fe8d8b77d59c3ff3": null,
+          "init_fe97ba4bcbe0598b": null
+        },
+        "rearm_total": 2,
+        "release_count": 9,
+        "release_steps": {
+          "init_530c50ee73587af4": 215,
+          "init_7206d9b0bbf0705e": 192,
+          "init_9940fb101f2b0000": 333,
+          "init_a2ab436f335d9f7b": 219,
+          "init_a2e4d7bc32a0db02": 234,
+          "init_bfd0c6484dd671d0": 204,
+          "init_c6e1e9cd7bc29f86": null,
+          "init_cd28ad2f294bd19f": 207,
+          "init_f1edd3671d78a7ea": null,
+          "init_f3c100bf0414c40a": 213,
+          "init_fe8d8b77d59c3ff3": null,
+          "init_fe97ba4bcbe0598b": 198
+        },
+        "release_trigger_steps": {
+          "init_530c50ee73587af4": null,
+          "init_7206d9b0bbf0705e": null,
+          "init_9940fb101f2b0000": null,
+          "init_a2ab436f335d9f7b": null,
+          "init_a2e4d7bc32a0db02": null,
+          "init_bfd0c6484dd671d0": null,
+          "init_c6e1e9cd7bc29f86": null,
+          "init_cd28ad2f294bd19f": null,
+          "init_f1edd3671d78a7ea": null,
+          "init_f3c100bf0414c40a": null,
+          "init_fe8d8b77d59c3ff3": null,
+          "init_fe97ba4bcbe0598b": null
+        },
+        "release_xy_after": {
+          "init_530c50ee73587af4": null,
+          "init_7206d9b0bbf0705e": null,
+          "init_9940fb101f2b0000": null,
+          "init_a2ab436f335d9f7b": null,
+          "init_a2e4d7bc32a0db02": null,
+          "init_bfd0c6484dd671d0": null,
+          "init_c6e1e9cd7bc29f86": null,
+          "init_cd28ad2f294bd19f": null,
+          "init_f1edd3671d78a7ea": null,
+          "init_f3c100bf0414c40a": null,
+          "init_fe8d8b77d59c3ff3": null,
+          "init_fe97ba4bcbe0598b": null
+        },
+        "release_xy_before": {
+          "init_530c50ee73587af4": null,
+          "init_7206d9b0bbf0705e": null,
+          "init_9940fb101f2b0000": null,
+          "init_a2ab436f335d9f7b": null,
+          "init_a2e4d7bc32a0db02": null,
+          "init_bfd0c6484dd671d0": null,
+          "init_c6e1e9cd7bc29f86": null,
+          "init_cd28ad2f294bd19f": null,
+          "init_f1edd3671d78a7ea": null,
+          "init_f3c100bf0414c40a": null,
+          "init_fe8d8b77d59c3ff3": null,
+          "init_fe97ba4bcbe0598b": null
+        },
+        "release_z_after": {
+          "init_530c50ee73587af4": null,
+          "init_7206d9b0bbf0705e": null,
+          "init_9940fb101f2b0000": null,
+          "init_a2ab436f335d9f7b": null,
+          "init_a2e4d7bc32a0db02": null,
+          "init_bfd0c6484dd671d0": null,
+          "init_c6e1e9cd7bc29f86": null,
+          "init_cd28ad2f294bd19f": null,
+          "init_f1edd3671d78a7ea": null,
+          "init_f3c100bf0414c40a": null,
+          "init_fe8d8b77d59c3ff3": null,
+          "init_fe97ba4bcbe0598b": null
+        },
+        "release_z_before": {
+          "init_530c50ee73587af4": null,
+          "init_7206d9b0bbf0705e": null,
+          "init_9940fb101f2b0000": null,
+          "init_a2ab436f335d9f7b": null,
+          "init_a2e4d7bc32a0db02": null,
+          "init_bfd0c6484dd671d0": null,
+          "init_c6e1e9cd7bc29f86": null,
+          "init_cd28ad2f294bd19f": null,
+          "init_f1edd3671d78a7ea": null,
+          "init_f3c100bf0414c40a": null,
+          "init_fe8d8b77d59c3ff3": null,
+          "init_fe97ba4bcbe0598b": null
+        },
+        "released_placement": 9,
+        "released_placement_last_available": 9,
+        "released_success": 0,
+        "settle_unavailable": 0,
+        "success": 0,
+        "target_destination_correct": 9,
+        "target_not_reached": 0,
+        "target_object_correct": 0,
+        "target_zone_reached_any": 9,
+        "transport_started": 12,
+        "wrong_destination": 1,
+        "x_action_change_max": {
+          "count": 12,
+          "max": 0.6181421279907227,
+          "min": 0.15179967880249023
+        },
+        "y_action_change_max": {
+          "count": 12,
+          "max": 0.9717574119567871,
+          "min": 0.36834439635276794
+        },
+        "z_gate_enter_steps": {
+          "init_530c50ee73587af4": null,
+          "init_7206d9b0bbf0705e": null,
+          "init_9940fb101f2b0000": null,
+          "init_a2ab436f335d9f7b": null,
+          "init_a2e4d7bc32a0db02": null,
+          "init_bfd0c6484dd671d0": null,
+          "init_c6e1e9cd7bc29f86": null,
+          "init_cd28ad2f294bd19f": null,
+          "init_f1edd3671d78a7ea": null,
+          "init_f3c100bf0414c40a": null,
+          "init_fe8d8b77d59c3ff3": null,
+          "init_fe97ba4bcbe0598b": null
+        },
+        "z_gate_streak_max": {
+          "init_530c50ee73587af4": null,
+          "init_7206d9b0bbf0705e": null,
+          "init_9940fb101f2b0000": null,
+          "init_a2ab436f335d9f7b": null,
+          "init_a2e4d7bc32a0db02": null,
+          "init_bfd0c6484dd671d0": null,
+          "init_c6e1e9cd7bc29f86": null,
+          "init_cd28ad2f294bd19f": null,
+          "init_f1edd3671d78a7ea": null,
+          "init_f3c100bf0414c40a": null,
+          "init_fe8d8b77d59c3ff3": null,
+          "init_fe97ba4bcbe0598b": null
+        }
+      }
+    }
+  },
+  "calibration_init_count": 3,
+  "checkpoint": "/vepfs-mlp2/c20250405/400040/transfer/vla_attention/vla_workspace/results/JGATE_first_batch_20261023T0737cache/openvla--openvla-7b+libero_90_gate+b32+lr-0.0005+lora-r32+dropout-0.0--image_aug--JGATE_formal_20261023T0737cache--J2--12500_chkpt",
+  "checkpoint_fingerprint": "747a28690383ca45e795518121e9aed3f4610265c14618a69f203922b4238e20",
+  "elapsed_sec": 1071.95046377182,
+  "execution_config": "/vepfs-mlp2/c20250405/400040/transfer/vla_attention/repo/VLA_attention/configs/vla/goal16_reguide_rebinding.json",
+  "execution_config_sha256": "34731e83e56d6c2ca075bdaecbbbb87671379053194b28a4561c06271ea8e502",
+  "gate": {
+    "checks": {
+      "B0_clean": true,
+      "B0_rows": true,
+      "E1-ORACLE_clean": true,
+      "E1-ORACLE_rows": true,
+      "E1-PRED_clean": true,
+      "E1-PRED_rows": true,
+      "e1_r_pred_minus_b0": false,
+      "e1_r_pred_released": false,
+      "e1_r_pred_success": false,
+      "e1_r_pred_wrong_destination": true,
+      "grounding_passed": true,
+      "no_errors": true,
+      "no_flew_out": true,
+      "no_nan": true
+    },
+    "failed": [
+      "e1_r_pred_success",
+      "e1_r_pred_minus_b0",
+      "e1_r_pred_released"
+    ],
+    "passed": false,
+    "status": "FAIL"
+  },
+  "goal_config": "/vepfs-mlp2/c20250405/400040/transfer/vla_attention/repo/VLA_attention/configs/vla/goal17_grounding.json",
+  "goal_config_sha256": "37f83443911f54e44ad17d4b02f71045cf36154f8f03a477c4f780ee7b0442de",
+  "grounding": {
+    "passed": true,
+    "sidecar_sha256": "ebb08c118fc304d2cbb806593a66b123d459b9cf89b45c0d8e677de66ea89026",
+    "status": "PASS",
+    "summary": "/vepfs-mlp2/c20250405/400040/transfer/vla_attention/vla_workspace/results/K4_lite/T4b/goal17_compositional_grounding_20261108/eval/grounding/G4-MARGIN/summary.json"
+  },
+  "init_count": 15,
+  "manifest": "/vepfs-mlp2/c20250405/400040/transfer/vla_attention/vla_workspace/data/jgate_c1/counterfactual_20261027/manifest.jsonl",
+  "manifest_sha256": "e9564ca9aef800e618e3fdb5d144892eabe9471815bbd24bae3140583946f45e",
+  "note": "E1 is R-NAIVE xy transport; E2 is full 3D R-GEO. Oracle is never used by E1-PRED/E2-PRED.",
+  "schema": "goal17-execution-audit-v1",
+  "split_audit": "/vepfs-mlp2/c20250405/400040/transfer/vla_attention/repo/VLA_attention/tmp_goal16_stage/p1a_evidence_audit.json",
+  "split_audit_sha256": "113edaa05745f3a95741a226259013357e1f3a29b57a0aa6ac790fc268594206",
+  "stage": "Goal17",
+  "statistics": "/vepfs-mlp2/c20250405/400040/transfer/vla_attention/vla_workspace/results/JGATE_first_batch_20261023T0737cache/openvla--openvla-7b+libero_90_gate+b32+lr-0.0005+lora-r32+dropout-0.0--image_aug--JGATE_formal_20261023T0737cache--J2--12500_chkpt/dataset_statistics.json",
+  "statistics_sha256": "6d5ebb47bc5132df581aae0481d529d04a0821c331859c05a9818d78156c9538",
+  "status": "FAIL"
+}
