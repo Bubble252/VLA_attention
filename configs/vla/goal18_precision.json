@@ -1,0 +1,92 @@
+{
+  "version": "goal18_destination_precision_v1",
+  "date": "2026-11-08",
+  "status": "frozen_before_measurement",
+  "purpose": "Reduce held-out white_right destination error with train-only 2D offset calibration and a lightweight destination residual head, then test whether E1 success improves.",
+  "workspace_root": "/vepfs-mlp2/c20250405/400040/transfer/vla_attention",
+  "repo_root": "/vepfs-mlp2/c20250405/400040/transfer/vla_attention/vla_workspace/repo/starvla_55_20261030/repo",
+  "qwen_point_config": "/vepfs-mlp2/c20250405/400040/transfer/vla_attention/vla_workspace/repo/starvla_55_20261030/repo/examples/simBenchmarks/LIBERO/train_files/star105/starvla_qwengr00t_M3_point.yaml",
+  "source_train_manifest": "/vepfs-mlp2/c20250405/400040/transfer/vla_attention/results/star105_goal10p5_20261105/point_manifests/train_sidecar_v1e/point_manifest.jsonl",
+  "source_train_manifest_sha256": "815c7107c68afad457e6b2e8fbc99c9e1c8e9a9c9b6b149217776c989966c2c9",
+  "source_val_manifest": "/vepfs-mlp2/c20250405/400040/transfer/vla_attention/results/star105_goal10p5_20261105/point_manifests/validation_sidecar_v1/point_manifest.jsonl",
+  "source_val_manifest_sha256": "9a3a508d063b36a11cda9331753513f5019ada62a19ba2de6ab96f20fab068bf",
+  "train_index": "/vepfs-mlp2/c20250405/400040/transfer/vla_attention/vla_workspace/results/K4_lite/T4b/goal17_compositional_grounding_20261108/features/train/index.jsonl",
+  "train_index_sha256": "5340fa2bf051c2416705a6ff5fa8680ba9f440c9fab62315151876ec25e89b9e",
+  "val_index": "/vepfs-mlp2/c20250405/400040/transfer/vla_attention/vla_workspace/results/K4_lite/T4b/goal17_compositional_grounding_20261108/features/val/index.jsonl",
+  "val_index_sha256": "7c6a545571dae23420d2aaa4592ee56175693f7f85b1fc24abc746434e6292c3",
+  "point_head": "/vepfs-mlp2/c20250405/400040/transfer/vla_attention/vla_workspace/results/K4_lite/T4b/goal17_compositional_grounding_20261108/train/G4-MARGIN/point_head.pt",
+  "point_head_sha256": "d6f90d222b12a0a067c49bce1eaf2ca3564853db2978b8ebd598b6d033164b75",
+  "base_grounding_rows": "/vepfs-mlp2/c20250405/400040/transfer/vla_attention/vla_workspace/results/K4_lite/T4b/goal17_compositional_grounding_20261108/eval/grounding/G4-MARGIN/grounding_rows.jsonl",
+  "base_predicted_points": "/vepfs-mlp2/c20250405/400040/transfer/vla_attention/vla_workspace/results/K4_lite/T4b/goal17_compositional_grounding_20261108/eval/grounding/G4-MARGIN/predicted_points.jsonl",
+  "eval_manifest": "/vepfs-mlp2/c20250405/400040/transfer/vla_attention/vla_workspace/data/jgate_c1/counterfactual_20261027/manifest.jsonl",
+  "eval_manifest_sha256": "e9564ca9aef800e618e3fdb5d144892eabe9471815bbd24bae3140583946f45e",
+  "eval_mask_sidecar": "/vepfs-mlp2/c20250405/400040/transfer/vla_attention/vla_workspace/results/K4_lite/T0c_audit/sidecar_v2/manifest.jsonl",
+  "eval_mask_sidecar_summary": "/vepfs-mlp2/c20250405/400040/transfer/vla_attention/vla_workspace/results/K4_lite/T0c_audit/sidecar_v2/summary.json",
+  "camera_json": "/vepfs-mlp2/c20250405/400040/transfer/vla_attention/vla_workspace/results/K4_lite/T4b/goal16_reguide_rebinding_20261108/grounding/summary.json",
+  "split_audit": "/vepfs-mlp2/c20250405/400040/transfer/vla_attention/repo/VLA_attention/tmp_goal16_stage/p1a_evidence_audit.json",
+  "output_root": "/vepfs-mlp2/c20250405/400040/transfer/vla_attention/vla_workspace/results/K4_lite/T4b/goal18_destination_precision_20261108",
+  "gpu": 1,
+  "oracle_fallback_allowed": false,
+  "training_scope": "destination_offset_and_residual",
+  "eval_init_count": 15,
+  "calibration_init_ids": [
+    "init_0e94a4e6b9622c6b",
+    "init_2edf49999eb35566",
+    "init_3500df19a4d3b5a1"
+  ],
+  "confirmation_init_count": 12,
+  "seed": 18,
+  "prompts": ["red_left", "red_right", "white_left", "white_right"],
+  "image": {
+    "image_size": 224,
+    "raw_resolution": 256,
+    "crop_scale": 0.9,
+    "table_z_m": 0.43927283
+  },
+  "calibration": {
+    "primary_arm": "C1-PROMPT",
+    "diagnostic_arms": ["C1-GLOBAL", "C1-RELATION"],
+    "train_only": true,
+    "world_xy_meters": true
+  },
+  "residual_head": {
+    "input": ["visual_mean", "language_mean", "base_destination_norm", "base_object_norm", "prompt_onehot"],
+    "hidden_dim": 256,
+    "dropout": 0.1,
+    "steps": 2500,
+    "batch_size": 128,
+    "lr": 0.001,
+    "weight_decay": 0.01,
+    "target_scale_cm": 100.0,
+    "seed": 18
+  },
+  "execution": {
+    "model": "/vepfs-mlp2/c20250405/400040/transfer/vla_attention/vla_workspace/models/openvla--openvla-7b",
+    "checkpoint": "/vepfs-mlp2/c20250405/400040/transfer/vla_attention/vla_workspace/results/JGATE_first_batch_20261023T0737cache/openvla--openvla-7b+libero_90_gate+b32+lr-0.0005+lora-r32+dropout-0.0--image_aug--JGATE_formal_20261023T0737cache--J2--12500_chkpt",
+    "statistics": "/vepfs-mlp2/c20250405/400040/transfer/vla_attention/vla_workspace/results/JGATE_first_batch_20261023T0737cache/openvla--openvla-7b+libero_90_gate+b32+lr-0.0005+lora-r32+dropout-0.0--image_aug--JGATE_formal_20261023T0737cache--J2--12500_chkpt/dataset_statistics.json",
+    "execution_config": "/vepfs-mlp2/c20250405/400040/transfer/vla_attention/repo/VLA_attention/configs/vla/goal16_reguide_rebinding.json",
+    "settle_steps": 32
+  },
+  "arms": {
+    "C0": {"correction": "none", "note": "Goal17 G4-MARGIN base grounding"},
+    "C1-GLOBAL": {"correction": "offset", "offset_key": "global"},
+    "C1-PROMPT": {"correction": "offset", "offset_key": "per_prompt"},
+    "C1-RELATION": {"correction": "offset", "offset_key": "per_relation"},
+    "C2-RESIDUAL": {"correction": "residual", "note": "lightweight destination residual head"}
+  },
+  "gate": {
+    "grounding_init_denominator": 15,
+    "destination_error_threshold_m": 0.03,
+    "destination_mean_error_max_m": 0.015,
+    "destination_max_error_max_m": 0.03,
+    "destination_correct_min": 12,
+    "object_in_mask_min": 12,
+    "execution_success_min": 4,
+    "execution_success_minus_baseline_min": 2,
+    "execution_correct_destination_success_min": 3,
+    "execution_wrong_destination_max": 3,
+    "no_errors": true,
+    "no_nan": true,
+    "no_flew_out": true
+  }
+}

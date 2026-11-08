@@ -1,0 +1,22 @@
+{
+  "schema": "goal18-eval-features-v1",
+  "status": "complete",
+  "config": "/vepfs-mlp2/c20250405/400040/transfer/vla_attention/vla_workspace/repo/starvla_55_20261030/repo/examples/simBenchmarks/LIBERO/train_files/star105/starvla_qwengr00t_M3_point.yaml",
+  "sidecar": "/vepfs-mlp2/c20250405/400040/transfer/vla_attention/vla_workspace/results/K4_lite/T0c_audit/sidecar_v2/manifest.jsonl",
+  "rows": 60,
+  "visual_token_count": {
+    "min": 145,
+    "max": 145,
+    "mean": 145.0
+  },
+  "language_token_count": {
+    "min": 50,
+    "max": 50,
+    "mean": 50.0
+  },
+  "notes": [
+    "Qwen is frozen; no weights are updated.",
+    "Only deployable visual/language hidden states are cached.",
+    "No object/destination labels are read by this extractor."
+  ]
+}

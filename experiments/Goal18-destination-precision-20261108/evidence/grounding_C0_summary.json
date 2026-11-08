@@ -1,0 +1,156 @@
+{
+  "arm": "C0",
+  "base_rows": "/vepfs-mlp2/c20250405/400040/transfer/vla_attention/vla_workspace/results/K4_lite/T4b/goal17_compositional_grounding_20261108/eval/grounding/G4-MARGIN/grounding_rows.jsonl",
+  "base_rows_sha256": "08a9d1ea1f28901fcfe98ac48d05700e9ba725f18f46f7478f4ffbfa69db7bec",
+  "calibration": "/vepfs-mlp2/c20250405/400040/transfer/vla_attention/vla_workspace/results/K4_lite/T4b/goal18_destination_precision_20261108/train/calibration.json",
+  "calibration_sha256": "a975023856bac84639f2ba8efaa272fcc907881b4090e9c3fa6eb4eb01c4c90f",
+  "config": "/vepfs-mlp2/c20250405/400040/transfer/vla_attention/repo/VLA_attention/configs/vla/goal18_precision.json",
+  "config_sha256": "cf09e2025d6766f17aabedbf2ad7a42bd09a7e332df4411ee04ffe31f8227c7d",
+  "eval_feature_index": null,
+  "eval_feature_index_sha256": null,
+  "gate": {
+    "checks": {
+      "destination_correct": false,
+      "destination_max": false,
+      "destination_mean": false,
+      "no_nan": true,
+      "object_in_mask": true,
+      "prediction_count": true
+    },
+    "count": 15,
+    "destination_correct_count": 6,
+    "failed": [
+      "destination_correct",
+      "destination_mean",
+      "destination_max"
+    ],
+    "max_destination_error_m": 0.07805989312993084,
+    "mean_destination_error_m": 0.033720700229617304,
+    "object_in_mask_count": 15,
+    "passed": false,
+    "status": "FAIL"
+  },
+  "grounding_rows": "/vepfs-mlp2/c20250405/400040/transfer/vla_attention/vla_workspace/results/K4_lite/T4b/goal18_destination_precision_20261108/eval/grounding/C0/grounding_rows.jsonl",
+  "grounding_rows_sha256": "06cadb4f77fd4e26c24f5a5048ecd24f39957563742855d8d6ff55760e046f65",
+  "notes": [
+    "Oracle destinations are used only for scoring, never as model input.",
+    "C1 offsets and C2 residual weights are fitted on train-split mask labels only.",
+    "The frozen Goal17 point head is not modified."
+  ],
+  "passed": false,
+  "per_init": [
+    {
+      "destination_error_m": 0.006003962776575662,
+      "destination_in_mask": true,
+      "object_in_mask": true,
+      "shared_init_id": "init_0e94a4e6b9622c6b",
+      "split": "calibration"
+    },
+    {
+      "destination_error_m": 0.008354528448213994,
+      "destination_in_mask": true,
+      "object_in_mask": true,
+      "shared_init_id": "init_2edf49999eb35566",
+      "split": "calibration"
+    },
+    {
+      "destination_error_m": 0.038841312097527746,
+      "destination_in_mask": true,
+      "object_in_mask": true,
+      "shared_init_id": "init_3500df19a4d3b5a1",
+      "split": "calibration"
+    },
+    {
+      "destination_error_m": 0.034391964711410664,
+      "destination_in_mask": true,
+      "object_in_mask": true,
+      "shared_init_id": "init_530c50ee73587af4",
+      "split": "calibration"
+    },
+    {
+      "destination_error_m": 0.03565466873229616,
+      "destination_in_mask": true,
+      "object_in_mask": true,
+      "shared_init_id": "init_7206d9b0bbf0705e",
+      "split": "calibration"
+    },
+    {
+      "destination_error_m": 0.056441330237310045,
+      "destination_in_mask": true,
+      "object_in_mask": true,
+      "shared_init_id": "init_9940fb101f2b0000",
+      "split": "heldout"
+    },
+    {
+      "destination_error_m": 0.03944978188441744,
+      "destination_in_mask": true,
+      "object_in_mask": true,
+      "shared_init_id": "init_a2ab436f335d9f7b",
+      "split": "heldout"
+    },
+    {
+      "destination_error_m": 0.010465043417292506,
+      "destination_in_mask": true,
+      "object_in_mask": true,
+      "shared_init_id": "init_a2e4d7bc32a0db02",
+      "split": "heldout"
+    },
+    {
+      "destination_error_m": 0.03872615437715246,
+      "destination_in_mask": true,
+      "object_in_mask": true,
+      "shared_init_id": "init_bfd0c6484dd671d0",
+      "split": "heldout"
+    },
+    {
+      "destination_error_m": 0.050620258029815436,
+      "destination_in_mask": true,
+      "object_in_mask": true,
+      "shared_init_id": "init_c6e1e9cd7bc29f86",
+      "split": "heldout"
+    },
+    {
+      "destination_error_m": 0.03634491235907323,
+      "destination_in_mask": true,
+      "object_in_mask": true,
+      "shared_init_id": "init_cd28ad2f294bd19f",
+      "split": "heldout"
+    },
+    {
+      "destination_error_m": 0.07805989312993084,
+      "destination_in_mask": true,
+      "object_in_mask": true,
+      "shared_init_id": "init_f1edd3671d78a7ea",
+      "split": "heldout"
+    },
+    {
+      "destination_error_m": 0.027721120020525607,
+      "destination_in_mask": true,
+      "object_in_mask": true,
+      "shared_init_id": "init_f3c100bf0414c40a",
+      "split": "heldout"
+    },
+    {
+      "destination_error_m": 0.02265754424389099,
+      "destination_in_mask": true,
+      "object_in_mask": true,
+      "shared_init_id": "init_fe8d8b77d59c3ff3",
+      "split": "heldout"
+    },
+    {
+      "destination_error_m": 0.02207802897882675,
+      "destination_in_mask": true,
+      "object_in_mask": true,
+      "shared_init_id": "init_fe97ba4bcbe0598b",
+      "split": "heldout"
+    }
+  ],
+  "predicted_sidecar": "/vepfs-mlp2/c20250405/400040/transfer/vla_attention/vla_workspace/results/K4_lite/T4b/goal18_destination_precision_20261108/eval/grounding/C0/predicted_points.jsonl",
+  "predicted_sidecar_sha256": "b0798ba697ea30de96b6e2b5307c149f4d608acd5cd40498e291f0cf21f37239",
+  "residual_head": null,
+  "residual_head_sha256": null,
+  "schema": "goal18-grounding-eval-v1",
+  "sidecar": "/vepfs-mlp2/c20250405/400040/transfer/vla_attention/vla_workspace/results/K4_lite/T0c_audit/sidecar_v2/manifest.jsonl",
+  "sidecar_sha256": "8b3e974c65eefd770c17ca1add4d5e2599dbceeca6d7e81a7ca6ecfcf5911e5b",
+  "status": "FAIL"
+}

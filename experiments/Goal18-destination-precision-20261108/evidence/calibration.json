@@ -1,0 +1,221 @@
+{
+  "schema": "goal18-destination-calibration-v1",
+  "status": "complete",
+  "config": "/vepfs-mlp2/c20250405/400040/transfer/vla_attention/repo/VLA_attention/configs/vla/goal18_precision.json",
+  "train_index": "/vepfs-mlp2/c20250405/400040/transfer/vla_attention/vla_workspace/results/K4_lite/T4b/goal17_compositional_grounding_20261108/features/train/index.jsonl",
+  "val_index": "/vepfs-mlp2/c20250405/400040/transfer/vla_attention/vla_workspace/results/K4_lite/T4b/goal17_compositional_grounding_20261108/features/val/index.jsonl",
+  "point_head": "/vepfs-mlp2/c20250405/400040/transfer/vla_attention/vla_workspace/results/K4_lite/T4b/goal17_compositional_grounding_20261108/train/G4-MARGIN/point_head.pt",
+  "offsets": {
+    "global": [
+      -0.00022268208978737608,
+      0.00014913001790695796
+    ],
+    "per_prompt": {
+      "red_left": [
+        1.0218047591076978e-05,
+        0.0002242220422223445
+      ],
+      "red_right": [
+        -0.00034616183066699157,
+        0.00026569793411214
+      ],
+      "white_left": [
+        -0.00018557740003529696,
+        3.438616053877408e-05
+      ],
+      "white_right": [
+        -0.000369207176038287,
+        7.221393475457159e-05
+      ]
+    },
+    "per_relation": {
+      "left": [
+        -8.767967622210999e-05,
+        0.00012930410138055893
+      ],
+      "right": [
+        -0.0003576845033526393,
+        0.00016895593443335557
+      ]
+    },
+    "per_attribute": {
+      "red": [
+        -0.0001679718915379573,
+        0.000244959988167242
+      ],
+      "white": [
+        -0.000277392288036792,
+        5.330004764667287e-05
+      ]
+    },
+    "counts": {
+      "all": 3056,
+      "red_left": 764,
+      "red_right": 764,
+      "white_left": 764,
+      "white_right": 764
+    }
+  },
+  "metrics": {
+    "train_base": {
+      "count": 3056,
+      "mean_m": 0.007201165444727096,
+      "median_m": 0.005544683061358935,
+      "max_m": 0.047751580168299265,
+      "within_0_015_m": 2762,
+      "within_0_03_m": 3028
+    },
+    "train_global": {
+      "count": 3056,
+      "mean_m": 0.007203378822761951,
+      "median_m": 0.00555610443873642,
+      "max_m": 0.04748558365046482,
+      "within_0_015_m": 2764,
+      "within_0_03_m": 3028
+    },
+    "train_prompt": {
+      "count": 3056,
+      "mean_m": 0.007203927384373922,
+      "median_m": 0.00554140459108632,
+      "max_m": 0.0473895985352266,
+      "within_0_015_m": 2764,
+      "within_0_03_m": 3028
+    },
+    "train_relation": {
+      "count": 3056,
+      "mean_m": 0.00720453109571978,
+      "median_m": 0.0055466814639309765,
+      "max_m": 0.047356140554567765,
+      "within_0_015_m": 2765,
+      "within_0_03_m": 3028
+    },
+    "train_attribute": {
+      "count": 3056,
+      "mean_m": 0.0072029861672112715,
+      "median_m": 0.005556780844420602,
+      "max_m": 0.04748002831481891,
+      "within_0_015_m": 2765,
+      "within_0_03_m": 3028
+    },
+    "val_base": {
+      "count": 472,
+      "mean_m": 0.013827193894007809,
+      "median_m": 0.01279505997172179,
+      "max_m": 0.04067453564070828,
+      "within_0_015_m": 268,
+      "within_0_03_m": 458
+    },
+    "val_global": {
+      "count": 472,
+      "mean_m": 0.013821758686633562,
+      "median_m": 0.012780518832060661,
+      "max_m": 0.04093796388047624,
+      "within_0_015_m": 271,
+      "within_0_03_m": 457
+    },
+    "val_prompt": {
+      "count": 472,
+      "mean_m": 0.013825275402006095,
+      "median_m": 0.012832752550751472,
+      "max_m": 0.041042451194060484,
+      "within_0_015_m": 273,
+      "within_0_03_m": 456
+    },
+    "val_relation": {
+      "count": 472,
+      "mean_m": 0.013826415470661544,
+      "median_m": 0.012774435374417664,
+      "max_m": 0.041069850132394746,
+      "within_0_015_m": 272,
+      "within_0_03_m": 456
+    },
+    "val_attribute": {
+      "count": 472,
+      "mean_m": 0.01382070504136481,
+      "median_m": 0.012794976635101898,
+      "max_m": 0.0409505687034794,
+      "within_0_015_m": 273,
+      "within_0_03_m": 457
+    }
+  },
+  "residual_head": {
+    "checkpoint": "/vepfs-mlp2/c20250405/400040/transfer/vla_attention/vla_workspace/results/K4_lite/T4b/goal18_destination_precision_20261108/train/residual_head.pt",
+    "feature_dim": 7176,
+    "history": [
+      {
+        "step": 250,
+        "loss": 0.025998320430517197,
+        "train_mae_cm": 0.10082077234983444,
+        "val_mae_cm": 0.8146048784255981
+      },
+      {
+        "step": 500,
+        "loss": 0.01644834689795971,
+        "train_mae_cm": 0.07612623274326324,
+        "val_mae_cm": 0.8195505738258362
+      },
+      {
+        "step": 750,
+        "loss": 0.009395584464073181,
+        "train_mae_cm": 0.0590888075530529,
+        "val_mae_cm": 0.8124831318855286
+      },
+      {
+        "step": 1000,
+        "loss": 0.011719068512320518,
+        "train_mae_cm": 0.05498141050338745,
+        "val_mae_cm": 0.8169453144073486
+      },
+      {
+        "step": 1250,
+        "loss": 0.0068557169288396835,
+        "train_mae_cm": 0.05522898957133293,
+        "val_mae_cm": 0.8132470846176147
+      },
+      {
+        "step": 1500,
+        "loss": 0.009340295568108559,
+        "train_mae_cm": 0.05139448866248131,
+        "val_mae_cm": 0.8155274987220764
+      },
+      {
+        "step": 1750,
+        "loss": 0.008817569352686405,
+        "train_mae_cm": 0.05033205822110176,
+        "val_mae_cm": 0.8172784447669983
+      },
+      {
+        "step": 2000,
+        "loss": 0.00662857573479414,
+        "train_mae_cm": 0.05254574865102768,
+        "val_mae_cm": 0.81305992603302
+      },
+      {
+        "step": 2250,
+        "loss": 0.010462839156389236,
+        "train_mae_cm": 0.05443932116031647,
+        "val_mae_cm": 0.8189398646354675
+      },
+      {
+        "step": 2500,
+        "loss": 0.009223191067576408,
+        "train_mae_cm": 0.0464702770113945,
+        "val_mae_cm": 0.807350754737854
+      }
+    ],
+    "best": {
+      "step": 2500,
+      "loss": 0.009223191067576408,
+      "train_mae_cm": 0.0464702770113945,
+      "val_mae_cm": 0.807350754737854
+    },
+    "train_mae_cm": 0.0464702770113945,
+    "val_mae_cm": 0.807350754737854
+  },
+  "notes": [
+    "Offsets are fitted only on train split mask labels.",
+    "Validation metrics are reported, never used for gradient updates or arm selection.",
+    "The C1 primary arm is per-prompt; global and relation/attribute are diagnostics.",
+    "No eval init, validation frame, simulator success, or future frame is used for training."
+  ]
+}
