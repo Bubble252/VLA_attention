@@ -1,0 +1,103 @@
+{
+  "version": "goal16_reguide_rebinding_v1",
+  "date": "2026-11-08",
+  "status": "frozen_before_measurement",
+  "purpose": "Training-free referent rebinding pilot on the frozen C1 white_right 15-init set. Diagnostic and deployability boundary are reported separately.",
+  "init_count": 15,
+  "confirmation_init_count": 12,
+  "seed": 7,
+  "target_object": "porcelain_mug_1",
+  "target_receptacle": "plate_2",
+  "distractor_receptacle": "plate_1",
+  "calibration_init_ids": [
+    "init_0e94a4e6b9622c6b",
+    "init_2edf49999eb35566",
+    "init_3500df19a4d3b5a1"
+  ],
+  "metrics": {
+    "placement_xy_m": 0.15,
+    "placement_z_m": 0.05,
+    "gripper_open_width": 0.02,
+    "object_retained_min_z": 0.25,
+    "official_success_xy_m": 0.03,
+    "legacy_target_zone_3d_m": 0.15,
+    "flew_out_max_displacement_m": 2.0,
+    "flew_out_min_target_z_m": 0.0,
+    "flew_out_max_target_z_m": 2.0
+  },
+  "grounding": {
+    "oracle_source": "simulator_object_positions",
+    "predicted_source": "c1_point_head",
+    "point_head_path": "/vepfs-mlp2/c20250405/400040/transfer/vla_attention/results/star105_goal10p5_20261105/point_head/pilot_5000/point_head.pt",
+    "point_head_qwen_config": "/vepfs-mlp2/c20250405/400040/transfer/vla_attention/vla_workspace/repo/starvla_55_20261030/repo/examples/simBenchmarks/LIBERO/train_files/star105/starvla_qwengr00t_M3_point.yaml",
+    "point_head_sha256": "693f0dd8086a4d64cd4f1064a7f4d5c1f934f0914123df5478cdc1f86815fce7",
+    "predicted_sidecar": "results/K4_lite/T4b/goal16_reguide_rebinding_20261108/grounding/predicted_points.jsonl",
+    "table_z_m": 0.439,
+    "max_destination_error_m": 0.15,
+    "oracle_fallback_allowed": false
+  },
+  "release": {
+    "release_xy_m": 0.03,
+    "release_z_m": 0.05,
+    "release_streak_steps": 3,
+    "settle_steps": 4
+  },
+  "shared_control": {
+    "grasp_gripper_width": 0.04,
+    "activation_delay_steps": 2,
+    "deadband_m": 0.003,
+    "transport_gain_xy": 2.0,
+    "transport_cap_xy": 0.2,
+    "transport_gain_z": 2.0,
+    "transport_cap_z": 0.15,
+    "max_transport_steps": 240,
+    "lost_streak_steps": 3,
+    "max_rearms": 2
+  },
+  "arms": {
+    "B0": {
+      "kind": "noop",
+      "destination_source": "none"
+    },
+    "R-GEO": {
+      "kind": "full",
+      "destination_source": "oracle",
+      "approach_height_m": 0.10,
+      "handback_xy_m": 0.05,
+      "handback_z_m": 0.06
+    },
+    "R-NAIVE": {
+      "kind": "naive",
+      "destination_source": "oracle",
+      "approach_height_m": 0.0,
+      "handback_xy_m": 0.0,
+      "handback_z_m": 0.0
+    },
+    "R-PRED": {
+      "kind": "full",
+      "destination_source": "predicted",
+      "approach_height_m": 0.10,
+      "handback_xy_m": 0.05,
+      "handback_z_m": 0.06
+    },
+    "R-SHUF": {
+      "kind": "full",
+      "destination_source": "oracle_shuffled",
+      "approach_height_m": 0.10,
+      "handback_xy_m": 0.05,
+      "handback_z_m": 0.06
+    }
+  },
+  "gate": {
+    "g1_geo_handback_min": 12,
+    "g1_no_errors": true,
+    "g1_no_nan": true,
+    "g1_no_object_flew_out": true,
+    "g2_r_geo_success_min": 1,
+    "g2_r_pred_success_min": 1,
+    "g2_r_pred_minus_b0_min": 1,
+    "g2_wrong_destination_max_over_b0": 0,
+    "g2_r_geo_released_success_min": 1
+  }
+}
+
